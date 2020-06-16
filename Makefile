@@ -54,7 +54,7 @@ install-dev: _check_venv_active
 
 .PHONY: tests
 tests: _check_venv_active
-	pytest -v $(CURDIR)
+	pytest -v --pdb $(CURDIR)
 
 
 

@@ -19,6 +19,7 @@ import osparc
 from osparc.models.meta import Meta  # noqa: E501
 from osparc.rest import ApiException
 
+
 class TestMeta(unittest.TestCase):
     """Meta unit test stubs"""
 
@@ -34,19 +35,14 @@ class TestMeta(unittest.TestCase):
             params are included, when True both required and
             optional params are included """
         # model = osparc.models.meta.Meta()  # noqa: E501
-        if include_optional :
+        if include_optional:
             return Meta(
-                name = '0', 
-                version = 'a', 
-                released = {
-                    'key' : 'a'
-                    }
+                name="simcore_service_foo",
+                version="2.4.45",
+                released={"v1": "1.3.4", "v2": "2.4.45"},
             )
-        else :
-            return Meta(
-                name = '0',
-                version = 'a',
-        )
+        else:
+            return Meta(name="simcore_service_foo", version="2.4.45",)
 
     def testMeta(self):
         """Test Meta"""
@@ -54,5 +50,5 @@ class TestMeta(unittest.TestCase):
         inst_req_and_optional = self.make_instance(include_optional=True)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
