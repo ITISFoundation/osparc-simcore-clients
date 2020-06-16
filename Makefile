@@ -38,6 +38,8 @@ info:
 	# package
 	-@echo ' name         : ' $(shell python ${CURDIR}/setup.py --name)
 	-@echo ' version      : ' $(shell python ${CURDIR}/setup.py --version)
+	# nox
+	@echo nox --list-sessions
 
 
 .PHONY: clean
