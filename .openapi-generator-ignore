@@ -1,8 +1,10 @@
 # OpenAPI Generator Ignore
 
-# deleted
+# NOTE: KEEP in alphabetical order
+#deleted 
 git_push.sh
 requirements.txt
+setup.cfg
 test-requirements.txt
 
 
