@@ -1,0 +1,24 @@
+site_name: osparc-simcore python client
+site_description: A python client SDK for osparc-simcore 
+
+theme:
+  name: "material"
+  palette:
+    primary: "deep purple"
+    accent: "deep purple"
+  icon:
+    logo: "material/school"
+
+repo_name: ITISFoundation/osparc-simcore-python-client
+repo_url: https://github.com/ITISFoundation/osparc-simcore-python-client
+edit_uri: ""
+
+nav:
+  - Introduction: "index.md"
+  - Meta: "MetaAPI.md"
+  - Users: "UsersAPI.md"
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - mkautodoc
