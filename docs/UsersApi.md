@@ -1,21 +1,21 @@
-# osparc.UserApi
+# osparc.UsersApi
 
 All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**my_profile_v0_user_get**](UserApi.md#my_profile_v0_user_get) | **GET** /v0/user | Get My Profile
-[**my_profile_v0_user_patch**](UserApi.md#my_profile_v0_user_patch) | **PATCH** /v0/user | Update My Profile
+[**get_my_profile**](UsersApi.md#get_my_profile) | **GET** /v0/me | Get My Profile
+[**update_my_profile**](UsersApi.md#update_my_profile) | **PATCH** /v0/me | Update My Profile
 
 
-# **my_profile_v0_user_get**
-> User my_profile_v0_user_get()
+# **get_my_profile**
+> Profile get_my_profile()
 
 Get My Profile
 
 ### Example
 
-* OAuth Authentication (OAuth2PasswordBearer):
+* Basic Authentication (HTTPBasic):
 ```python
 from __future__ import print_function
 import time
@@ -23,22 +23,23 @@ import osparc
 from osparc.rest import ApiException
 from pprint import pprint
 configuration = osparc.Configuration()
-# Configure OAuth2 access token for authorization: OAuth2PasswordBearer
-configuration.access_token = 'YOUR_ACCESS_TOKEN'
+# Configure HTTP basic authorization: HTTPBasic
+configuration.username = 'YOUR_USERNAME'
+configuration.password = 'YOUR_PASSWORD'
 
 # Defining host is optional and default to http://localhost
 configuration.host = "http://localhost"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = osparc.UserApi(api_client)
+    api_instance = osparc.UsersApi(api_client)
     
     try:
         # Get My Profile
-        api_response = api_instance.my_profile_v0_user_get()
+        api_response = api_instance.get_my_profile()
         pprint(api_response)
     except ApiException as e:
-        print("Exception when calling UserApi->my_profile_v0_user_get: %s\n" % e)
+        print("Exception when calling UsersApi->get_my_profile: %s\n" % e)
 ```
 
 ### Parameters
@@ -46,11 +47,11 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**User**](User.md)
+[**Profile**](Profile.md)
 
 ### Authorization
 
-[OAuth2PasswordBearer](../README.md#OAuth2PasswordBearer)
+[HTTPBasic](../README.md#HTTPBasic)
 
 ### HTTP request headers
 
@@ -64,14 +65,14 @@ This endpoint does not need any parameter.
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **my_profile_v0_user_patch**
-> User my_profile_v0_user_patch()
+# **update_my_profile**
+> Profile update_my_profile(profile_update)
 
 Update My Profile
 
 ### Example
 
-* OAuth Authentication (OAuth2PasswordBearer):
+* Basic Authentication (HTTPBasic):
 ```python
 from __future__ import print_function
 import time
@@ -79,44 +80,50 @@ import osparc
 from osparc.rest import ApiException
 from pprint import pprint
 configuration = osparc.Configuration()
-# Configure OAuth2 access token for authorization: OAuth2PasswordBearer
-configuration.access_token = 'YOUR_ACCESS_TOKEN'
+# Configure HTTP basic authorization: HTTPBasic
+configuration.username = 'YOUR_USERNAME'
+configuration.password = 'YOUR_PASSWORD'
 
 # Defining host is optional and default to http://localhost
 configuration.host = "http://localhost"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = osparc.UserApi(api_client)
-    
+    api_instance = osparc.UsersApi(api_client)
+    profile_update = osparc.ProfileUpdate() # ProfileUpdate | 
+
     try:
         # Update My Profile
-        api_response = api_instance.my_profile_v0_user_patch()
+        api_response = api_instance.update_my_profile(profile_update)
         pprint(api_response)
     except ApiException as e:
-        print("Exception when calling UserApi->my_profile_v0_user_patch: %s\n" % e)
+        print("Exception when calling UsersApi->update_my_profile: %s\n" % e)
 ```
 
 ### Parameters
-This endpoint does not need any parameter.
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **profile_update** | [**ProfileUpdate**](ProfileUpdate.md)|  | 
 
 ### Return type
 
-[**User**](User.md)
+[**Profile**](Profile.md)
 
 ### Authorization
 
-[OAuth2PasswordBearer](../README.md#OAuth2PasswordBearer)
+[HTTPBasic](../README.md#HTTPBasic)
 
 ### HTTP request headers
 
- - **Content-Type**: Not defined
+ - **Content-Type**: application/json
  - **Accept**: application/json
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

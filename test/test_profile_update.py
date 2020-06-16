@@ -16,11 +16,11 @@ import unittest
 import datetime
 
 import osparc
-from osparc.models.validation_error import ValidationError  # noqa: E501
+from osparc.models.profile_update import ProfileUpdate  # noqa: E501
 from osparc.rest import ApiException
 
-class TestValidationError(unittest.TestCase):
-    """ValidationError unit test stubs"""
+class TestProfileUpdate(unittest.TestCase):
+    """ProfileUpdate unit test stubs"""
 
     def setUp(self):
         pass
@@ -29,30 +29,22 @@ class TestValidationError(unittest.TestCase):
         pass
 
     def make_instance(self, include_optional):
-        """Test ValidationError
+        """Test ProfileUpdate
             include_option is a boolean, when False only required
             params are included, when True both required and
             optional params are included """
-        # model = osparc.models.validation_error.ValidationError()  # noqa: E501
+        # model = osparc.models.profile_update.ProfileUpdate()  # noqa: E501
         if include_optional :
-            return ValidationError(
-                loc = [
-                    '0'
-                    ], 
-                msg = '0', 
-                type = '0'
+            return ProfileUpdate(
+                first_name = 'James', 
+                last_name = 'Maxwell'
             )
         else :
-            return ValidationError(
-                loc = [
-                    '0'
-                    ],
-                msg = '0',
-                type = '0',
+            return ProfileUpdate(
         )
 
-    def testValidationError(self):
-        """Test ValidationError"""
+    def testProfileUpdate(self):
+        """Test ProfileUpdate"""
         inst_req_only = self.make_instance(include_optional=False)
         inst_req_and_optional = self.make_instance(include_optional=True)
 
