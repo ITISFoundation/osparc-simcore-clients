@@ -13,10 +13,12 @@ repo_name: ITISFoundation/osparc-simcore-python-client
 repo_url: https://github.com/ITISFoundation/osparc-simcore-python-client
 edit_uri: ""
 
+docs_dir: mkdocs
+
 nav:
-  - Introduction: "index.md"
-  - Meta: "MetaAPI.md"
-  - Users: "UsersAPI.md"
+  - Introduction: "README.md"
+  - Meta: "docs/MetaApi"
+  - Users: "docs/UsersApi"
 
 markdown_extensions:
   - admonition
