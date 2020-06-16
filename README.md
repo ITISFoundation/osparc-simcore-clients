@@ -1,4 +1,4 @@
-# osparc-simcore-python-api
+# Python client for osparc-simcore API
 
 
 ![test](https://github.com/ITISFoundation/osparc-simcore-python-client/workflows/test/badge.svg)
