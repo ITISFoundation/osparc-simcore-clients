@@ -42,13 +42,20 @@ info:
 	@echo nox --list-sessions
 
 
+.PHONY: up-doc
+up-doc:
+	python -m http.server 3001
+
+
 .PHONY: clean
 clean:
 	git clean -dxf -e .vscode
 
+
 .PHONY: build
 build: clean 
 	python setup.py sdist bdist_wheel
+
 
 .PHONY: release
 release: build

@@ -20,18 +20,3 @@ def test(session):
     session.run("pytest", "-v", *options)
 
 
-@nox.session
-def docs(session):
-    session.install("--upgrade", *docs_requirements)
-    session.install("-e", ".")
-
-    args = session.posargs if session.posargs else ["build"]
-    session.run("mkdocs", *args)
-
-
-@nox.session(reuse_venv=True)
-def watch(session):
-    session.install("--upgrade", *docs_requirements)
-    session.install("-e", ".")
-
-    session.run("mkdocs", "serve")
