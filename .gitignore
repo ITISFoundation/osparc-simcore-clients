@@ -70,3 +70,5 @@ target/
 
 # docs output
 site
+
+.nox
