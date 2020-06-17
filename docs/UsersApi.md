@@ -99,6 +99,8 @@ with osparc.ApiClient(configuration) as api_client:
     except ApiException as e:
         print("Exception when calling UsersApi->update_my_profile: %s\n" % e)
 ```
+[Download UsersApi.ipynb](../code_samples/UsersApi.ipynb ':ignore:')
+
 
 ### Parameters
 

@@ -33,6 +33,8 @@ with osparc.ApiClient() as api_client:
     except ApiException as e:
         print("Exception when calling MetaApi->get_service_metadata: %s\n" % e)
 ```
+[Download MetaApi.ipynb](../code_samples/MetaApi.ipynb ':ignore:')
+
 
 ### Parameters
 This endpoint does not need any parameter.
