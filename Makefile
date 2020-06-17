@@ -5,7 +5,7 @@ VCS_REF       := $(shell git rev-parse --short HEAD)
 NOW_TIMESTAMP := $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 
 .PHONY: info
-info: 
+info:
 	# system
 	@echo ' CURDIR           : ${CURDIR}'
 	@echo ' NOW_TIMESTAMP    : ${NOW_TIMESTAMP}'
@@ -38,18 +38,18 @@ info:
 
 
 .PHONY: install-dev
-install-dev: 
+install-dev:
 	pip install -e .
 
 
 .PHONY: tests
-tests: 
+tests:
 	pytest -v --pdb $(CURDIR)
 
 
 
 
-## NOTEBOOKS 
+## NOTEBOOKS
 .PHONY: notebooks
 
 markdowns:=$(wildcard docs/*Api.md)
@@ -58,7 +58,7 @@ outputs:=$(subst docs,code_samples,$(markdowns:.md=.ipynb))
 notebooks: $(outputs)
 
 code_samples/%.ipynb:docs/%.md
-	notedown $< >$@ 
+	notedown $< >$@
 
 
 
@@ -68,7 +68,7 @@ code_samples/%.ipynb:docs/%.md
 .PHONY: up-doc
 up-doc:
 	# starting doc website
-	python -m http.server 3001
+	python -m http.server 50001
 
 
 
@@ -82,7 +82,7 @@ clean:
 
 
 .PHONY: build
-build: clean 
+build: clean
 	python setup.py sdist bdist_wheel
 
 
