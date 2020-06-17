@@ -2,7 +2,9 @@
 
 
 ![test](https://github.com/ITISFoundation/osparc-simcore-python-client/workflows/test/badge.svg)
-[![codecov](https://codecov.io/gh/ITISFoundation/osparc-simcore-python-client/branch/master/graph/badge.svg)](https://codecov.io/gh/ITISFoundation/osparc-simcore-python-client)
+<!-- 
+TODO: activate when service is up and running in production
+[![codecov](https://codecov.io/gh/ITISFoundation/osparc-simcore-python-client/branch/master/graph/badge.svg)](https://codecov.io/gh/ITISFoundation/osparc-simcore-python-client) -->
 
 
 Python client for osparc-simcore Public RESTful API
