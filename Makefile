@@ -57,7 +57,7 @@ outputs:=$(subst docs,code_samples,$(markdowns:.md=.ipynb))
 
 notebooks: $(outputs)
 
-code_samples/%.ipynb:docs/%.md
+docs/code_samples/%.ipynb:docs/%.md
 	notedown $< >$@
 
 

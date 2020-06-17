@@ -25,7 +25,7 @@ from pprint import pprint
 with osparc.ApiClient() as api_client:
     # Create an instance of the API class
     api_instance = osparc.MetaApi(api_client)
-    
+
     try:
         # Get Service Metadata
         api_response = api_instance.get_service_metadata()
@@ -33,7 +33,7 @@ with osparc.ApiClient() as api_client:
     except ApiException as e:
         print("Exception when calling MetaApi->get_service_metadata: %s\n" % e)
 ```
-[Download MetaApi.ipynb](../code_samples/MetaApi.ipynb ':ignore:')
+[Download MetaApi.ipynb](code_samples/MetaApi.ipynb ':ignore:')
 
 
 ### Parameters
