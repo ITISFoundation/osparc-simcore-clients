@@ -1,12 +1,14 @@
 # OpenAPI Generator Ignore
-
 # NOTE: KEEP in alphabetical order
-#deleted 
+
+
+.gitignore
+.travis.yml
 git_push.sh
 requirements.txt
 setup.cfg
 test-requirements.txt
-
+tox.ini
 
 # Use this file to prevent files from being overwritten by the generator.
 # The patterns follow closely to .gitignore or .dockerignore.
