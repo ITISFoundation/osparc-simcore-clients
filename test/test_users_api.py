@@ -15,7 +15,7 @@ from __future__ import absolute_import
 import unittest
 
 import osparc
-from osparc.users_api import UsersApi  # noqa: E501
+from osparc.api.users_api import UsersApi  # noqa: E501
 from osparc.rest import ApiException
 
 
@@ -23,7 +23,7 @@ class TestUsersApi(unittest.TestCase):
     """UsersApi unit test stubs"""
 
     def setUp(self):
-        self.api = osparc.users_api.UsersApi()  # noqa: E501
+        self.api = UsersApi()  # noqa: E501
 
     def tearDown(self):
         pass

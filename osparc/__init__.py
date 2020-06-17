@@ -17,8 +17,8 @@ from __future__ import absolute_import
 __version__ = "0.3.0"
 
 # import apis into sdk package
-from api.meta_api import MetaApi
-from api.users_api import UsersApi
+from osparc.api.meta_api import MetaApi
+from osparc.api.users_api import UsersApi
 
 # import ApiClient
 from osparc.api_client import ApiClient
