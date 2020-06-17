@@ -43,6 +43,7 @@ with osparc.ApiClient(configuration) as api_client:
     except ApiException as e:
         print("Exception when calling UsersApi->get_my_profile: %s\n" % e)
 ```
+[Download UsersApi.ipynb](./code_samples/UsersApi.ipynb ':ignore:')
 
 ### Parameters
 This endpoint does not need any parameter.
@@ -104,7 +105,7 @@ with osparc.ApiClient(configuration) as api_client:
     except ApiException as e:
         print("Exception when calling UsersApi->update_my_profile: %s\n" % e)
 ```
-[Download UsersApi.ipynb](code_samples/UsersApi.ipynb ':ignore:')
+[Download UsersApi.ipynb](./code_samples/UsersApi.ipynb ':ignore:')
 
 
 ### Parameters
