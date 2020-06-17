@@ -1,30 +1,8 @@
 .DEFAULT_GOAL := info
-SHELL := /bin/bash
-
-# version control
+SHELL         := /bin/bash
 VCS_URL       := $(shell git config --get remote.origin.url)
 VCS_REF       := $(shell git rev-parse --short HEAD)
 NOW_TIMESTAMP := $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
-
-.venv:
-	python3 -m venv $@
-	$@/bin/pip3 --quiet install --upgrade \
-		pip \
-		wheel \
-		setuptools
-	$@/bin/pip3 install nox
-	@echo "To activate the venv, execute 'source .venv/bin/activate'"
-
-
-.PHONY: install-dev
-install-dev: 
-	pip install -e .
-
-
-.PHONY: tests
-tests: 
-	pytest -v --pdb $(CURDIR)
-
 
 .PHONY: info
 info: 
@@ -42,10 +20,60 @@ info:
 	@echo nox --list-sessions
 
 
+
+
+## DEVELOPMENT
+
+.venv:
+	python3 -m venv $@
+	$@/bin/pip3 --quiet install --upgrade \
+		pip \
+		wheel \
+		setuptools
+	$@/bin/pip3 install \
+		nox \
+		notedown \
+		twine
+	@echo "To activate the venv, execute 'source .venv/bin/activate'"
+
+
+.PHONY: install-dev
+install-dev: 
+	pip install -e .
+
+
+.PHONY: tests
+tests: 
+	pytest -v --pdb $(CURDIR)
+
+
+
+
+## NOTEBOOKS 
+
+markdowns:=$(wildcard docs/*Api.md)
+outputs:=$(subst docs,code_samples,$(markdowns:.md=.ipynb))
+
+notebooks: $(outputs)
+
+code_samples/%.ipynb:docs/%.md
+	notedown $< >$@ 
+
+
+
+
+## DOCUMENTATION
+
 .PHONY: up-doc
 up-doc:
+	# starting doc website
 	python -m http.server 3001
 
+
+
+
+
+## DEPLOYMENT
 
 .PHONY: clean
 clean:
