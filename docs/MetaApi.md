@@ -8,7 +8,7 @@ Method | HTTP request | Description
 
 
 # **get_service_metadata**
-> AnyOfMetastring get_service_metadata(extended_info=extended_info)
+> Meta get_service_metadata()
 
 Get Service Metadata
 
@@ -25,25 +25,21 @@ from pprint import pprint
 with osparc.ApiClient() as api_client:
     # Create an instance of the API class
     api_instance = osparc.MetaApi(api_client)
-    extended_info = False # bool |  (optional) (default to False)
-
+    
     try:
         # Get Service Metadata
-        api_response = api_instance.get_service_metadata(extended_info=extended_info)
+        api_response = api_instance.get_service_metadata()
         pprint(api_response)
     except ApiException as e:
         print("Exception when calling MetaApi->get_service_metadata: %s\n" % e)
 ```
 
 ### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **extended_info** | **bool**|  | [optional] [default to False]
+This endpoint does not need any parameter.
 
 ### Return type
 
-[**AnyOfMetastring**](AnyOfMetastring.md)
+[**Meta**](Meta.md)
 
 ### Authorization
 
@@ -58,7 +54,6 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | Successful Response |  -  |
-**422** | Validation Error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

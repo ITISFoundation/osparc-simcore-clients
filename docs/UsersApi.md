@@ -5,7 +5,7 @@ All URIs are relative to *http://localhost*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**get_my_profile**](UsersApi.md#get_my_profile) | **GET** /v0/me | Get My Profile
-[**update_my_profile**](UsersApi.md#update_my_profile) | **PATCH** /v0/me | Update My Profile
+[**update_my_profile**](UsersApi.md#update_my_profile) | **PUT** /v0/me | Update My Profile
 
 
 # **get_my_profile**
