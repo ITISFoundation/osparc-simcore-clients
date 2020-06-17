@@ -18,7 +18,6 @@ Get My Profile
 * Basic Authentication (HTTPBasic):
 
 
-
 ```python
 from __future__ import print_function
 import time
@@ -76,6 +75,7 @@ Update My Profile
 ### Example
 
 * Basic Authentication (HTTPBasic):
+
 
 ```python
 from __future__ import print_function

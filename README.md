@@ -2,7 +2,7 @@
 
 
 ![test](https://github.com/ITISFoundation/osparc-simcore-python-client/workflows/test/badge.svg)
-<!-- 
+<!--
 TODO: activate when service is up and running in production
 [![codecov](https://codecov.io/gh/ITISFoundation/osparc-simcore-python-client/branch/master/graph/badge.svg)](https://codecov.io/gh/ITISFoundation/osparc-simcore-python-client) -->
 
@@ -28,6 +28,7 @@ pip install git+https://github.com/ITISFoundation/osparc-simcore-python-client.g
 (you may need to run `pip` with root permission: `sudo pip install git+https://github.com/ITISFoundation/osparc-simcore-python-client.git`)
 
 Then import the package:
+
 ```python
 import osparc
 ```
@@ -42,6 +43,7 @@ python setup.py install --user
 (or `sudo python setup.py install` to install the package for all users)
 
 Then import the package:
+
 ```python
 import osparc
 ```
@@ -71,7 +73,7 @@ with osparc.ApiClient(configuration) as api_client:
         pprint(api_response)
     except ApiException as e:
         print("Exception when calling MetaApi->get_service_metadata: %s\n" % e)
-    
+
 ```
 
 ## Documentation for API Endpoints
