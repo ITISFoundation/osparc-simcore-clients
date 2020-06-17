@@ -50,6 +50,7 @@ tests:
 
 
 ## NOTEBOOKS 
+.PHONY: notebooks
 
 markdowns:=$(wildcard docs/*Api.md)
 outputs:=$(subst docs,code_samples,$(markdowns:.md=.ipynb))
