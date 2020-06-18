@@ -23,11 +23,21 @@
       name: 'osparc API client',
       repo: 'https://github.com/ITISFoundation/osparc-simcore-python-client.git',
       relativePath: true,
-      search: 'auto',
-      // plugins
+      // copy-code
       copyCode: {
         buttonText: 'Copy to clipboard',
       },
+      // search
+      search: 'auto', // default
+      search: {
+        maxAge: 86400000, // Expiration time, the default one day
+        paths: 'auto',
+        placeholder: 'Type to search',
+        noData: 'No Results!',
+        // Headline depth, 1 - 6
+        depth: 6,
+        hideOtherSidebarContent: false, // whether or not to hide other sidebar content
+     }
     }
   </script>
   <script src="lib/docsify.min.js"></script>
