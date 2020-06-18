@@ -12,12 +12,13 @@ info:
 	@echo ' VCS_URL          : ${VCS_URL}'
 	@echo ' VCS_REF          : ${VCS_REF}'
 	# installed in .venv
+	@which python
 	@pip list
 	# package
 	-@echo ' name         : ' $(shell python ${CURDIR}/setup.py --name)
 	-@echo ' version      : ' $(shell python ${CURDIR}/setup.py --version)
 	# nox
-	@echo nox --list-sessions
+	@echo nox --list-session
 
 
 
@@ -62,14 +63,12 @@ docs/code_samples/%.ipynb:docs/%.md
 
 
 
-
 ## DOCUMENTATION
 
-.PHONY: up-doc
-up-doc:
+.PHONY: show-doc
+show-doc:
 	# starting doc website
-	python -m http.server 50001
-
+	cd docs && python3 -m http.server 50001
 
 
 
