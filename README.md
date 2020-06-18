@@ -82,20 +82,20 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*MetaApi* | [**get_service_metadata**](docs/MetaApi.md#get_service_metadata) | **GET** /v0/meta | Get Service Metadata
-*UsersApi* | [**get_my_profile**](docs/UsersApi.md#get_my_profile) | **GET** /v0/me | Get My Profile
-*UsersApi* | [**update_my_profile**](docs/UsersApi.md#update_my_profile) | **PUT** /v0/me | Update My Profile
+*MetaApi* | [**get_service_metadata**](docs/md/MetaApi.md#get_service_metadata) | **GET** /v0/meta | Get Service Metadata
+*UsersApi* | [**get_my_profile**](docs/md/UsersApi.md#get_my_profile) | **GET** /v0/me | Get My Profile
+*UsersApi* | [**update_my_profile**](docs/md/UsersApi.md#update_my_profile) | **PUT** /v0/me | Update My Profile
 
 
 ## Documentation For Models
 
- - [Groups](docs/Groups.md)
- - [HTTPValidationError](docs/HTTPValidationError.md)
- - [Meta](docs/Meta.md)
- - [Profile](docs/Profile.md)
- - [ProfileUpdate](docs/ProfileUpdate.md)
- - [UsersGroup](docs/UsersGroup.md)
- - [ValidationError](docs/ValidationError.md)
+ - [Groups](docs/md/Groups.md)
+ - [HTTPValidationError](docs/md/HTTPValidationError.md)
+ - [Meta](docs/md/Meta.md)
+ - [Profile](docs/md/Profile.md)
+ - [ProfileUpdate](docs/md/ProfileUpdate.md)
+ - [UsersGroup](docs/md/UsersGroup.md)
+ - [ValidationError](docs/md/ValidationError.md)
 
 
 ## Documentation For Authorization
