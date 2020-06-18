@@ -1,32 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Document</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <meta name="description" content="Description">
-  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <!-- <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/lib/themes/vue.css"> -->
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/lib/themes/dark.css">
 
 </head>
+
 <body>
   <div id="app">Loading ...</div>
   <script>
     window.$docsify = {
-      search: 'auto',
-      name: 'osparc python client',
+      name: 'python client for osparc API',
       repo: 'https://github.com/ITISFoundation/osparc-simcore-python-client.git',
+      loadSidebar: false,
+      maxLevel: 2,
+      relativePath: true,
+      // plugins
       copyCode: {
         buttonText: 'Copy to clipboard',
       },
-      auto2top: true,
     }
   </script>
   <script src="lib/docsify.min.js"></script>
   <script src="lib/plugins/search.min.js"></script>
-  <script src="https://unpkg.com/docsify-copy-code@2"></script>
+  <script src="lib/plugins/docsify-copy-code.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs/components/prism-python.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs/components/prism-bash.min.js"></script>
 </body>
+
 </html>

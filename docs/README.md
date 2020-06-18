@@ -1,10 +1,6 @@
-# Python client for osparc-simcore API
-
+# Current Version
 
 ![test](https://github.com/ITISFoundation/osparc-simcore-python-client/workflows/test/badge.svg)
-<!--
-TODO: activate when service is up and running in production
-[![codecov](https://codecov.io/gh/ITISFoundation/osparc-simcore-python-client/branch/master/graph/badge.svg)](https://codecov.io/gh/ITISFoundation/osparc-simcore-python-client) -->
 
 
 Python client for osparc-simcore Public RESTful API
@@ -13,12 +9,12 @@ Python client for osparc-simcore Public RESTful API
 - Package version: 0.3.0
 - Build package: org.openapitools.codegen.languages.PythonClientCodegen
 
-## Requirements
+# Requirements
 
 Python 3.6+
 
-## Installation & Usage
-### pip install
+# Installation & Usage
+## pip install
 
 If the python package is hosted on a repository, you can install directly using:
 
@@ -33,7 +29,7 @@ Then import the package:
 import osparc
 ```
 
-### Setuptools
+## Setuptools
 
 Install via [Setuptools](http://pypi.python.org/pypi/setuptools).
 
@@ -48,7 +44,7 @@ Then import the package:
 import osparc
 ```
 
-## Getting Started
+# Getting Started
 
 Please follow the [installation procedure](#installation--usage) and then run the following:
 
@@ -60,15 +56,15 @@ from osparc.rest import ApiException
 from pprint import pprint
 
 
-# Defining host is optional and default to http://localhost
+ Defining host is optional and default to http://localhost
 configuration.host = "http://localhost"
-# Enter a context with an instance of the API client
+ Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
-    # Create an instance of the API class
+     Create an instance of the API class
     api_instance = osparc.MetaApi(api_client)
 
     try:
-        # Get Service Metadata
+         Get Service Metadata
         api_response = api_instance.get_service_metadata()
         pprint(api_response)
     except ApiException as e:
@@ -76,18 +72,18 @@ with osparc.ApiClient(configuration) as api_client:
 
 ```
 
-## Documentation for API Endpoints
+# Documentation for API Endpoints
 
 All URIs are relative to *http://localhost*
 
-Class | Method | HTTP request | Description
------------- | ------------- | ------------- | -------------
-*MetaApi* | [**get_service_metadata**](docs/MetaApi.md#get_service_metadata) | **GET** /v0/meta | Get Service Metadata
-*UsersApi* | [**get_my_profile**](docs/UsersApi.md#get_my_profile) | **GET** /v0/me | Get My Profile
-*UsersApi* | [**update_my_profile**](docs/UsersApi.md#update_my_profile) | **PUT** /v0/me | Update My Profile
+| Class      | Method                                                           | HTTP request     | Description          |
+| ---------- | ---------------------------------------------------------------- | ---------------- | -------------------- |
+| *MetaApi*  | [**get_service_metadata**](docs/MetaApi.md#get_service_metadata) | **GET** /v0/meta | Get Service Metadata |
+| *UsersApi* | [**get_my_profile**](docs/UsersApi.md#get_my_profile)            | **GET** /v0/me   | Get My Profile       |
+| *UsersApi* | [**update_my_profile**](docs/UsersApi.md#update_my_profile)      | **PUT** /v0/me   | Update My Profile    |
 
 
-## Documentation For Models
+# Documentation For Models
 
  - [Groups](docs/Groups.md)
  - [HTTPValidationError](docs/HTTPValidationError.md)
@@ -98,16 +94,16 @@ Class | Method | HTTP request | Description
  - [ValidationError](docs/ValidationError.md)
 
 
-## Documentation For Authorization
+# Documentation For Authorization
 
 
-## HTTPBasic
+# HTTPBasic
 
 - **Type**: HTTP basic authentication
 
 
-## Author
+# Author
 
-
+Done with *tons of love* at [Zurich43](https://z43.swiss/)
 
 
