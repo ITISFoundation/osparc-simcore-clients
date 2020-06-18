@@ -23,7 +23,7 @@ info:
 
 
 
-## DEVELOPMENT
+## PYTHON DEVELOPMENT
 
 .venv:
 	python3 -m venv $@
@@ -45,6 +45,7 @@ install-dev:
 
 .PHONY: tests
 tests:
+	# TODO: add here tests coverage
 	pytest -v --pdb $(CURDIR)
 
 
@@ -58,6 +59,7 @@ outputs:=$(subst docs,code_samples,$(markdowns:.md=.ipynb))
 
 notebooks: $(outputs)
 
+# FIXME: should add a link in mds and REMOVE them from notebooks
 docs/code_samples/%.ipynb:docs/%.md
 	notedown $< >$@
 
@@ -65,8 +67,8 @@ docs/code_samples/%.ipynb:docs/%.md
 
 ## DOCUMENTATION
 
-.PHONY: show-doc
-show-doc:
+.PHONY: serve-doc
+serve-doc:
 	# starting doc website
 	cd docs && python3 -m http.server 50001
 
