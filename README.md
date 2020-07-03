@@ -18,29 +18,16 @@ Python client for osparc-simcore Public RESTful API
 Python 3.6+
 
 ## Installation & Usage
-### pip install
 
-If the python package is hosted on a repository, you can install directly using:
+Install the latest release with
 
+```sh
+pip install osparc-simcore-python-api
+```
+or directly from the repository
 ```sh
 pip install git+https://github.com/ITISFoundation/osparc-simcore-python-client.git
 ```
-(you may need to run `pip` with root permission: `sudo pip install git+https://github.com/ITISFoundation/osparc-simcore-python-client.git`)
-
-Then import the package:
-
-```python
-import osparc
-```
-
-### Setuptools
-
-Install via [Setuptools](http://pypi.python.org/pypi/setuptools).
-
-```sh
-python setup.py install --user
-```
-(or `sudo python setup.py install` to install the package for all users)
 
 Then import the package:
 
@@ -76,38 +63,6 @@ with osparc.ApiClient(configuration) as api_client:
 
 ```
 
-## Documentation for API Endpoints
-
-All URIs are relative to *http://localhost*
-
-Class | Method | HTTP request | Description
------------- | ------------- | ------------- | -------------
-*MetaApi* | [**get_service_metadata**](docs/md/MetaApi.md#get_service_metadata) | **GET** /v0/meta | Get Service Metadata
-*UsersApi* | [**get_my_profile**](docs/md/UsersApi.md#get_my_profile) | **GET** /v0/me | Get My Profile
-*UsersApi* | [**update_my_profile**](docs/md/UsersApi.md#update_my_profile) | **PUT** /v0/me | Update My Profile
-
-
-## Documentation For Models
-
- - [Groups](docs/md/Groups.md)
- - [HTTPValidationError](docs/md/HTTPValidationError.md)
- - [Meta](docs/md/Meta.md)
- - [Profile](docs/md/Profile.md)
- - [ProfileUpdate](docs/md/ProfileUpdate.md)
- - [UsersGroup](docs/md/UsersGroup.md)
- - [ValidationError](docs/md/ValidationError.md)
-
-
-## Documentation For Authorization
-
-
-## HTTPBasic
-
-- **Type**: HTTP basic authentication
-
-
 ## Author
 
-<p align="center">
-<image src="_media/mwl.png" alt="made with love at z43" width="20%" />
-</p>
+Made with love at [Zurich43](www.z43.swiss)

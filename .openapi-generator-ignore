@@ -9,6 +9,9 @@ requirements.txt
 setup.cfg
 test-requirements.txt
 tox.ini
+README.md
+setup.py
+
 
 # Use this file to prevent files from being overwritten by the generator.
 # The patterns follow closely to .gitignore or .dockerignore.
