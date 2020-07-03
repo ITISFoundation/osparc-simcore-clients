@@ -34,7 +34,7 @@ info:
 	$@/bin/pip3 install \
 		nox \
 		notedown \
-		twine
+		bump2version
 	@echo "To activate the venv, execute 'source .venv/bin/activate'"
 
 
@@ -74,8 +74,21 @@ serve-doc:
 
 
 
+## RELEASE
+.PHONY: version-patch version-minor version-major
 
-## DEPLOYMENT
+version-patch: ## commits version with bug fixes not affecting the cookiecuter config
+	$(_bumpversion)
+version-minor: ## commits version with backwards-compatible API addition or changes (i.e. can replay)
+	$(_bumpversion)
+version-major: ## commits version with backwards-INcompatible addition or changes
+	$(_bumpversion)
+
+define _bumpversion
+	# upgrades as $(subst version-,,$@) version, commits and tags
+	@bump2version --verbose --list $(subst version-,,$@)
+endef
+
 
 .PHONY: clean
 clean:
@@ -87,6 +100,3 @@ build: clean
 	python setup.py sdist bdist_wheel
 
 
-.PHONY: release
-release: build
-	python -m twine upload dist/*
