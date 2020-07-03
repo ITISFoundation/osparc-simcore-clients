@@ -104,6 +104,6 @@ All URIs are relative to *http://localhost*
 
 # Author
 
-Done with *tons of love* at [Zurich43](https://z43.swiss/)
-
-
+<p align="center">
+<image src="_media/mwl.png" alt="made with love at z43" width="20%" />
+</p>

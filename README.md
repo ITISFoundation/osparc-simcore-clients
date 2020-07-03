@@ -108,6 +108,6 @@ Class | Method | HTTP request | Description
 
 ## Author
 
-
-
-
+<p align="center">
+<image src="_media/mwl.png" alt="made with love at z43" width="20%" />
+</p>
