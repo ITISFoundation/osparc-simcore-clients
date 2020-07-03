@@ -10,7 +10,7 @@ TODO: activate when service is up and running in production
 Python client for osparc-simcore Public RESTful API
 
 - API version: 0.3.0
-- Package version: 0.3.0
+- Package version: 0.3.1
 - Build package: org.openapitools.codegen.languages.PythonClientCodegen
 
 ## Requirements

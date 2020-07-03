@@ -5,7 +5,7 @@ from pathlib import Path
 from setuptools import setup, find_packages
 
 NAME = "osparc-simcore-python-api"
-VERSION = "0.3.0"
+VERSION = "0.3.1"
 REQUIRES = ["urllib3 >= 1.15", "six >= 1.10", "certifi", "python-dateutil"]
 README = Path("README.md").read_text()
 
