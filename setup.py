@@ -27,14 +27,28 @@ setup(
     name=NAME,
     version=VERSION,
     description="Public API Server",
-    author="OpenAPI Generator community",
-    author_email="team@openapitools.org",
+    author="pcrespov",
+    author_email="support@osparc.io",
     url="https://github.com/ITISFoundation/osparc-simcore-python-client.git",
+    project_urls={
+        "Bug Tracker": "https://github.com/ITISFoundation/osparc-simcore-python-client/issues",
+        "Documentation": "https://itisfoundation.github.io/osparc-simcore-python-client",
+        "Source Code": "https://github.com/ITISFoundation/osparc-simcore-python-client.git",
+    },
     keywords=["OpenAPI", "OpenAPI-Generator", "Public API Server"],
     install_requires=REQUIRES,
     packages=find_packages(exclude=["test", "tests"]),
     include_package_data=True,
     long_description="""\
     **osparc-simcore Public RESTful API Specifications** ## Python Client - Github [repo](https://github.com/ITISFoundation/osparc-simcore-python-client) - Quick install: &#x60;&#x60;pip install git+https://github.com/ITISFoundation/osparc-simcore-python-client.git&#x60;&#x60;   # noqa: E501
-    """
+    """,
+    long_description_content_type="text/markdown",
+    license="MIT",
+    classifiers=[
+        "Development Status :: 3 - Alpha",
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python :: 3",
+        "Operating System :: OS Independent",
+        "Natural Language :: English"
+    ],
 )
