@@ -77,16 +77,16 @@ serve-doc:
 ## RELEASE
 .PHONY: version-patch version-minor version-major
 
-version-patch: ## commits version with bug fixes not affecting the cookiecuter config
+version-patch: ## commits version with bug fixes (use tag=1 to release)
 	$(_bumpversion)
-version-minor: ## commits version with backwards-compatible API addition or changes (i.e. can replay)
+version-minor: ## commits version with backwards-compatible API addition or changes (use tag=1 to release)
 	$(_bumpversion)
-version-major: ## commits version with backwards-INcompatible addition or changes
+version-major: ## commits version with backwards-INcompatible addition or changes (use tag=1 to release)
 	$(_bumpversion)
 
 define _bumpversion
 	# upgrades as $(subst version-,,$@) version, commits and tags
-	@bump2version --verbose --list $(subst version-,,$@)
+	@bump2version --verbose --list $(if $(tag),--tag,) $(subst version-,,$@)
 endef
 
 
