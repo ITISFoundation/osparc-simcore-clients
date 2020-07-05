@@ -9,19 +9,23 @@ Python client for osparc-simcore Public RESTful API
 - Package version: 0.3.6
 - Build package: org.openapitools.codegen.languages.PythonClientCodegen
 
-# Requirements
+## Requirements
 
 Python 3.6+
 
-# Installation & Usage
-## pip install
+## Installation & Usage
 
-If the python package is hosted on a repository, you can install directly using:
+Install the latest release with
+
+```sh
+pip install osparc
+```
+
+or directly from the repository
 
 ```sh
 pip install git+https://github.com/ITISFoundation/osparc-simcore-python-client.git
 ```
-(you may need to run `pip` with root permission: `sudo pip install git+https://github.com/ITISFoundation/osparc-simcore-python-client.git`)
 
 Then import the package:
 
@@ -29,24 +33,9 @@ Then import the package:
 import osparc
 ```
 
-## Setuptools
+## Getting Started
 
-Install via [Setuptools](http://pypi.python.org/pypi/setuptools).
-
-```sh
-python setup.py install --user
-```
-(or `sudo python setup.py install` to install the package for all users)
-
-Then import the package:
-
-```python
-import osparc
-```
-
-# Getting Started
-
-Please follow the [installation procedure](#installation--usage) and then run the following:
+Please follow the installation procedure above and then run the following:
 
 ```python
 from __future__ import print_function
@@ -56,21 +45,23 @@ from osparc.rest import ApiException
 from pprint import pprint
 
 
- Defining host is optional and default to http://localhost
+# Defining host is optional and default to http://localhost
 configuration.host = "http://localhost"
- Enter a context with an instance of the API client
+
+# Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
-     Create an instance of the API class
+    # Create an instance of the API class
     api_instance = osparc.MetaApi(api_client)
 
     try:
-         Get Service Metadata
+        # Get Service Metadata
         api_response = api_instance.get_service_metadata()
         pprint(api_response)
     except ApiException as e:
         print("Exception when calling MetaApi->get_service_metadata: %s\n" % e)
 
 ```
+
 
 # Documentation for API Endpoints
 

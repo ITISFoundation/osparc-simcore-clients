@@ -21,7 +21,7 @@ Python 3.6+
 Install the latest release with
 
 ```sh
-pip install osparc-simcore-python-api
+pip install osparc
 ```
 or directly from the repository
 ```sh
