@@ -62,13 +62,14 @@ test-dev: _check_venv_active
 ## NOTEBOOKS -----------------------------------------------------------------------------
 .PHONY: notebooks
 
-markdowns:=$(wildcard docs/*Api.md)
-outputs:=$(subst docs,code_samples,$(markdowns:.md=.ipynb))
+markdowns:=$(wildcard docs/md/*Api.md)
+outputs:=$(subst docs/md,docs/md/code_samples,$(markdowns:.md=.ipynb))
+
 
 notebooks: $(outputs)
 
 # FIXME: should add a link in mds and REMOVE them from notebooks
-docs/code_samples/%.ipynb:docs/%.md
+docs/md/code_samples/%.ipynb:docs/md/%.md
 	notedown $< >$@
 
 
