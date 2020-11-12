@@ -36,8 +36,8 @@ class TestJobState(unittest.TestCase):
         # model = osparc.models.job_state.JobState()  # noqa: E501
         if include_optional :
             return JobState(
-                status = null, 
-                started_at = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'), 
+                status = None,
+                started_at = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
                 stopped_at = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f')
             )
         else :
