@@ -32,12 +32,15 @@ _check_venv_active:
 
 devenv: .venv
 .venv:
-	python3 -m venv $@
-	$@/bin/pip3 --quiet install --upgrade \
+	# creating virtual-env in $@
+	@python3 -m venv $@
+	@$@/bin/pip3 --quiet install --upgrade \
 		pip \
 		wheel \
 		setuptools
-	$@/bin/pip3 install \
+	# installing tools
+	@$@/bin/pip3 install \
+		pytest \
 		nox \
 		notedown \
 		bump2version
