@@ -21,10 +21,16 @@ info:
 	@echo nox --list-session
 
 
+## PYTHON DEVELOPMENT  ------------------------------------------------------------------
+
+.PHONY: devenv
+
+_check_venv_active:
+	# checking whether virtual environment was activated
+	@python3 -c "import sys; assert sys.base_prefix!=sys.prefix"
 
 
-## PYTHON DEVELOPMENT
-
+devenv: .venv
 .venv:
 	python3 -m venv $@
 	$@/bin/pip3 --quiet install --upgrade \
@@ -39,19 +45,18 @@ info:
 
 
 .PHONY: install-dev
-install-dev:
+install-dev: _check_venv_active
 	pip install -e .
 
 
-.PHONY: tests
-tests:
-	# TODO: add here tests coverage
-	pytest -v --pdb $(CURDIR)
+.PHONY: test-dev
+test-dev: _check_venv_active
+	# runs tests for development (e.g w/ pdb)
+	pytest -vv --exitfirst --failed-first --durations=10 --pdb $(CURDIR)
 
 
 
-
-## NOTEBOOKS
+## NOTEBOOKS -----------------------------------------------------------------------------
 .PHONY: notebooks
 
 markdowns:=$(wildcard docs/*Api.md)
@@ -65,7 +70,7 @@ docs/code_samples/%.ipynb:docs/%.md
 
 
 
-## DOCUMENTATION
+## DOCUMENTATION ------------------------------------------------------------------------
 
 .PHONY: serve-doc
 serve-doc:
@@ -74,7 +79,8 @@ serve-doc:
 
 
 
-## RELEASE
+## RELEASE -------------------------------------------------------------------------------
+
 .PHONY: version-patch version-minor version-major
 
 version-patch: ## commits version with bug fixes (use tag=1 to release)
