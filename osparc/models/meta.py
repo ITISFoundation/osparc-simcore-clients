@@ -65,8 +65,8 @@ class Meta(object):
         self.version = version
         if released is not None:
             self.released = released
-        self.docs_url = docs_url
-        self.docs_dev_url = docs_dev_url
+        #self.docs_url = docs_url
+        #self.docs_dev_url = docs_dev_url
 
     @property
     def name(self):
