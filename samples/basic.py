@@ -39,7 +39,20 @@ def test_(solvers_api):
     assert solvers.get_solver_by_id(my_solver.uuid) == my_solver
 
 
+
+def test_get_service_metadata(meta_api):
+    print("get Service Metadata", "-"*10)
+    meta: Meta = meta_api.get_service_metadata()
+    print(meta)
+    assert isinstance(meta, Meta)
+
+    meta, status_code, headers = meta_api.get_service_metadata_with_http_info()
+
+    assert isinstance(meta, Meta)
+    assert status_code == 200
+
 def test_upload_single_file(files_api):
+    # some file
     input_path = Path("tmp-input.txt")
     input_path.write_text("demo")
     input_file: FileUploaded = files_api.upload_single_file(file=input_path)
@@ -76,17 +89,9 @@ with osparc.ApiClient(cfg) as api_client:
     solvers_api = osparc.SolversApi(api_client)
 
     try:
-        print("get Service Metadata", "-"*10)
-        meta: Meta = meta_api.get_service_metadata()
-        print(meta)
-
-        meta, status_code, headers = meta_api.get_service_metadata_with_http_info()
-        assert isinstance(meta, Meta)
-        pprint(meta)
-
+        test_get_service_metadata(api_client)
         test_upload_single_file(files_api)
 
-      
 
 
     except ApiException as err:
