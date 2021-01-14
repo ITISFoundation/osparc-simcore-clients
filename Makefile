@@ -25,13 +25,18 @@ info:
 
 .PHONY: devenv
 
+.env: .env-template ## creates .env file from defaults in .env-devel
+	$(if $(wildcard $@), \
+	@echo "WARNING #####  $< is newer than $@ ####"; diff -uN $@ $<; false;,\
+	@echo "WARNING ##### $@ does not exist, cloning $< as $@ ############"; cp $< $@)
+
+
 _check_venv_active:
 	# checking whether virtual environment was activated
 	@python3 -c "import sys; assert sys.base_prefix!=sys.prefix"
 
-
 devenv: .venv
-.venv:
+.venv: .env
 	# creating virtual-env in $@
 	@python3 -m venv $@
 	@$@/bin/pip3 --quiet install --upgrade \
@@ -48,7 +53,7 @@ devenv: .venv
 
 
 .PHONY: install-dev
-install-dev: _check_venv_active
+install-dev: _check_venv_active 
 	pip install -e .
 
 

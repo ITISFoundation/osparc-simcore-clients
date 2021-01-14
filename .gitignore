@@ -72,3 +72,4 @@ site
 
 .nox
 tmp
+.env
