@@ -71,5 +71,5 @@ target/
 site
 
 .nox
-tmp
+tmp*
 .env
