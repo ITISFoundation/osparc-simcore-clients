@@ -4,14 +4,15 @@
 #
 
 import os
-from osparc.api.files_api import FilesApi
 from pathlib import Path
 from pprint import pformat, pprint
 from typing import List
 
 import osparc
 import osparc.exceptions as errors
+import packaging.version as pv
 import pytest
+from osparc.api.files_api import FilesApi
 from osparc.configuration import Configuration
 from osparc.models import FileUploaded, Meta, Solver
 from osparc.rest import ApiException
@@ -97,19 +98,20 @@ def test_upload_list_download(files_api: FilesApi):
 
 
 
-@pytest.mark.skip(reason="dev")
-def test_read_solvers(solvers_api):
-    print("get latests version LF solver", "-" * 10)
+def test_solvers(solvers_api):
     solvers: List[Solver] = solvers_api.list_solvers()
-    my_solver = None
+    
+    latest = None
     for solver in solvers:
-        if solver.name == "LF" and "latest" in solver.version_aliases:
-            my_solver: Solver = solvers_api.get_solver_by_id(solver.uuid)
-    print(my_solver)
+        if "isolve" in solver.name:
+            if latest and pv.parse(latest.version) < pv.parse(solver.version):
+                latest = solvers_api.get_solver_by_id(solver.uuid)
 
-    # shortcut
+    print(latest)
+    assert latest
+
     assert (
-        solvers.get_solver_by_name_and_version(solver_name="LF", version="latest")
-        == my_solver
+        solvers.get_solver_by_name_and_version(solver_name="isolve", version="latest")
+        == latest
     )
-    assert solvers.get_solver_by_id(my_solver.uuid) == my_solver
+    assert solvers.get_solver_by_id(latest.uuid) == latest
