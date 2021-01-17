@@ -48,7 +48,7 @@ class Meta(object):
         'docs_dev_url': 'docs_dev_url'
     }
 
-    def __init__(self, name=None, version=None, released=None, docs_url=None, docs_dev_url=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(self, name=None, version=None, released=None, docs_url='https://docs.osparc.io', docs_dev_url='https://api.osparc.io/dev/docs', local_vars_configuration=None):  # noqa: E501
         """Meta - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
@@ -65,8 +65,10 @@ class Meta(object):
         self.version = version
         if released is not None:
             self.released = released
-        #self.docs_url = docs_url
-        #self.docs_dev_url = docs_dev_url
+        if docs_url is not None:
+            self.docs_url = docs_url
+        if docs_dev_url is not None:
+            self.docs_dev_url = docs_dev_url
 
     @property
     def name(self):
@@ -158,8 +160,6 @@ class Meta(object):
         :param docs_url: The docs_url of this Meta.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and docs_url is None:  # noqa: E501
-            raise ValueError("Invalid value for `docs_url`, must not be `None`")  # noqa: E501
         if (self.local_vars_configuration.client_side_validation and
                 docs_url is not None and len(docs_url) > 65536):
             raise ValueError("Invalid value for `docs_url`, length must be less than or equal to `65536`")  # noqa: E501
@@ -187,8 +187,6 @@ class Meta(object):
         :param docs_dev_url: The docs_dev_url of this Meta.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and docs_dev_url is None:  # noqa: E501
-            raise ValueError("Invalid value for `docs_dev_url`, must not be `None`")  # noqa: E501
         if (self.local_vars_configuration.client_side_validation and
                 docs_dev_url is not None and len(docs_dev_url) > 65536):
             raise ValueError("Invalid value for `docs_dev_url`, length must be less than or equal to `65536`")  # noqa: E501

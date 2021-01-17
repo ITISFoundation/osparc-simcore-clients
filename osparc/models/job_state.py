@@ -34,29 +34,34 @@ class JobState(object):
     """
     openapi_types = {
         'status': 'TaskStates',
+        'progress': 'float',
         'started_at': 'datetime',
         'stopped_at': 'datetime'
     }
 
     attribute_map = {
         'status': 'status',
+        'progress': 'progress',
         'started_at': 'started_at',
         'stopped_at': 'stopped_at'
     }
 
-    def __init__(self, status=None, started_at=None, stopped_at=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(self, status=None, progress=0.0, started_at=None, stopped_at=None, local_vars_configuration=None):  # noqa: E501
         """JobState - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
         self.local_vars_configuration = local_vars_configuration
 
         self._status = None
+        self._progress = None
         self._started_at = None
         self._stopped_at = None
         self.discriminator = None
 
         if status is not None:
             self.status = status
+        if progress is not None:
+            self.progress = progress
         self.started_at = started_at
         if stopped_at is not None:
             self.stopped_at = stopped_at
@@ -81,6 +86,33 @@ class JobState(object):
         """
 
         self._status = status
+
+    @property
+    def progress(self):
+        """Gets the progress of this JobState.  # noqa: E501
+
+
+        :return: The progress of this JobState.  # noqa: E501
+        :rtype: float
+        """
+        return self._progress
+
+    @progress.setter
+    def progress(self, progress):
+        """Sets the progress of this JobState.
+
+
+        :param progress: The progress of this JobState.  # noqa: E501
+        :type: float
+        """
+        if (self.local_vars_configuration.client_side_validation and
+                progress is not None and progress > 100.0):  # noqa: E501
+            raise ValueError("Invalid value for `progress`, must be a value less than or equal to `100.0`")  # noqa: E501
+        if (self.local_vars_configuration.client_side_validation and
+                progress is not None and progress < 0.0):  # noqa: E501
+            raise ValueError("Invalid value for `progress`, must be a value greater than or equal to `0.0`")  # noqa: E501
+
+        self._progress = progress
 
     @property
     def started_at(self):

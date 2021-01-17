@@ -1112,6 +1112,13 @@
             ],
             "default": "undefined"
           },
+          "progress": {
+            "title": "Progress",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "type": "number",
+            "default": 0.0
+          },
           "started_at": {
             "title": "Started At",
             "type": "string",
@@ -1128,9 +1135,7 @@
         "title": "Meta",
         "required": [
           "name",
-          "version",
-          "docs_url",
-          "docs_dev_url"
+          "version"
         ],
         "type": "object",
         "properties": {
@@ -1157,14 +1162,16 @@
             "maxLength": 65536,
             "minLength": 1,
             "type": "string",
-            "format": "uri"
+            "format": "uri",
+            "default": "https://docs.osparc.io"
           },
           "docs_dev_url": {
             "title": "Docs Dev Url",
             "maxLength": 65536,
             "minLength": 1,
             "type": "string",
-            "format": "uri"
+            "format": "uri",
+            "default": "https://api.osparc.io/dev/docs"
           }
         },
         "example": {
