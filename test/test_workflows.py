@@ -2,18 +2,17 @@
 # pylint:disable=unused-argument
 # pylint:disable=redefined-outer-name
 
-import datetime
 import os
 import time
+from datetime import datetime
 from pathlib import Path
 from pprint import pformat, pprint
 from typing import List
 
-import packaging.version as pv
-import pytest
-
 import osparc
 import osparc.exceptions as errors
+import packaging.version as pv
+import pytest
 from osparc.api.files_api import FilesApi
 from osparc.configuration import Configuration
 from osparc.models import FileUploaded, Job, JobState, Meta, Solver
@@ -54,6 +53,11 @@ def files_api(api_client):
 @pytest.fixture()
 def solvers_api(api_client):
     return osparc.SolversApi(api_client)
+
+
+@pytest.fixture()
+def jobs_api(api_client):
+    return osparc.JobsApi(api_client)
 
 
 # ----------
@@ -125,7 +129,7 @@ def test_solvers(solvers_api):
     assert solvers_api.get_solver_by_id(latest.uuid) == latest
 
 
-def test_run_solvers(solvers_api):
+def test_run_solvers(solvers_api, jobs_api):
 
     solver = solvers_api.get_solver_by_name_and_version(
         solver_name="simcore/services/comp/isolve", version="latest"
@@ -147,21 +151,22 @@ def test_run_solvers(solvers_api):
 
     # TODO: change to uid
     assert job.job_id
-    assert job == solvers_api.get_job(job.job_id)
+    assert job == jobs_api.get_job(job.job_id)
 
     # gets jobs granted for user with a given solver
     solver_jobs = solvers_api.list_jobs(solver.uuid)
-    assert solver_jobs == [
-        job,
-    ]
+    assert job.to_dict() in solver_jobs
 
     # I only have jobs from this solver ?
-    all_jobs = solvers_api.list_all_jobs()
-    assert all_jobs == solver_jobs
+    all_jobs = jobs_api.list_all_jobs()
+    assert len(solver_jobs) < len(all_jobs)
+    assert all(job in all_jobs for job in solver_jobs)
+
+    # ---
 
     # let's run the job
     submit_time = datetime.utcnow()
-    state = solvers_api.start_job(job.job_id)
+    state = jobs_api.start_job(job.job_id)
     assert isinstance(state, JobState)
 
     assert state.status == "PENDING"
@@ -174,7 +179,7 @@ def test_run_solvers(solvers_api):
     #  - progress 100 * number-of-outputs
     while state.progress != 100:
         time.sleep(1)
-        state = solvers_api.inspect_job(job.job_id)
+        state = jobs_api.inspect_job(job.job_id)
         print("Solver progress", f"{state.progress}/100 completed")
 
     # done
