@@ -35,6 +35,7 @@ class JobState(object):
     openapi_types = {
         'status': 'TaskStates',
         'progress': 'float',
+        'submitted_at': 'datetime',
         'started_at': 'datetime',
         'stopped_at': 'datetime'
     }
@@ -42,11 +43,12 @@ class JobState(object):
     attribute_map = {
         'status': 'status',
         'progress': 'progress',
+        'submitted_at': 'submitted_at',
         'started_at': 'started_at',
         'stopped_at': 'stopped_at'
     }
 
-    def __init__(self, status=None, progress=0.0, started_at=None, stopped_at=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(self, status=None, progress=None, submitted_at=None, started_at=None, stopped_at=None, local_vars_configuration=None):  # noqa: E501
         """JobState - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
@@ -54,14 +56,14 @@ class JobState(object):
 
         self._status = None
         self._progress = None
+        self._submitted_at = None
         self._started_at = None
         self._stopped_at = None
         self.discriminator = None
 
-        if status is not None:
-            self.status = status
-        if progress is not None:
-            self.progress = progress
+        self.status = status
+        self.progress = progress
+        self.submitted_at = submitted_at
         self.started_at = started_at
         if stopped_at is not None:
             self.stopped_at = stopped_at
@@ -84,6 +86,8 @@ class JobState(object):
         :param status: The status of this JobState.  # noqa: E501
         :type: TaskStates
         """
+        if self.local_vars_configuration.client_side_validation and status is None:  # noqa: E501
+            raise ValueError("Invalid value for `status`, must not be `None`")  # noqa: E501
 
         self._status = status
 
@@ -105,6 +109,8 @@ class JobState(object):
         :param progress: The progress of this JobState.  # noqa: E501
         :type: float
         """
+        if self.local_vars_configuration.client_side_validation and progress is None:  # noqa: E501
+            raise ValueError("Invalid value for `progress`, must not be `None`")  # noqa: E501
         if (self.local_vars_configuration.client_side_validation and
                 progress is not None and progress > 100.0):  # noqa: E501
             raise ValueError("Invalid value for `progress`, must be a value less than or equal to `100.0`")  # noqa: E501
@@ -113,6 +119,29 @@ class JobState(object):
             raise ValueError("Invalid value for `progress`, must be a value greater than or equal to `0.0`")  # noqa: E501
 
         self._progress = progress
+
+    @property
+    def submitted_at(self):
+        """Gets the submitted_at of this JobState.  # noqa: E501
+
+
+        :return: The submitted_at of this JobState.  # noqa: E501
+        :rtype: datetime
+        """
+        return self._submitted_at
+
+    @submitted_at.setter
+    def submitted_at(self, submitted_at):
+        """Sets the submitted_at of this JobState.
+
+
+        :param submitted_at: The submitted_at of this JobState.  # noqa: E501
+        :type: datetime
+        """
+        if self.local_vars_configuration.client_side_validation and submitted_at is None:  # noqa: E501
+            raise ValueError("Invalid value for `submitted_at`, must not be `None`")  # noqa: E501
+
+        self._submitted_at = submitted_at
 
     @property
     def started_at(self):

@@ -388,13 +388,33 @@
         }
       }
     },
+    "/v0/solvers/jobs": {
+      "get": {
+        "tags": [
+          "solvers"
+        ],
+        "summary": "List All Jobs",
+        "description": "List of all jobs created by user",
+        "operationId": "list_all_jobs",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
     "/v0/solvers/{solver_id}/jobs": {
       "get": {
         "tags": [
           "solvers"
         ],
         "summary": "List Jobs",
-        "description": "List of all jobs (could be finished) by user of a given solver ",
+        "description": "List of all jobs with a given solver ",
         "operationId": "list_jobs",
         "parameters": [
           {
@@ -554,7 +574,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Job"
+                  "$ref": "#/components/schemas/JobState"
                 }
               }
             }
@@ -1049,24 +1069,26 @@
       "JobState": {
         "title": "JobState",
         "required": [
+          "status",
+          "progress",
+          "submitted_at",
           "started_at"
         ],
         "type": "object",
         "properties": {
           "status": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/TaskStates"
-              }
-            ],
-            "default": "undefined"
+            "$ref": "#/components/schemas/TaskStates"
           },
           "progress": {
             "title": "Progress",
             "maximum": 100.0,
             "minimum": 0.0,
-            "type": "number",
-            "default": 0.0
+            "type": "number"
+          },
+          "submitted_at": {
+            "title": "Submitted At",
+            "type": "string",
+            "format": "date-time"
           },
           "started_at": {
             "title": "Started At",
@@ -1254,7 +1276,7 @@
         "enum": [
           "undefined",
           "pending",
-          "jobning",
+          "running",
           "success",
           "failed"
         ],

@@ -30,11 +30,11 @@ class TaskStates(object):
     """
     UNDEFINED = "undefined"
     PENDING = "pending"
-    JOBNING = "jobning"
+    RUNNING = "running"
     SUCCESS = "success"
     FAILED = "failed"
 
-    allowable_values = [UNDEFINED, PENDING, JOBNING, SUCCESS, FAILED]  # noqa: E501
+    allowable_values = [UNDEFINED, PENDING, RUNNING, SUCCESS, FAILED]  # noqa: E501
 
     """
     Attributes:
