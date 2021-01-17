@@ -44,16 +44,13 @@ devenv: .venv
 		wheel \
 		setuptools
 	# installing tools
-	@$@/bin/pip3 install \
-		pytest \
-		nox \
-		notedown \
-		bump2version
+	@$@/bin/pip3 install -r requirements-tools.txt
 	@echo "To activate the venv, execute 'source .venv/bin/activate'"
 
 
 .PHONY: install-dev
 install-dev: _check_venv_active 
+	pip install -r requirements-tests.txt
 	pip install -e .
 
 

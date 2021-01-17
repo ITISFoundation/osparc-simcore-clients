@@ -1,0 +1,5 @@
+-c requirements-tests.txt
+
+nox
+notedown
+bump2version
