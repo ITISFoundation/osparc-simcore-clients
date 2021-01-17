@@ -388,27 +388,7 @@
         }
       }
     },
-    "/v0/solvers/jobs": {
-      "get": {
-        "tags": [
-          "solvers"
-        ],
-        "summary": "List All Jobs",
-        "description": "List of all jobs created by user",
-        "operationId": "list_all_jobs",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v0/solvers/{solver_id}/jobs": {
+    "/v0/solvers/{solver_id}/jobs/": {
       "get": {
         "tags": [
           "solvers"
@@ -448,7 +428,9 @@
             }
           }
         }
-      },
+      }
+    },
+    "/v0/solvers/{solver_id}/jobs": {
       "post": {
         "tags": [
           "solvers"
@@ -500,6 +482,26 @@
                 "schema": {
                   "$ref": "#/components/schemas/HTTPValidationError"
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/solvers/jobs/": {
+      "get": {
+        "tags": [
+          "solvers"
+        ],
+        "summary": "List All Jobs",
+        "description": "List of all jobs created by user ",
+        "operationId": "list_all_jobs",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
               }
             }
           }
@@ -930,8 +932,10 @@
         "required": [
           "job_id",
           "inputs_sha",
-          "status_url",
-          "results_url"
+          "solver_id",
+          "solver_url",
+          "inspect_url",
+          "outputs_url"
         ],
         "type": "object",
         "properties": {
@@ -944,15 +948,27 @@
             "title": "Inputs Sha",
             "type": "string"
           },
-          "status_url": {
-            "title": "Status Url",
+          "solver_id": {
+            "title": "Solver Id",
+            "type": "string",
+            "format": "uuid"
+          },
+          "solver_url": {
+            "title": "Solver Url",
             "maxLength": 2083,
             "minLength": 1,
             "type": "string",
             "format": "uri"
           },
-          "results_url": {
-            "title": "Results Url",
+          "inspect_url": {
+            "title": "Inspect Url",
+            "maxLength": 2083,
+            "minLength": 1,
+            "type": "string",
+            "format": "uri"
+          },
+          "outputs_url": {
+            "title": "Outputs Url",
             "maxLength": 2083,
             "minLength": 1,
             "type": "string",
@@ -975,6 +991,7 @@
           },
           "type": {
             "title": "Type",
+            "pattern": "^(number|integer|boolean|string|data:([^/\\s,]+/[^/\\s,]+|\\[[^/\\s,]+/[^/\\s,]+(,[^/\\s]+/[^/,\\s]+)*\\]))$",
             "type": "string",
             "description": "Data type expected on this input/ouput"
           },
@@ -996,17 +1013,10 @@
                 "type": "integer"
               }
             ]
-          },
-          "value_url": {
-            "title": "Value Url",
-            "maxLength": 2083,
-            "minLength": 1,
-            "type": "string",
-            "format": "uri"
           }
         },
         "example": {
-          "key": "T",
+          "name": "T",
           "content_type": "number",
           "title": "Temperature",
           "value": "33"
@@ -1015,7 +1025,9 @@
       "JobOutput": {
         "title": "JobOutput",
         "required": [
-          "name"
+          "name",
+          "status",
+          "value"
         ],
         "type": "object",
         "properties": {
@@ -1027,6 +1039,7 @@
           },
           "type": {
             "title": "Type",
+            "pattern": "^(number|integer|boolean|string|data:([^/\\s,]+/[^/\\s,]+|\\[[^/\\s,]+/[^/\\s,]+(,[^/\\s]+/[^/,\\s]+)*\\]))$",
             "type": "string",
             "description": "Data type expected on this input/ouput"
           },
@@ -1041,38 +1054,36 @@
                 "$ref": "#/components/schemas/TaskStates"
               }
             ],
-            "default": "undefined"
+            "description": "State towards completion of this output"
           },
           "value": {
             "title": "Value",
             "anyOf": [
               {
+                "type": "number"
+              },
+              {
                 "type": "string"
               },
               {
                 "type": "integer"
-              },
-              {
-                "type": "number"
               }
-            ]
-          },
-          "value_url": {
-            "title": "Value Url",
-            "maxLength": 2083,
-            "minLength": 1,
-            "type": "string",
-            "format": "uri"
+            ],
+            "description": "Result value in this output"
           }
+        },
+        "example": {
+          "name": "SAR",
+          "content_type": "data:application/hdf5",
+          "title": "SAR field output file",
+          "value": "1dc2b1e6-a139-47ad-9e0c-b7b791cd4d7a"
         }
       },
       "JobState": {
         "title": "JobState",
         "required": [
           "status",
-          "progress",
-          "submitted_at",
-          "started_at"
+          "submitted_at"
         ],
         "type": "object",
         "properties": {
@@ -1083,7 +1094,8 @@
             "title": "Progress",
             "maximum": 100.0,
             "minimum": 0.0,
-            "type": "number"
+            "type": "integer",
+            "default": 0
           },
           "submitted_at": {
             "title": "Submitted At",

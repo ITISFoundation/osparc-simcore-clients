@@ -706,7 +706,7 @@ class SolversApi(object):
     def list_all_jobs(self, **kwargs):  # noqa: E501
         """List All Jobs  # noqa: E501
 
-        List of all jobs created by user  # noqa: E501
+        List of all jobs created by user   # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.list_all_jobs(async_req=True)
@@ -730,7 +730,7 @@ class SolversApi(object):
     def list_all_jobs_with_http_info(self, **kwargs):  # noqa: E501
         """List All Jobs  # noqa: E501
 
-        List of all jobs created by user  # noqa: E501
+        List of all jobs created by user   # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.list_all_jobs_with_http_info(async_req=True)
@@ -788,7 +788,7 @@ class SolversApi(object):
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/v0/solvers/jobs', 'GET',
+            '/v0/solvers/jobs/', 'GET',
             path_params,
             query_params,
             header_params,
@@ -1002,7 +1002,7 @@ class SolversApi(object):
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/v0/solvers/{solver_id}/jobs', 'GET',
+            '/v0/solvers/{solver_id}/jobs/', 'GET',
             path_params,
             query_params,
             header_params,

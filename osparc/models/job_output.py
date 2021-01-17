@@ -37,8 +37,7 @@ class JobOutput(object):
         'type': 'str',
         'title': 'str',
         'status': 'TaskStates',
-        'value': 'AnyOfstringintegernumber',
-        'value_url': 'str'
+        'value': 'AnyOfnumberstringinteger'
     }
 
     attribute_map = {
@@ -46,11 +45,10 @@ class JobOutput(object):
         'type': 'type',
         'title': 'title',
         'status': 'status',
-        'value': 'value',
-        'value_url': 'value_url'
+        'value': 'value'
     }
 
-    def __init__(self, name=None, type=None, title=None, status=None, value=None, value_url=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(self, name=None, type=None, title=None, status=None, value=None, local_vars_configuration=None):  # noqa: E501
         """JobOutput - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
@@ -61,7 +59,6 @@ class JobOutput(object):
         self._title = None
         self._status = None
         self._value = None
-        self._value_url = None
         self.discriminator = None
 
         self.name = name
@@ -69,12 +66,8 @@ class JobOutput(object):
             self.type = type
         if title is not None:
             self.title = title
-        if status is not None:
-            self.status = status
-        if value is not None:
-            self.value = value
-        if value_url is not None:
-            self.value_url = value_url
+        self.status = status
+        self.value = value
 
     @property
     def name(self):
@@ -124,6 +117,9 @@ class JobOutput(object):
         :param type: The type of this JobOutput.  # noqa: E501
         :type: str
         """
+        if (self.local_vars_configuration.client_side_validation and
+                type is not None and not re.search(r'^(number|integer|boolean|string|data:([^\/\s,]+\/[^\/\s,]+|\[[^\/\s,]+\/[^\/\s,]+(,[^\/\s]+\/[^\/,\s]+)*\]))$', type)):  # noqa: E501
+            raise ValueError(r"Invalid value for `type`, must be a follow pattern or equal to `/^(number|integer|boolean|string|data:([^\/\s,]+\/[^\/\s,]+|\[[^\/\s,]+\/[^\/\s,]+(,[^\/\s]+\/[^\/,\s]+)*\]))$/`")  # noqa: E501
 
         self._type = type
 
@@ -154,6 +150,7 @@ class JobOutput(object):
     def status(self):
         """Gets the status of this JobOutput.  # noqa: E501
 
+        State towards completion of this output  # noqa: E501
 
         :return: The status of this JobOutput.  # noqa: E501
         :rtype: TaskStates
@@ -164,10 +161,13 @@ class JobOutput(object):
     def status(self, status):
         """Sets the status of this JobOutput.
 
+        State towards completion of this output  # noqa: E501
 
         :param status: The status of this JobOutput.  # noqa: E501
         :type: TaskStates
         """
+        if self.local_vars_configuration.client_side_validation and status is None:  # noqa: E501
+            raise ValueError("Invalid value for `status`, must not be `None`")  # noqa: E501
 
         self._status = status
 
@@ -175,9 +175,10 @@ class JobOutput(object):
     def value(self):
         """Gets the value of this JobOutput.  # noqa: E501
 
+        Result value in this output  # noqa: E501
 
         :return: The value of this JobOutput.  # noqa: E501
-        :rtype: AnyOfstringintegernumber
+        :rtype: AnyOfnumberstringinteger
         """
         return self._value
 
@@ -185,39 +186,15 @@ class JobOutput(object):
     def value(self, value):
         """Sets the value of this JobOutput.
 
+        Result value in this output  # noqa: E501
 
         :param value: The value of this JobOutput.  # noqa: E501
-        :type: AnyOfstringintegernumber
+        :type: AnyOfnumberstringinteger
         """
+        if self.local_vars_configuration.client_side_validation and value is None:  # noqa: E501
+            raise ValueError("Invalid value for `value`, must not be `None`")  # noqa: E501
 
         self._value = value
-
-    @property
-    def value_url(self):
-        """Gets the value_url of this JobOutput.  # noqa: E501
-
-
-        :return: The value_url of this JobOutput.  # noqa: E501
-        :rtype: str
-        """
-        return self._value_url
-
-    @value_url.setter
-    def value_url(self, value_url):
-        """Sets the value_url of this JobOutput.
-
-
-        :param value_url: The value_url of this JobOutput.  # noqa: E501
-        :type: str
-        """
-        if (self.local_vars_configuration.client_side_validation and
-                value_url is not None and len(value_url) > 2083):
-            raise ValueError("Invalid value for `value_url`, length must be less than or equal to `2083`")  # noqa: E501
-        if (self.local_vars_configuration.client_side_validation and
-                value_url is not None and len(value_url) < 1):
-            raise ValueError("Invalid value for `value_url`, length must be greater than or equal to `1`")  # noqa: E501
-
-        self._value_url = value_url
 
     def to_dict(self):
         """Returns the model properties as a dict"""

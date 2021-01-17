@@ -35,18 +35,22 @@ class Job(object):
     openapi_types = {
         'job_id': 'str',
         'inputs_sha': 'str',
-        'status_url': 'str',
-        'results_url': 'str'
+        'solver_id': 'str',
+        'solver_url': 'str',
+        'inspect_url': 'str',
+        'outputs_url': 'str'
     }
 
     attribute_map = {
         'job_id': 'job_id',
         'inputs_sha': 'inputs_sha',
-        'status_url': 'status_url',
-        'results_url': 'results_url'
+        'solver_id': 'solver_id',
+        'solver_url': 'solver_url',
+        'inspect_url': 'inspect_url',
+        'outputs_url': 'outputs_url'
     }
 
-    def __init__(self, job_id=None, inputs_sha=None, status_url=None, results_url=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(self, job_id=None, inputs_sha=None, solver_id=None, solver_url=None, inspect_url=None, outputs_url=None, local_vars_configuration=None):  # noqa: E501
         """Job - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
@@ -54,14 +58,18 @@ class Job(object):
 
         self._job_id = None
         self._inputs_sha = None
-        self._status_url = None
-        self._results_url = None
+        self._solver_id = None
+        self._solver_url = None
+        self._inspect_url = None
+        self._outputs_url = None
         self.discriminator = None
 
         self.job_id = job_id
         self.inputs_sha = inputs_sha
-        self.status_url = status_url
-        self.results_url = results_url
+        self.solver_id = solver_id
+        self.solver_url = solver_url
+        self.inspect_url = inspect_url
+        self.outputs_url = outputs_url
 
     @property
     def job_id(self):
@@ -110,62 +118,114 @@ class Job(object):
         self._inputs_sha = inputs_sha
 
     @property
-    def status_url(self):
-        """Gets the status_url of this Job.  # noqa: E501
+    def solver_id(self):
+        """Gets the solver_id of this Job.  # noqa: E501
 
 
-        :return: The status_url of this Job.  # noqa: E501
+        :return: The solver_id of this Job.  # noqa: E501
         :rtype: str
         """
-        return self._status_url
+        return self._solver_id
 
-    @status_url.setter
-    def status_url(self, status_url):
-        """Sets the status_url of this Job.
+    @solver_id.setter
+    def solver_id(self, solver_id):
+        """Sets the solver_id of this Job.
 
 
-        :param status_url: The status_url of this Job.  # noqa: E501
+        :param solver_id: The solver_id of this Job.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and status_url is None:  # noqa: E501
-            raise ValueError("Invalid value for `status_url`, must not be `None`")  # noqa: E501
-        if (self.local_vars_configuration.client_side_validation and
-                status_url is not None and len(status_url) > 2083):
-            raise ValueError("Invalid value for `status_url`, length must be less than or equal to `2083`")  # noqa: E501
-        if (self.local_vars_configuration.client_side_validation and
-                status_url is not None and len(status_url) < 1):
-            raise ValueError("Invalid value for `status_url`, length must be greater than or equal to `1`")  # noqa: E501
+        if self.local_vars_configuration.client_side_validation and solver_id is None:  # noqa: E501
+            raise ValueError("Invalid value for `solver_id`, must not be `None`")  # noqa: E501
 
-        self._status_url = status_url
+        self._solver_id = solver_id
 
     @property
-    def results_url(self):
-        """Gets the results_url of this Job.  # noqa: E501
+    def solver_url(self):
+        """Gets the solver_url of this Job.  # noqa: E501
 
 
-        :return: The results_url of this Job.  # noqa: E501
+        :return: The solver_url of this Job.  # noqa: E501
         :rtype: str
         """
-        return self._results_url
+        return self._solver_url
 
-    @results_url.setter
-    def results_url(self, results_url):
-        """Sets the results_url of this Job.
+    @solver_url.setter
+    def solver_url(self, solver_url):
+        """Sets the solver_url of this Job.
 
 
-        :param results_url: The results_url of this Job.  # noqa: E501
+        :param solver_url: The solver_url of this Job.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and results_url is None:  # noqa: E501
-            raise ValueError("Invalid value for `results_url`, must not be `None`")  # noqa: E501
+        if self.local_vars_configuration.client_side_validation and solver_url is None:  # noqa: E501
+            raise ValueError("Invalid value for `solver_url`, must not be `None`")  # noqa: E501
         if (self.local_vars_configuration.client_side_validation and
-                results_url is not None and len(results_url) > 2083):
-            raise ValueError("Invalid value for `results_url`, length must be less than or equal to `2083`")  # noqa: E501
+                solver_url is not None and len(solver_url) > 2083):
+            raise ValueError("Invalid value for `solver_url`, length must be less than or equal to `2083`")  # noqa: E501
         if (self.local_vars_configuration.client_side_validation and
-                results_url is not None and len(results_url) < 1):
-            raise ValueError("Invalid value for `results_url`, length must be greater than or equal to `1`")  # noqa: E501
+                solver_url is not None and len(solver_url) < 1):
+            raise ValueError("Invalid value for `solver_url`, length must be greater than or equal to `1`")  # noqa: E501
 
-        self._results_url = results_url
+        self._solver_url = solver_url
+
+    @property
+    def inspect_url(self):
+        """Gets the inspect_url of this Job.  # noqa: E501
+
+
+        :return: The inspect_url of this Job.  # noqa: E501
+        :rtype: str
+        """
+        return self._inspect_url
+
+    @inspect_url.setter
+    def inspect_url(self, inspect_url):
+        """Sets the inspect_url of this Job.
+
+
+        :param inspect_url: The inspect_url of this Job.  # noqa: E501
+        :type: str
+        """
+        if self.local_vars_configuration.client_side_validation and inspect_url is None:  # noqa: E501
+            raise ValueError("Invalid value for `inspect_url`, must not be `None`")  # noqa: E501
+        if (self.local_vars_configuration.client_side_validation and
+                inspect_url is not None and len(inspect_url) > 2083):
+            raise ValueError("Invalid value for `inspect_url`, length must be less than or equal to `2083`")  # noqa: E501
+        if (self.local_vars_configuration.client_side_validation and
+                inspect_url is not None and len(inspect_url) < 1):
+            raise ValueError("Invalid value for `inspect_url`, length must be greater than or equal to `1`")  # noqa: E501
+
+        self._inspect_url = inspect_url
+
+    @property
+    def outputs_url(self):
+        """Gets the outputs_url of this Job.  # noqa: E501
+
+
+        :return: The outputs_url of this Job.  # noqa: E501
+        :rtype: str
+        """
+        return self._outputs_url
+
+    @outputs_url.setter
+    def outputs_url(self, outputs_url):
+        """Sets the outputs_url of this Job.
+
+
+        :param outputs_url: The outputs_url of this Job.  # noqa: E501
+        :type: str
+        """
+        if self.local_vars_configuration.client_side_validation and outputs_url is None:  # noqa: E501
+            raise ValueError("Invalid value for `outputs_url`, must not be `None`")  # noqa: E501
+        if (self.local_vars_configuration.client_side_validation and
+                outputs_url is not None and len(outputs_url) > 2083):
+            raise ValueError("Invalid value for `outputs_url`, length must be less than or equal to `2083`")  # noqa: E501
+        if (self.local_vars_configuration.client_side_validation and
+                outputs_url is not None and len(outputs_url) < 1):
+            raise ValueError("Invalid value for `outputs_url`, length must be greater than or equal to `1`")  # noqa: E501
+
+        self._outputs_url = outputs_url
 
     def to_dict(self):
         """Returns the model properties as a dict"""
