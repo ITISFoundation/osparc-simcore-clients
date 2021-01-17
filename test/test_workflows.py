@@ -14,7 +14,7 @@ import packaging.version as pv
 import pytest
 from osparc.api.files_api import FilesApi
 from osparc.configuration import Configuration
-from osparc.models import FileUploaded, Meta, Solver, Job
+from osparc.models import FileUploaded, Meta, Solver, Job, JobState
 from osparc.rest import ApiException
 
 
@@ -118,6 +118,8 @@ def test_solvers(solvers_api):
     )
     assert solvers_api.get_solver_by_id(latest.uuid) == latest
 
+import datetime
+import time
 
 
 def test_run_solvers(solvers_api):
@@ -139,11 +141,50 @@ def test_run_solvers(solvers_api):
 
     # TODO: change to uid
     assert job.job_id
+    assert job == solvers_api.get_job(job.job_id)
 
-    # gets jobs granted for user in a given solver
-    all_jobs = solvers_api.list_jobs(solver.uuid)
-    assert all_jobs == [job, ]
+    # gets jobs granted for user with a given solver
+    solver_jobs = solvers_api.list_jobs(solver.uuid)
+    assert solver_jobs == [job, ]
     
+    # I only have jobs from this solver ?
+    all_jobs = solvers_api.list_all_jobs()
+    assert all_jobs == solver_jobs
+
+
+    # let's run the job
+    submit_time = datetime.utcnow()
+    state = solvers_api.start_job(job.job_id) 
+    assert isinstance(state, JobState)
+
+    assert state.status == "PENDING"
+    assert state.progress == 0
+    assert submit_time < state.submitted_at < submit_time + datetime.timedelta(seconds=1)
+
+
+    while state.progress != 100:
+        time.sleep(1)
+        state = solvers_api.inspect_job(job.job_id)
+        print("Solver progress", f"{state.progress}/100 completed")
+    
+    # done
+    assert state.progress == 100
+    assert state.status == ["SUCCESS", "FAILED"]
+    assert state.submitted_at < state.started_at
+    assert state.started_at < state.stopped_at
+
+    # let's get the resouts
+
+
+
+
+
+
+
+
+
+
+
 
 
 
