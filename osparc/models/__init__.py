@@ -27,7 +27,6 @@ from osparc.models.meta import Meta
 from osparc.models.profile import Profile
 from osparc.models.profile_update import ProfileUpdate
 from osparc.models.solver import Solver
-from osparc.models.solver_output import SolverOutput
 from osparc.models.task_states import TaskStates
 from osparc.models.user_role_enum import UserRoleEnum
 from osparc.models.users_group import UsersGroup

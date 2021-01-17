@@ -434,7 +434,7 @@
           "solvers"
         ],
         "summary": "Create Job",
-        "description": "Jobs a solver with given inputs ",
+        "description": "Creates a job for a solver with given inputs.\nThis operation does not start the job",
         "operationId": "create_job",
         "parameters": [
           {
@@ -456,7 +456,8 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/JobInput"
-                }
+                },
+                "default": []
               }
             }
           }
@@ -846,7 +847,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SolverOutput"
+                  "$ref": "#/components/schemas/JobOutput"
                 }
               }
             }
@@ -1004,23 +1005,25 @@
       "JobInput": {
         "title": "JobInput",
         "required": [
-          "key",
-          "content_type"
+          "name"
         ],
         "type": "object",
         "properties": {
-          "key": {
-            "title": "Key",
+          "name": {
+            "title": "Name",
             "minLength": 3,
-            "type": "string"
+            "type": "string",
+            "description": "Name given to the input/output in solver specs (see solver metadata.yml)"
           },
-          "content_type": {
-            "title": "Content Type",
-            "type": "string"
+          "type": {
+            "title": "Type",
+            "type": "string",
+            "description": "Data type expected on this input/ouput"
           },
           "title": {
             "title": "Title",
-            "type": "string"
+            "type": "string",
+            "description": "Short human readable name to identify input/output"
           },
           "value": {
             "title": "Value",
@@ -1043,28 +1046,36 @@
             "type": "string",
             "format": "uri"
           }
+        },
+        "example": {
+          "key": "T",
+          "content_type": "number",
+          "title": "Temperature",
+          "value": "33"
         }
       },
       "JobOutput": {
         "title": "JobOutput",
         "required": [
-          "content_type",
-          "key"
+          "name"
         ],
         "type": "object",
         "properties": {
-          "content_type": {
-            "title": "Content Type",
-            "type": "string"
-          },
-          "key": {
-            "title": "Key",
+          "name": {
+            "title": "Name",
             "minLength": 3,
-            "type": "string"
+            "type": "string",
+            "description": "Name given to the input/output in solver specs (see solver metadata.yml)"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string",
+            "description": "Data type expected on this input/ouput"
           },
           "title": {
             "title": "Title",
-            "type": "string"
+            "type": "string",
+            "description": "Short human readable name to identify input/output"
           },
           "status": {
             "allOf": [
@@ -1299,29 +1310,6 @@
           }
         },
         "description": "A released solver with a specific version\n\nThis version might have human-readable alias (e.g. latest) or\nhierarchical version tags (e.g. 3, 3.2)"
-      },
-      "SolverOutput": {
-        "title": "SolverOutput",
-        "required": [
-          "content_type",
-          "key"
-        ],
-        "type": "object",
-        "properties": {
-          "content_type": {
-            "title": "Content Type",
-            "type": "string"
-          },
-          "key": {
-            "title": "Key",
-            "minLength": 3,
-            "type": "string"
-          },
-          "title": {
-            "title": "Title",
-            "type": "string"
-          }
-        }
       },
       "TaskStates": {
         "title": "TaskStates",

@@ -124,14 +124,29 @@ def test_run_solvers(solvers_api):
     solver = solvers_api.get_solver_by_name_and_version(solver_name="isolve", version="latest")
     assert isinstance(solver, Solver)
 
-    # Why creating a job and not just running directly from solver? Adding this intermediate step
-    # allows the server to do some extra checks before running a job.
+    #
+    # Why creating a job and not just running directly from solver? 
+    # Adding this intermediate step allows the server to do some extra checks before running a job.
     # For instance, does user has enough resources left? If not, the job could be rejected
     #
-    job = solvers_api.create_job(solver.uuid)
+
+    # I would like to run a job with my solver and these inputs. 
+    # TODO: how to name the body so we get nice doc?
+    job = solvers_api.create_job(solver.uuid, job_input=[])
+
+    # Job granted. Resources reserved for you during N-minutes
     assert isinstance(job, Job)
 
-    all_jobs = solvers_api.list_jobs()
+    # TODO: change to uid
+    assert job.job_id
+
+    # gets jobs granted for user in a given solver
+    all_jobs = solvers_api.list_jobs(solver.uuid)
+    assert all_jobs == [job, ]
+    
+
+
+
 
 
 

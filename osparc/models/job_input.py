@@ -33,36 +33,37 @@ class JobInput(object):
                             and the value is json key in definition.
     """
     openapi_types = {
-        'key': 'str',
-        'content_type': 'str',
+        'name': 'str',
+        'type': 'str',
         'title': 'str',
         'value': 'AnyOfnumberstringinteger',
         'value_url': 'str'
     }
 
     attribute_map = {
-        'key': 'key',
-        'content_type': 'content_type',
+        'name': 'name',
+        'type': 'type',
         'title': 'title',
         'value': 'value',
         'value_url': 'value_url'
     }
 
-    def __init__(self, key=None, content_type=None, title=None, value=None, value_url=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(self, name=None, type=None, title=None, value=None, value_url=None, local_vars_configuration=None):  # noqa: E501
         """JobInput - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
         self.local_vars_configuration = local_vars_configuration
 
-        self._key = None
-        self._content_type = None
+        self._name = None
+        self._type = None
         self._title = None
         self._value = None
         self._value_url = None
         self.discriminator = None
 
-        self.key = key
-        self.content_type = content_type
+        self.name = name
+        if type is not None:
+            self.type = type
         if title is not None:
             self.title = title
         if value is not None:
@@ -71,58 +72,61 @@ class JobInput(object):
             self.value_url = value_url
 
     @property
-    def key(self):
-        """Gets the key of this JobInput.  # noqa: E501
+    def name(self):
+        """Gets the name of this JobInput.  # noqa: E501
 
+        Name given to the input/output in solver specs (see solver metadata.yml)  # noqa: E501
 
-        :return: The key of this JobInput.  # noqa: E501
+        :return: The name of this JobInput.  # noqa: E501
         :rtype: str
         """
-        return self._key
+        return self._name
 
-    @key.setter
-    def key(self, key):
-        """Sets the key of this JobInput.
+    @name.setter
+    def name(self, name):
+        """Sets the name of this JobInput.
 
+        Name given to the input/output in solver specs (see solver metadata.yml)  # noqa: E501
 
-        :param key: The key of this JobInput.  # noqa: E501
+        :param name: The name of this JobInput.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and key is None:  # noqa: E501
-            raise ValueError("Invalid value for `key`, must not be `None`")  # noqa: E501
+        if self.local_vars_configuration.client_side_validation and name is None:  # noqa: E501
+            raise ValueError("Invalid value for `name`, must not be `None`")  # noqa: E501
         if (self.local_vars_configuration.client_side_validation and
-                key is not None and len(key) < 3):
-            raise ValueError("Invalid value for `key`, length must be greater than or equal to `3`")  # noqa: E501
+                name is not None and len(name) < 3):
+            raise ValueError("Invalid value for `name`, length must be greater than or equal to `3`")  # noqa: E501
 
-        self._key = key
+        self._name = name
 
     @property
-    def content_type(self):
-        """Gets the content_type of this JobInput.  # noqa: E501
+    def type(self):
+        """Gets the type of this JobInput.  # noqa: E501
 
+        Data type expected on this input/ouput  # noqa: E501
 
-        :return: The content_type of this JobInput.  # noqa: E501
+        :return: The type of this JobInput.  # noqa: E501
         :rtype: str
         """
-        return self._content_type
+        return self._type
 
-    @content_type.setter
-    def content_type(self, content_type):
-        """Sets the content_type of this JobInput.
+    @type.setter
+    def type(self, type):
+        """Sets the type of this JobInput.
 
+        Data type expected on this input/ouput  # noqa: E501
 
-        :param content_type: The content_type of this JobInput.  # noqa: E501
+        :param type: The type of this JobInput.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and content_type is None:  # noqa: E501
-            raise ValueError("Invalid value for `content_type`, must not be `None`")  # noqa: E501
 
-        self._content_type = content_type
+        self._type = type
 
     @property
     def title(self):
         """Gets the title of this JobInput.  # noqa: E501
 
+        Short human readable name to identify input/output  # noqa: E501
 
         :return: The title of this JobInput.  # noqa: E501
         :rtype: str
@@ -133,6 +137,7 @@ class JobInput(object):
     def title(self, title):
         """Sets the title of this JobInput.
 
+        Short human readable name to identify input/output  # noqa: E501
 
         :param title: The title of this JobInput.  # noqa: E501
         :type: str
