@@ -14,7 +14,7 @@ import packaging.version as pv
 import pytest
 from osparc.api.files_api import FilesApi
 from osparc.configuration import Configuration
-from osparc.models import FileUploaded, Meta, Solver
+from osparc.models import FileUploaded, Meta, Solver, Job
 from osparc.rest import ApiException
 
 
@@ -26,8 +26,10 @@ def as_dict(obj: object):
     }
 
 
+
+
 @pytest.fixture(scope="module")
-def api_client():
+def api_client(project_environ_patched):
     cfg = Configuration(
         host=os.environ.get("OSPARC_API_URL", "http://127.0.0.1:8000"),
         username=os.environ.get("OSPARC_API_KEY"),
@@ -111,7 +113,26 @@ def test_solvers(solvers_api):
     assert latest
 
     assert (
-        solvers.get_solver_by_name_and_version(solver_name="isolve", version="latest")
+        solvers_api.get_solver_by_name_and_version(solver_name="isolve", version="latest")
         == latest
     )
-    assert solvers.get_solver_by_id(latest.uuid) == latest
+    assert solvers_api.get_solver_by_id(latest.uuid) == latest
+
+
+
+def test_run_solvers(solvers_api):
+    solver = solvers_api.get_solver_by_name_and_version(solver_name="isolve", version="latest")
+    assert isinstance(solver, Solver)
+
+    # Why creating a job and not just running directly from solver? Adding this intermediate step
+    # allows the server to do some extra checks before running a job.
+    # For instance, does user has enough resources left? If not, the job could be rejected
+    #
+    job = solvers_api.create_job(solver.uuid)
+    assert isinstance(job, Job)
+
+    all_jobs = solvers_api.list_jobs()
+
+
+
+
