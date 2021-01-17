@@ -434,7 +434,7 @@
           "solvers"
         ],
         "summary": "Create Job",
-        "description": "Creates a job for a solver with given inputs.\nThis operation does not start the job",
+        "description": "Creates a job for a solver with given inputs.\n\nNOTE: This operation does **not** start the job",
         "operationId": "create_job",
         "parameters": [
           {
@@ -486,7 +486,7 @@
         }
       }
     },
-    "/v0/solvers/{solver_id}/jobs/{job_id}": {
+    "/v0/solvers/jobs/{job_id}": {
       "get": {
         "tags": [
           "solvers"
@@ -497,16 +497,6 @@
           {
             "required": true,
             "schema": {
-              "title": "Solver Id",
-              "type": "string",
-              "format": "uuid"
-            },
-            "name": "solver_id",
-            "in": "path"
-          },
-          {
-            "required": true,
-            "schema": {
               "title": "Job Id",
               "type": "string",
               "format": "uuid"
@@ -539,7 +529,7 @@
         }
       }
     },
-    "/v0/solvers/{solver_id}/jobs/{job_id}:start": {
+    "/v0/solvers/jobs/{job_id}:start": {
       "post": {
         "tags": [
           "solvers"
@@ -550,16 +540,6 @@
           {
             "required": true,
             "schema": {
-              "title": "Solver Id",
-              "type": "string",
-              "format": "uuid"
-            },
-            "name": "solver_id",
-            "in": "path"
-          },
-          {
-            "required": true,
-            "schema": {
               "title": "Job Id",
               "type": "string",
               "format": "uuid"
@@ -592,7 +572,7 @@
         }
       }
     },
-    "/v0/solvers/{solver_id}/jobs/{job_id}:run": {
+    "/v0/solvers/jobs/{job_id}:run": {
       "post": {
         "tags": [
           "solvers"
@@ -600,18 +580,6 @@
         "summary": "Run Job",
         "description": "create + start job in a single call ",
         "operationId": "run_job",
-        "parameters": [
-          {
-            "required": true,
-            "schema": {
-              "title": "Solver Id",
-              "type": "string",
-              "format": "uuid"
-            },
-            "name": "solver_id",
-            "in": "path"
-          }
-        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -649,7 +617,7 @@
         }
       }
     },
-    "/v0/solvers/{solver_id}/jobs/{job_id}:stop": {
+    "/v0/solvers/jobs/{job_id}:stop": {
       "post": {
         "tags": [
           "solvers"
@@ -657,16 +625,6 @@
         "summary": "Stop Job",
         "operationId": "stop_job",
         "parameters": [
-          {
-            "required": true,
-            "schema": {
-              "title": "Solver Id",
-              "type": "string",
-              "format": "uuid"
-            },
-            "name": "solver_id",
-            "in": "path"
-          },
           {
             "required": true,
             "schema": {
@@ -702,7 +660,7 @@
         }
       }
     },
-    "/v0/solvers/{solver_id}/jobs/{job_id}:inspect": {
+    "/v0/solvers/jobs/{job_id}:inspect": {
       "post": {
         "tags": [
           "solvers"
@@ -718,7 +676,7 @@
               "format": "uuid"
             },
             "name": "solver_id",
-            "in": "path"
+            "in": "query"
           }
         ],
         "responses": {
@@ -745,7 +703,7 @@
         }
       }
     },
-    "/v0/solvers/{solver_id}/jobs/{job_id}/outputs": {
+    "/v0/solvers/jobs/{job_id}/outputs": {
       "get": {
         "tags": [
           "solvers"
@@ -753,16 +711,6 @@
         "summary": "List Job Outputs",
         "operationId": "list_job_outputs",
         "parameters": [
-          {
-            "required": true,
-            "schema": {
-              "title": "Solver Id",
-              "type": "string",
-              "format": "uuid"
-            },
-            "name": "solver_id",
-            "in": "path"
-          },
           {
             "required": true,
             "schema": {
@@ -780,7 +728,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "Response List Job Outputs V0 Solvers  Solver Id  Jobs  Job Id  Outputs Get",
+                  "title": "Response List Job Outputs V0 Solvers Jobs  Job Id  Outputs Get",
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/JobOutput"
@@ -802,7 +750,7 @@
         }
       }
     },
-    "/v0/solvers/{solver_id}/jobs/{job_id}/outputs/{output_key}": {
+    "/v0/solvers/jobs/{job_id}/outputs/{output_key}": {
       "get": {
         "tags": [
           "solvers"
@@ -810,16 +758,6 @@
         "summary": "Get Job Output",
         "operationId": "get_job_output",
         "parameters": [
-          {
-            "required": true,
-            "schema": {
-              "title": "Solver Id",
-              "type": "string",
-              "format": "uuid"
-            },
-            "name": "solver_id",
-            "in": "path"
-          },
           {
             "required": true,
             "schema": {
