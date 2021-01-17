@@ -35,20 +35,6 @@ class TestSolversApi(unittest.TestCase):
         """
         pass
 
-    def test_get_job(self):
-        """Test case for get_job
-
-        Get Job  # noqa: E501
-        """
-        pass
-
-    def test_get_job_output(self):
-        """Test case for get_job_output
-
-        Get Job Output  # noqa: E501
-        """
-        pass
-
     def test_get_solver_by_id(self):
         """Test case for get_solver_by_id
 
@@ -63,20 +49,6 @@ class TestSolversApi(unittest.TestCase):
         """
         pass
 
-    def test_inspect_job(self):
-        """Test case for inspect_job
-
-        Inspect Job  # noqa: E501
-        """
-        pass
-
-    def test_list_job_outputs(self):
-        """Test case for list_job_outputs
-
-        List Job Outputs  # noqa: E501
-        """
-        pass
-
     def test_list_jobs(self):
         """Test case for list_jobs
 
@@ -88,27 +60,6 @@ class TestSolversApi(unittest.TestCase):
         """Test case for list_solvers
 
         List Solvers  # noqa: E501
-        """
-        pass
-
-    def test_run_job(self):
-        """Test case for run_job
-
-        Run Job  # noqa: E501
-        """
-        pass
-
-    def test_start_job(self):
-        """Test case for start_job
-
-        Start Job  # noqa: E501
-        """
-        pass
-
-    def test_stop_job(self):
-        """Test case for stop_job
-
-        Stop Job  # noqa: E501
         """
         pass
 

@@ -38,15 +38,19 @@ class TestJob(unittest.TestCase):
             return Job(
                 job_id = '0', 
                 inputs_sha = '0', 
-                status_url = '0', 
-                results_url = '0'
+                solver_id = '0', 
+                solver_url = '0', 
+                inspect_url = '0', 
+                outputs_url = '0'
             )
         else :
             return Job(
                 job_id = '0',
                 inputs_sha = '0',
-                status_url = '0',
-                results_url = '0',
+                solver_id = '0',
+                solver_url = '0',
+                inspect_url = '0',
+                outputs_url = '0',
         )
 
     def testJob(self):

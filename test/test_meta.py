@@ -36,21 +36,18 @@ class TestMeta(unittest.TestCase):
         # model = osparc.models.meta.Meta()  # noqa: E501
         if include_optional :
             return Meta(
-                name = 'simcore_service_foo"',
-                version = '2.4.45',
+                name = '0', 
+                version = 'a', 
                 released = {
-                       "v1": "1.3.4",
-                        "v2": "2.4.45"
-                    },
-                docs_url = 'https://api.osparc.io/doc',
-                docs_dev_url = 'https://api.osparc.io/dev/doc',
+                    'key' : 'a'
+                    }, 
+                docs_url = 'https://docs.osparc.io', 
+                docs_dev_url = 'https://api.osparc.io/dev/docs'
             )
         else :
             return Meta(
-                name = 'simcore_service_foo"',
-                version = '2.4.45',
-                docs_url = 'https://api.osparc.io/doc',
-                docs_dev_url = 'https://api.osparc.io/dev/doc',
+                name = '0',
+                version = 'a',
         )
 
     def testMeta(self):

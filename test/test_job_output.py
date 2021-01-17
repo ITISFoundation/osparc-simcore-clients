@@ -36,17 +36,17 @@ class TestJobOutput(unittest.TestCase):
         # model = osparc.models.job_output.JobOutput()  # noqa: E501
         if include_optional :
             return JobOutput(
-                content_type = '0',
-                key = '012',
-                title = '0',
-                status = None,
-                value = None,
-                value_url = '0'
+                name = '012', 
+                type = 'a', 
+                title = '0', 
+                status = null, 
+                value = null
             )
         else :
             return JobOutput(
-                content_type = '0',
-                key = '012',
+                name = '012',
+                status = null,
+                value = null,
         )
 
     def testJobOutput(self):
