@@ -142,17 +142,17 @@ class JobsApi(object):
             _request_timeout=local_var_params.get('_request_timeout'),
             collection_formats=collection_formats)
 
-    def get_job_output(self, job_id, output_key, **kwargs):  # noqa: E501
+    def get_job_output(self, job_id, output_name, **kwargs):  # noqa: E501
         """Get Job Output  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.get_job_output(job_id, output_key, async_req=True)
+        >>> thread = api.get_job_output(job_id, output_name, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool: execute request asynchronously
         :param str job_id: (required)
-        :param str output_key: (required)
+        :param str output_name: (required)
         :param _preload_content: if False, the urllib3.HTTPResponse object will
                                  be returned without reading/decoding response
                                  data. Default is True.
@@ -165,19 +165,19 @@ class JobsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        return self.get_job_output_with_http_info(job_id, output_key, **kwargs)  # noqa: E501
+        return self.get_job_output_with_http_info(job_id, output_name, **kwargs)  # noqa: E501
 
-    def get_job_output_with_http_info(self, job_id, output_key, **kwargs):  # noqa: E501
+    def get_job_output_with_http_info(self, job_id, output_name, **kwargs):  # noqa: E501
         """Get Job Output  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.get_job_output_with_http_info(job_id, output_key, async_req=True)
+        >>> thread = api.get_job_output_with_http_info(job_id, output_name, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool: execute request asynchronously
         :param str job_id: (required)
-        :param str output_key: (required)
+        :param str output_name: (required)
         :param _return_http_data_only: response data without head status code
                                        and headers
         :param _preload_content: if False, the urllib3.HTTPResponse object will
@@ -194,7 +194,7 @@ class JobsApi(object):
 
         local_var_params = locals()
 
-        all_params = ['job_id', 'output_key']  # noqa: E501
+        all_params = ['job_id', 'output_name']  # noqa: E501
         all_params.append('async_req')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
@@ -212,21 +212,21 @@ class JobsApi(object):
         if self.api_client.client_side_validation and ('job_id' not in local_var_params or  # noqa: E501
                                                         local_var_params['job_id'] is None):  # noqa: E501
             raise ApiValueError("Missing the required parameter `job_id` when calling `get_job_output`")  # noqa: E501
-        # verify the required parameter 'output_key' is set
-        if self.api_client.client_side_validation and ('output_key' not in local_var_params or  # noqa: E501
-                                                        local_var_params['output_key'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `output_key` when calling `get_job_output`")  # noqa: E501
+        # verify the required parameter 'output_name' is set
+        if self.api_client.client_side_validation and ('output_name' not in local_var_params or  # noqa: E501
+                                                        local_var_params['output_name'] is None):  # noqa: E501
+            raise ApiValueError("Missing the required parameter `output_name` when calling `get_job_output`")  # noqa: E501
 
-        if self.api_client.client_side_validation and ('output_key' in local_var_params and  # noqa: E501
-                                                        len(local_var_params['output_key']) < 3):  # noqa: E501
-            raise ApiValueError("Invalid value for parameter `output_key` when calling `get_job_output`, length must be greater than or equal to `3`")  # noqa: E501
+        if self.api_client.client_side_validation and ('output_name' in local_var_params and  # noqa: E501
+                                                        len(local_var_params['output_name']) < 3):  # noqa: E501
+            raise ApiValueError("Invalid value for parameter `output_name` when calling `get_job_output`, length must be greater than or equal to `3`")  # noqa: E501
         collection_formats = {}
 
         path_params = {}
         if 'job_id' in local_var_params:
             path_params['job_id'] = local_var_params['job_id']  # noqa: E501
-        if 'output_key' in local_var_params:
-            path_params['output_key'] = local_var_params['output_key']  # noqa: E501
+        if 'output_name' in local_var_params:
+            path_params['output_name'] = local_var_params['output_name']  # noqa: E501
 
         query_params = []
 
@@ -244,7 +244,7 @@ class JobsApi(object):
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/v0/jobs/{job_id}/outputs/{output_key}', 'GET',
+            '/v0/jobs/{job_id}/outputs/{output_name}', 'GET',
             path_params,
             query_params,
             header_params,
@@ -259,16 +259,16 @@ class JobsApi(object):
             _request_timeout=local_var_params.get('_request_timeout'),
             collection_formats=collection_formats)
 
-    def inspect_job(self, solver_id, **kwargs):  # noqa: E501
+    def inspect_job(self, job_id, **kwargs):  # noqa: E501
         """Inspect Job  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.inspect_job(solver_id, async_req=True)
+        >>> thread = api.inspect_job(job_id, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool: execute request asynchronously
-        :param str solver_id: (required)
+        :param str job_id: (required)
         :param _preload_content: if False, the urllib3.HTTPResponse object will
                                  be returned without reading/decoding response
                                  data. Default is True.
@@ -281,18 +281,18 @@ class JobsApi(object):
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
-        return self.inspect_job_with_http_info(solver_id, **kwargs)  # noqa: E501
+        return self.inspect_job_with_http_info(job_id, **kwargs)  # noqa: E501
 
-    def inspect_job_with_http_info(self, solver_id, **kwargs):  # noqa: E501
+    def inspect_job_with_http_info(self, job_id, **kwargs):  # noqa: E501
         """Inspect Job  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.inspect_job_with_http_info(solver_id, async_req=True)
+        >>> thread = api.inspect_job_with_http_info(job_id, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool: execute request asynchronously
-        :param str solver_id: (required)
+        :param str job_id: (required)
         :param _return_http_data_only: response data without head status code
                                        and headers
         :param _preload_content: if False, the urllib3.HTTPResponse object will
@@ -309,7 +309,7 @@ class JobsApi(object):
 
         local_var_params = locals()
 
-        all_params = ['solver_id']  # noqa: E501
+        all_params = ['job_id']  # noqa: E501
         all_params.append('async_req')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
@@ -323,18 +323,18 @@ class JobsApi(object):
                 )
             local_var_params[key] = val
         del local_var_params['kwargs']
-        # verify the required parameter 'solver_id' is set
-        if self.api_client.client_side_validation and ('solver_id' not in local_var_params or  # noqa: E501
-                                                        local_var_params['solver_id'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `solver_id` when calling `inspect_job`")  # noqa: E501
+        # verify the required parameter 'job_id' is set
+        if self.api_client.client_side_validation and ('job_id' not in local_var_params or  # noqa: E501
+                                                        local_var_params['job_id'] is None):  # noqa: E501
+            raise ApiValueError("Missing the required parameter `job_id` when calling `inspect_job`")  # noqa: E501
 
         collection_formats = {}
 
         path_params = {}
+        if 'job_id' in local_var_params:
+            path_params['job_id'] = local_var_params['job_id']  # noqa: E501
 
         query_params = []
-        if 'solver_id' in local_var_params and local_var_params['solver_id'] is not None:  # noqa: E501
-            query_params.append(('solver_id', local_var_params['solver_id']))  # noqa: E501
 
         header_params = {}
 
@@ -564,114 +564,6 @@ class JobsApi(object):
             post_params=form_params,
             files=local_var_files,
             response_type='list[JobOutput]',  # noqa: E501
-            auth_settings=auth_settings,
-            async_req=local_var_params.get('async_req'),
-            _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
-            _preload_content=local_var_params.get('_preload_content', True),
-            _request_timeout=local_var_params.get('_request_timeout'),
-            collection_formats=collection_formats)
-
-    def run_job(self, **kwargs):  # noqa: E501
-        """Run Job  # noqa: E501
-
-        create + start job in a single call   # noqa: E501
-        This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.run_job(async_req=True)
-        >>> result = thread.get()
-
-        :param async_req bool: execute request asynchronously
-        :param list[JobInput] job_input:
-        :param _preload_content: if False, the urllib3.HTTPResponse object will
-                                 be returned without reading/decoding response
-                                 data. Default is True.
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :return: Job
-                 If the method is called asynchronously,
-                 returns the request thread.
-        """
-        kwargs['_return_http_data_only'] = True
-        return self.run_job_with_http_info(**kwargs)  # noqa: E501
-
-    def run_job_with_http_info(self, **kwargs):  # noqa: E501
-        """Run Job  # noqa: E501
-
-        create + start job in a single call   # noqa: E501
-        This method makes a synchronous HTTP request by default. To make an
-        asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.run_job_with_http_info(async_req=True)
-        >>> result = thread.get()
-
-        :param async_req bool: execute request asynchronously
-        :param list[JobInput] job_input:
-        :param _return_http_data_only: response data without head status code
-                                       and headers
-        :param _preload_content: if False, the urllib3.HTTPResponse object will
-                                 be returned without reading/decoding response
-                                 data. Default is True.
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :return: tuple(Job, status_code(int), headers(HTTPHeaderDict))
-                 If the method is called asynchronously,
-                 returns the request thread.
-        """
-
-        local_var_params = locals()
-
-        all_params = ['job_input']  # noqa: E501
-        all_params.append('async_req')
-        all_params.append('_return_http_data_only')
-        all_params.append('_preload_content')
-        all_params.append('_request_timeout')
-
-        for key, val in six.iteritems(local_var_params['kwargs']):
-            if key not in all_params:
-                raise ApiTypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method run_job" % key
-                )
-            local_var_params[key] = val
-        del local_var_params['kwargs']
-
-        collection_formats = {}
-
-        path_params = {}
-
-        query_params = []
-
-        header_params = {}
-
-        form_params = []
-        local_var_files = {}
-
-        body_params = None
-        if 'job_input' in local_var_params:
-            body_params = local_var_params['job_input']
-        # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json'])  # noqa: E501
-
-        # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
-            ['application/json'])  # noqa: E501
-
-        # Authentication setting
-        auth_settings = []  # noqa: E501
-
-        return self.api_client.call_api(
-            '/v0/jobs/{job_id}:run', 'POST',
-            path_params,
-            query_params,
-            header_params,
-            body=body_params,
-            post_params=form_params,
-            files=local_var_files,
-            response_type='Job',  # noqa: E501
             auth_settings=auth_settings,
             async_req=local_var_params.get('async_req'),
             _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501

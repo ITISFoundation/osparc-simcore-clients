@@ -147,6 +147,7 @@ class JobState(object):
     def started_at(self):
         """Gets the started_at of this JobState.  # noqa: E501
 
+        Time snapshot at which the solver starts the simulation  # noqa: E501
 
         :return: The started_at of this JobState.  # noqa: E501
         :rtype: datetime
@@ -157,6 +158,7 @@ class JobState(object):
     def started_at(self, started_at):
         """Sets the started_at of this JobState.
 
+        Time snapshot at which the solver starts the simulation  # noqa: E501
 
         :param started_at: The started_at of this JobState.  # noqa: E501
         :type: datetime
@@ -168,6 +170,7 @@ class JobState(object):
     def stopped_at(self):
         """Gets the stopped_at of this JobState.  # noqa: E501
 
+        Time snapshot at which the solver finished or killed the simulation  # noqa: E501
 
         :return: The stopped_at of this JobState.  # noqa: E501
         :rtype: datetime
@@ -178,6 +181,7 @@ class JobState(object):
     def stopped_at(self, stopped_at):
         """Sets the stopped_at of this JobState.
 
+        Time snapshot at which the solver finished or killed the simulation  # noqa: E501
 
         :param stopped_at: The stopped_at of this JobState.  # noqa: E501
         :type: datetime
