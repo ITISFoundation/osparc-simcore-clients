@@ -40,7 +40,7 @@ from osparc.models.http_validation_error import HTTPValidationError
 from osparc.models.job import Job
 from osparc.models.job_input import JobInput
 from osparc.models.job_output import JobOutput
-from osparc.models.job_state import JobState
+from osparc.models.job_status import JobStatus
 from osparc.models.meta import Meta
 from osparc.models.profile import Profile
 from osparc.models.profile_update import ProfileUpdate

@@ -63,13 +63,6 @@ class TestJobsApi(unittest.TestCase):
         """
         pass
 
-    def test_run_job(self):
-        """Test case for run_job
-
-        Run Job  # noqa: E501
-        """
-        pass
-
     def test_start_job(self):
         """Test case for start_job
 

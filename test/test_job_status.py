@@ -16,11 +16,11 @@ import unittest
 import datetime
 
 import osparc
-from osparc.models.job_state import JobState  # noqa: E501
+from osparc.models.job_status import JobStatus  # noqa: E501
 from osparc.rest import ApiException
 
-class TestJobState(unittest.TestCase):
-    """JobState unit test stubs"""
+class TestJobStatus(unittest.TestCase):
+    """JobStatus unit test stubs"""
 
     def setUp(self):
         pass
@@ -29,27 +29,29 @@ class TestJobState(unittest.TestCase):
         pass
 
     def make_instance(self, include_optional):
-        """Test JobState
+        """Test JobStatus
             include_option is a boolean, when False only required
             params are included, when True both required and
             optional params are included """
-        # model = osparc.models.job_state.JobState()  # noqa: E501
+        # model = osparc.models.job_status.JobStatus()  # noqa: E501
         if include_optional :
-            return JobState(
-                status = 'undefined', 
+            return JobStatus(
+                job_id = '0', 
+                state = 'undefined', 
                 progress = 0.0, 
                 submitted_at = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'), 
                 started_at = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'), 
                 stopped_at = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f')
             )
         else :
-            return JobState(
-                status = 'undefined',
+            return JobStatus(
+                job_id = '0',
+                state = 'undefined',
                 submitted_at = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
         )
 
-    def testJobState(self):
-        """Test JobState"""
+    def testJobStatus(self):
+        """Test JobStatus"""
         inst_req_only = self.make_instance(include_optional=False)
         inst_req_and_optional = self.make_instance(include_optional=True)
 

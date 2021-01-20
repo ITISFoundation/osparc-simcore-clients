@@ -63,6 +63,13 @@ class TestSolversApi(unittest.TestCase):
         """
         pass
 
+    def test_run_job(self):
+        """Test case for run_job
+
+        Run Job  # noqa: E501
+        """
+        pass
+
 
 if __name__ == '__main__':
     unittest.main()
