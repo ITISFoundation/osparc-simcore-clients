@@ -188,7 +188,10 @@ def test_run_solvers(solvers_api, jobs_api):
     assert status.started_at < status.stopped_at
 
     # let's get the results
-    outputs = solvers_api.list_job_outputs(job.job_id)
-    for output in outputs:
-        print(output)
-        assert output == solvers_api.get_job_output(job.job_id, output.id)
+    try:
+        outputs = jobs_api.list_job_outputs(job.job_id)
+        for output in outputs:
+            print(output)
+            assert output == jobs_api.get_job_output(job.job_id, output.id)
+    except ApiException as err:
+        assert status.state == "failed" and err.status == 404, "No outputs if job failed"
