@@ -3,6 +3,8 @@ SHELL         := /bin/bash
 VCS_URL       := $(shell git config --get remote.origin.url)
 VCS_REF       := $(shell git rev-parse --short HEAD)
 NOW_TIMESTAMP := $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
+APP_NAME          = $(notdir $(CURDIR))
+APP_VERSION    = $(shell python setup.py --version)
 
 .PHONY: info
 info:
@@ -60,7 +62,6 @@ test-dev: _check_venv_active
 	pytest -vv --exitfirst --failed-first --durations=10 --pdb $(CURDIR)
 
 
-
 ## NOTEBOOKS -----------------------------------------------------------------------------
 .PHONY: notebooks
 
@@ -116,3 +117,12 @@ build:
 release: build # release by-hand (TEMP SOLUTION until FIXME: https://github.com/ITISFoundation/osparc-simcore-python-client/issues/16)
 	python -m pip install twine
 	python -m twine upload dist/*
+
+
+.PHONY: build
+image:
+	docker build -f Dockerfile -t $(APP_NAME):$(APP_VERSION) $(CURDIR)
+
+.PHONY: shell
+shell:
+	docker run -it $(APP_NAME):latest /bin/bash
