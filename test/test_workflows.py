@@ -100,7 +100,7 @@ def test_upload_list_download(files_api: FilesApi, tmpdir):
 
     myfiles = files_api.list_files()
     assert myfiles
-    assert all( isinstance(f, FileUploaded) for f in myfiles )
+    assert all(isinstance(f, FileUploaded) for f in myfiles)
     assert input_file in myfiles
 
     same_file = files_api.download_file(file_id=input_file.hash)
@@ -195,4 +195,6 @@ def test_run_solvers(solvers_api, jobs_api):
             print(output)
             assert output == jobs_api.get_job_output(job.job_id, output.id)
     except ApiException as err:
-        assert status.state == "failed" and err.status == 404, "No outputs if job failed"
+        assert (
+            status.state == "failed" and err.status == 404
+        ), "No outputs if job failed"
