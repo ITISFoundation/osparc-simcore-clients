@@ -4,9 +4,9 @@
 
 import os
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
-from pprint import pformat, pprint
+from pprint import pformat
 from typing import List
 
 import osparc
@@ -15,7 +15,7 @@ import packaging.version as pv
 import pytest
 from osparc.api.files_api import FilesApi
 from osparc.configuration import Configuration
-from osparc.models import FileUploaded, Job, JobState, Meta, Solver
+from osparc.models import FileUploaded, Job, JobStatus, Meta, Solver
 from osparc.rest import ApiException
 
 
@@ -159,40 +159,36 @@ def test_run_solvers(solvers_api, jobs_api):
 
     # I only have jobs from this solver ?
     all_jobs = jobs_api.list_all_jobs()
-    assert len(solver_jobs) < len(all_jobs)
+    assert len(solver_jobs) <= len(all_jobs)
     assert all(job in all_jobs for job in solver_jobs)
 
     # ---
 
     # let's run the job
     submit_time = datetime.utcnow()
-    state = jobs_api.start_job(job.job_id)
-    assert isinstance(state, JobState)
+    status = jobs_api.start_job(job.job_id)
+    assert isinstance(status, JobStatus)
 
-    assert state.status == "PENDING"
-    assert state.progress == 0
-    assert (
-        submit_time < state.submitted_at < submit_time + datetime.timedelta(seconds=1)
-    )
+    assert status.state == "undefined"
+    assert status.progress == 0
+    assert submit_time < status.submitted_at < (submit_time + timedelta(seconds=2))
 
     # TODO: progress could be per output?
+    # TODO: finished/done
     #  - progress 100 * number-of-outputs
-    while state.progress != 100:
-        time.sleep(1)
-        state = jobs_api.inspect_job(job.job_id)
-        print("Solver progress", f"{state.progress}/100 completed")
+    while not status.stopped_at:
+        time.sleep(0.1)
+        status = jobs_api.inspect_job(job.job_id)
+        print("Solver progress", f"{status.progress}/100", flush=True)
 
     # done
-    assert state.progress == 100
-    assert state.status == ["SUCCESS", "FAILED"]
-    assert state.submitted_at < state.started_at
-    assert state.started_at < state.stopped_at
+    assert status.progress == 100
+    assert status.state in ["success", "failed"]
+    assert status.submitted_at < status.started_at
+    assert status.started_at < status.stopped_at
 
     # let's get the results
-    #  - each result might be ready to get at different times
-    # TODO: ?????
-    # outputs = solvers_api.list_job_outputs(job.job_id)
-    # for output in outputs:
-    #    if output.ready:
-    #        result = solvers_api.get_job_output(job.job_id, output.id)
-    #        assert
+    outputs = solvers_api.list_job_outputs(job.job_id)
+    for output in outputs:
+        print(output)
+        assert output == solvers_api.get_job_output(job.job_id, output.id)
