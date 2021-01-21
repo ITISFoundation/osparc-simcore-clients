@@ -174,7 +174,7 @@ class JobStatus(object):
     def started_at(self):
         """Gets the started_at of this JobStatus.  # noqa: E501
 
-        Time stamp that indicates the solver starting execution  # noqa: E501
+        Timestamp that indicate the moment the solver starts execution or None if the event did not occur  # noqa: E501
 
         :return: The started_at of this JobStatus.  # noqa: E501
         :rtype: datetime
@@ -185,7 +185,7 @@ class JobStatus(object):
     def started_at(self, started_at):
         """Sets the started_at of this JobStatus.
 
-        Time stamp that indicates the solver starting execution  # noqa: E501
+        Timestamp that indicate the moment the solver starts execution or None if the event did not occur  # noqa: E501
 
         :param started_at: The started_at of this JobStatus.  # noqa: E501
         :type: datetime
@@ -197,7 +197,7 @@ class JobStatus(object):
     def stopped_at(self):
         """Gets the stopped_at of this JobStatus.  # noqa: E501
 
-        Time stamp at which the solver finished or killed execution  # noqa: E501
+        Timestamp at which the solver finished or killed execution or None if the event did not occur  # noqa: E501
 
         :return: The stopped_at of this JobStatus.  # noqa: E501
         :rtype: datetime
@@ -208,7 +208,7 @@ class JobStatus(object):
     def stopped_at(self, stopped_at):
         """Sets the stopped_at of this JobStatus.
 
-        Time stamp at which the solver finished or killed execution  # noqa: E501
+        Timestamp at which the solver finished or killed execution or None if the event did not occur  # noqa: E501
 
         :param stopped_at: The stopped_at of this JobStatus.  # noqa: E501
         :type: datetime
