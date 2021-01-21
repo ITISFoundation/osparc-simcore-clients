@@ -100,7 +100,8 @@ def test_upload_list_download(files_api: FilesApi, tmpdir):
 
     myfiles = files_api.list_files()
     assert myfiles
-    assert input_file.to_dict() in myfiles
+    assert all( isinstance(f, FileUploaded) for f in myfiles )
+    assert input_file in myfiles
 
     same_file = files_api.download_file(file_id=input_file.hash)
     assert input_path.read_text() == same_file
