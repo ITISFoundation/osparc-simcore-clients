@@ -107,6 +107,7 @@
           "files"
         ],
         "summary": "List Files",
+        "description": "Gets metadata for all file resources ",
         "operationId": "list_files",
         "responses": {
           "200": {
@@ -117,7 +118,7 @@
                   "title": "Response List Files V0 Files Get",
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/FileUploaded"
+                    "$ref": "#/components/schemas/FileMetadata"
                   }
                 }
               }
@@ -131,13 +132,14 @@
         "tags": [
           "files"
         ],
-        "summary": "Upload Single File",
-        "operationId": "upload_single_file",
+        "summary": "Upload File",
+        "description": "Uploads a single file to the system\n\nTo upload multiple with one call, see upload_files",
+        "operationId": "upload_file",
         "requestBody": {
           "content": {
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/Body_upload_single_file_v0_files_upload_post"
+                "$ref": "#/components/schemas/Body_upload_file_v0_files_upload_post"
               }
             }
           },
@@ -149,7 +151,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FileUploaded"
+                  "$ref": "#/components/schemas/FileMetadata"
                 }
               }
             }
@@ -167,34 +169,33 @@
         }
       }
     },
-    "/v0/files:upload-multiple": {
-      "post": {
+    "/v0/files/{file_id}": {
+      "get": {
         "tags": [
           "files"
         ],
-        "summary": "Upload Multiple Files",
-        "operationId": "upload_multiple_files",
-        "requestBody": {
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "$ref": "#/components/schemas/Body_upload_multiple_files_v0_files_upload_multiple_post"
-              }
-            }
-          },
-          "required": true
-        },
+        "summary": "Get File",
+        "description": "Gets metadata for a given file resource ",
+        "operationId": "get_file",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "File Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "file_id",
+            "in": "path"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "Response Upload Multiple Files V0 Files Upload Multiple Post",
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/FileUploaded"
-                  }
+                  "$ref": "#/components/schemas/FileMetadata"
                 }
               }
             }
@@ -224,7 +225,8 @@
             "required": true,
             "schema": {
               "title": "File Id",
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             },
             "name": "file_id",
             "in": "path"
@@ -824,25 +826,8 @@
   },
   "components": {
     "schemas": {
-      "Body_upload_multiple_files_v0_files_upload_multiple_post": {
-        "title": "Body_upload_multiple_files_v0_files_upload_multiple_post",
-        "required": [
-          "files"
-        ],
-        "type": "object",
-        "properties": {
-          "files": {
-            "title": "Files",
-            "type": "array",
-            "items": {
-              "type": "string",
-              "format": "binary"
-            }
-          }
-        }
-      },
-      "Body_upload_single_file_v0_files_upload_post": {
-        "title": "Body_upload_single_file_v0_files_upload_post",
+      "Body_upload_file_v0_files_upload_post": {
+        "title": "Body_upload_file_v0_files_upload_post",
         "required": [
           "file"
         ],
@@ -855,36 +840,36 @@
           }
         }
       },
-      "FileUploaded": {
-        "title": "FileUploaded",
+      "FileMetadata": {
+        "title": "FileMetadata",
         "required": [
           "filename",
-          "content_type",
-          "hash"
+          "checksum"
         ],
         "type": "object",
         "properties": {
+          "file_id": {
+            "title": "File Id",
+            "type": "string",
+            "description": "File unique identifier built upon its name and checksum",
+            "format": "uuid"
+          },
           "filename": {
             "title": "Filename",
-            "type": "string"
+            "type": "string",
+            "description": "File with extenson"
           },
           "content_type": {
             "title": "Content Type",
             "type": "string"
           },
-          "hash": {
-            "title": "Hash",
-            "type": "string"
-          },
-          "download_url": {
-            "title": "Download Url",
-            "maxLength": 2083,
-            "minLength": 1,
+          "checksum": {
+            "title": "Checksum",
             "type": "string",
-            "format": "uri"
+            "description": "MD5 hash of the file's content"
           }
         },
-        "description": "Describes a file on the server side "
+        "description": "Describes a file stored on the server side "
       },
       "Groups": {
         "title": "Groups",

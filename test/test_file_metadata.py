@@ -16,11 +16,11 @@ import unittest
 import datetime
 
 import osparc
-from osparc.models.body_upload_single_file_v0_files_upload_post import BodyUploadSingleFileV0FilesUploadPost  # noqa: E501
+from osparc.models.file_metadata import FileMetadata  # noqa: E501
 from osparc.rest import ApiException
 
-class TestBodyUploadSingleFileV0FilesUploadPost(unittest.TestCase):
-    """BodyUploadSingleFileV0FilesUploadPost unit test stubs"""
+class TestFileMetadata(unittest.TestCase):
+    """FileMetadata unit test stubs"""
 
     def setUp(self):
         pass
@@ -29,22 +29,26 @@ class TestBodyUploadSingleFileV0FilesUploadPost(unittest.TestCase):
         pass
 
     def make_instance(self, include_optional):
-        """Test BodyUploadSingleFileV0FilesUploadPost
+        """Test FileMetadata
             include_option is a boolean, when False only required
             params are included, when True both required and
             optional params are included """
-        # model = osparc.models.body_upload_single_file_v0_files_upload_post.BodyUploadSingleFileV0FilesUploadPost()  # noqa: E501
+        # model = osparc.models.file_metadata.FileMetadata()  # noqa: E501
         if include_optional :
-            return BodyUploadSingleFileV0FilesUploadPost(
-                file = bytes(b'blah')
+            return FileMetadata(
+                file_id = '0', 
+                filename = '0', 
+                content_type = '0', 
+                checksum = '0'
             )
         else :
-            return BodyUploadSingleFileV0FilesUploadPost(
-                file = bytes(b'blah'),
+            return FileMetadata(
+                filename = '0',
+                checksum = '0',
         )
 
-    def testBodyUploadSingleFileV0FilesUploadPost(self):
-        """Test BodyUploadSingleFileV0FilesUploadPost"""
+    def testFileMetadata(self):
+        """Test FileMetadata"""
         inst_req_only = self.make_instance(include_optional=False)
         inst_req_and_optional = self.make_instance(include_optional=True)
 

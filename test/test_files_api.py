@@ -35,10 +35,10 @@ class TestFilesApi(unittest.TestCase):
         """
         pass
 
-    def test_files_upload_multiple_view(self):
-        """Test case for files_upload_multiple_view
+    def test_get_file(self):
+        """Test case for get_file
 
-        Files Upload Multiple View  # noqa: E501
+        Get File  # noqa: E501
         """
         pass
 
@@ -49,17 +49,10 @@ class TestFilesApi(unittest.TestCase):
         """
         pass
 
-    def test_upload_multiple_files(self):
-        """Test case for upload_multiple_files
+    def test_upload_file(self):
+        """Test case for upload_file
 
-        Upload Multiple Files  # noqa: E501
-        """
-        pass
-
-    def test_upload_single_file(self):
-        """Test case for upload_single_file
-
-        Upload Single File  # noqa: E501
+        Upload File  # noqa: E501
         """
         pass
 

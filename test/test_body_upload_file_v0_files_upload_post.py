@@ -16,11 +16,11 @@ import unittest
 import datetime
 
 import osparc
-from osparc.models.body_upload_multiple_files_v0_files_upload_multiple_post import BodyUploadMultipleFilesV0FilesUploadMultiplePost  # noqa: E501
+from osparc.models.body_upload_file_v0_files_upload_post import BodyUploadFileV0FilesUploadPost  # noqa: E501
 from osparc.rest import ApiException
 
-class TestBodyUploadMultipleFilesV0FilesUploadMultiplePost(unittest.TestCase):
-    """BodyUploadMultipleFilesV0FilesUploadMultiplePost unit test stubs"""
+class TestBodyUploadFileV0FilesUploadPost(unittest.TestCase):
+    """BodyUploadFileV0FilesUploadPost unit test stubs"""
 
     def setUp(self):
         pass
@@ -29,26 +29,22 @@ class TestBodyUploadMultipleFilesV0FilesUploadMultiplePost(unittest.TestCase):
         pass
 
     def make_instance(self, include_optional):
-        """Test BodyUploadMultipleFilesV0FilesUploadMultiplePost
+        """Test BodyUploadFileV0FilesUploadPost
             include_option is a boolean, when False only required
             params are included, when True both required and
             optional params are included """
-        # model = osparc.models.body_upload_multiple_files_v0_files_upload_multiple_post.BodyUploadMultipleFilesV0FilesUploadMultiplePost()  # noqa: E501
+        # model = osparc.models.body_upload_file_v0_files_upload_post.BodyUploadFileV0FilesUploadPost()  # noqa: E501
         if include_optional :
-            return BodyUploadMultipleFilesV0FilesUploadMultiplePost(
-                files = [
-                    bytes(b'blah')
-                    ]
+            return BodyUploadFileV0FilesUploadPost(
+                file = bytes(b'blah')
             )
         else :
-            return BodyUploadMultipleFilesV0FilesUploadMultiplePost(
-                files = [
-                    bytes(b'blah')
-                    ],
+            return BodyUploadFileV0FilesUploadPost(
+                file = bytes(b'blah'),
         )
 
-    def testBodyUploadMultipleFilesV0FilesUploadMultiplePost(self):
-        """Test BodyUploadMultipleFilesV0FilesUploadMultiplePost"""
+    def testBodyUploadFileV0FilesUploadPost(self):
+        """Test BodyUploadFileV0FilesUploadPost"""
         inst_req_only = self.make_instance(include_optional=False)
         inst_req_and_optional = self.make_instance(include_optional=True)
 

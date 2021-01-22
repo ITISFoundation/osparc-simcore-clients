@@ -14,9 +14,8 @@
 from __future__ import absolute_import
 
 # import models into model package
-from osparc.models.body_upload_multiple_files_v0_files_upload_multiple_post import BodyUploadMultipleFilesV0FilesUploadMultiplePost
-from osparc.models.body_upload_single_file_v0_files_upload_post import BodyUploadSingleFileV0FilesUploadPost
-from osparc.models.file_uploaded import FileUploaded
+from osparc.models.body_upload_file_v0_files_upload_post import BodyUploadFileV0FilesUploadPost
+from osparc.models.file_metadata import FileMetadata
 from osparc.models.groups import Groups
 from osparc.models.http_validation_error import HTTPValidationError
 from osparc.models.job import Job
