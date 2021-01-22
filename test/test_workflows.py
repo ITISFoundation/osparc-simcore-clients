@@ -15,7 +15,7 @@ import packaging.version as pv
 import pytest
 from osparc.api.files_api import FilesApi
 from osparc.configuration import Configuration
-from osparc.models import FileUploaded, Job, JobStatus, Meta, Solver
+from osparc.models import FileMetadata, Job, JobStatus, Meta, Solver
 from osparc.rest import ApiException
 
 
@@ -75,35 +75,38 @@ def test_get_service_metadata(meta_api):
     assert status_code == 200
 
 
-def test_upload_single_file(files_api, tmpdir):
+def test_upload_file(files_api, tmpdir):
     input_path = Path(tmpdir) / "some-text-file.txt"
     input_path.write_text("demo")
 
-    input_file: FileUploaded = files_api.upload_single_file(file=input_path)
-    assert isinstance(input_file, FileUploaded)
+    input_file: FileMetadata = files_api.upload_file(file=input_path)
+    assert isinstance(input_file, FileMetadata)
 
     assert input_file.filename == input_path.name
     assert input_file.content_type == "text/plain"
 
-    same_file = files_api.upload_single_file(file=input_path)
-    assert input_file.hash == same_file.hash
+    same_file = files_api.get_file(input_file.file_id)
+    assert same_file == input_file
+
+    same_file = files_api.upload_file(file=input_path)
+    assert input_file.checksum == same_file.checksum
 
 
-def test_upload_list_download(files_api: FilesApi, tmpdir):
+def test_upload_list_and_download(files_api: FilesApi, tmpdir):
     input_path = Path(tmpdir) / "some-hdf5-file.h5"
     input_path.write_bytes(b"demo but some other stuff as well")
 
-    input_file: FileUploaded = files_api.upload_single_file(file=input_path)
-    assert isinstance(input_file, FileUploaded)
+    input_file: FileMetadata = files_api.upload_file(file=input_path)
+    assert isinstance(input_file, FileMetadata)
 
     assert input_file.filename == input_path.name
 
     myfiles = files_api.list_files()
     assert myfiles
-    assert all(isinstance(f, FileUploaded) for f in myfiles)
+    assert all(isinstance(f, FileMetadata) for f in myfiles)
     assert input_file in myfiles
 
-    same_file = files_api.download_file(file_id=input_file.hash)
+    same_file = files_api.download_file(file_id=input_file.file_id)
     assert input_path.read_text() == same_file
 
 
