@@ -119,7 +119,7 @@ def test_solvers(solvers_api):
             if not latest:
                 latest = solver
             elif pv.parse(latest.version) < pv.parse(solver.version):
-                latest = solvers_api.get_solver_by_id(solver.uuid)
+                latest = solvers_api.get_solver_by_id(solver.id)
 
     print(latest)
     assert latest
@@ -130,7 +130,7 @@ def test_solvers(solvers_api):
         )
         == latest
     )
-    assert solvers_api.get_solver_by_id(latest.uuid) == latest
+    assert solvers_api.get_solver(latest.id) == latest
 
 
 def test_run_solvers(solvers_api, jobs_api):
@@ -148,41 +148,37 @@ def test_run_solvers(solvers_api, jobs_api):
 
     # I would like to run a job with my solver and these inputs.
     # TODO: how to name the body so we get nice doc?
-    job = solvers_api.create_job(solver.uuid, job_input=[])
+    job = solvers_api.create_job(solver.id, job_input=[])
 
     # Job granted. Resources reserved for you during N-minutes
     assert isinstance(job, Job)
 
     # TODO: change to uid
-    assert job.job_id
-    assert job == jobs_api.get_job(job.job_id)
+    assert job.id
+    assert job == jobs_api.get_job(job.id)
 
     # gets jobs granted for user with a given solver
-    solver_jobs = solvers_api.list_jobs(solver.uuid)
-    assert job.to_dict() in solver_jobs
+    solver_jobs = solvers_api.list_jobs(solver.id)
+    assert job in solver_jobs
 
     # I only have jobs from this solver ?
     all_jobs = jobs_api.list_all_jobs()
     assert len(solver_jobs) <= len(all_jobs)
     assert all(job in all_jobs for job in solver_jobs)
 
-    # ---
-
     # let's run the job
-    submit_time = datetime.utcnow()
-    status = jobs_api.start_job(job.job_id)
+    status = jobs_api.start_job(job.id)
     assert isinstance(status, JobStatus)
 
     assert status.state == "undefined"
     assert status.progress == 0
-    assert submit_time < status.submitted_at < (submit_time + timedelta(seconds=2))
+    assert job.created_at < status.submitted_at < (job.created_at + timedelta(seconds=2))
 
-    # TODO: progress could be per output?
-    # TODO: finished/done
-    #  - progress 100 * number-of-outputs
+
+    # polling inspect_job
     while not status.stopped_at:
-        time.sleep(0.1)
-        status = jobs_api.inspect_job(job.job_id)
+        time.sleep(0.5)
+        status = jobs_api.inspect_job(job.id)
         print("Solver progress", f"{status.progress}/100", flush=True)
 
     # done
@@ -193,11 +189,14 @@ def test_run_solvers(solvers_api, jobs_api):
 
     # let's get the results
     try:
-        outputs = jobs_api.list_job_outputs(job.job_id)
+        outputs = jobs_api.list_job_outputs(job.id)
         for output in outputs:
             print(output)
-            assert output == jobs_api.get_job_output(job.job_id, output.id)
+            assert output.id == job.id
+            assert output == jobs_api.get_job_output(job.id, output.id)
+
+            
     except ApiException as err:
         assert (
             status.state == "failed" and err.status == 404
-        ), "No outputs if job failed"
+        ), f"No outputs if job failed {err}"

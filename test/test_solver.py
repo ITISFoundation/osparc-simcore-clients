@@ -36,26 +36,22 @@ class TestSolver(unittest.TestCase):
         # model = osparc.models.solver.Solver()  # noqa: E501
         if include_optional :
             return Solver(
-                uuid = '0', 
-                name = '0', 
-                version = '0', 
-                version_aliases = [
-                    '0'
-                    ], 
+                name = 'a', 
+                version = '["1.0.0","0.0.1"]', 
+                id = '0', 
                 title = '0', 
                 description = '0', 
                 maintainer = '0', 
-                released = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'), 
-                solver_url = '0'
+                url = '0'
             )
         else :
             return Solver(
-                uuid = '0',
-                name = '0',
-                version = '0',
+                name = 'a',
+                version = '["1.0.0","0.0.1"]',
+                id = '0',
                 title = '0',
                 maintainer = '0',
-                solver_url = '0',
+                url = '0',
         )
 
     def testSolver(self):

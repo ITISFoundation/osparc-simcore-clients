@@ -36,19 +36,19 @@ class JobOutput(object):
         'name': 'str',
         'type': 'str',
         'title': 'str',
-        'status': 'TaskStates',
-        'value': 'AnyOfnumberstringinteger'
+        'value': 'AnyOfnumberstringinteger',
+        'job_id': 'str'
     }
 
     attribute_map = {
         'name': 'name',
         'type': 'type',
         'title': 'title',
-        'status': 'status',
-        'value': 'value'
+        'value': 'value',
+        'job_id': 'job_id'
     }
 
-    def __init__(self, name=None, type=None, title=None, status=None, value=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(self, name=None, type=None, title=None, value=None, job_id=None, local_vars_configuration=None):  # noqa: E501
         """JobOutput - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
@@ -57,8 +57,8 @@ class JobOutput(object):
         self._name = None
         self._type = None
         self._title = None
-        self._status = None
         self._value = None
+        self._job_id = None
         self.discriminator = None
 
         self.name = name
@@ -66,8 +66,8 @@ class JobOutput(object):
             self.type = type
         if title is not None:
             self.title = title
-        self.status = status
         self.value = value
+        self.job_id = job_id
 
     @property
     def name(self):
@@ -147,31 +147,6 @@ class JobOutput(object):
         self._title = title
 
     @property
-    def status(self):
-        """Gets the status of this JobOutput.  # noqa: E501
-
-        State towards completion of this output  # noqa: E501
-
-        :return: The status of this JobOutput.  # noqa: E501
-        :rtype: TaskStates
-        """
-        return self._status
-
-    @status.setter
-    def status(self, status):
-        """Sets the status of this JobOutput.
-
-        State towards completion of this output  # noqa: E501
-
-        :param status: The status of this JobOutput.  # noqa: E501
-        :type: TaskStates
-        """
-        if self.local_vars_configuration.client_side_validation and status is None:  # noqa: E501
-            raise ValueError("Invalid value for `status`, must not be `None`")  # noqa: E501
-
-        self._status = status
-
-    @property
     def value(self):
         """Gets the value of this JobOutput.  # noqa: E501
 
@@ -195,6 +170,31 @@ class JobOutput(object):
             raise ValueError("Invalid value for `value`, must not be `None`")  # noqa: E501
 
         self._value = value
+
+    @property
+    def job_id(self):
+        """Gets the job_id of this JobOutput.  # noqa: E501
+
+        Job that produced this output  # noqa: E501
+
+        :return: The job_id of this JobOutput.  # noqa: E501
+        :rtype: str
+        """
+        return self._job_id
+
+    @job_id.setter
+    def job_id(self, job_id):
+        """Sets the job_id of this JobOutput.
+
+        Job that produced this output  # noqa: E501
+
+        :param job_id: The job_id of this JobOutput.  # noqa: E501
+        :type: str
+        """
+        if self.local_vars_configuration.client_side_validation and job_id is None:  # noqa: E501
+            raise ValueError("Invalid value for `job_id`, must not be `None`")  # noqa: E501
+
+        self._job_id = job_id
 
     def to_dict(self):
         """Returns the model properties as a dict"""

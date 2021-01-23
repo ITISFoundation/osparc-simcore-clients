@@ -39,14 +39,14 @@ class TestJobOutput(unittest.TestCase):
                 name = '012', 
                 type = 'a', 
                 title = '0', 
-                status = null, 
-                value = null
+                value = null, 
+                job_id = '0'
             )
         else :
             return JobOutput(
                 name = '012',
-                status = null,
                 value = null,
+                job_id = '0',
         )
 
     def testJobOutput(self):

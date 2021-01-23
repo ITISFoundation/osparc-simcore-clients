@@ -35,10 +35,10 @@ class TestSolversApi(unittest.TestCase):
         """
         pass
 
-    def test_get_solver_by_id(self):
-        """Test case for get_solver_by_id
+    def test_get_solver(self):
+        """Test case for get_solver
 
-        Get Solver By Id  # noqa: E501
+        Get Solver  # noqa: E501
         """
         pass
 
@@ -60,13 +60,6 @@ class TestSolversApi(unittest.TestCase):
         """Test case for list_solvers
 
         List Solvers  # noqa: E501
-        """
-        pass
-
-    def test_run_job(self):
-        """Test case for run_job
-
-        Run Job  # noqa: E501
         """
         pass
 

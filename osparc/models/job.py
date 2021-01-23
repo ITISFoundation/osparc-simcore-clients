@@ -33,94 +33,53 @@ class Job(object):
                             and the value is json key in definition.
     """
     openapi_types = {
-        'job_id': 'str',
-        'inputs_sha': 'str',
         'solver_id': 'str',
+        'inputs_sha': 'str',
+        'created_at': 'datetime',
+        'id': 'str',
+        'url': 'str',
         'solver_url': 'str',
-        'inspect_url': 'str',
         'outputs_url': 'str'
     }
 
     attribute_map = {
-        'job_id': 'job_id',
-        'inputs_sha': 'inputs_sha',
         'solver_id': 'solver_id',
+        'inputs_sha': 'inputs_sha',
+        'created_at': 'created_at',
+        'id': 'id',
+        'url': 'url',
         'solver_url': 'solver_url',
-        'inspect_url': 'inspect_url',
         'outputs_url': 'outputs_url'
     }
 
-    def __init__(self, job_id=None, inputs_sha=None, solver_id=None, solver_url=None, inspect_url=None, outputs_url=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(self, solver_id=None, inputs_sha=None, created_at=None, id=None, url=None, solver_url=None, outputs_url=None, local_vars_configuration=None):  # noqa: E501
         """Job - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
         self.local_vars_configuration = local_vars_configuration
 
-        self._job_id = None
-        self._inputs_sha = None
         self._solver_id = None
+        self._inputs_sha = None
+        self._created_at = None
+        self._id = None
+        self._url = None
         self._solver_url = None
-        self._inspect_url = None
         self._outputs_url = None
         self.discriminator = None
 
-        self.job_id = job_id
-        self.inputs_sha = inputs_sha
         self.solver_id = solver_id
+        self.inputs_sha = inputs_sha
+        self.created_at = created_at
+        self.id = id
+        self.url = url
         self.solver_url = solver_url
-        self.inspect_url = inspect_url
         self.outputs_url = outputs_url
-
-    @property
-    def job_id(self):
-        """Gets the job_id of this Job.  # noqa: E501
-
-
-        :return: The job_id of this Job.  # noqa: E501
-        :rtype: str
-        """
-        return self._job_id
-
-    @job_id.setter
-    def job_id(self, job_id):
-        """Sets the job_id of this Job.
-
-
-        :param job_id: The job_id of this Job.  # noqa: E501
-        :type: str
-        """
-        if self.local_vars_configuration.client_side_validation and job_id is None:  # noqa: E501
-            raise ValueError("Invalid value for `job_id`, must not be `None`")  # noqa: E501
-
-        self._job_id = job_id
-
-    @property
-    def inputs_sha(self):
-        """Gets the inputs_sha of this Job.  # noqa: E501
-
-
-        :return: The inputs_sha of this Job.  # noqa: E501
-        :rtype: str
-        """
-        return self._inputs_sha
-
-    @inputs_sha.setter
-    def inputs_sha(self, inputs_sha):
-        """Sets the inputs_sha of this Job.
-
-
-        :param inputs_sha: The inputs_sha of this Job.  # noqa: E501
-        :type: str
-        """
-        if self.local_vars_configuration.client_side_validation and inputs_sha is None:  # noqa: E501
-            raise ValueError("Invalid value for `inputs_sha`, must not be `None`")  # noqa: E501
-
-        self._inputs_sha = inputs_sha
 
     @property
     def solver_id(self):
         """Gets the solver_id of this Job.  # noqa: E501
 
+        Solver used to run this job  # noqa: E501
 
         :return: The solver_id of this Job.  # noqa: E501
         :rtype: str
@@ -131,6 +90,7 @@ class Job(object):
     def solver_id(self, solver_id):
         """Sets the solver_id of this Job.
 
+        Solver used to run this job  # noqa: E501
 
         :param solver_id: The solver_id of this Job.  # noqa: E501
         :type: str
@@ -141,9 +101,114 @@ class Job(object):
         self._solver_id = solver_id
 
     @property
+    def inputs_sha(self):
+        """Gets the inputs_sha of this Job.  # noqa: E501
+
+        Input's checksum  # noqa: E501
+
+        :return: The inputs_sha of this Job.  # noqa: E501
+        :rtype: str
+        """
+        return self._inputs_sha
+
+    @inputs_sha.setter
+    def inputs_sha(self, inputs_sha):
+        """Sets the inputs_sha of this Job.
+
+        Input's checksum  # noqa: E501
+
+        :param inputs_sha: The inputs_sha of this Job.  # noqa: E501
+        :type: str
+        """
+        if self.local_vars_configuration.client_side_validation and inputs_sha is None:  # noqa: E501
+            raise ValueError("Invalid value for `inputs_sha`, must not be `None`")  # noqa: E501
+
+        self._inputs_sha = inputs_sha
+
+    @property
+    def created_at(self):
+        """Gets the created_at of this Job.  # noqa: E501
+
+        Job creation timestamp  # noqa: E501
+
+        :return: The created_at of this Job.  # noqa: E501
+        :rtype: datetime
+        """
+        return self._created_at
+
+    @created_at.setter
+    def created_at(self, created_at):
+        """Sets the created_at of this Job.
+
+        Job creation timestamp  # noqa: E501
+
+        :param created_at: The created_at of this Job.  # noqa: E501
+        :type: datetime
+        """
+        if self.local_vars_configuration.client_side_validation and created_at is None:  # noqa: E501
+            raise ValueError("Invalid value for `created_at`, must not be `None`")  # noqa: E501
+
+        self._created_at = created_at
+
+    @property
+    def id(self):
+        """Gets the id of this Job.  # noqa: E501
+
+
+        :return: The id of this Job.  # noqa: E501
+        :rtype: str
+        """
+        return self._id
+
+    @id.setter
+    def id(self, id):
+        """Sets the id of this Job.
+
+
+        :param id: The id of this Job.  # noqa: E501
+        :type: str
+        """
+        if self.local_vars_configuration.client_side_validation and id is None:  # noqa: E501
+            raise ValueError("Invalid value for `id`, must not be `None`")  # noqa: E501
+
+        self._id = id
+
+    @property
+    def url(self):
+        """Gets the url of this Job.  # noqa: E501
+
+        Link to get this resource  # noqa: E501
+
+        :return: The url of this Job.  # noqa: E501
+        :rtype: str
+        """
+        return self._url
+
+    @url.setter
+    def url(self, url):
+        """Sets the url of this Job.
+
+        Link to get this resource  # noqa: E501
+
+        :param url: The url of this Job.  # noqa: E501
+        :type: str
+        """
+        if self.local_vars_configuration.client_side_validation and url is None:  # noqa: E501
+            raise ValueError("Invalid value for `url`, must not be `None`")  # noqa: E501
+        if (self.local_vars_configuration.client_side_validation and
+                url is not None and len(url) > 2083):
+            raise ValueError("Invalid value for `url`, length must be less than or equal to `2083`")  # noqa: E501
+        if (self.local_vars_configuration.client_side_validation and
+                url is not None and len(url) < 1):
+            raise ValueError("Invalid value for `url`, length must be greater than or equal to `1`")  # noqa: E501
+
+        self._url = url
+
+    @property
     def solver_url(self):
         """Gets the solver_url of this Job.  # noqa: E501
 
+        Link to the solver's job  # noqa: E501
 
         :return: The solver_url of this Job.  # noqa: E501
         :rtype: str
@@ -154,6 +219,7 @@ class Job(object):
     def solver_url(self, solver_url):
         """Sets the solver_url of this Job.
 
+        Link to the solver's job  # noqa: E501
 
         :param solver_url: The solver_url of this Job.  # noqa: E501
         :type: str
@@ -170,38 +236,10 @@ class Job(object):
         self._solver_url = solver_url
 
     @property
-    def inspect_url(self):
-        """Gets the inspect_url of this Job.  # noqa: E501
-
-
-        :return: The inspect_url of this Job.  # noqa: E501
-        :rtype: str
-        """
-        return self._inspect_url
-
-    @inspect_url.setter
-    def inspect_url(self, inspect_url):
-        """Sets the inspect_url of this Job.
-
-
-        :param inspect_url: The inspect_url of this Job.  # noqa: E501
-        :type: str
-        """
-        if self.local_vars_configuration.client_side_validation and inspect_url is None:  # noqa: E501
-            raise ValueError("Invalid value for `inspect_url`, must not be `None`")  # noqa: E501
-        if (self.local_vars_configuration.client_side_validation and
-                inspect_url is not None and len(inspect_url) > 2083):
-            raise ValueError("Invalid value for `inspect_url`, length must be less than or equal to `2083`")  # noqa: E501
-        if (self.local_vars_configuration.client_side_validation and
-                inspect_url is not None and len(inspect_url) < 1):
-            raise ValueError("Invalid value for `inspect_url`, length must be greater than or equal to `1`")  # noqa: E501
-
-        self._inspect_url = inspect_url
-
-    @property
     def outputs_url(self):
         """Gets the outputs_url of this Job.  # noqa: E501
 
+        Link to the job outputs  # noqa: E501
 
         :return: The outputs_url of this Job.  # noqa: E501
         :rtype: str
@@ -212,6 +250,7 @@ class Job(object):
     def outputs_url(self, outputs_url):
         """Sets the outputs_url of this Job.
 
+        Link to the job outputs  # noqa: E501
 
         :param outputs_url: The outputs_url of this Job.  # noqa: E501
         :type: str

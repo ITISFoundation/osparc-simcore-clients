@@ -33,89 +33,54 @@ class Solver(object):
                             and the value is json key in definition.
     """
     openapi_types = {
-        'uuid': 'str',
         'name': 'str',
         'version': 'str',
-        'version_aliases': 'list[str]',
+        'id': 'str',
         'title': 'str',
         'description': 'str',
         'maintainer': 'str',
-        'released': 'datetime',
-        'solver_url': 'str'
+        'url': 'str'
     }
 
     attribute_map = {
-        'uuid': 'uuid',
         'name': 'name',
         'version': 'version',
-        'version_aliases': 'version_aliases',
+        'id': 'id',
         'title': 'title',
         'description': 'description',
         'maintainer': 'maintainer',
-        'released': 'released',
-        'solver_url': 'solver_url'
+        'url': 'url'
     }
 
-    def __init__(self, uuid=None, name=None, version=None, version_aliases=[], title=None, description=None, maintainer=None, released=None, solver_url=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(self, name=None, version=None, id=None, title=None, description=None, maintainer=None, url=None, local_vars_configuration=None):  # noqa: E501
         """Solver - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
         self.local_vars_configuration = local_vars_configuration
 
-        self._uuid = None
         self._name = None
         self._version = None
-        self._version_aliases = None
+        self._id = None
         self._title = None
         self._description = None
         self._maintainer = None
-        self._released = None
-        self._solver_url = None
+        self._url = None
         self.discriminator = None
 
-        self.uuid = uuid
         self.name = name
         self.version = version
-        if version_aliases is not None:
-            self.version_aliases = version_aliases
+        self.id = id
         self.title = title
         if description is not None:
             self.description = description
         self.maintainer = maintainer
-        if released is not None:
-            self.released = released
-        self.solver_url = solver_url
-
-    @property
-    def uuid(self):
-        """Gets the uuid of this Solver.  # noqa: E501
-
-        Same as the solver's image sha256  # noqa: E501
-
-        :return: The uuid of this Solver.  # noqa: E501
-        :rtype: str
-        """
-        return self._uuid
-
-    @uuid.setter
-    def uuid(self, uuid):
-        """Sets the uuid of this Solver.
-
-        Same as the solver's image sha256  # noqa: E501
-
-        :param uuid: The uuid of this Solver.  # noqa: E501
-        :type: str
-        """
-        if self.local_vars_configuration.client_side_validation and uuid is None:  # noqa: E501
-            raise ValueError("Invalid value for `uuid`, must not be `None`")  # noqa: E501
-
-        self._uuid = uuid
+        self.url = url
 
     @property
     def name(self):
         """Gets the name of this Solver.  # noqa: E501
 
-        Image name including namespace  # noqa: E501
+        Unique solver name with path namespaces  # noqa: E501
 
         :return: The name of this Solver.  # noqa: E501
         :rtype: str
@@ -126,13 +91,16 @@ class Solver(object):
     def name(self, name):
         """Sets the name of this Solver.
 
-        Image name including namespace  # noqa: E501
+        Unique solver name with path namespaces  # noqa: E501
 
         :param name: The name of this Solver.  # noqa: E501
         :type: str
         """
         if self.local_vars_configuration.client_side_validation and name is None:  # noqa: E501
             raise ValueError("Invalid value for `name`, must not be `None`")  # noqa: E501
+        if (self.local_vars_configuration.client_side_validation and
+                name is not None and not re.search(r'^(simcore)\/(services)\/comp(\/[\w\/-]+)+$', name)):  # noqa: E501
+            raise ValueError(r"Invalid value for `name`, must be a follow pattern or equal to `/^(simcore)\/(services)\/comp(\/[\w\/-]+)+$/`")  # noqa: E501
 
         self._name = name
 
@@ -140,6 +108,7 @@ class Solver(object):
     def version(self):
         """Gets the version of this Solver.  # noqa: E501
 
+        semantic version number of the node  # noqa: E501
 
         :return: The version of this Solver.  # noqa: E501
         :rtype: str
@@ -150,40 +119,47 @@ class Solver(object):
     def version(self, version):
         """Sets the version of this Solver.
 
+        semantic version number of the node  # noqa: E501
 
         :param version: The version of this Solver.  # noqa: E501
         :type: str
         """
         if self.local_vars_configuration.client_side_validation and version is None:  # noqa: E501
             raise ValueError("Invalid value for `version`, must not be `None`")  # noqa: E501
+        if (self.local_vars_configuration.client_side_validation and
+                version is not None and not re.search(r'^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$', version)):  # noqa: E501
+            raise ValueError(r"Invalid value for `version`, must be a follow pattern or equal to `/^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$/`")  # noqa: E501
 
         self._version = version
 
     @property
-    def version_aliases(self):
-        """Gets the version_aliases of this Solver.  # noqa: E501
+    def id(self):
+        """Gets the id of this Solver.  # noqa: E501
 
 
-        :return: The version_aliases of this Solver.  # noqa: E501
-        :rtype: list[str]
+        :return: The id of this Solver.  # noqa: E501
+        :rtype: str
         """
-        return self._version_aliases
+        return self._id
 
-    @version_aliases.setter
-    def version_aliases(self, version_aliases):
-        """Sets the version_aliases of this Solver.
+    @id.setter
+    def id(self, id):
+        """Sets the id of this Solver.
 
 
-        :param version_aliases: The version_aliases of this Solver.  # noqa: E501
-        :type: list[str]
+        :param id: The id of this Solver.  # noqa: E501
+        :type: str
         """
+        if self.local_vars_configuration.client_side_validation and id is None:  # noqa: E501
+            raise ValueError("Invalid value for `id`, must not be `None`")  # noqa: E501
 
-        self._version_aliases = version_aliases
+        self._id = id
 
     @property
     def title(self):
         """Gets the title of this Solver.  # noqa: E501
 
+        Human readable name  # noqa: E501
 
         :return: The title of this Solver.  # noqa: E501
         :rtype: str
@@ -194,6 +170,7 @@ class Solver(object):
     def title(self, title):
         """Sets the title of this Solver.
 
+        Human readable name  # noqa: E501
 
         :param title: The title of this Solver.  # noqa: E501
         :type: str
@@ -248,54 +225,35 @@ class Solver(object):
         self._maintainer = maintainer
 
     @property
-    def released(self):
-        """Gets the released of this Solver.  # noqa: E501
+    def url(self):
+        """Gets the url of this Solver.  # noqa: E501
 
+        Link to get this resource  # noqa: E501
 
-        :return: The released of this Solver.  # noqa: E501
-        :rtype: datetime
-        """
-        return self._released
-
-    @released.setter
-    def released(self, released):
-        """Sets the released of this Solver.
-
-
-        :param released: The released of this Solver.  # noqa: E501
-        :type: datetime
-        """
-
-        self._released = released
-
-    @property
-    def solver_url(self):
-        """Gets the solver_url of this Solver.  # noqa: E501
-
-
-        :return: The solver_url of this Solver.  # noqa: E501
+        :return: The url of this Solver.  # noqa: E501
         :rtype: str
         """
-        return self._solver_url
+        return self._url
 
-    @solver_url.setter
-    def solver_url(self, solver_url):
-        """Sets the solver_url of this Solver.
+    @url.setter
+    def url(self, url):
+        """Sets the url of this Solver.
 
+        Link to get this resource  # noqa: E501
 
-        :param solver_url: The solver_url of this Solver.  # noqa: E501
+        :param url: The url of this Solver.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and solver_url is None:  # noqa: E501
-            raise ValueError("Invalid value for `solver_url`, must not be `None`")  # noqa: E501
+        if self.local_vars_configuration.client_side_validation and url is None:  # noqa: E501
+            raise ValueError("Invalid value for `url`, must not be `None`")  # noqa: E501
         if (self.local_vars_configuration.client_side_validation and
-                solver_url is not None and len(solver_url) > 2083):
-            raise ValueError("Invalid value for `solver_url`, length must be less than or equal to `2083`")  # noqa: E501
+                url is not None and len(url) > 2083):
+            raise ValueError("Invalid value for `url`, length must be less than or equal to `2083`")  # noqa: E501
         if (self.local_vars_configuration.client_side_validation and
-                solver_url is not None and len(solver_url) < 1):
-            raise ValueError("Invalid value for `solver_url`, length must be greater than or equal to `1`")  # noqa: E501
+                url is not None and len(url) < 1):
+            raise ValueError("Invalid value for `url`, length must be greater than or equal to `1`")  # noqa: E501
 
-        self._solver_url = solver_url
+        self._url = url
 
     def to_dict(self):
         """Returns the model properties as a dict"""

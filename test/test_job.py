@@ -36,20 +36,22 @@ class TestJob(unittest.TestCase):
         # model = osparc.models.job.Job()  # noqa: E501
         if include_optional :
             return Job(
-                job_id = '0', 
-                inputs_sha = '0', 
                 solver_id = '0', 
+                inputs_sha = '0', 
+                created_at = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'), 
+                id = '0', 
+                url = '0', 
                 solver_url = '0', 
-                inspect_url = '0', 
                 outputs_url = '0'
             )
         else :
             return Job(
-                job_id = '0',
-                inputs_sha = '0',
                 solver_id = '0',
+                inputs_sha = '0',
+                created_at = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
+                id = '0',
+                url = '0',
                 solver_url = '0',
-                inspect_url = '0',
                 outputs_url = '0',
         )
 
