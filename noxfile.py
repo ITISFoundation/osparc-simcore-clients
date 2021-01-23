@@ -8,7 +8,7 @@ source_files = ("osparc", "test", "setup.py", "noxfile.py")
 
 @nox.session(python=["3.6", "3.7", "3.8"])
 def test(session):
-    session.install("-r", "requirements-tests")
+    session.install("-r", "requirements-tests.txt")
     session.install("-e", ".")
 
     options = session.posargs
