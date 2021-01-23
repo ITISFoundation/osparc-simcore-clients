@@ -745,7 +745,6 @@
             "required": true,
             "schema": {
               "title": "Output Name",
-              "minLength": 3,
               "type": "string"
             },
             "name": "output_name",
@@ -865,7 +864,7 @@
         "title": "Job",
         "required": [
           "solver_id",
-          "inputs_sha",
+          "inputs_checksum",
           "created_at",
           "id",
           "url",
@@ -880,8 +879,8 @@
             "description": "Solver used to run this job",
             "format": "uuid"
           },
-          "inputs_sha": {
-            "title": "Inputs Sha",
+          "inputs_checksum": {
+            "title": "Inputs Checksum",
             "type": "string",
             "description": "Input's checksum"
           },
@@ -923,7 +922,7 @@
         },
         "example": {
           "solver_id": "32cfd2c5-ad5c-4086-ba5e-6f76a17dcb7a",
-          "inputs_sha": "12345",
+          "inputs_checksum": "12345",
           "created_at": "2021-01-22T23:59:52.322176",
           "id": "f5c44f80-af84-3d45-8836-7933f67959a6",
           "url": "https://api.osparc.io/v0/jobs/f5c44f80-af84-3d45-8836-7933f67959a6",
@@ -940,7 +939,6 @@
         "properties": {
           "name": {
             "title": "Name",
-            "minLength": 3,
             "type": "string",
             "description": "Name given to the input/output in solver specs (see solver metadata.yml)"
           },
@@ -956,18 +954,7 @@
             "description": "Short human readable name to identify input/output"
           },
           "value": {
-            "title": "Value",
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "string"
-              },
-              {
-                "type": "integer"
-              }
-            ]
+            "$ref": "#/components/schemas/PortValue"
           }
         },
         "example": {
@@ -988,7 +975,6 @@
         "properties": {
           "name": {
             "title": "Name",
-            "minLength": 3,
             "type": "string",
             "description": "Name given to the input/output in solver specs (see solver metadata.yml)"
           },
@@ -1004,19 +990,7 @@
             "description": "Short human readable name to identify input/output"
           },
           "value": {
-            "title": "Value",
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "string"
-              },
-              {
-                "type": "integer"
-              }
-            ],
-            "description": "Result value in this output"
+            "$ref": "#/components/schemas/PortValue"
           },
           "job_id": {
             "title": "Job Id",
@@ -1130,6 +1104,20 @@
           "doc_url": "https://api.osparc.io/doc",
           "doc_dev_url": "https://api.osparc.io/dev/doc"
         }
+      },
+      "PortValue": {
+        "title": "PortValue",
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "string"
+          },
+          {
+            "type": "integer"
+          }
+        ]
       },
       "Profile": {
         "title": "Profile",

@@ -23,6 +23,7 @@ from osparc.models.job_input import JobInput
 from osparc.models.job_output import JobOutput
 from osparc.models.job_status import JobStatus
 from osparc.models.meta import Meta
+from osparc.models.port_value import PortValue
 from osparc.models.profile import Profile
 from osparc.models.profile_update import ProfileUpdate
 from osparc.models.solver import Solver

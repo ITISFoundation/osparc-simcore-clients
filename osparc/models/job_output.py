@@ -36,7 +36,7 @@ class JobOutput(object):
         'name': 'str',
         'type': 'str',
         'title': 'str',
-        'value': 'AnyOfnumberstringinteger',
+        'value': 'PortValue',
         'job_id': 'str'
     }
 
@@ -91,9 +91,6 @@ class JobOutput(object):
         """
         if self.local_vars_configuration.client_side_validation and name is None:  # noqa: E501
             raise ValueError("Invalid value for `name`, must not be `None`")  # noqa: E501
-        if (self.local_vars_configuration.client_side_validation and
-                name is not None and len(name) < 3):
-            raise ValueError("Invalid value for `name`, length must be greater than or equal to `3`")  # noqa: E501
 
         self._name = name
 
@@ -150,10 +147,9 @@ class JobOutput(object):
     def value(self):
         """Gets the value of this JobOutput.  # noqa: E501
 
-        Result value in this output  # noqa: E501
 
         :return: The value of this JobOutput.  # noqa: E501
-        :rtype: AnyOfnumberstringinteger
+        :rtype: PortValue
         """
         return self._value
 
@@ -161,10 +157,9 @@ class JobOutput(object):
     def value(self, value):
         """Sets the value of this JobOutput.
 
-        Result value in this output  # noqa: E501
 
         :param value: The value of this JobOutput.  # noqa: E501
-        :type: AnyOfnumberstringinteger
+        :type: PortValue
         """
         if self.local_vars_configuration.client_side_validation and value is None:  # noqa: E501
             raise ValueError("Invalid value for `value`, must not be `None`")  # noqa: E501

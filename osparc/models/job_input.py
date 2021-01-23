@@ -36,7 +36,7 @@ class JobInput(object):
         'name': 'str',
         'type': 'str',
         'title': 'str',
-        'value': 'AnyOfnumberstringinteger'
+        'value': 'PortValue'
     }
 
     attribute_map = {
@@ -88,9 +88,6 @@ class JobInput(object):
         """
         if self.local_vars_configuration.client_side_validation and name is None:  # noqa: E501
             raise ValueError("Invalid value for `name`, must not be `None`")  # noqa: E501
-        if (self.local_vars_configuration.client_side_validation and
-                name is not None and len(name) < 3):
-            raise ValueError("Invalid value for `name`, length must be greater than or equal to `3`")  # noqa: E501
 
         self._name = name
 
@@ -149,7 +146,7 @@ class JobInput(object):
 
 
         :return: The value of this JobInput.  # noqa: E501
-        :rtype: AnyOfnumberstringinteger
+        :rtype: PortValue
         """
         return self._value
 
@@ -159,7 +156,7 @@ class JobInput(object):
 
 
         :param value: The value of this JobInput.  # noqa: E501
-        :type: AnyOfnumberstringinteger
+        :type: PortValue
         """
 
         self._value = value

@@ -217,9 +217,6 @@ class JobsApi(object):
                                                         local_var_params['output_name'] is None):  # noqa: E501
             raise ApiValueError("Missing the required parameter `output_name` when calling `get_job_output`")  # noqa: E501
 
-        if self.api_client.client_side_validation and ('output_name' in local_var_params and  # noqa: E501
-                                                        len(local_var_params['output_name']) < 3):  # noqa: E501
-            raise ApiValueError("Invalid value for parameter `output_name` when calling `get_job_output`, length must be greater than or equal to `3`")  # noqa: E501
         collection_formats = {}
 
         path_params = {}

@@ -192,10 +192,10 @@ def test_run_solvers(solvers_api, jobs_api):
         outputs = jobs_api.list_job_outputs(job.id)
         for output in outputs:
             print(output)
-            assert output.id == job.id
-            assert output == jobs_api.get_job_output(job.id, output.id)
+            assert output.job_id == job.id
+            assert output == jobs_api.get_job_output(job.id, output.name)
 
-            
+
     except ApiException as err:
         assert (
             status.state == "failed" and err.status == 404

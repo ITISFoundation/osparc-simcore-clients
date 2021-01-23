@@ -34,7 +34,7 @@ class Job(object):
     """
     openapi_types = {
         'solver_id': 'str',
-        'inputs_sha': 'str',
+        'inputs_checksum': 'str',
         'created_at': 'datetime',
         'id': 'str',
         'url': 'str',
@@ -44,7 +44,7 @@ class Job(object):
 
     attribute_map = {
         'solver_id': 'solver_id',
-        'inputs_sha': 'inputs_sha',
+        'inputs_checksum': 'inputs_checksum',
         'created_at': 'created_at',
         'id': 'id',
         'url': 'url',
@@ -52,14 +52,14 @@ class Job(object):
         'outputs_url': 'outputs_url'
     }
 
-    def __init__(self, solver_id=None, inputs_sha=None, created_at=None, id=None, url=None, solver_url=None, outputs_url=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(self, solver_id=None, inputs_checksum=None, created_at=None, id=None, url=None, solver_url=None, outputs_url=None, local_vars_configuration=None):  # noqa: E501
         """Job - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
         self.local_vars_configuration = local_vars_configuration
 
         self._solver_id = None
-        self._inputs_sha = None
+        self._inputs_checksum = None
         self._created_at = None
         self._id = None
         self._url = None
@@ -68,7 +68,7 @@ class Job(object):
         self.discriminator = None
 
         self.solver_id = solver_id
-        self.inputs_sha = inputs_sha
+        self.inputs_checksum = inputs_checksum
         self.created_at = created_at
         self.id = id
         self.url = url
@@ -101,29 +101,29 @@ class Job(object):
         self._solver_id = solver_id
 
     @property
-    def inputs_sha(self):
-        """Gets the inputs_sha of this Job.  # noqa: E501
+    def inputs_checksum(self):
+        """Gets the inputs_checksum of this Job.  # noqa: E501
 
         Input's checksum  # noqa: E501
 
-        :return: The inputs_sha of this Job.  # noqa: E501
+        :return: The inputs_checksum of this Job.  # noqa: E501
         :rtype: str
         """
-        return self._inputs_sha
+        return self._inputs_checksum
 
-    @inputs_sha.setter
-    def inputs_sha(self, inputs_sha):
-        """Sets the inputs_sha of this Job.
+    @inputs_checksum.setter
+    def inputs_checksum(self, inputs_checksum):
+        """Sets the inputs_checksum of this Job.
 
         Input's checksum  # noqa: E501
 
-        :param inputs_sha: The inputs_sha of this Job.  # noqa: E501
+        :param inputs_checksum: The inputs_checksum of this Job.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and inputs_sha is None:  # noqa: E501
-            raise ValueError("Invalid value for `inputs_sha`, must not be `None`")  # noqa: E501
+        if self.local_vars_configuration.client_side_validation and inputs_checksum is None:  # noqa: E501
+            raise ValueError("Invalid value for `inputs_checksum`, must not be `None`")  # noqa: E501
 
-        self._inputs_sha = inputs_sha
+        self._inputs_checksum = inputs_checksum
 
     @property
     def created_at(self):
