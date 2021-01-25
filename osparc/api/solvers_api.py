@@ -137,7 +137,7 @@ class SolversApi(object):
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/v0/solvers/{solver_id}/jobs/', 'POST',
+            '/v0/solvers/{solver_id}/jobs', 'POST',
             path_params,
             query_params,
             header_params,
@@ -467,7 +467,7 @@ class SolversApi(object):
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/v0/solvers/{solver_id}/jobs/', 'GET',
+            '/v0/solvers/{solver_id}/jobs', 'GET',
             path_params,
             query_params,
             header_params,
