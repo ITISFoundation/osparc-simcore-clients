@@ -124,7 +124,7 @@ class FilesApi(object):
             ['application/json'])  # noqa: E501
 
         # Authentication setting
-        auth_settings = []  # noqa: E501
+        auth_settings = ['HTTPBasic']  # noqa: E501
 
         return self.api_client.call_api(
             '/v0/files/{file_id}:download', 'POST',
@@ -232,7 +232,7 @@ class FilesApi(object):
             ['application/json'])  # noqa: E501
 
         # Authentication setting
-        auth_settings = []  # noqa: E501
+        auth_settings = ['HTTPBasic']  # noqa: E501
 
         return self.api_client.call_api(
             '/v0/files/{file_id}', 'GET',
@@ -332,7 +332,7 @@ class FilesApi(object):
             ['application/json'])  # noqa: E501
 
         # Authentication setting
-        auth_settings = []  # noqa: E501
+        auth_settings = ['HTTPBasic']  # noqa: E501
 
         return self.api_client.call_api(
             '/v0/files', 'GET',
@@ -353,7 +353,7 @@ class FilesApi(object):
     def upload_file(self, file, **kwargs):  # noqa: E501
         """Upload File  # noqa: E501
 
-        Uploads a single file to the system  To upload multiple with one call, see upload_files  # noqa: E501
+        Uploads a single file to the system      # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.upload_file(file, async_req=True)
@@ -361,6 +361,7 @@ class FilesApi(object):
 
         :param async_req bool: execute request asynchronously
         :param file file: (required)
+        :param str content_length:
         :param _preload_content: if False, the urllib3.HTTPResponse object will
                                  be returned without reading/decoding response
                                  data. Default is True.
@@ -378,7 +379,7 @@ class FilesApi(object):
     def upload_file_with_http_info(self, file, **kwargs):  # noqa: E501
         """Upload File  # noqa: E501
 
-        Uploads a single file to the system  To upload multiple with one call, see upload_files  # noqa: E501
+        Uploads a single file to the system      # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.upload_file_with_http_info(file, async_req=True)
@@ -386,6 +387,7 @@ class FilesApi(object):
 
         :param async_req bool: execute request asynchronously
         :param file file: (required)
+        :param str content_length:
         :param _return_http_data_only: response data without head status code
                                        and headers
         :param _preload_content: if False, the urllib3.HTTPResponse object will
@@ -402,7 +404,7 @@ class FilesApi(object):
 
         local_var_params = locals()
 
-        all_params = ['file']  # noqa: E501
+        all_params = ['file', 'content_length']  # noqa: E501
         all_params.append('async_req')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
@@ -428,6 +430,8 @@ class FilesApi(object):
         query_params = []
 
         header_params = {}
+        if 'content_length' in local_var_params:
+            header_params['content-length'] = local_var_params['content_length']  # noqa: E501
 
         form_params = []
         local_var_files = {}
@@ -444,7 +448,7 @@ class FilesApi(object):
             ['multipart/form-data'])  # noqa: E501
 
         # Authentication setting
-        auth_settings = []  # noqa: E501
+        auth_settings = ['HTTPBasic']  # noqa: E501
 
         return self.api_client.call_api(
             '/v0/files:upload', 'POST',

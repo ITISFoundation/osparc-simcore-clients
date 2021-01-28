@@ -63,7 +63,8 @@ class FileMetadata(object):
         self.filename = filename
         if content_type is not None:
             self.content_type = content_type
-        self.checksum = checksum
+        if checksum is not None:
+            self.checksum = checksum
 
     @property
     def file_id(self):
@@ -154,8 +155,6 @@ class FileMetadata(object):
         :param checksum: The checksum of this FileMetadata.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and checksum is None:  # noqa: E501
-            raise ValueError("Invalid value for `checksum`, must not be `None`")  # noqa: E501
 
         self._checksum = checksum
 
