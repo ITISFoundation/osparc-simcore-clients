@@ -132,13 +132,13 @@
         ]
       }
     },
-    "/v0/files:upload": {
-      "post": {
+    "/v0/files/content": {
+      "put": {
         "tags": [
           "files"
         ],
         "summary": "Upload File",
-        "description": "Uploads a single file to the system    ",
+        "description": "Uploads a single file to the system",
         "operationId": "upload_file",
         "parameters": [
           {
@@ -155,7 +155,7 @@
           "content": {
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/Body_upload_file_v0_files_upload_post"
+                "$ref": "#/components/schemas/Body_upload_file_v0_files_content_put"
               }
             }
           },
@@ -239,8 +239,8 @@
         ]
       }
     },
-    "/v0/files/{file_id}:download": {
-      "post": {
+    "/v0/files/{file_id}/content": {
+      "get": {
         "tags": [
           "files"
         ],
@@ -809,8 +809,8 @@
   },
   "components": {
     "schemas": {
-      "Body_upload_file_v0_files_upload_post": {
-        "title": "Body_upload_file_v0_files_upload_post",
+      "Body_upload_file_v0_files_content_put": {
+        "title": "Body_upload_file_v0_files_content_put",
         "required": [
           "file"
         ],

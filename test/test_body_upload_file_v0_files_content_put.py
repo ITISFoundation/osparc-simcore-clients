@@ -16,11 +16,11 @@ import unittest
 import datetime
 
 import osparc
-from osparc.models.body_upload_file_v0_files_upload_post import BodyUploadFileV0FilesUploadPost  # noqa: E501
+from osparc.models.body_upload_file_v0_files_content_put import BodyUploadFileV0FilesContentPut  # noqa: E501
 from osparc.rest import ApiException
 
-class TestBodyUploadFileV0FilesUploadPost(unittest.TestCase):
-    """BodyUploadFileV0FilesUploadPost unit test stubs"""
+class TestBodyUploadFileV0FilesContentPut(unittest.TestCase):
+    """BodyUploadFileV0FilesContentPut unit test stubs"""
 
     def setUp(self):
         pass
@@ -29,22 +29,22 @@ class TestBodyUploadFileV0FilesUploadPost(unittest.TestCase):
         pass
 
     def make_instance(self, include_optional):
-        """Test BodyUploadFileV0FilesUploadPost
+        """Test BodyUploadFileV0FilesContentPut
             include_option is a boolean, when False only required
             params are included, when True both required and
             optional params are included """
-        # model = osparc.models.body_upload_file_v0_files_upload_post.BodyUploadFileV0FilesUploadPost()  # noqa: E501
+        # model = osparc.models.body_upload_file_v0_files_content_put.BodyUploadFileV0FilesContentPut()  # noqa: E501
         if include_optional :
-            return BodyUploadFileV0FilesUploadPost(
+            return BodyUploadFileV0FilesContentPut(
                 file = bytes(b'blah')
             )
         else :
-            return BodyUploadFileV0FilesUploadPost(
+            return BodyUploadFileV0FilesContentPut(
                 file = bytes(b'blah'),
         )
 
-    def testBodyUploadFileV0FilesUploadPost(self):
-        """Test BodyUploadFileV0FilesUploadPost"""
+    def testBodyUploadFileV0FilesContentPut(self):
+        """Test BodyUploadFileV0FilesContentPut"""
         inst_req_only = self.make_instance(include_optional=False)
         inst_req_and_optional = self.make_instance(include_optional=True)
 

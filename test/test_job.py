@@ -37,7 +37,7 @@ class TestJob(unittest.TestCase):
         if include_optional :
             return Job(
                 solver_id = '0', 
-                inputs_sha = '0', 
+                inputs_checksum = '0', 
                 created_at = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'), 
                 id = '0', 
                 url = '0', 
@@ -47,7 +47,7 @@ class TestJob(unittest.TestCase):
         else :
             return Job(
                 solver_id = '0',
-                inputs_sha = '0',
+                inputs_checksum = '0',
                 created_at = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
                 id = '0',
                 url = '0',

@@ -44,7 +44,6 @@ class TestFileMetadata(unittest.TestCase):
         else :
             return FileMetadata(
                 filename = '0',
-                checksum = '0',
         )
 
     def testFileMetadata(self):

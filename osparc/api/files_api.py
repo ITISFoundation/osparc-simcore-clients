@@ -127,7 +127,7 @@ class FilesApi(object):
         auth_settings = ['HTTPBasic']  # noqa: E501
 
         return self.api_client.call_api(
-            '/v0/files/{file_id}:download', 'POST',
+            '/v0/files/{file_id}/content', 'GET',
             path_params,
             query_params,
             header_params,
@@ -353,7 +353,7 @@ class FilesApi(object):
     def upload_file(self, file, **kwargs):  # noqa: E501
         """Upload File  # noqa: E501
 
-        Uploads a single file to the system      # noqa: E501
+        Uploads a single file to the system  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.upload_file(file, async_req=True)
@@ -379,7 +379,7 @@ class FilesApi(object):
     def upload_file_with_http_info(self, file, **kwargs):  # noqa: E501
         """Upload File  # noqa: E501
 
-        Uploads a single file to the system      # noqa: E501
+        Uploads a single file to the system  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.upload_file_with_http_info(file, async_req=True)
@@ -451,7 +451,7 @@ class FilesApi(object):
         auth_settings = ['HTTPBasic']  # noqa: E501
 
         return self.api_client.call_api(
-            '/v0/files:upload', 'POST',
+            '/v0/files/content', 'PUT',
             path_params,
             query_params,
             header_params,
