@@ -3,20 +3,48 @@
 # pylint:disable=redefined-outer-name
 
 import os
+import sys
 import time
 from datetime import datetime, timedelta
 from pathlib import Path
 from pprint import pformat
-from typing import List
+from typing import Dict, List
 
 import osparc
 import osparc.exceptions as errors
 import packaging.version as pv
 import pytest
+from dotenv import dotenv_values
 from osparc.api.files_api import FilesApi
 from osparc.configuration import Configuration
 from osparc.models import FileMetadata, Job, JobStatus, Meta, Solver
 from osparc.rest import ApiException
+
+current_dir = Path(sys.argv[0] if __name__ == "__main__" else __file__).resolve().parent
+
+
+pytestmark = pytest.mark.skipif(
+    (current_dir / ".." / ".env").exits(),
+    reason=(
+        "Currently this test-suite is exclusively for manual exploratory testing ONLY."
+        "Duplicate .env-template, rename it as .env and uncomment+set all variables"
+    ),
+)
+
+
+@pytest.fixture(scope="module")
+def project_env_dict(root_repo_dir: Path) -> Dict:
+    env_file = root_repo_dir / ".env"
+    assert env_file.exists()
+    environ = dotenv_values(env_file, verbose=True, interpolate=True)
+    return environ
+
+
+@pytest.fixture
+def project_environ_patched(project_env_dict, monkeypatch) -> Dict:
+    for key, value in project_env_dict.items():
+        monkeypatch.setenv(key, value)
+    return project_env_dict
 
 
 def as_dict(obj: object):
@@ -81,7 +109,7 @@ def test_upload_file(files_api, tmpdir):
 
     input_file: FileMetadata = files_api.upload_file(file=input_path)
     assert isinstance(input_file, FileMetadata)
-    time.sleep(2) # let time to upload to S3
+    time.sleep(2)  # let time to upload to S3
 
     assert input_file.filename == input_path.name
     assert input_file.content_type == "text/plain"
@@ -99,7 +127,7 @@ def test_upload_list_and_download(files_api: FilesApi, tmpdir):
 
     input_file: FileMetadata = files_api.upload_file(file=input_path)
     assert isinstance(input_file, FileMetadata)
-    time.sleep(2) # let time to upload to S3
+    time.sleep(2)  # let time to upload to S3
 
     assert input_file.filename == input_path.name
 
@@ -174,8 +202,9 @@ def test_run_solvers(solvers_api, jobs_api):
 
     assert status.state == "undefined"
     assert status.progress == 0
-    assert job.created_at < status.submitted_at < (job.created_at + timedelta(seconds=2))
-
+    assert (
+        job.created_at < status.submitted_at < (job.created_at + timedelta(seconds=2))
+    )
 
     # polling inspect_job
     while not status.stopped_at:
@@ -196,7 +225,6 @@ def test_run_solvers(solvers_api, jobs_api):
             print(output)
             assert output.job_id == job.id
             assert output == jobs_api.get_job_output(job.id, output.name)
-
 
     except ApiException as err:
         assert (
