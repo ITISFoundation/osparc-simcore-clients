@@ -41,9 +41,6 @@ e.g.
 Add here YOUR checklist/notes to guide and monitor the progress of the case!
 
 e.g.
-
-- [ ] Did you change any service's API? Then make sure to bundle document and upgrade version (``make openapi-specs``, ``git commit ...`` and then ``make version-*``)
-- [ ] Unit tests for the changes exist
 - [ ] Runs in the swarm
 - [ ] Documentation reflects the changes
 - [ ] New module? Add your github username to [.github/CODEOWNERS](.github/CODEOWNERS)
