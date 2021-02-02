@@ -1,4 +1,3 @@
-# Current Version
 
 ![test](https://github.com/ITISFoundation/osparc-simcore-python-client/workflows/test/badge.svg)
 [![PyPI](https://img.shields.io/pypi/v/osparc)](https://pypi.org/project/osparc/)
@@ -6,7 +5,7 @@
 [![](https://img.shields.io/pypi/l/osparc)](https://pypi.org/project/osparc/)
 
 
-Python client for osparc-simcore Public RESTful API
+Python client for osparc-simcore public web API
 
 - API version: 0.4.0
 - Package version: 0.4.1
