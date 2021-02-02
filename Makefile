@@ -90,6 +90,14 @@ serve-doc: # serves doc
 	cd docs && python3 -m http.server 50001
 
 
+# TODO: 
+# - update README.md 
+#	- from ## Documentation for API Endpoints to ## Author )
+#   - all paths docs/ -> docs/md/
+#   - copy to docs and replaces all docs/  -> md/
+# - move all to docs/md
+# - replace :\n``  -> :\n\n``
+# - replace http://localhost https://api.osparc.io
 
 ## RELEASE -------------------------------------------------------------------------------
 
