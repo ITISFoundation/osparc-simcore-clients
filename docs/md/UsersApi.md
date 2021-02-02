@@ -1,6 +1,6 @@
 # osparc.UsersApi
 
-All URIs are relative to *http://localhost*
+All URIs are relative to *https://api.osparc.io*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -16,6 +16,7 @@ Get My Profile
 ### Example
 
 * Basic Authentication (HTTPBasic):
+
 ```python
 from __future__ import print_function
 import time
@@ -27,8 +28,8 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_USERNAME'
 configuration.password = 'YOUR_PASSWORD'
 
-# Defining host is optional and default to http://localhost
-configuration.host = "http://localhost"
+# Defining host is optional and default to https://api.osparc.io
+configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -73,6 +74,7 @@ Update My Profile
 ### Example
 
 * Basic Authentication (HTTPBasic):
+
 ```python
 from __future__ import print_function
 import time
@@ -84,8 +86,8 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_USERNAME'
 configuration.password = 'YOUR_PASSWORD'
 
-# Defining host is optional and default to http://localhost
-configuration.host = "http://localhost"
+# Defining host is optional and default to https://api.osparc.io
+configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class

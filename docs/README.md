@@ -47,9 +47,9 @@ import osparc
 from osparc.rest import ApiException
 from pprint import pprint
 
-# Defining host is optional and default to http://localhost
+# Defining host is optional and default to https://api.osparc.io
 configuration = osparc.Configuration()
-configuration.host = "https://localhost"
+configuration.host = "https://api.osparc.io"
 
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
@@ -82,9 +82,9 @@ import osparc
 from osparc.rest import ApiException
 from pprint import pprint
 
-# Defining host is optional and default to http://localhost
+# Defining host is optional and default to https://api.osparc.io
 configuration = osparc.Configuration()
-configuration.host = "https://localhost"
+configuration.host = "https://api.osparc.io"
 
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
@@ -103,7 +103,7 @@ with osparc.ApiClient(configuration) as api_client:
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *http://localhost*
+All URIs are relative to *https://api.osparc.io*
 
 Class        | Method                                                                                     | HTTP request                                    | Description
 -------------|--------------------------------------------------------------------------------------------|-------------------------------------------------|-------------------------------
