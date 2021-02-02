@@ -6,6 +6,11 @@ NOW_TIMESTAMP := $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 APP_NAME          = $(notdir $(CURDIR))
 APP_VERSION    = $(shell python setup.py --version)
 
+
+help: ## help on rule's targets
+	@awk --posix 'BEGIN {FS = ":.*?## "} /^[[:alpha:][:space:]_-]+:.*?## / {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+
+
 .PHONY: info
 info:
 	# system
@@ -80,7 +85,7 @@ docs/md/code_samples/%.ipynb:docs/md/%.md
 ## DOCUMENTATION ------------------------------------------------------------------------
 
 .PHONY: serve-doc
-serve-doc:
+serve-doc: # serves doc
 	# starting doc website
 	cd docs && python3 -m http.server 50001
 
@@ -117,6 +122,9 @@ build:
 release: build # release by-hand (TEMP SOLUTION until FIXME: https://github.com/ITISFoundation/osparc-simcore-python-client/issues/16)
 	python -m pip install twine
 	python -m twine upload dist/*
+
+
+## DOCKER -------------------------------------------------------------------------------
 
 
 .PHONY: build
