@@ -1,26 +1,22 @@
-# Adapted from https://packaging.python.org/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/
-#
-# TEMP disabled
-#
-# FIXME: https://github.com/ITISFoundation/osparc-simcore-python-client/issues/16
-#
-# - startsWith(github.ref, 'refs/tags') does not work
-#
-name: Publish Python 🐍 distributions 📦 to PyPI and TestPyPI
+name: Build and publish 🐍 distribution 📦 to PyPI
 
-on: push
+on:
+  push:
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+
+      - staging_[a-zA-Z]+[0-9]+
 
 jobs:
-  build-n-publish:
+  deploy:
     name: Build and publish Python 🐍 distributions 📦 to PyPI and TestPyPI
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     if: contains(github.ref, 'master')
     steps:
         - uses: actions/checkout@master
-        - name: Set up Python 3.7
-          uses: actions/setup-python@v1
+        - name: Set up lates Python 3
+          uses: actions/setup-python@v2
           with:
-            python-version: 3.7
+            python-version: '3.x'
         - name: Upgrade package tools
           run: >-
             python -m pip install -U

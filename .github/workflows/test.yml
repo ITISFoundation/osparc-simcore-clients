@@ -1,10 +1,24 @@
-name: test
+name: Setup and test
 
-on: [push, pull_request]
+on: 
+  push:
+    paths-ignore:
+      - "*.md"
+      - "*.png"
+      - "*.svg"
+      - "docs/**"
+      - ".vscode/**"
+  pull_request:
+    paths-ignore:
+      - "*.md"
+      - "*.png"
+      - "*.svg"
+      - "docs/**"
+      - ".vscode/**"
 
 jobs:
   test:
-    name: Test Python ${{ matrix.python-version }}
+    name: with python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
