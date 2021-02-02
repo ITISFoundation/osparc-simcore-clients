@@ -4,11 +4,10 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**download_file**](FilesApi.md#download_file) | **GET** /v0/files/{file_id}:download | Download File
-[**files_upload_multiple_view**](FilesApi.md#files_upload_multiple_view) | **GET** /v0/files/upload-multiple-view | Files Upload Multiple View
+[**download_file**](FilesApi.md#download_file) | **GET** /v0/files/{file_id}/content | Download File
+[**get_file**](FilesApi.md#get_file) | **GET** /v0/files/{file_id} | Get File
 [**list_files**](FilesApi.md#list_files) | **GET** /v0/files | List Files
-[**upload_multiple_files**](FilesApi.md#upload_multiple_files) | **POST** /v0/files:upload-multiple | Upload Multiple Files
-[**upload_single_file**](FilesApi.md#upload_single_file) | **POST** /v0/files:upload | Upload Single File
+[**upload_file**](FilesApi.md#upload_file) | **PUT** /v0/files/content | Upload File
 
 
 # **download_file**
@@ -18,15 +17,22 @@ Download File
 
 ### Example
 
+* Basic Authentication (HTTPBasic):
 ```python
 from __future__ import print_function
 import time
 import osparc
 from osparc.rest import ApiException
 from pprint import pprint
+configuration = osparc.Configuration()
+# Configure HTTP basic authorization: HTTPBasic
+configuration.username = 'YOUR_USERNAME'
+configuration.password = 'YOUR_PASSWORD'
 
+# Defining host is optional and default to http://localhost
+configuration.host = "http://localhost"
 # Enter a context with an instance of the API client
-with osparc.ApiClient() as api_client:
+with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.FilesApi(api_client)
     file_id = 'file_id_example' # str | 
@@ -51,7 +57,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[HTTPBasic](../README.md#HTTPBasic)
 
 ### HTTP request headers
 
@@ -66,45 +72,56 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **files_upload_multiple_view**
-> object files_upload_multiple_view()
+# **get_file**
+> FileMetadata get_file(file_id)
 
-Files Upload Multiple View
+Get File
 
-Web form to upload files at http://localhost:8000/v0/files/upload-form-view  Overcomes limitation of Swagger UI view NOTE: As of 2020-10-07, Swagger UI doesn't support multiple file uploads in the same form field
+Gets metadata for a given file resource 
 
 ### Example
 
+* Basic Authentication (HTTPBasic):
 ```python
 from __future__ import print_function
 import time
 import osparc
 from osparc.rest import ApiException
 from pprint import pprint
+configuration = osparc.Configuration()
+# Configure HTTP basic authorization: HTTPBasic
+configuration.username = 'YOUR_USERNAME'
+configuration.password = 'YOUR_PASSWORD'
 
+# Defining host is optional and default to http://localhost
+configuration.host = "http://localhost"
 # Enter a context with an instance of the API client
-with osparc.ApiClient() as api_client:
+with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.FilesApi(api_client)
-    
+    file_id = 'file_id_example' # str | 
+
     try:
-        # Files Upload Multiple View
-        api_response = api_instance.files_upload_multiple_view()
+        # Get File
+        api_response = api_instance.get_file(file_id)
         pprint(api_response)
     except ApiException as e:
-        print("Exception when calling FilesApi->files_upload_multiple_view: %s\n" % e)
+        print("Exception when calling FilesApi->get_file: %s\n" % e)
 ```
 
 ### Parameters
-This endpoint does not need any parameter.
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **file_id** | [**str**](.md)|  | 
 
 ### Return type
 
-**object**
+[**FileMetadata**](FileMetadata.md)
 
 ### Authorization
 
-No authorization required
+[HTTPBasic](../README.md#HTTPBasic)
 
 ### HTTP request headers
 
@@ -115,27 +132,35 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_files**
-> object list_files()
+> list[FileMetadata] list_files()
 
 List Files
 
-Lists all user's files 
+Gets metadata for all file resources 
 
 ### Example
 
+* Basic Authentication (HTTPBasic):
 ```python
 from __future__ import print_function
 import time
 import osparc
 from osparc.rest import ApiException
 from pprint import pprint
+configuration = osparc.Configuration()
+# Configure HTTP basic authorization: HTTPBasic
+configuration.username = 'YOUR_USERNAME'
+configuration.password = 'YOUR_PASSWORD'
 
+# Defining host is optional and default to http://localhost
+configuration.host = "http://localhost"
 # Enter a context with an instance of the API client
-with osparc.ApiClient() as api_client:
+with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.FilesApi(api_client)
     
@@ -152,11 +177,11 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-**object**
+[**list[FileMetadata]**](FileMetadata.md)
 
 ### Authorization
 
-No authorization required
+[HTTPBasic](../README.md#HTTPBasic)
 
 ### HTTP request headers
 
@@ -170,87 +195,42 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **upload_multiple_files**
-> list[FileUploaded] upload_multiple_files(files)
+# **upload_file**
+> FileMetadata upload_file(file, content_length=content_length)
 
-Upload Multiple Files
+Upload File
+
+Uploads a single file to the system
 
 ### Example
 
+* Basic Authentication (HTTPBasic):
 ```python
 from __future__ import print_function
 import time
 import osparc
 from osparc.rest import ApiException
 from pprint import pprint
+configuration = osparc.Configuration()
+# Configure HTTP basic authorization: HTTPBasic
+configuration.username = 'YOUR_USERNAME'
+configuration.password = 'YOUR_PASSWORD'
 
+# Defining host is optional and default to http://localhost
+configuration.host = "http://localhost"
 # Enter a context with an instance of the API client
-with osparc.ApiClient() as api_client:
-    # Create an instance of the API class
-    api_instance = osparc.FilesApi(api_client)
-    files = '/path/to/file' # list[file] | 
-
-    try:
-        # Upload Multiple Files
-        api_response = api_instance.upload_multiple_files(files)
-        pprint(api_response)
-    except ApiException as e:
-        print("Exception when calling FilesApi->upload_multiple_files: %s\n" % e)
-```
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **files** | **list[file]**|  | 
-
-### Return type
-
-[**list[FileUploaded]**](FileUploaded.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: multipart/form-data
- - **Accept**: application/json
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | Successful Response |  -  |
-**422** | Validation Error |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **upload_single_file**
-> FileUploaded upload_single_file(file)
-
-Upload Single File
-
-### Example
-
-```python
-from __future__ import print_function
-import time
-import osparc
-from osparc.rest import ApiException
-from pprint import pprint
-
-# Enter a context with an instance of the API client
-with osparc.ApiClient() as api_client:
+with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.FilesApi(api_client)
     file = '/path/to/file' # file | 
+content_length = 'content_length_example' # str |  (optional)
 
     try:
-        # Upload Single File
-        api_response = api_instance.upload_single_file(file)
+        # Upload File
+        api_response = api_instance.upload_file(file, content_length=content_length)
         pprint(api_response)
     except ApiException as e:
-        print("Exception when calling FilesApi->upload_single_file: %s\n" % e)
+        print("Exception when calling FilesApi->upload_file: %s\n" % e)
 ```
 
 ### Parameters
@@ -258,14 +238,15 @@ with osparc.ApiClient() as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **file** | **file**|  | 
+ **content_length** | **str**|  | [optional] 
 
 ### Return type
 
-[**FileUploaded**](FileUploaded.md)
+[**FileMetadata**](FileMetadata.md)
 
 ### Authorization
 
-No authorization required
+[HTTPBasic](../README.md#HTTPBasic)
 
 ### HTTP request headers
 

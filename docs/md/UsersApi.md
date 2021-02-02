@@ -33,7 +33,7 @@ configuration.host = "http://localhost"
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.UsersApi(api_client)
-
+    
     try:
         # Get My Profile
         api_response = api_instance.get_my_profile()
@@ -41,7 +41,6 @@ with osparc.ApiClient(configuration) as api_client:
     except ApiException as e:
         print("Exception when calling UsersApi->get_my_profile: %s\n" % e)
 ```
-[Download UsersApi.ipynb](md/code_samples/UsersApi.ipynb ':ignore')
 
 ### Parameters
 This endpoint does not need any parameter.
@@ -91,7 +90,7 @@ configuration.host = "http://localhost"
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.UsersApi(api_client)
-    profile_update = osparc.ProfileUpdate() # ProfileUpdate |
+    profile_update = osparc.ProfileUpdate() # ProfileUpdate | 
 
     try:
         # Update My Profile
@@ -105,7 +104,7 @@ with osparc.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **profile_update** | [**ProfileUpdate**](ProfileUpdate.md)|  |
+ **profile_update** | [**ProfileUpdate**](ProfileUpdate.md)|  | 
 
 ### Return type
 

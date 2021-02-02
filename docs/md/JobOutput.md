@@ -3,12 +3,11 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**content_type** | **str** |  | 
-**key** | **str** |  | 
-**title** | **str** |  | [optional] 
-**status** | [**TaskStates**](TaskStates.md) |  | [optional] 
-**value** | [**AnyOfstringintegernumber**](AnyOfstringintegernumber.md) |  | [optional] 
-**value_url** | **str** |  | [optional] 
+**name** | **str** | Name given to the input/output in solver specs (see solver metadata.yml) | 
+**type** | **str** | Data type expected on this input/ouput | [optional] 
+**title** | **str** | Short human readable name to identify input/output | [optional] 
+**value** | [**PortValue**](PortValue.md) |  | 
+**job_id** | **str** | Job that produced this output | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

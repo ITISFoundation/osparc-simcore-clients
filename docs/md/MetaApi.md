@@ -18,17 +18,14 @@ Get Service Metadata
 from __future__ import print_function
 import time
 import osparc
-from osparc.configuration import Configuration
 from osparc.rest import ApiException
 from pprint import pprint
 
-cfg = Configuration(host="https://localhost")
-
 # Enter a context with an instance of the API client
-with osparc.ApiClient(cfg) as api_client:
+with osparc.ApiClient() as api_client:
     # Create an instance of the API class
     api_instance = osparc.MetaApi(api_client)
-
+    
     try:
         # Get Service Metadata
         api_response = api_instance.get_service_metadata()
@@ -36,8 +33,6 @@ with osparc.ApiClient(cfg) as api_client:
     except ApiException as e:
         print("Exception when calling MetaApi->get_service_metadata: %s\n" % e)
 ```
-[Download MetaApi.ipynb](md/code_samples/MetaApi.ipynb ':ignore')
-
 
 ### Parameters
 This endpoint does not need any parameter.
