@@ -6,13 +6,14 @@ from setuptools import setup, find_packages
 
 NAME = "osparc"
 VERSION = "0.3.10"
+API_VERSION = "0.4"
 REQUIRES = ["urllib3 >= 1.15", "six >= 1.10", "certifi", "python-dateutil"]
 README = Path("README.md").read_text()
 
 setup(
     name=NAME,
     version=VERSION,
-    description="Public API Server",
+    description=f"python client for osparc web API v{API_VERSION}",
     author="pcrespov",
     author_email="support@osparc.io",
     url="https://github.com/ITISFoundation/osparc-simcore-python-client.git",
@@ -21,7 +22,7 @@ setup(
         "Documentation": "https://itisfoundation.github.io/osparc-simcore-python-client",
         "Source Code": "https://github.com/ITISFoundation/osparc-simcore-python-client.git",
     },
-    keywords=["OpenAPI", "OpenAPI-Generator", "Public API Server"],
+    keywords=["OpenAPI", "OpenAPI-Generator", "osparc", "web API"],
     install_requires=REQUIRES,
     packages=find_packages(exclude=["test", "tests"]),
     include_package_data=True,
