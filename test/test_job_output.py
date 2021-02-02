@@ -36,17 +36,17 @@ class TestJobOutput(unittest.TestCase):
         # model = osparc.models.job_output.JobOutput()  # noqa: E501
         if include_optional :
             return JobOutput(
-                name = '0', 
-                type = 'a', 
-                title = '0', 
-                value = null, 
-                job_id = '0'
+                name = 'SAR', 
+                type = 'data:application/hdf5', 
+                title = 'SAR field output file-id', 
+                value = '1dc2b1e6-a139-47ad-9e0c-b7b791cd4d7a', 
+                job_id = '9d9ac65-9f10-4e2f-a433-b5e412bb037b'
             )
         else :
             return JobOutput(
-                name = '0',
-                value = null,
-                job_id = '0',
+                name = 'SAR',
+                value = '1dc2b1e6-a139-47ad-9e0c-b7b791cd4d7a',
+                job_id = '9d9ac65-9f10-4e2f-a433-b5e412bb037b',
         )
 
     def testJobOutput(self):

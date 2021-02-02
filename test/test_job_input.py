@@ -36,14 +36,14 @@ class TestJobInput(unittest.TestCase):
         # model = osparc.models.job_input.JobInput()  # noqa: E501
         if include_optional :
             return JobInput(
-                name = '0', 
-                type = 'a', 
-                title = '0', 
-                value = null
+                name = 'T', 
+                type = 'number', 
+                title = 'Temperature', 
+                value = 33
             )
         else :
             return JobInput(
-                name = '0',
+                name = 'T',
         )
 
     def testJobInput(self):

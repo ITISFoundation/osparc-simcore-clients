@@ -24,7 +24,7 @@ current_dir = Path(sys.argv[0] if __name__ == "__main__" else __file__).resolve(
 
 
 pytestmark = pytest.mark.skipif(
-    (current_dir / ".." / ".env").exits(),
+    (current_dir / ".." / ".env").exists(),
     reason=(
         "Currently this test-suite is exclusively for manual exploratory testing ONLY."
         "Duplicate .env-template, rename it as .env and uncomment+set all variables"

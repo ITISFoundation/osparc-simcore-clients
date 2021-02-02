@@ -36,22 +36,22 @@ class TestSolver(unittest.TestCase):
         # model = osparc.models.solver.Solver()  # noqa: E501
         if include_optional :
             return Solver(
-                name = 'a', 
-                version = '["1.0.0","0.0.1"]', 
-                id = '0', 
-                title = '0', 
-                description = '0', 
-                maintainer = '0', 
-                url = '0'
+                name = 'simcore/services/comp/isolve', 
+                version = '2.1.1', 
+                id = '42838344-03de-4ce2-8d93-589a5dcdfd05 ', 
+                title = 'iSolve', 
+                description = 'EM solver', 
+                maintainer = 'info@itis.swiss', 
+                url = 'https://api.osparc.io/v0/solvers/42838344-03de-4ce2-8d93-589a5dcdfd05'
             )
         else :
             return Solver(
-                name = 'a',
-                version = '["1.0.0","0.0.1"]',
-                id = '0',
-                title = '0',
-                maintainer = '0',
-                url = '0',
+                name = 'simcore/services/comp/isolve', 
+                version = '2.1.1', 
+                id = '42838344-03de-4ce2-8d93-589a5dcdfd05 ', 
+                title = 'iSolve', 
+                maintainer = 'info@itis.swiss', 
+                url = 'https://api.osparc.io/v0/solvers/42838344-03de-4ce2-8d93-589a5dcdfd05'
         )
 
     def testSolver(self):
