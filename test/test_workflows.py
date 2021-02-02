@@ -81,6 +81,7 @@ def test_upload_file(files_api, tmpdir):
 
     input_file: FileMetadata = files_api.upload_file(file=input_path)
     assert isinstance(input_file, FileMetadata)
+    time.sleep(2) # let time to upload to S3
 
     assert input_file.filename == input_path.name
     assert input_file.content_type == "text/plain"
@@ -98,6 +99,7 @@ def test_upload_list_and_download(files_api: FilesApi, tmpdir):
 
     input_file: FileMetadata = files_api.upload_file(file=input_path)
     assert isinstance(input_file, FileMetadata)
+    time.sleep(2) # let time to upload to S3
 
     assert input_file.filename == input_path.name
 
