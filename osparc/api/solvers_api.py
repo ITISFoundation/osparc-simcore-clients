@@ -239,7 +239,7 @@ class SolversApi(object):
             ['application/json'])  # noqa: E501
 
         # Authentication setting
-        auth_settings = []  # noqa: E501
+        auth_settings = ['HTTPBasic']  # noqa: E501
 
         return self.api_client.call_api(
             '/v0/solvers/{solver_id}', 'GET',
@@ -355,7 +355,7 @@ class SolversApi(object):
             ['application/json'])  # noqa: E501
 
         # Authentication setting
-        auth_settings = []  # noqa: E501
+        auth_settings = ['HTTPBasic']  # noqa: E501
 
         return self.api_client.call_api(
             '/v0/solvers/{solver_name}/{version}', 'GET',
@@ -561,7 +561,7 @@ class SolversApi(object):
             ['application/json'])  # noqa: E501
 
         # Authentication setting
-        auth_settings = []  # noqa: E501
+        auth_settings = ['HTTPBasic']  # noqa: E501
 
         return self.api_client.call_api(
             '/v0/solvers', 'GET',

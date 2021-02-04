@@ -187,7 +187,7 @@ class Profile(object):
     def gravatar_id(self):
         """Gets the gravatar_id of this Profile.  # noqa: E501
 
-        Hash value of email to retrieve an avatar image from https://www.gravatar.com  # noqa: E501
+        md5 hash value of email to retrieve an avatar image from https://www.gravatar.com  # noqa: E501
 
         :return: The gravatar_id of this Profile.  # noqa: E501
         :rtype: str
@@ -198,7 +198,7 @@ class Profile(object):
     def gravatar_id(self, gravatar_id):
         """Sets the gravatar_id of this Profile.
 
-        Hash value of email to retrieve an avatar image from https://www.gravatar.com  # noqa: E501
+        md5 hash value of email to retrieve an avatar image from https://www.gravatar.com  # noqa: E501
 
         :param gravatar_id: The gravatar_id of this Profile.  # noqa: E501
         :type: str
