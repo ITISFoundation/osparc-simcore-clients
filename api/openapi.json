@@ -221,6 +221,9 @@
               }
             }
           },
+          "404": {
+            "description": "File not found"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -260,15 +263,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Returns a file",
+            "description": "Returns a arbitrary binary data",
             "content": {
               "application/octet-stream": {
                 "schema": {
                   "type": "string",
                   "format": "binary"
                 }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
               }
             }
+          },
+          "404": {
+            "description": "File not found"
           },
           "422": {
             "description": "Validation Error",
