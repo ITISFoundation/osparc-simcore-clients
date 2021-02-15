@@ -33,7 +33,7 @@ from osparc.exceptions import ApiKeyError
 from osparc.exceptions import ApiException
 # import models into sdk package
 from osparc.models.body_upload_file_v0_files_content_put import BodyUploadFileV0FilesContentPut
-from osparc.models.file_metadata import FileMetadata
+from osparc.models.file import File
 from osparc.models.groups import Groups
 from osparc.models.http_validation_error import HTTPValidationError
 from osparc.models.job import Job
