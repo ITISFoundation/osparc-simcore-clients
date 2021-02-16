@@ -37,14 +37,14 @@ class TestFile(unittest.TestCase):
         if include_optional :
             return File(
                 id = 'f0e1fb11-208d-3ed2-b5ef-cab7a7398f78', 
-                name = 'Architecture-of-Scalable-Distributed-ETL-System-whitepaper.pdf', 
+                filename = 'Architecture-of-Scalable-Distributed-ETL-System-whitepaper.pdf', 
                 content_type = 'application/pdf', 
                 checksum = 'de47d0e1229aa2dfb80097389094eadd-1'
             )
         else :
             return File(
                 id = 'f0e1fb11-208d-3ed2-b5ef-cab7a7398f78',
-                name = 'Architecture-of-Scalable-Distributed-ETL-System-whitepaper.pdf',
+                filename = 'Architecture-of-Scalable-Distributed-ETL-System-whitepaper.pdf',
             )
 
     def testFile(self):

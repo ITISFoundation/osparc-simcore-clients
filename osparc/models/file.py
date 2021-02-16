@@ -34,32 +34,32 @@ class File(object):
     """
     openapi_types = {
         'id': 'str',
-        'name': 'str',
+        'filename': 'str',
         'content_type': 'str',
         'checksum': 'str'
     }
 
     attribute_map = {
         'id': 'id',
-        'name': 'name',
+        'filename': 'filename',
         'content_type': 'content_type',
         'checksum': 'checksum'
     }
 
-    def __init__(self, id=None, name=None, content_type=None, checksum=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(self, id=None, filename=None, content_type=None, checksum=None, local_vars_configuration=None):  # noqa: E501
         """File - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
         self.local_vars_configuration = local_vars_configuration
 
         self._id = None
-        self._name = None
+        self._filename = None
         self._content_type = None
         self._checksum = None
         self.discriminator = None
 
         self.id = id
-        self.name = name
+        self.filename = filename
         if content_type is not None:
             self.content_type = content_type
         if checksum is not None:
@@ -69,7 +69,7 @@ class File(object):
     def id(self):
         """Gets the id of this File.  # noqa: E501
 
-        File unique identifier built upon its name and checksum  # noqa: E501
+        Unique identifier for a file stored in the system  # noqa: E501
 
         :return: The id of this File.  # noqa: E501
         :rtype: str
@@ -80,7 +80,7 @@ class File(object):
     def id(self, id):
         """Sets the id of this File.
 
-        File unique identifier built upon its name and checksum  # noqa: E501
+        Unique identifier for a file stored in the system  # noqa: E501
 
         :param id: The id of this File.  # noqa: E501
         :type: str
@@ -91,34 +91,35 @@ class File(object):
         self._id = id
 
     @property
-    def name(self):
-        """Gets the name of this File.  # noqa: E501
+    def filename(self):
+        """Gets the filename of this File.  # noqa: E501
 
-        File with extenson  # noqa: E501
+        Name of the file with extension  # noqa: E501
 
-        :return: The name of this File.  # noqa: E501
+        :return: The filename of this File.  # noqa: E501
         :rtype: str
         """
-        return self._name
+        return self._filename
 
-    @name.setter
-    def name(self, name):
-        """Sets the name of this File.
+    @filename.setter
+    def filename(self, filename):
+        """Sets the filename of this File.
 
-        File with extenson  # noqa: E501
+        Name of the file with extension  # noqa: E501
 
-        :param name: The name of this File.  # noqa: E501
+        :param filename: The filename of this File.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and name is None:  # noqa: E501
-            raise ValueError("Invalid value for `name`, must not be `None`")  # noqa: E501
+        if self.local_vars_configuration.client_side_validation and filename is None:  # noqa: E501
+            raise ValueError("Invalid value for `filename`, must not be `None`")  # noqa: E501
 
-        self._name = name
+        self._filename = filename
 
     @property
     def content_type(self):
         """Gets the content_type of this File.  # noqa: E501
 
+        Guess of type content [EXPERIMENTAL]  # noqa: E501
 
         :return: The content_type of this File.  # noqa: E501
         :rtype: str
@@ -129,6 +130,7 @@ class File(object):
     def content_type(self, content_type):
         """Sets the content_type of this File.
 
+        Guess of type content [EXPERIMENTAL]  # noqa: E501
 
         :param content_type: The content_type of this File.  # noqa: E501
         :type: str
@@ -140,7 +142,7 @@ class File(object):
     def checksum(self):
         """Gets the checksum of this File.  # noqa: E501
 
-        MD5 hash of the file's content  # noqa: E501
+        MD5 hash of the file's content [EXPERIMENTAL]  # noqa: E501
 
         :return: The checksum of this File.  # noqa: E501
         :rtype: str
@@ -151,7 +153,7 @@ class File(object):
     def checksum(self, checksum):
         """Sets the checksum of this File.
 
-        MD5 hash of the file's content  # noqa: E501
+        MD5 hash of the file's content [EXPERIMENTAL]  # noqa: E501
 
         :param checksum: The checksum of this File.  # noqa: E501
         :type: str
