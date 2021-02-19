@@ -9,6 +9,7 @@
 # pylint:disable=redefined-outer-name
 
 import os
+import random
 import sys
 import time
 from datetime import datetime, timedelta
@@ -21,7 +22,6 @@ import osparc.exceptions as errors
 import packaging.version as pv
 import pytest
 from dotenv import dotenv_values
-from osparc.api.files_api import FilesApi
 from osparc.configuration import Configuration
 from osparc.models import Job, JobStatus, Meta, Solver
 from osparc.rest import ApiException
@@ -90,9 +90,6 @@ def solvers_api(api_client):
     return osparc.SolversApi(api_client)
 
 
-@pytest.fixture()
-def jobs_api(api_client):
-    return osparc.JobsApi(api_client)
 
 
 # ----------
@@ -111,12 +108,14 @@ def test_get_service_metadata(meta_api):
 
 
 
+
 def test_solvers(solvers_api):
-    solvers: List[Solver] = solvers_api.list_solvers()
+    all_solvers: List[Solver] = solvers_api.list_solvers()
+    one_solver = random.choice(all_solvers)
 
     latest = None
-    for solver in solvers:
-        if "isolve" in solver.name:
+    for solver in all_solvers:
+        if one_solver.id == solvers
             if not latest:
                 latest = solver
             elif pv.parse(latest.version) < pv.parse(solver.version):
@@ -125,20 +124,15 @@ def test_solvers(solvers_api):
     print(latest)
     assert latest
 
-    assert (
-        solvers_api.get_solver_by_name_and_version(
-            solver_name=latest.name, version="latest"
-        )
-        == latest
-    )
+    releases: List[Solver] = solvers_api.list_solver_releases(latest.id)
+    assert releases[-1] == latest
+
     assert solvers_api.get_solver(latest.id) == latest
 
 
-def test_run_solvers(solvers_api, jobs_api):
+def test_run_solvers(solvers_api):
 
-    solver = solvers_api.get_solver_by_name_and_version(
-        solver_name="simcore/services/comp/isolve", version="latest"
-    )
+    solver = solvers_api.get_solver_release("simcore/services/comp/isolve")
     assert isinstance(solver, Solver)
 
     #
@@ -149,26 +143,26 @@ def test_run_solvers(solvers_api, jobs_api):
 
     # I would like to run a job with my solver and these inputs.
     # TODO: how to name the body so we get nice doc?
-    job = solvers_api.create_job(solver.id, job_input=[])
+    job = solvers_api.create_job(solver.id, solver.version, job_input=[])
 
     # Job granted. Resources reserved for you during N-minutes
     assert isinstance(job, Job)
 
     # TODO: change to uid
     assert job.id
-    assert job == jobs_api.get_job(job.id)
+    assert job == solvers_api.get_job(job.id)
 
     # gets jobs granted for user with a given solver
     solver_jobs = solvers_api.list_jobs(solver.id)
     assert job in solver_jobs
 
     # I only have jobs from this solver ?
-    all_jobs = jobs_api.list_all_jobs()
+    all_jobs = solvers_api.list_all_jobs()
     assert len(solver_jobs) <= len(all_jobs)
     assert all(job in all_jobs for job in solver_jobs)
 
     # let's run the job
-    status = jobs_api.start_job(job.id)
+    status = solvers_api.start_job(job.id)
     assert isinstance(status, JobStatus)
 
     assert status.state == "undefined"
@@ -180,7 +174,7 @@ def test_run_solvers(solvers_api, jobs_api):
     # polling inspect_job
     while not status.stopped_at:
         time.sleep(0.5)
-        status = jobs_api.inspect_job(job.id)
+        status = solvers_api.inspect_job(job.id)
         print("Solver progress", f"{status.progress}/100", flush=True)
 
     # done
@@ -191,11 +185,11 @@ def test_run_solvers(solvers_api, jobs_api):
 
     # let's get the results
     try:
-        outputs = jobs_api.list_job_outputs(job.id)
+        outputs = solvers_api.list_job_outputs(job.id)
         for output in outputs:
             print(output)
             assert output.job_id == job.id
-            assert output == jobs_api.get_job_output(job.id, output.name)
+            assert output == solvers_api.get_job_output(job.id, output.name)
 
     except ApiException as err:
         assert (
