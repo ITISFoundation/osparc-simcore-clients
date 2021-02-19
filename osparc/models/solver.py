@@ -33,9 +33,8 @@ class Solver(object):
                             and the value is json key in definition.
     """
     openapi_types = {
-        'name': 'str',
-        'version': 'str',
         'id': 'str',
+        'version': 'str',
         'title': 'str',
         'description': 'str',
         'maintainer': 'str',
@@ -43,33 +42,30 @@ class Solver(object):
     }
 
     attribute_map = {
-        'name': 'name',
-        'version': 'version',
         'id': 'id',
+        'version': 'version',
         'title': 'title',
         'description': 'description',
         'maintainer': 'maintainer',
         'url': 'url'
     }
 
-    def __init__(self, name=None, version=None, id=None, title=None, description=None, maintainer=None, url=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(self, id=None, version=None, title=None, description=None, maintainer=None, url=None, local_vars_configuration=None):  # noqa: E501
         """Solver - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
         self.local_vars_configuration = local_vars_configuration
 
-        self._name = None
-        self._version = None
         self._id = None
+        self._version = None
         self._title = None
         self._description = None
         self._maintainer = None
         self._url = None
         self.discriminator = None
 
-        self.name = name
-        self.version = version
         self.id = id
+        self.version = version
         self.title = title
         if description is not None:
             self.description = description
@@ -77,32 +73,32 @@ class Solver(object):
         self.url = url
 
     @property
-    def name(self):
-        """Gets the name of this Solver.  # noqa: E501
+    def id(self):
+        """Gets the id of this Solver.  # noqa: E501
 
-        Unique solver name with path namespaces  # noqa: E501
+        Solver identifier  # noqa: E501
 
-        :return: The name of this Solver.  # noqa: E501
+        :return: The id of this Solver.  # noqa: E501
         :rtype: str
         """
-        return self._name
+        return self._id
 
-    @name.setter
-    def name(self, name):
-        """Sets the name of this Solver.
+    @id.setter
+    def id(self, id):
+        """Sets the id of this Solver.
 
-        Unique solver name with path namespaces  # noqa: E501
+        Solver identifier  # noqa: E501
 
-        :param name: The name of this Solver.  # noqa: E501
+        :param id: The id of this Solver.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and name is None:  # noqa: E501
-            raise ValueError("Invalid value for `name`, must not be `None`")  # noqa: E501
+        if self.local_vars_configuration.client_side_validation and id is None:  # noqa: E501
+            raise ValueError("Invalid value for `id`, must not be `None`")  # noqa: E501
         if (self.local_vars_configuration.client_side_validation and
-                name is not None and not re.search(r'^(simcore)\/(services)\/comp(\/[\w\/-]+)+$', name)):  # noqa: E501
-            raise ValueError(r"Invalid value for `name`, must be a follow pattern or equal to `/^(simcore)\/(services)\/comp(\/[\w\/-]+)+$/`")  # noqa: E501
+                id is not None and not re.search(r'^(simcore)\/(services)\/comp(\/[\w\/-]+)+$', id)):  # noqa: E501
+            raise ValueError(r"Invalid value for `id`, must be a follow pattern or equal to `/^(simcore)\/(services)\/comp(\/[\w\/-]+)+$/`")  # noqa: E501
 
-        self._name = name
+        self._id = id
 
     @property
     def version(self):
@@ -131,29 +127,6 @@ class Solver(object):
             raise ValueError(r"Invalid value for `version`, must be a follow pattern or equal to `/^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$/`")  # noqa: E501
 
         self._version = version
-
-    @property
-    def id(self):
-        """Gets the id of this Solver.  # noqa: E501
-
-
-        :return: The id of this Solver.  # noqa: E501
-        :rtype: str
-        """
-        return self._id
-
-    @id.setter
-    def id(self, id):
-        """Sets the id of this Solver.
-
-
-        :param id: The id of this Solver.  # noqa: E501
-        :type: str
-        """
-        if self.local_vars_configuration.client_side_validation and id is None:  # noqa: E501
-            raise ValueError("Invalid value for `id`, must not be `None`")  # noqa: E501
-
-        self._id = id
 
     @property
     def title(self):

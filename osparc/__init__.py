@@ -18,7 +18,6 @@ __version__ = "0.3.0"
 
 # import apis into sdk package
 from osparc.api.files_api import FilesApi
-from osparc.api.jobs_api import JobsApi
 from osparc.api.meta_api import MetaApi
 from osparc.api.solvers_api import SolversApi
 from osparc.api.users_api import UsersApi
