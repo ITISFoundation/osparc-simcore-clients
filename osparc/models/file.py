@@ -69,7 +69,7 @@ class File(object):
     def id(self):
         """Gets the id of this File.  # noqa: E501
 
-        Unique identifier for a file stored in the system  # noqa: E501
+        Resource identifier  # noqa: E501
 
         :return: The id of this File.  # noqa: E501
         :rtype: str
@@ -80,7 +80,7 @@ class File(object):
     def id(self, id):
         """Sets the id of this File.
 
-        Unique identifier for a file stored in the system  # noqa: E501
+        Resource identifier  # noqa: E501
 
         :param id: The id of this File.  # noqa: E501
         :type: str
