@@ -519,7 +519,7 @@ class SolversApi(object):
         auth_settings = ['HTTPBasic']  # noqa: E501
 
         return self.api_client.call_api(
-            '/v0/solvers/{solver_key}', 'GET',
+            '/v0/solvers/{solver_key}/latest', 'GET',
             path_params,
             query_params,
             header_params,
