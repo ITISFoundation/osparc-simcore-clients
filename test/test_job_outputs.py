@@ -16,11 +16,11 @@ import unittest
 import datetime
 
 import osparc
-from osparc.models.meta import Meta  # noqa: E501
+from osparc.models.job_outputs import JobOutputs  # noqa: E501
 from osparc.rest import ApiException
 
-class TestMeta(unittest.TestCase):
-    """Meta unit test stubs"""
+class TestJobOutputs(unittest.TestCase):
+    """JobOutputs unit test stubs"""
 
     def setUp(self):
         pass
@@ -29,29 +29,28 @@ class TestMeta(unittest.TestCase):
         pass
 
     def make_instance(self, include_optional):
-        """Test Meta
+        """Test JobOutputs
             include_option is a boolean, when False only required
             params are included, when True both required and
             optional params are included """
-        # model = osparc.models.meta.Meta()  # noqa: E501
+        # model = osparc.models.job_outputs.JobOutputs()  # noqa: E501
         if include_optional :
-            return Meta(
-                name = '0', 
-                version = 'a', 
-                released = {
-                    'key' : 'a'
-                    }, 
-                docs_url = 'https://docs.osparc.io', 
-                docs_dev_url = 'https://api.osparc.io/dev/docs'
+            return JobOutputs(
+                job_id = '2d59e648-647b-4f5a-b6fc-b934937c2f6b', 
+                results = {
+                    'x' : 42.4
+                    }
             )
         else :
-            return Meta(
-                name = '0',
-                version = 'a',
+            return JobOutputs(
+                job_id = '2d59e648-647b-4f5a-b6fc-b934937c2f6b',
+                results = {
+                    'y' : 43
+                    },
         )
 
-    def testMeta(self):
-        """Test Meta"""
+    def testJobOutputs(self):
+        """Test JobOutputs"""
         inst_req_only = self.make_instance(include_optional=False)
         inst_req_and_optional = self.make_instance(include_optional=True)
 
