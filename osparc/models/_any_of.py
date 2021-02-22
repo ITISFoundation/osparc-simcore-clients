@@ -1,4 +1,4 @@
-from functools import suppress
+from contextlib import suppress
 from typing import Any, Callable, List, Union
 
 from .file import File
