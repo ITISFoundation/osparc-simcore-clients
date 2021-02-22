@@ -288,6 +288,9 @@ class ApiClient(object):
             # convert str to class
             if klass in self.NATIVE_TYPES_MAPPING:
                 klass = self.NATIVE_TYPES_MAPPING[klass]
+            elif klass.startswith("AnyOf"):
+                from .models._any_of import deserialize_any_of
+                return deserialize_any_of(data, self.__deserialize)
             else:
                 klass = getattr(osparc.models, klass)
 
