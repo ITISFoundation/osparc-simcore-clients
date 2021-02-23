@@ -1,6 +1,5 @@
 # JobStatus
 
-NOTE About naming. The result of an inspection on X returns a Status object     What is the status of X? What sort of state is X in?     SEE https://english.stackexchange.com/questions/12958/status-vs-state
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------

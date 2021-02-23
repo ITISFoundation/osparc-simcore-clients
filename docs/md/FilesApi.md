@@ -12,7 +12,7 @@ Method | HTTP request | Description
 
 # **download_file**
 
-> object download_file(file_id)
+> file download_file(file_id)
 
 Download File
 
@@ -55,7 +55,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+**file**
 
 ### Authorization
 
@@ -64,18 +64,20 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: application/json
+ - **Accept**: application/octet-stream, text/plain, application/json
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Successful Response |  -  |
+**200** | Returns a arbitrary binary data |  -  |
+**404** | File not found |  -  |
 **422** | Validation Error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_file**
-> FileMetadata get_file(file_id)
+
+> File get_file(file_id)
 
 Get File
 
@@ -120,7 +122,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**FileMetadata**](FileMetadata.md)
+[**File**](File.md)
 
 ### Authorization
 
@@ -135,16 +137,18 @@ Name | Type | Description  | Notes
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | Successful Response |  -  |
+**404** | File not found |  -  |
 **422** | Validation Error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_files**
-> list[FileMetadata] list_files()
+
+> list[File] list_files()
 
 List Files
 
-Gets metadata for all file resources 
+Lists all files stored in the system  
 
 ### Example
 
@@ -181,7 +185,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**list[FileMetadata]**](FileMetadata.md)
+[**list[File]**](File.md)
 
 ### Authorization
 
@@ -200,7 +204,8 @@ This endpoint does not need any parameter.
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **upload_file**
-> FileMetadata upload_file(file, content_length=content_length)
+
+> File upload_file(file, content_length=content_length)
 
 Upload File
 
@@ -247,7 +252,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**FileMetadata**](FileMetadata.md)
+[**File**](File.md)
 
 ### Authorization
 

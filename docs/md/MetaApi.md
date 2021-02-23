@@ -8,6 +8,7 @@ Method | HTTP request | Description
 
 
 # **get_service_metadata**
+
 > Meta get_service_metadata()
 
 Get Service Metadata

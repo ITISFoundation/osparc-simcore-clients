@@ -9,6 +9,7 @@ Method | HTTP request | Description
 
 
 # **get_my_profile**
+
 > Profile get_my_profile()
 
 Get My Profile
@@ -67,6 +68,7 @@ This endpoint does not need any parameter.
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **update_my_profile**
+
 > Profile update_my_profile(profile_update)
 
 Update My Profile

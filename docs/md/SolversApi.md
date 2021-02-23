@@ -4,21 +4,31 @@ All URIs are relative to *https://api.osparc.io*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**create_job**](SolversApi.md#create_job) | **POST** /v0/solvers/{solver_id}/jobs | Create Job
-[**get_solver**](SolversApi.md#get_solver) | **GET** /v0/solvers/{solver_id} | Get Solver
-[**get_solver_by_name_and_version**](SolversApi.md#get_solver_by_name_and_version) | **GET** /v0/solvers/{solver_name}/{version} | Get Solver By Name And Version
-[**list_jobs**](SolversApi.md#list_jobs) | **GET** /v0/solvers/{solver_id}/jobs | List Jobs
+[**create_job**](SolversApi.md#create_job) | **POST** /v0/solvers/{solver_key}/releases/{version}/jobs | Create Job
+[**get_job**](SolversApi.md#get_job) | **GET** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id} | Get Job
+[**get_job_outputs**](SolversApi.md#get_job_outputs) | **GET** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}/outputs | Get Job Outputs
+[**get_solver**](SolversApi.md#get_solver) | **GET** /v0/solvers/{solver_key}/latest | Get Latest Release of a Solver
+[**get_solver_release**](SolversApi.md#get_solver_release) | **GET** /v0/solvers/{solver_key}/releases/{version} | Get Solver Release
+[**inspect_job**](SolversApi.md#inspect_job) | **POST** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:inspect | Inspect Job
+[**list_jobs**](SolversApi.md#list_jobs) | **GET** /v0/solvers/{solver_key}/releases/{version}/jobs | List Jobs
+[**list_solver_releases**](SolversApi.md#list_solver_releases) | **GET** /v0/solvers/{solver_key}/releases | List Solver Releases
 [**list_solvers**](SolversApi.md#list_solvers) | **GET** /v0/solvers | List Solvers
+[**list_solvers_releases**](SolversApi.md#list_solvers_releases) | **GET** /v0/solvers/releases | Lists All Releases
+[**start_job**](SolversApi.md#start_job) | **POST** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:start | Start Job
+[**stop_job**](SolversApi.md#stop_job) | **POST** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:stop | Stop Job
 
 
 # **create_job**
-> Job create_job(solver_id, job_input=job_input)
+
+> Job create_job(solver_key, version, job_inputs)
 
 Create Job
 
-Creates a job for a solver with given inputs.  NOTE: This operation does **not** start the job
+Creates a job in a specific release with given inputs.  NOTE: This operation does **not** start the job
 
 ### Example
+
+* Basic Authentication (HTTPBasic):
 
 ```python
 from __future__ import print_function
@@ -26,17 +36,24 @@ import time
 import osparc
 from osparc.rest import ApiException
 from pprint import pprint
+configuration = osparc.Configuration()
+# Configure HTTP basic authorization: HTTPBasic
+configuration.username = 'YOUR_USERNAME'
+configuration.password = 'YOUR_PASSWORD'
 
+# Defining host is optional and default to https://api.osparc.io
+configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
-with osparc.ApiClient() as api_client:
+with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
-    solver_id = 'solver_id_example' # str | 
-job_input = [osparc.JobInput()] # list[JobInput] |  (optional)
+    solver_key = 'solver_key_example' # str | 
+version = 'version_example' # str | 
+job_inputs = osparc.JobInputs() # JobInputs | 
 
     try:
         # Create Job
-        api_response = api_instance.create_job(solver_id, job_input=job_input)
+        api_response = api_instance.create_job(solver_key, version, job_inputs)
         pprint(api_response)
     except ApiException as e:
         print("Exception when calling SolversApi->create_job: %s\n" % e)
@@ -46,8 +63,9 @@ job_input = [osparc.JobInput()] # list[JobInput] |  (optional)
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **solver_id** | [**str**](.md)|  | 
- **job_input** | [**list[JobInput]**](JobInput.md)|  | [optional] 
+ **solver_key** | **str**|  | 
+ **version** | **str**|  | 
+ **job_inputs** | [**JobInputs**](JobInputs.md)|  | 
 
 ### Return type
 
@@ -55,7 +73,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[HTTPBasic](../README.md#HTTPBasic)
 
 ### HTTP request headers
 
@@ -70,10 +88,13 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **get_solver**
-> Solver get_solver(solver_id)
+# **get_job**
 
-Get Solver
+> Job get_job(solver_key, version, job_id)
+
+Get Job
+
+Gets job of a given solver 
 
 ### Example
 
@@ -88,25 +109,29 @@ from pprint import pprint
 with osparc.ApiClient() as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
-    solver_id = 'solver_id_example' # str | 
+    solver_key = 'solver_key_example' # str | 
+version = 'version_example' # str | 
+job_id = 'job_id_example' # str | 
 
     try:
-        # Get Solver
-        api_response = api_instance.get_solver(solver_id)
+        # Get Job
+        api_response = api_instance.get_job(solver_key, version, job_id)
         pprint(api_response)
     except ApiException as e:
-        print("Exception when calling SolversApi->get_solver: %s\n" % e)
+        print("Exception when calling SolversApi->get_job: %s\n" % e)
 ```
 
 ### Parameters
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **solver_id** | [**str**](.md)|  | 
+ **solver_key** | **str**|  | 
+ **version** | **str**|  | 
+ **job_id** | [**str**](.md)|  | 
 
 ### Return type
 
-[**Solver**](Solver.md)
+[**Job**](Job.md)
 
 ### Authorization
 
@@ -125,10 +150,11 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **get_solver_by_name_and_version**
-> Solver get_solver_by_name_and_version(solver_name, version)
+# **get_job_outputs**
 
-Get Solver By Name And Version
+> JobOutputs get_job_outputs(solver_key, version, job_id)
+
+Get Job Outputs
 
 ### Example
 
@@ -143,27 +169,223 @@ from pprint import pprint
 with osparc.ApiClient() as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
-    solver_name = 'solver_name_example' # str | 
+    solver_key = 'solver_key_example' # str | 
 version = 'version_example' # str | 
+job_id = 'job_id_example' # str | 
 
     try:
-        # Get Solver By Name And Version
-        api_response = api_instance.get_solver_by_name_and_version(solver_name, version)
+        # Get Job Outputs
+        api_response = api_instance.get_job_outputs(solver_key, version, job_id)
         pprint(api_response)
     except ApiException as e:
-        print("Exception when calling SolversApi->get_solver_by_name_and_version: %s\n" % e)
+        print("Exception when calling SolversApi->get_job_outputs: %s\n" % e)
 ```
 
 ### Parameters
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **solver_name** | **str**|  | 
+ **solver_key** | **str**|  | 
+ **version** | **str**|  | 
+ **job_id** | [**str**](.md)|  | 
+
+### Return type
+
+[**JobOutputs**](JobOutputs.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **get_solver**
+
+> Solver get_solver(solver_key)
+
+Get Latest Release of a Solver
+
+Gets latest release of a solver 
+
+### Example
+
+* Basic Authentication (HTTPBasic):
+
+```python
+from __future__ import print_function
+import time
+import osparc
+from osparc.rest import ApiException
+from pprint import pprint
+configuration = osparc.Configuration()
+# Configure HTTP basic authorization: HTTPBasic
+configuration.username = 'YOUR_USERNAME'
+configuration.password = 'YOUR_PASSWORD'
+
+# Defining host is optional and default to https://api.osparc.io
+configuration.host = "https://api.osparc.io"
+# Enter a context with an instance of the API client
+with osparc.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = osparc.SolversApi(api_client)
+    solver_key = 'solver_key_example' # str | 
+
+    try:
+        # Get Latest Release of a Solver
+        api_response = api_instance.get_solver(solver_key)
+        pprint(api_response)
+    except ApiException as e:
+        print("Exception when calling SolversApi->get_solver: %s\n" % e)
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **solver_key** | **str**|  | 
+
+### Return type
+
+[**Solver**](Solver.md)
+
+### Authorization
+
+[HTTPBasic](../README.md#HTTPBasic)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **get_solver_release**
+
+> Solver get_solver_release(solver_key, version)
+
+Get Solver Release
+
+Gets a specific release of a solver 
+
+### Example
+
+* Basic Authentication (HTTPBasic):
+
+```python
+from __future__ import print_function
+import time
+import osparc
+from osparc.rest import ApiException
+from pprint import pprint
+configuration = osparc.Configuration()
+# Configure HTTP basic authorization: HTTPBasic
+configuration.username = 'YOUR_USERNAME'
+configuration.password = 'YOUR_PASSWORD'
+
+# Defining host is optional and default to https://api.osparc.io
+configuration.host = "https://api.osparc.io"
+# Enter a context with an instance of the API client
+with osparc.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = osparc.SolversApi(api_client)
+    solver_key = 'solver_key_example' # str | 
+version = 'version_example' # str | 
+
+    try:
+        # Get Solver Release
+        api_response = api_instance.get_solver_release(solver_key, version)
+        pprint(api_response)
+    except ApiException as e:
+        print("Exception when calling SolversApi->get_solver_release: %s\n" % e)
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **solver_key** | **str**|  | 
  **version** | **str**|  | 
 
 ### Return type
 
 [**Solver**](Solver.md)
+
+### Authorization
+
+[HTTPBasic](../README.md#HTTPBasic)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **inspect_job**
+
+> JobStatus inspect_job(solver_key, version, job_id)
+
+Inspect Job
+
+### Example
+
+```python
+from __future__ import print_function
+import time
+import osparc
+from osparc.rest import ApiException
+from pprint import pprint
+
+# Enter a context with an instance of the API client
+with osparc.ApiClient() as api_client:
+    # Create an instance of the API class
+    api_instance = osparc.SolversApi(api_client)
+    solver_key = 'solver_key_example' # str | 
+version = 'version_example' # str | 
+job_id = 'job_id_example' # str | 
+
+    try:
+        # Inspect Job
+        api_response = api_instance.inspect_job(solver_key, version, job_id)
+        pprint(api_response)
+    except ApiException as e:
+        print("Exception when calling SolversApi->inspect_job: %s\n" % e)
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **solver_key** | **str**|  | 
+ **version** | **str**|  | 
+ **job_id** | [**str**](.md)|  | 
+
+### Return type
+
+[**JobStatus**](JobStatus.md)
 
 ### Authorization
 
@@ -183,13 +405,16 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_jobs**
-> list[Job] list_jobs(solver_id)
+
+> list[Job] list_jobs(solver_key, version)
 
 List Jobs
 
-List of all jobs with a given solver 
+List of all jobs in a specific released solver 
 
 ### Example
+
+* Basic Authentication (HTTPBasic):
 
 ```python
 from __future__ import print_function
@@ -197,16 +422,23 @@ import time
 import osparc
 from osparc.rest import ApiException
 from pprint import pprint
+configuration = osparc.Configuration()
+# Configure HTTP basic authorization: HTTPBasic
+configuration.username = 'YOUR_USERNAME'
+configuration.password = 'YOUR_PASSWORD'
 
+# Defining host is optional and default to https://api.osparc.io
+configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
-with osparc.ApiClient() as api_client:
+with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
-    solver_id = 'solver_id_example' # str | 
+    solver_key = 'solver_key_example' # str | 
+version = 'version_example' # str | 
 
     try:
         # List Jobs
-        api_response = api_instance.list_jobs(solver_id)
+        api_response = api_instance.list_jobs(solver_key, version)
         pprint(api_response)
     except ApiException as e:
         print("Exception when calling SolversApi->list_jobs: %s\n" % e)
@@ -216,7 +448,8 @@ with osparc.ApiClient() as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **solver_id** | [**str**](.md)|  | 
+ **solver_key** | **str**|  | 
+ **version** | **str**|  | 
 
 ### Return type
 
@@ -224,7 +457,73 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[HTTPBasic](../README.md#HTTPBasic)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **list_solver_releases**
+
+> list[Solver] list_solver_releases(solver_key)
+
+List Solver Releases
+
+Lists all releases of a given solver 
+
+### Example
+
+* Basic Authentication (HTTPBasic):
+
+```python
+from __future__ import print_function
+import time
+import osparc
+from osparc.rest import ApiException
+from pprint import pprint
+configuration = osparc.Configuration()
+# Configure HTTP basic authorization: HTTPBasic
+configuration.username = 'YOUR_USERNAME'
+configuration.password = 'YOUR_PASSWORD'
+
+# Defining host is optional and default to https://api.osparc.io
+configuration.host = "https://api.osparc.io"
+# Enter a context with an instance of the API client
+with osparc.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = osparc.SolversApi(api_client)
+    solver_key = 'solver_key_example' # str | 
+
+    try:
+        # List Solver Releases
+        api_response = api_instance.list_solver_releases(solver_key)
+        pprint(api_response)
+    except ApiException as e:
+        print("Exception when calling SolversApi->list_solver_releases: %s\n" % e)
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **solver_key** | **str**|  | 
+
+### Return type
+
+[**list[Solver]**](Solver.md)
+
+### Authorization
+
+[HTTPBasic](../README.md#HTTPBasic)
 
 ### HTTP request headers
 
@@ -240,11 +539,16 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_solvers**
+
 > list[Solver] list_solvers()
 
 List Solvers
 
+Lists all available solvers (latest version) 
+
 ### Example
+
+* Basic Authentication (HTTPBasic):
 
 ```python
 from __future__ import print_function
@@ -252,9 +556,15 @@ import time
 import osparc
 from osparc.rest import ApiException
 from pprint import pprint
+configuration = osparc.Configuration()
+# Configure HTTP basic authorization: HTTPBasic
+configuration.username = 'YOUR_USERNAME'
+configuration.password = 'YOUR_PASSWORD'
 
+# Defining host is optional and default to https://api.osparc.io
+configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
-with osparc.ApiClient() as api_client:
+with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
     
@@ -275,6 +585,126 @@ This endpoint does not need any parameter.
 
 ### Authorization
 
+[HTTPBasic](../README.md#HTTPBasic)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **list_solvers_releases**
+
+> list[Solver] list_solvers_releases()
+
+Lists All Releases
+
+Lists all released solvers (all released versions) 
+
+### Example
+
+* Basic Authentication (HTTPBasic):
+
+```python
+from __future__ import print_function
+import time
+import osparc
+from osparc.rest import ApiException
+from pprint import pprint
+configuration = osparc.Configuration()
+# Configure HTTP basic authorization: HTTPBasic
+configuration.username = 'YOUR_USERNAME'
+configuration.password = 'YOUR_PASSWORD'
+
+# Defining host is optional and default to https://api.osparc.io
+configuration.host = "https://api.osparc.io"
+# Enter a context with an instance of the API client
+with osparc.ApiClient(configuration) as api_client:
+    # Create an instance of the API class
+    api_instance = osparc.SolversApi(api_client)
+    
+    try:
+        # Lists All Releases
+        api_response = api_instance.list_solvers_releases()
+        pprint(api_response)
+    except ApiException as e:
+        print("Exception when calling SolversApi->list_solvers_releases: %s\n" % e)
+```
+
+### Parameters
+This endpoint does not need any parameter.
+
+### Return type
+
+[**list[Solver]**](Solver.md)
+
+### Authorization
+
+[HTTPBasic](../README.md#HTTPBasic)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **start_job**
+
+> JobStatus start_job(solver_key, version, job_id)
+
+Start Job
+
+### Example
+
+```python
+from __future__ import print_function
+import time
+import osparc
+from osparc.rest import ApiException
+from pprint import pprint
+
+# Enter a context with an instance of the API client
+with osparc.ApiClient() as api_client:
+    # Create an instance of the API class
+    api_instance = osparc.SolversApi(api_client)
+    solver_key = 'solver_key_example' # str | 
+version = 'version_example' # str | 
+job_id = 'job_id_example' # str | 
+
+    try:
+        # Start Job
+        api_response = api_instance.start_job(solver_key, version, job_id)
+        pprint(api_response)
+    except ApiException as e:
+        print("Exception when calling SolversApi->start_job: %s\n" % e)
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **solver_key** | **str**|  | 
+ **version** | **str**|  | 
+ **job_id** | [**str**](.md)|  | 
+
+### Return type
+
+[**JobStatus**](JobStatus.md)
+
+### Authorization
+
 No authorization required
 
 ### HTTP request headers
@@ -286,6 +716,67 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **stop_job**
+
+> Job stop_job(solver_key, version, job_id)
+
+Stop Job
+
+### Example
+
+```python
+from __future__ import print_function
+import time
+import osparc
+from osparc.rest import ApiException
+from pprint import pprint
+
+# Enter a context with an instance of the API client
+with osparc.ApiClient() as api_client:
+    # Create an instance of the API class
+    api_instance = osparc.SolversApi(api_client)
+    solver_key = 'solver_key_example' # str | 
+version = 'version_example' # str | 
+job_id = 'job_id_example' # str | 
+
+    try:
+        # Stop Job
+        api_response = api_instance.stop_job(solver_key, version, job_id)
+        pprint(api_response)
+    except ApiException as e:
+        print("Exception when calling SolversApi->stop_job: %s\n" % e)
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **solver_key** | **str**|  | 
+ **version** | **str**|  | 
+ **job_id** | [**str**](.md)|  | 
+
+### Return type
+
+[**Job**](Job.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

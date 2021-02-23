@@ -4,9 +4,8 @@ A released solver with a specific version
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**name** | **str** | Unique solver name with path namespaces | 
+**id** | **str** | Solver identifier | 
 **version** | **str** | semantic version number of the node | 
-**id** | **str** |  | 
 **title** | **str** | Human readable name | 
 **description** | **str** |  | [optional] 
 **maintainer** | **str** |  | 
