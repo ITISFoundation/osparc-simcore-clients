@@ -8,7 +8,7 @@
 Python client for osparc-simcore public web API
 
 - API version: 0.4.0
-- Package version: 0.4.1
+- Package version: 0.4.2
 - Build package: org.openapitools.codegen.languages.PythonClientCodegen
 
 ## Requirements
