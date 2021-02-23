@@ -13,7 +13,7 @@ TODO: activate when service is up and running in production
 
 Python client for osparc-simcore public web API
 
-- API version: 0.4.0
+- API version: 0.3.0
 - Package version: 0.4.1
 - Build package: org.openapitools.codegen.languages.PythonClientCodegen
 
@@ -23,7 +23,7 @@ Python 3.6+
 
 ## Installation & Usage
 
-Install the latest release with
+Install the [latest release](https://github.com/ITISFoundation/osparc-simcore-python-client/releases) with
 
 ```sh
 pip install osparc
