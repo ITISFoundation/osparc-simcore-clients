@@ -38,27 +38,45 @@ import osparc
 Please follow the installation procedure above and then run the following:
 
 ```python
-from __future__ import print_function
+import os
 import time
+
 import osparc
-from osparc.rest import ApiException
-from pprint import pprint
+from osparc.models import File, Solver, Job, JobStatus, JobInputs, JobOutputs
+from osparc.api import FilesApi, SolversApi
 
-# Defining host is optional and default to https://api.osparc.io
-configuration = osparc.Configuration()
-configuration.host = "https://api.osparc.io"
+cfg = osparc.Configuration(
+    host=os.environ.get("OSPARC_API_URL", "http://127.0.0.1:8006"),
+    username=os.environ.get("MY_API_KEY"),
+    password=os.environ.get("MY_API_SECRET"),
+)
 
-# Enter a context with an instance of the API client
-with osparc.ApiClient(configuration) as api_client:
-    # Create an instance of the API class
-    api_instance = osparc.MetaApi(api_client)
+with osparc.ApiClient(cfg) as api_client:
 
-    try:
-        # Get Service Metadata
-        api_response = api_instance.get_service_metadata()
-        pprint(api_response)
-    except ApiException as e:
-        print("Exception when calling MetaApi->get_service_metadata: %s\n" % e)
+    files_api = FilesApi(api_client)
+    input_file: File = files_api.upload_file(file="path/to/input-file.h5")
+
+
+    solvers_api = SolversApi(api_client)
+    solver: Solver = solvers_api.get_solver_release("simcore/services/comp/isolve", "1.2.3")
+
+    job: Job = solvers_api.create_job(
+        solver.id,
+        solver.version,
+        JobInputs({"input_1": input_file, "input_2": 33, "input_3": False}),
+    )
+
+    status: JobStatus = solvers_api.start_job(solver.id, solver.version, job.id)
+    while not status.stopped_at:
+        time.sleep(3)
+        status = solvers_api.inspect_job(solver.id, solver.version, job.id)
+        print("Solver progress", f"{status.progress}/100", flush=True)
+
+    outputs: JobOutputs = solvers_api.get_job_outputs(solver.id, solver.version, job.id)
+
+    print( f"Job {outputs.job_id} got these results:")
+    for output_name, result in outputs.results.items():
+        print(output_name, "=", result)
 
 ```
 
