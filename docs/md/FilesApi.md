@@ -28,8 +28,8 @@ from osparc.rest import ApiException
 from pprint import pprint
 configuration = osparc.Configuration()
 # Configure HTTP basic authorization: HTTPBasic
-configuration.username = 'YOUR_USERNAME'
-configuration.password = 'YOUR_PASSWORD'
+configuration.username = 'YOUR_API_KEY_HERE'
+configuration.password = 'YOUR_API_SECRET_HERE'
 
 # Defining host is optional and default to https://api.osparc.io
 configuration.host = "https://api.osparc.io"
@@ -95,8 +95,8 @@ from osparc.rest import ApiException
 from pprint import pprint
 configuration = osparc.Configuration()
 # Configure HTTP basic authorization: HTTPBasic
-configuration.username = 'YOUR_USERNAME'
-configuration.password = 'YOUR_PASSWORD'
+configuration.username = 'YOUR_API_KEY_HERE'
+configuration.password = 'YOUR_API_SECRET_HERE'
 
 # Defining host is optional and default to https://api.osparc.io
 configuration.host = "https://api.osparc.io"
@@ -162,8 +162,8 @@ from osparc.rest import ApiException
 from pprint import pprint
 configuration = osparc.Configuration()
 # Configure HTTP basic authorization: HTTPBasic
-configuration.username = 'YOUR_USERNAME'
-configuration.password = 'YOUR_PASSWORD'
+configuration.username = 'YOUR_API_KEY_HERE'
+configuration.password = 'YOUR_API_SECRET_HERE'
 
 # Defining host is optional and default to https://api.osparc.io
 configuration.host = "https://api.osparc.io"
@@ -223,8 +223,8 @@ from osparc.rest import ApiException
 from pprint import pprint
 configuration = osparc.Configuration()
 # Configure HTTP basic authorization: HTTPBasic
-configuration.username = 'YOUR_USERNAME'
-configuration.password = 'YOUR_PASSWORD'
+configuration.username = 'YOUR_API_KEY_HERE'
+configuration.password = 'YOUR_API_SECRET_HERE'
 
 # Defining host is optional and default to https://api.osparc.io
 configuration.host = "https://api.osparc.io"
