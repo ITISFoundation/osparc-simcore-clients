@@ -276,7 +276,7 @@ class SolversApi(object):
             ['application/json'])  # noqa: E501
 
         # Authentication setting
-        auth_settings = []  # noqa: E501
+        auth_settings = ['HTTPBasic']  # noqa: E501
 
         return self.api_client.call_api(
             '/v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}', 'GET',
@@ -402,7 +402,7 @@ class SolversApi(object):
             ['application/json'])  # noqa: E501
 
         # Authentication setting
-        auth_settings = []  # noqa: E501
+        auth_settings = ['HTTPBasic']  # noqa: E501
 
         return self.api_client.call_api(
             '/v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}/outputs', 'GET',
@@ -758,7 +758,7 @@ class SolversApi(object):
             ['application/json'])  # noqa: E501
 
         # Authentication setting
-        auth_settings = []  # noqa: E501
+        auth_settings = ['HTTPBasic']  # noqa: E501
 
         return self.api_client.call_api(
             '/v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:inspect', 'POST',
@@ -1312,7 +1312,7 @@ class SolversApi(object):
             ['application/json'])  # noqa: E501
 
         # Authentication setting
-        auth_settings = []  # noqa: E501
+        auth_settings = ['HTTPBasic']  # noqa: E501
 
         return self.api_client.call_api(
             '/v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:start', 'POST',
@@ -1438,7 +1438,7 @@ class SolversApi(object):
             ['application/json'])  # noqa: E501
 
         # Authentication setting
-        auth_settings = []  # noqa: E501
+        auth_settings = ['HTTPBasic']  # noqa: E501
 
         return self.api_client.call_api(
             '/v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:stop', 'POST',

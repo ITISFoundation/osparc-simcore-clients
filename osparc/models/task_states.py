@@ -28,13 +28,17 @@ class TaskStates(object):
     """
     allowed enum values
     """
-    UNDEFINED = "undefined"
-    PENDING = "pending"
-    RUNNING = "running"
-    SUCCESS = "success"
-    FAILED = "failed"
+    UNKNOWN = "UNKNOWN"
+    PUBLISHED = "PUBLISHED"
+    NOT_STARTED = "NOT_STARTED"
+    PENDING = "PENDING"
+    STARTED = "STARTED"
+    RETRY = "RETRY"
+    SUCCESS = "SUCCESS"
+    FAILED = "FAILED"
+    ABORTED = "ABORTED"
 
-    allowable_values = [UNDEFINED, PENDING, RUNNING, SUCCESS, FAILED]  # noqa: E501
+    allowable_values = [UNKNOWN, PUBLISHED, NOT_STARTED, PENDING, STARTED, RETRY, SUCCESS, FAILED, ABORTED]  # noqa: E501
 
     """
     Attributes:
