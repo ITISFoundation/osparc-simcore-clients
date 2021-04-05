@@ -12,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     if: contains(github.ref, 'master')
     steps:
-        - uses: actions/checkout@master
-        - name: Set up lates Python 3
+        - uses: actions/checkout@v2
+        - name: Set up latest Python 3
           uses: actions/setup-python@v2
           with:
             python-version: '3.x'
@@ -26,14 +26,15 @@ jobs:
         - name: Build a binary wheel and a source tarball
           run: python setup.py sdist bdist_wheel
         - name: Publish distribution 📦 to *Test* PyPI
-          uses: pypa/gh-action-pypi-publish@master
+          uses: pypa/gh-action-pypi-publish@release/v1
           with:
             user: __token__
             password: ${{ secrets.TEST_PYPI_TOKEN }}
             repository_url: https://test.pypi.org/legacy/
+            verbose: true
         - if: startsWith(github.ref, 'refs/tags')
           name: Publish distribution 📦 to PyPI
-          uses: pypa/gh-action-pypi-publish@master
+          uses: pypa/gh-action-pypi-publish@release/v1
           with:
             user: __token__
             password: ${{ secrets.PYPI_TOKEN }}
