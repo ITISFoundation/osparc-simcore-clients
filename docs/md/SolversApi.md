@@ -47,9 +47,9 @@ configuration.host = "https://api.osparc.io"
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
-    solver_key = 'solver_key_example' # str | 
-version = 'version_example' # str | 
-job_inputs = osparc.JobInputs() # JobInputs | 
+    solver_key = 'simcore/services/comp/isolve' # str | 
+    version = '1.2.3' # str | 
+    job_inputs = osparc.JobInputs() # JobInputs | 
 
     try:
         # Create Job
@@ -98,6 +98,8 @@ Gets job of a given solver
 
 ### Example
 
+* Basic Authentication (HTTPBasic):
+
 ```python
 from __future__ import print_function
 import time
@@ -105,13 +107,20 @@ import osparc
 from osparc.rest import ApiException
 from pprint import pprint
 
+configuration = osparc.Configuration()
+# Configure HTTP basic authorization: HTTPBasic
+configuration.username = 'YOUR_API_KEY_HERE'
+configuration.password = 'YOUR_API_SECRET_HERE'
+
+# Defining host is optional and default to https://api.osparc.io
+configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
-with osparc.ApiClient() as api_client:
+with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
-    solver_key = 'solver_key_example' # str | 
-version = 'version_example' # str | 
-job_id = 'job_id_example' # str | 
+    solver_key = 'simcore/services/comp/isolve' # str | 
+    version = '1.2.3' # str | 
+    job_id = '6d43f058-cb99-4720-833a-be367b766a73' # str | 
 
     try:
         # Get Job
@@ -135,7 +144,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[HTTPBasic](../README.md#HTTPBasic)
 
 ### HTTP request headers
 
@@ -158,6 +167,8 @@ Get Job Outputs
 
 ### Example
 
+* Basic Authentication (HTTPBasic):
+
 ```python
 from __future__ import print_function
 import time
@@ -165,13 +176,20 @@ import osparc
 from osparc.rest import ApiException
 from pprint import pprint
 
+configuration = osparc.Configuration()
+# Configure HTTP basic authorization: HTTPBasic
+configuration.username = 'YOUR_API_KEY_HERE'
+configuration.password = 'YOUR_API_SECRET_HERE'
+
+# Defining host is optional and default to https://api.osparc.io
+configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
-with osparc.ApiClient() as api_client:
+with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
-    solver_key = 'solver_key_example' # str | 
-version = 'version_example' # str | 
-job_id = 'job_id_example' # str | 
+    solver_key = 'simcore/services/comp/isolve' # str | 
+    version = '1.2.3' # str | 
+    job_id = '6d43f058-cb99-4720-833a-be367b766a73' # str | 
 
     try:
         # Get Job Outputs
@@ -195,7 +213,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[HTTPBasic](../README.md#HTTPBasic)
 
 ### HTTP request headers
 
@@ -239,7 +257,7 @@ configuration.host = "https://api.osparc.io"
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
-    solver_key = 'solver_key_example' # str | 
+    solver_key = 'simcore/services/comp/isolve' # str | 
 
     try:
         # Get Latest Release of a Solver
@@ -305,8 +323,8 @@ configuration.host = "https://api.osparc.io"
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
-    solver_key = 'solver_key_example' # str | 
-version = 'version_example' # str | 
+    solver_key = 'simcore/services/comp/isolve' # str | 
+    version = '1.2.3' # str | 
 
     try:
         # Get Solver Release
@@ -345,12 +363,13 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **inspect_job**
-
 > JobStatus inspect_job(solver_key, version, job_id)
 
 Inspect Job
 
 ### Example
+
+* Basic Authentication (HTTPBasic):
 
 ```python
 from __future__ import print_function
@@ -359,13 +378,20 @@ import osparc
 from osparc.rest import ApiException
 from pprint import pprint
 
+configuration = osparc.Configuration()
+# Configure HTTP basic authorization: HTTPBasic
+configuration.username = 'YOUR_API_KEY_HERE'
+configuration.password = 'YOUR_API_SECRET_HERE'
+
+# Defining host is optional and default to https://api.osparc.io
+configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
-with osparc.ApiClient() as api_client:
+with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
-    solver_key = 'solver_key_example' # str | 
-version = 'version_example' # str | 
-job_id = 'job_id_example' # str | 
+    solver_key = 'simcore/services/comp/isolve' # str | 
+    version = '1.2.3' # str | 
+    job_id = '6d43f058-cb99-4720-833a-be367b766a73' # str | 
 
     try:
         # Inspect Job
@@ -389,7 +415,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[HTTPBasic](../README.md#HTTPBasic)
 
 ### HTTP request headers
 
@@ -405,7 +431,6 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_jobs**
-
 > list[Job] list_jobs(solver_key, version)
 
 List Jobs
@@ -433,8 +458,8 @@ configuration.host = "https://api.osparc.io"
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
-    solver_key = 'solver_key_example' # str | 
-version = 'version_example' # str | 
+    solver_key = 'simcore/services/comp/isolve' # str | 
+    version = '1.2.3' # str | 
 
     try:
         # List Jobs
@@ -473,7 +498,6 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_solver_releases**
-
 > list[Solver] list_solver_releases(solver_key)
 
 List Solver Releases
@@ -501,7 +525,7 @@ configuration.host = "https://api.osparc.io"
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
-    solver_key = 'solver_key_example' # str | 
+    solver_key = 'simcore/services/comp/isolve' # str | 
 
     try:
         # List Solver Releases
@@ -668,6 +692,8 @@ Start Job
 
 ### Example
 
+* Basic Authentication (HTTPBasic):
+
 ```python
 from __future__ import print_function
 import time
@@ -675,13 +701,20 @@ import osparc
 from osparc.rest import ApiException
 from pprint import pprint
 
+configuration = osparc.Configuration()
+# Configure HTTP basic authorization: HTTPBasic
+configuration.username = 'YOUR_API_KEY_HERE'
+configuration.password = 'YOUR_API_SECRET_HERE'
+
+# Defining host is optional and default to https://api.osparc.io
+configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
-with osparc.ApiClient() as api_client:
+with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
-    solver_key = 'solver_key_example' # str | 
-version = 'version_example' # str | 
-job_id = 'job_id_example' # str | 
+    solver_key = 'simcore/services/comp/isolve' # str | 
+    version = '1.2.3' # str | 
+    job_id = '6d43f058-cb99-4720-833a-be367b766a73' # str | 
 
     try:
         # Start Job
@@ -705,7 +738,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[HTTPBasic](../README.md#HTTPBasic)
 
 ### HTTP request headers
 
@@ -728,6 +761,8 @@ Stop Job
 
 ### Example
 
+* Basic Authentication (HTTPBasic):
+
 ```python
 from __future__ import print_function
 import time
@@ -735,13 +770,20 @@ import osparc
 from osparc.rest import ApiException
 from pprint import pprint
 
+configuration = osparc.Configuration()
+# Configure HTTP basic authorization: HTTPBasic
+configuration.username = 'YOUR_API_KEY_HERE'
+configuration.password = 'YOUR_API_SECRET_HERE'
+
+# Defining host is optional and default to https://api.osparc.io
+configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
-with osparc.ApiClient() as api_client:
+with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
-    solver_key = 'solver_key_example' # str | 
-version = 'version_example' # str | 
-job_id = 'job_id_example' # str | 
+    solver_key = 'simcore/services/comp/isolve' # str | 
+    version = '1.2.3' # str | 
+    job_id = '6d43f058-cb99-4720-833a-be367b766a73' # str | 
 
     try:
         # Stop Job
@@ -765,7 +807,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[HTTPBasic](../README.md#HTTPBasic)
 
 ### HTTP request headers
 
