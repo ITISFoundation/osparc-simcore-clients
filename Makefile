@@ -126,10 +126,10 @@ build:
 	python setup.py sdist bdist_wheel
 
 
-#.PHONY: release
-#release: build # release by-hand (TEMP SOLUTION until FIXME: https://github.com/ITISFoundation/osparc-simcore-python-client/issues/16)
-#	python -m pip install twine
-#	python -m twine upload dist/*
+.PHONY: release
+release: build # release by-hand (TEMP SOLUTION until FIXME: https://github.com/ITISFoundation/osparc-simcore-python-client/issues/16)
+	python -m pip install twine
+	python -m twine upload dist/*
 
 
 ## DOCKER -------------------------------------------------------------------------------
