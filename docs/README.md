@@ -80,6 +80,10 @@ with osparc.ApiClient(cfg) as api_client:
 
 ```
 
+## Tutorials
+
+- [Basic tutorial](md/tutorials/BasicTutorial.md)
+
 
 ## Documentation for API Endpoints
 
@@ -87,45 +91,45 @@ All URIs are relative to *https://api.osparc.io*
 
 Class        | Method                                                                | HTTP request                                                               | Description
 -------------|-----------------------------------------------------------------------|----------------------------------------------------------------------------|-------------------------------
-*FilesApi*   | [**download_file**](docs/FilesApi.md#download_file)                   | **GET** /v0/files/{file_id}/content                                        | Download File
-*FilesApi*   | [**get_file**](docs/FilesApi.md#get_file)                             | **GET** /v0/files/{file_id}                                                | Get File
-*FilesApi*   | [**list_files**](docs/FilesApi.md#list_files)                         | **GET** /v0/files                                                          | List Files
-*FilesApi*   | [**upload_file**](docs/FilesApi.md#upload_file)                       | **PUT** /v0/files/content                                                  | Upload File
-*MetaApi*    | [**get_service_metadata**](docs/MetaApi.md#get_service_metadata)      | **GET** /v0/meta                                                           | Get Service Metadata
-*SolversApi* | [**create_job**](docs/SolversApi.md#create_job)                       | **POST** /v0/solvers/{solver_key}/releases/{version}/jobs                  | Create Job
-*SolversApi* | [**get_job**](docs/SolversApi.md#get_job)                             | **GET** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}          | Get Job
-*SolversApi* | [**get_job_outputs**](docs/SolversApi.md#get_job_outputs)             | **GET** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}/outputs  | Get Job Outputs
-*SolversApi* | [**get_solver**](docs/SolversApi.md#get_solver)                       | **GET** /v0/solvers/{solver_key}/latest                                    | Get Latest Release of a Solver
-*SolversApi* | [**get_solver_release**](docs/SolversApi.md#get_solver_release)       | **GET** /v0/solvers/{solver_key}/releases/{version}                        | Get Solver Release
-*SolversApi* | [**inspect_job**](docs/SolversApi.md#inspect_job)                     | **POST** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:inspect | Inspect Job
-*SolversApi* | [**list_jobs**](docs/SolversApi.md#list_jobs)                         | **GET** /v0/solvers/{solver_key}/releases/{version}/jobs                   | List Jobs
-*SolversApi* | [**list_solver_releases**](docs/SolversApi.md#list_solver_releases)   | **GET** /v0/solvers/{solver_key}/releases                                  | List Solver Releases
-*SolversApi* | [**list_solvers**](docs/SolversApi.md#list_solvers)                   | **GET** /v0/solvers                                                        | List Solvers
-*SolversApi* | [**list_solvers_releases**](docs/SolversApi.md#list_solvers_releases) | **GET** /v0/solvers/releases                                               | Lists All Releases
-*SolversApi* | [**start_job**](docs/SolversApi.md#start_job)                         | **POST** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:start   | Start Job
-*SolversApi* | [**stop_job**](docs/SolversApi.md#stop_job)                           | **POST** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:stop    | Stop Job
-*UsersApi*   | [**get_my_profile**](docs/UsersApi.md#get_my_profile)                 | **GET** /v0/me                                                             | Get My Profile
-*UsersApi*   | [**update_my_profile**](docs/UsersApi.md#update_my_profile)           | **PUT** /v0/me                                                             | Update My Profile
+*FilesApi*   | [**download_file**](md/FilesApi.md#download_file)                   | **GET** /v0/files/{file_id}/content                                        | Download File
+*FilesApi*   | [**get_file**](md/FilesApi.md#get_file)                             | **GET** /v0/files/{file_id}                                                | Get File
+*FilesApi*   | [**list_files**](md/FilesApi.md#list_files)                         | **GET** /v0/files                                                          | List Files
+*FilesApi*   | [**upload_file**](md/FilesApi.md#upload_file)                       | **PUT** /v0/files/content                                                  | Upload File
+*MetaApi*    | [**get_service_metadata**](md/MetaApi.md#get_service_metadata)      | **GET** /v0/meta                                                           | Get Service Metadata
+*SolversApi* | [**create_job**](md/SolversApi.md#create_job)                       | **POST** /v0/solvers/{solver_key}/releases/{version}/jobs                  | Create Job
+*SolversApi* | [**get_job**](md/SolversApi.md#get_job)                             | **GET** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}          | Get Job
+*SolversApi* | [**get_job_outputs**](md/SolversApi.md#get_job_outputs)             | **GET** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}/outputs  | Get Job Outputs
+*SolversApi* | [**get_solver**](md/SolversApi.md#get_solver)                       | **GET** /v0/solvers/{solver_key}/latest                                    | Get Latest Release of a Solver
+*SolversApi* | [**get_solver_release**](md/SolversApi.md#get_solver_release)       | **GET** /v0/solvers/{solver_key}/releases/{version}                        | Get Solver Release
+*SolversApi* | [**inspect_job**](md/SolversApi.md#inspect_job)                     | **POST** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:inspect | Inspect Job
+*SolversApi* | [**list_jobs**](md/SolversApi.md#list_jobs)                         | **GET** /v0/solvers/{solver_key}/releases/{version}/jobs                   | List Jobs
+*SolversApi* | [**list_solver_releases**](md/SolversApi.md#list_solver_releases)   | **GET** /v0/solvers/{solver_key}/releases                                  | List Solver Releases
+*SolversApi* | [**list_solvers**](md/SolversApi.md#list_solvers)                   | **GET** /v0/solvers                                                        | List Solvers
+*SolversApi* | [**list_solvers_releases**](md/SolversApi.md#list_solvers_releases) | **GET** /v0/solvers/releases                                               | Lists All Releases
+*SolversApi* | [**start_job**](md/SolversApi.md#start_job)                         | **POST** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:start   | Start Job
+*SolversApi* | [**stop_job**](md/SolversApi.md#stop_job)                           | **POST** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:stop    | Stop Job
+*UsersApi*   | [**get_my_profile**](md/UsersApi.md#get_my_profile)                 | **GET** /v0/me                                                             | Get My Profile
+*UsersApi*   | [**update_my_profile**](md/UsersApi.md#update_my_profile)           | **PUT** /v0/me                                                             | Update My Profile
 
 
 ## Documentation For Models
 
- - [BodyUploadFileV0FilesContentPut](docs/BodyUploadFileV0FilesContentPut.md)
- - [File](docs/File.md)
- - [Groups](docs/Groups.md)
- - [HTTPValidationError](docs/HTTPValidationError.md)
- - [Job](docs/Job.md)
- - [JobInputs](docs/JobInputs.md)
- - [JobOutputs](docs/JobOutputs.md)
- - [JobStatus](docs/JobStatus.md)
- - [Meta](docs/Meta.md)
- - [Profile](docs/Profile.md)
- - [ProfileUpdate](docs/ProfileUpdate.md)
- - [Solver](docs/Solver.md)
- - [TaskStates](docs/TaskStates.md)
- - [UserRoleEnum](docs/UserRoleEnum.md)
- - [UsersGroup](docs/UsersGroup.md)
- - [ValidationError](docs/ValidationError.md)
+ - [BodyUploadFileV0FilesContentPut](md/BodyUploadFileV0FilesContentPut.md)
+ - [File](md/File.md)
+ - [Groups](md/Groups.md)
+ - [HTTPValidationError](md/HTTPValidationError.md)
+ - [Job](md/Job.md)
+ - [JobInputs](md/JobInputs.md)
+ - [JobOutputs](md/JobOutputs.md)
+ - [JobStatus](md/JobStatus.md)
+ - [Meta](md/Meta.md)
+ - [Profile](md/Profile.md)
+ - [ProfileUpdate](md/ProfileUpdate.md)
+ - [Solver](md/Solver.md)
+ - [TaskStates](md/TaskStates.md)
+ - [UserRoleEnum](md/UserRoleEnum.md)
+ - [UsersGroup](md/UsersGroup.md)
+ - [ValidationError](md/ValidationError.md)
 
 
 ## Documentation For Authorization

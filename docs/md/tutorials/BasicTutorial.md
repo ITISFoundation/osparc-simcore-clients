@@ -1,4 +1,4 @@
-# Tutorial
+# Basic Tutorial
 
 
 
@@ -13,7 +13,7 @@ $ python -c "import osparc; print(osparc.__version__)"
 
 ## Setup
 
-To setup the client, we need to provide a username and password to the configuration. These can be obtained in the UI under [Preferences > API Settings > API Keys](http://docs.osparc.io/#/docs/platform_introduction/main_window_and_navigation/user_setup/profile?id=preferences). Use the *API key* as username and the *API secret* as password. For security reasons, you should not write these values in your script but instead set them up via environment variables or read them from a separate file. In this example, we use environment variables
+To setup the client, we need to provide a username and password to the configuration. These can be obtained in the UI under [Preferences > API Settings > API Keys](http://docs.osparc.io/#/docs/platform_introduction/main_window_and_navigation/user_setup/profile?id=preferences). Use the *API key* as username and the *API secret* as password. For security reasons, you should not write these values in your script but instead set them up via environment variables or read them from a separate file. In this example, we use environment variables which will be referred to as "OSPARC_API_KEY" and "OSPARC_API_SECRET" for the rest of the tutorial.
 
 ```python
 
@@ -68,7 +68,9 @@ with osparc.ApiClient(cfg) as api_client:
 
 The osparc API can be used to execute any computational service published in the platform. This means that any computational service listed in the UI under the [Discover Tab](http://docs.osparc.io/#/docs/platform_introduction/core_elements/Discover?id=discover-tab) is accessible from the API. Note that computational services are denoted as *solvers* in the API for convenience, but they refer to the same concept.
 
-Let's use the sleepers computational service to illustrate a typical workflow.
+
+Let's use the sleepers computational service to illustrate a typical workflow. The sleepers computational service is a very basic service that simply waits (i.e. *sleeps*) a given time before producing some outputs. It takes as input one natural number, an optional text file input that contains another natural number and a boolean in the form of a checkbox. It also provides two outputs: one natural number and a file containing a single natural number.
+
 
 ```python
 import osparc
