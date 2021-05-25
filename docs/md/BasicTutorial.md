@@ -265,20 +265,18 @@ Once the client script triggers the solver, the solver runs in the platform and 
 A solver runs in a plaforma starts a ``Job``. Using the ``solvers_api``, allows us to inspect the ``Job`` and get a ``JobStatus`` with information about its status. For instance
 
 ```python
-
-    status: JobStatus = solvers_api.start_job(solver.id, solver.version, job.id)
-    while not status.stopped_at:
-        time.sleep(3)
-        status = solvers_api.inspect_job(solver.id, solver.version, job.id)
-        print("Solver progress", f"{status.progress}/100", flush=True)
+ status: JobStatus = solvers_api.start_job(solver.id, solver.version, job.id)
+ while not status.stopped_at:
+     time.sleep(3)
+     status = solvers_api.inspect_job(solver.id, solver.version, job.id)
+     print("Solver progress", f"{status.progress}/100", flush=True)
 ```
-
 
 ## References
 
 - [osparc API python client] documentation
 - [osparc API] documentation
-
+- A full script with this tutorial: [``sleeper.py``](https://github.com/ITISFoundation/osparc-simcore/blob/master/tests/public-api/examples/sleeper.py)
 
 [osparc API python client]:https://itisfoundation.github.io/osparc-simcore-python-client
 [osparc API]:https://api.staging.osparc.io/doc
