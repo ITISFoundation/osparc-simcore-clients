@@ -169,7 +169,7 @@ In the snippet above, ``input_file`` is a ``File`` reference to the uploaded fil
 
 #### Solvers, Inputs and Outputs
 
-The inputs and outputs are specific for every solver. Every input/output has a name and an associated type that can be as simple as booleans, numbers, strings ... or more complex as files. You can find this information in the UI under Discover Tab, selecting the service card > More Info > raw metadata. For instance, the ``sleeper`` version ``2.1.1`` has the following ``raw-metadata``:
+The inputs and outputs are specific for every solver. Every input/output has a name and an associated type that can be as simple as booleans, numbers, strings ... or more complex as files. You can find this information in the UI under Discover Tab, selecting the service card > More Info > raw metadata. For instance, the ``sleeper`` version ``2.0.2`` has the following ``raw-metadata``:
 
 ```json
 {
@@ -192,17 +192,11 @@ The inputs and outputs are specific for every solver. Every input/output has a n
                     'displayOrder': 3,
                     'label': 'Fail after sleep',
                     'type': 'boolean'},
-        'input_4': {'defaultValue': 0,
-                    'description': 'It will first walk the distance to '
-                                    'bed',
-                    'displayOrder': 4,
-                    'label': 'Distance to bed',
-                    'type': 'integer',
-                    'unit': 'meter'}},
     }
 }
 ```
 So, the inputs can be set as follows
+
 ```python
 # ...
 job = solvers_api.create_job(
@@ -213,7 +207,6 @@ job = solvers_api.create_job(
                     "input_1": uploaded_input_file,
                     "input_2": 3 * n,  # sleep time in secs
                     "input_3": bool(n % 2),  # fail after sleep?
-                    "input_4": n,  # walk distance in meters
                 }
             ),
         )
