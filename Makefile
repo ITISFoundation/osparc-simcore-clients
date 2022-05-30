@@ -1,10 +1,13 @@
-.DEFAULT_GOAL := info
+.DEFAULT_GOAL := help
 SHELL         := /bin/bash
 VCS_URL       := $(shell git config --get remote.origin.url)
 VCS_REF       := $(shell git rev-parse --short HEAD)
 NOW_TIMESTAMP := $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
-APP_NAME          = $(notdir $(CURDIR))
-APP_VERSION    = $(shell python setup.py --version)
+APP_NAME      := $(notdir $(CURDIR))
+APP_VERSION   := $(shell python setup.py --version)
+
+REPO_BASE_DIR := $(shell git rev-parse --show-toplevel)
+SCRIPTS_DIR   := $(abspath $(REPO_BASE_DIR)/scripts)
 
 
 help: ## help on rule's targets
@@ -42,6 +45,7 @@ _check_venv_active:
 	# checking whether virtual environment was activated
 	@python3 -c "import sys; assert sys.base_prefix!=sys.prefix"
 
+
 devenv: .venv
 .venv: .env
 	# creating virtual-env in $@
@@ -56,7 +60,7 @@ devenv: .venv
 
 
 .PHONY: install-dev
-install-dev: _check_venv_active 
+install-dev: _check_venv_active
 	pip install -r requirements-tests.txt
 	pip install -e .
 
@@ -84,20 +88,10 @@ docs/md/code_samples/%.ipynb:docs/md/%.md
 
 ## DOCUMENTATION ------------------------------------------------------------------------
 
-.PHONY: serve-doc
-serve-doc: # serves doc
+.PHONY: http-doc
+http-doc: ## serves doc
 	# starting doc website
-	cd docs && python3 -m http.server 50001
-
-
-# TODO: 
-# - update README.md 
-#	- from ## Documentation for API Endpoints to ## Author )
-#   - all paths docs/ -> docs/md/
-#   - copy to docs and replaces all docs/  -> md/
-# - move all to docs/md
-# - replace :\n``  -> :\n\n``
-# - replace http://localhost https://api.osparc.io
+	cd docs && python3 -m http.server 50001 --bind 127.0.0.1
 
 ## RELEASE -------------------------------------------------------------------------------
 
@@ -145,7 +139,7 @@ shell:
 
 
 
-# RELEASE --------------------------------------------------------------------------------------------------------------------------------------------
+# RELEASE -------------------------------------------------------------------------------
 
 staging_prefix := staging_
 prod_prefix := v
@@ -189,3 +183,58 @@ release-hotfix: ## Helper to create a hotfix release in Github (usage: make rele
 	@git pull --tags
 	@echo -e "\e[33mOpen the following link to create the $(if $(findstring -staging, $@),staging,production) release:";
 	@echo -e "\e[32mhttps://github.com/$(_git_get_repo_orga_name)/releases/new?prerelease=$(if $(findstring -staging, $@),1,0)&target=$(_url_encoded_target)&tag=$(_url_encoded_tag)&title=$(_url_encoded_title)&body=$(_url_encoded_logs)";
+
+
+
+
+# GENERATION python client -----------------------------------------------------------------------------
+.PHONY: python-client generator-help
+
+# SEE https://openapi-generator.tech/docs/usage#generate
+# SEE https://openapi-generator.tech/docs/generators/python
+#
+# TODO: put instead to additional-props.yaml and --config=openapi-generator/python-config.yaml
+# TODO: copy this code to https://github.com/ITISFoundation/osparc-simcore-python-client/blob/master/Makefile
+#
+# NOTE: assumes this repo exists
+GIT_USER_ID := ITISFoundation
+GIT_REPO_ID := osparc-simcore-python-client
+
+GENERATOR_NAME := python
+
+ADDITIONAL_PROPS := \
+	generateSourceCodeOnly=false\
+	hideGenerationTimestamp=true\
+	library=urllib3\
+	packageName=osparc\
+	packageUrl=https://github.com/$(GIT_USER_ID)/${GIT_REPO_ID}.git\
+	packageVersion=$(APP_VERSION)\
+	projectName=osparc-simcore-python-api
+ADDITIONAL_PROPS := $(foreach prop,$(ADDITIONAL_PROPS),$(strip $(prop)))
+
+null  :=
+space := $(null) #
+comma := ,
+
+
+python-client: api/openapi.json ## runs python client generator
+	# generates
+	cd $(CURDIR); \
+	$(SCRIPTS_DIR)/openapi-generator-cli.bash generate \
+		--generator-name=$(GENERATOR_NAME) \
+		--git-user-id=$(GIT_USER_ID)\
+		--git-repo-id=$(GIT_REPO_ID)\
+		--http-user-agent="osparc-api/$(APP_VERSION)/python"\
+		--input-spec=/local/$< \
+		--output=/local \
+		--additional-properties=$(subst $(space),$(comma),$(strip $(ADDITIONAL_PROPS)))\
+		--package-name=osparc\
+		--release-note="Updated to $(APP_VERSION)"
+
+
+
+generator-help: ## help on client-api generator
+	# generate help
+	@$(SCRIPTS_DIR)/openapi-generator-cli.bash help generate
+	# generator config help
+	@$(SCRIPTS_DIR)/openapi-generator-cli.bash config-help -g $(GENERATOR_NAME)
