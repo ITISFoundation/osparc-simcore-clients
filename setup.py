@@ -5,7 +5,7 @@ from pathlib import Path
 from setuptools import setup, find_packages
 
 NAME = "osparc"
-VERSION = "0.4.3"
+VERSION = "0.5.0"
 API_VERSION = "0.4.0"
 REQUIRES = ["urllib3 >= 1.26.4", "six >= 1.10", "certifi", "python-dateutil"]
 README = Path("README.md").read_text()
