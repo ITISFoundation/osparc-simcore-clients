@@ -9,6 +9,7 @@ All URIs are relative to *https://api.osparc.io*
 
 
 # **get_my_profile**
+
 > Profile get_my_profile()
 
 Get My Profile

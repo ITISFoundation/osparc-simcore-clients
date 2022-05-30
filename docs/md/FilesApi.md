@@ -37,7 +37,7 @@ configuration.host = "https://api.osparc.io"
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.FilesApi(api_client)
-    file_id = 'file_id_example' # str |
+    file_id = '2c04bbb2-a549-4764-9466-1c6c93e3882c' # str |
 
     try:
         # Download File
@@ -67,6 +67,7 @@ with osparc.ApiClient(configuration) as api_client:
  - **Accept**: application/octet-stream, text/plain, application/json
 
 ### HTTP response details
+
 | Status code | Description                     | Response headers |
 | ----------- | ------------------------------- | ---------------- |
 | **307**     | Successful Response             | -                |
@@ -105,7 +106,7 @@ configuration.host = "https://api.osparc.io"
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.FilesApi(api_client)
-    file_id = 'file_id_example' # str |
+    file_id = '2c04bbb2-a549-4764-9466-1c6c93e3882c' # str |
 
     try:
         # Get File
@@ -135,6 +136,7 @@ with osparc.ApiClient(configuration) as api_client:
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description         | Response headers |
 | ----------- | ------------------- | ---------------- |
 | **200**     | Successful Response | -                |
@@ -198,6 +200,7 @@ This endpoint does not need any parameter.
  - **Accept**: application/json
 
 ### HTTP response details
+
 | Status code | Description         | Response headers |
 | ----------- | ------------------- | ---------------- |
 | **200**     | Successful Response | -                |
@@ -233,7 +236,7 @@ with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.FilesApi(api_client)
     file = '/path/to/file' # file |
-content_length = 'content_length_example' # str |  (optional)
+    content_length = 'content_length_example' # str |  (optional)
 
     try:
         # Upload File
