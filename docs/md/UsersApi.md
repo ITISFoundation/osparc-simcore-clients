@@ -2,14 +2,13 @@
 
 All URIs are relative to *https://api.osparc.io*
 
-Method | HTTP request | Description
-------------- | ------------- | -------------
-[**get_my_profile**](UsersApi.md#get_my_profile) | **GET** /v0/me | Get My Profile
-[**update_my_profile**](UsersApi.md#update_my_profile) | **PUT** /v0/me | Update My Profile
+| Method                                                 | HTTP request   | Description       |
+| ------------------------------------------------------ | -------------- | ----------------- |
+| [**get_my_profile**](UsersApi.md#get_my_profile)       | **GET** /v0/me | Get My Profile    |
+| [**update_my_profile**](UsersApi.md#update_my_profile) | **PUT** /v0/me | Update My Profile |
 
 
 # **get_my_profile**
-
 > Profile get_my_profile()
 
 Get My Profile
@@ -35,7 +34,7 @@ configuration.host = "https://api.osparc.io"
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.UsersApi(api_client)
-    
+
     try:
         # Get My Profile
         api_response = api_instance.get_my_profile()
@@ -61,14 +60,13 @@ This endpoint does not need any parameter.
  - **Accept**: application/json
 
 ### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | Successful Response |  -  |
+| Status code | Description         | Response headers |
+| ----------- | ------------------- | ---------------- |
+| **200**     | Successful Response | -                |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **update_my_profile**
-
 > Profile update_my_profile(profile_update)
 
 Update My Profile
@@ -94,7 +92,7 @@ configuration.host = "https://api.osparc.io"
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.UsersApi(api_client)
-    profile_update = osparc.ProfileUpdate() # ProfileUpdate | 
+    profile_update = osparc.ProfileUpdate() # ProfileUpdate |
 
     try:
         # Update My Profile
@@ -106,9 +104,9 @@ with osparc.ApiClient(configuration) as api_client:
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **profile_update** | [**ProfileUpdate**](ProfileUpdate.md)|  | 
+| Name               | Type                                  | Description | Notes |
+| ------------------ | ------------------------------------- | ----------- | ----- |
+| **profile_update** | [**ProfileUpdate**](ProfileUpdate.md) |             |
 
 ### Return type
 
@@ -124,10 +122,10 @@ Name | Type | Description  | Notes
  - **Accept**: application/json
 
 ### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | Successful Response |  -  |
-**422** | Validation Error |  -  |
+| Status code | Description         | Response headers |
+| ----------- | ------------------- | ---------------- |
+| **200**     | Successful Response | -                |
+| **422**     | Validation Error    | -                |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

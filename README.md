@@ -86,31 +86,14 @@ with osparc.ApiClient(cfg) as api_client:
 
 ```
 
-## Documentation for API Endpoints
+## Documentation for API Classes
 
-All URIs are relative to *http://localhost*
+All URIs are relative to *https://api.osparc.io*
 
-Class | Method | HTTP request | Description
------------- | ------------- | ------------- | -------------
-*FilesApi* | [**download_file**](docs/md/FilesApi.md#download_file) | **GET** /v0/files/{file_id}/content | Download File
-*FilesApi* | [**get_file**](docs/md/FilesApi.md#get_file) | **GET** /v0/files/{file_id} | Get File
-*FilesApi* | [**list_files**](docs/md/FilesApi.md#list_files) | **GET** /v0/files | List Files
-*FilesApi* | [**upload_file**](docs/md/md/FilesApi.md#upload_file) | **PUT** /v0/files/content | Upload File
-*MetaApi* | [**get_service_metadata**](docs/md/md/MetaApi.md#get_service_metadata) | **GET** /v0/meta | Get Service Metadata
-*SolversApi* | [**create_job**](docs/md/SolversApi.md#create_job) | **POST** /v0/solvers/{solver_key}/releases/{version}/jobs | Create Job
-*SolversApi* | [**get_job**](docs/md/SolversApi.md#get_job) | **GET** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id} | Get Job
-*SolversApi* | [**get_job_outputs**](docs/md/SolversApi.md#get_job_outputs) | **GET** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}/outputs | Get Job Outputs
-*SolversApi* | [**get_solver**](docs/md/SolversApi.md#get_solver) | **GET** /v0/solvers/{solver_key}/latest | Get Latest Release of a Solver
-*SolversApi* | [**get_solver_release**](docs/md/SolversApi.md#get_solver_release) | **GET** /v0/solvers/{solver_key}/releases/{version} | Get Solver Release
-*SolversApi* | [**inspect_job**](docs/md/SolversApi.md#inspect_job) | **POST** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:inspect | Inspect Job
-*SolversApi* | [**list_jobs**](docs/md/SolversApi.md#list_jobs) | **GET** /v0/solvers/{solver_key}/releases/{version}/jobs | List Jobs
-*SolversApi* | [**list_solver_releases**](docs/md/SolversApi.md#list_solver_releases) | **GET** /v0/solvers/{solver_key}/releases | List Solver Releases
-*SolversApi* | [**list_solvers**](docs/md/SolversApi.md#list_solvers) | **GET** /v0/solvers | List Solvers
-*SolversApi* | [**list_solvers_releases**](docs/md/SolversApi.md#list_solvers_releases) | **GET** /v0/solvers/releases | Lists All Releases
-*SolversApi* | [**start_job**](docs/md/SolversApi.md#start_job) | **POST** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:start | Start Job
-*SolversApi* | [**stop_job**](docs/md/SolversApi.md#stop_job) | **POST** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:stop | Stop Job
-*UsersApi* | [**get_my_profile**](docs/md/UsersApi.md#get_my_profile) | **GET** /v0/me | Get My Profile
-*UsersApi* | [**update_my_profile**](docs/md/UsersApi.md#update_my_profile) | **PUT** /v0/me | Update My Profile
+- [MetaApi](docs/md/MetaApi.md)
+- [FilesApi](docs/md/FilesApi.md)
+- [SolversApi](docs/md/SolversApi.md)
+- [UsersApi](docs/md/UsersApi.md)
 
 
 ## Documentation For Models

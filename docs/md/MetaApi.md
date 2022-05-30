@@ -2,13 +2,12 @@
 
 All URIs are relative to *https://api.osparc.io*
 
-Method | HTTP request | Description
-------------- | ------------- | -------------
-[**get_service_metadata**](MetaApi.md#get_service_metadata) | **GET** /v0/meta | Get Service Metadata
+| Method                                                      | HTTP request     | Description          |
+| ----------------------------------------------------------- | ---------------- | -------------------- |
+| [**get_service_metadata**](MetaApi.md#get_service_metadata) | **GET** /v0/meta | Get Service Metadata |
 
 
 # **get_service_metadata**
-
 > Meta get_service_metadata()
 
 Get Service Metadata
@@ -26,7 +25,7 @@ from pprint import pprint
 with osparc.ApiClient() as api_client:
     # Create an instance of the API class
     api_instance = osparc.MetaApi(api_client)
-    
+
     try:
         # Get Service Metadata
         api_response = api_instance.get_service_metadata()
@@ -52,9 +51,9 @@ No authorization required
  - **Accept**: application/json
 
 ### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | Successful Response |  -  |
+| Status code | Description         | Response headers |
+| ----------- | ------------------- | ---------------- |
+| **200**     | Successful Response | -                |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
