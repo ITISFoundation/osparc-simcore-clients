@@ -49,8 +49,8 @@ with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
     solver_key = 'simcore/services/comp/isolve' # str |
-version = '1.2.3' # str |
-job_inputs = osparc.JobInputs() # JobInputs |
+    version = '1.2.3' # str |
+    job_inputs = osparc.JobInputs() # JobInputs |
 
     try:
         # Create Job
@@ -121,8 +121,8 @@ with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
     solver_key = 'simcore/services/comp/isolve' # str |
-version = '1.2.3' # str |
-job_id = '6d43f058-cb99-4720-833a-be367b766a73' # str |
+    version = '1.2.3' # str |
+    job_id = '6d43f058-cb99-4720-833a-be367b766a73' # str |
 
     try:
         # Get Job
@@ -192,8 +192,8 @@ with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
     solver_key = 'simcore/services/comp/isolve' # str |
-version = '1.2.3' # str |
-job_id = '6d43f058-cb99-4720-833a-be367b766a73' # str |
+    version = '1.2.3' # str |
+    job_id = '6d43f058-cb99-4720-833a-be367b766a73' # str |
 
     try:
         # Get Job Output Logfile
@@ -263,8 +263,8 @@ with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
     solver_key = 'simcore/services/comp/isolve' # str |
-version = '1.2.3' # str |
-job_id = '6d43f058-cb99-4720-833a-be367b766a73' # str |
+    version = '1.2.3' # str |
+    job_id = '6d43f058-cb99-4720-833a-be367b766a73' # str |
 
     try:
         # Get Job Outputs
@@ -397,7 +397,7 @@ with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
     solver_key = 'simcore/services/comp/isolve' # str |
-version = '1.2.3' # str |
+    version = '1.2.3' # str |
 
     try:
         # Get Solver Release
@@ -462,8 +462,8 @@ with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
     solver_key = 'simcore/services/comp/isolve' # str |
-version = '1.2.3' # str |
-job_id = '6d43f058-cb99-4720-833a-be367b766a73' # str |
+    version = '1.2.3' # str |
+    job_id = '6d43f058-cb99-4720-833a-be367b766a73' # str |
 
     try:
         # Inspect Job
@@ -531,7 +531,7 @@ with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
     solver_key = 'simcore/services/comp/isolve' # str |
-version = '1.2.3' # str |
+    version = '1.2.3' # str |
 
     try:
         # List Jobs
@@ -781,8 +781,8 @@ with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
     solver_key = 'simcore/services/comp/isolve' # str |
-version = '1.2.3' # str |
-job_id = '6d43f058-cb99-4720-833a-be367b766a73' # str |
+    version = '1.2.3' # str |
+    job_id = '6d43f058-cb99-4720-833a-be367b766a73' # str |
 
     try:
         # Start Job
@@ -848,8 +848,8 @@ with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
     solver_key = 'simcore/services/comp/isolve' # str |
-version = '1.2.3' # str |
-job_id = '6d43f058-cb99-4720-833a-be367b766a73' # str |
+    version = '1.2.3' # str |
+    job_id = '6d43f058-cb99-4720-833a-be367b766a73' # str |
 
     try:
         # Stop Job
