@@ -231,6 +231,8 @@ python-client: api/openapi.json ## runs python client generator
 		--package-name=osparc\
 		--release-note="Updated to $(APP_VERSION)"
 
+	# formatting code
+	@black osparc
 
 
 generator-help: ## help on client-api generator
