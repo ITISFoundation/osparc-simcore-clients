@@ -19,6 +19,7 @@ import osparc
 from osparc.models.profile import Profile  # noqa: E501
 from osparc.rest import ApiException
 
+
 class TestProfile(unittest.TestCase):
     """Profile unit test stubs"""
 
@@ -30,38 +31,42 @@ class TestProfile(unittest.TestCase):
 
     def make_instance(self, include_optional):
         """Test Profile
-            include_option is a boolean, when False only required
-            params are included, when True both required and
-            optional params are included """
+        include_option is a boolean, when False only required
+        params are included, when True both required and
+        optional params are included"""
         # model = osparc.models.profile.Profile()  # noqa: E501
-        if include_optional :
+        if include_optional:
             return Profile(
-                first_name = 'James', 
-                last_name = 'Maxwell', 
-                login = '0', 
-                role = 'ANONYMOUS', 
-                groups = osparc.models.groups.Groups(
-                    me = osparc.models.users_group.UsersGroup(
-                        gid = '0', 
-                        label = '0', 
-                        description = '0', ), 
-                    organizations = [
+                first_name="James",
+                last_name="Maxwell",
+                login="0",
+                role="ANONYMOUS",
+                groups=osparc.models.groups.Groups(
+                    me=osparc.models.users_group.UsersGroup(
+                        gid="0",
+                        label="0",
+                        description="0",
+                    ),
+                    organizations=[
                         osparc.models.users_group.UsersGroup(
-                            gid = '0', 
-                            label = '0', 
-                            description = '0', )
-                        ], 
-                    all = osparc.models.users_group.UsersGroup(
-                        gid = '0', 
-                        label = '0', 
-                        description = '0', ), ), 
-                gravatar_id = '0'
+                            gid="0",
+                            label="0",
+                            description="0",
+                        )
+                    ],
+                    all=osparc.models.users_group.UsersGroup(
+                        gid="0",
+                        label="0",
+                        description="0",
+                    ),
+                ),
+                gravatar_id="0",
             )
-        else :
+        else:
             return Profile(
-                login = '0',
-                role = 'ANONYMOUS',
-        )
+                login="0",
+                role="ANONYMOUS",
+            )
 
     def testProfile(self):
         """Test Profile"""
@@ -69,5 +74,5 @@ class TestProfile(unittest.TestCase):
         inst_req_and_optional = self.make_instance(include_optional=True)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

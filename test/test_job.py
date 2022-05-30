@@ -19,6 +19,7 @@ import osparc
 from osparc.models.job import Job  # noqa: E501
 from osparc.rest import ApiException
 
+
 class TestJob(unittest.TestCase):
     """Job unit test stubs"""
 
@@ -30,32 +31,36 @@ class TestJob(unittest.TestCase):
 
     def make_instance(self, include_optional):
         """Test Job
-            include_option is a boolean, when False only required
-            params are included, when True both required and
-            optional params are included """
+        include_option is a boolean, when False only required
+        params are included, when True both required and
+        optional params are included"""
         # model = osparc.models.job.Job()  # noqa: E501
-        if include_optional :
+        if include_optional:
             return Job(
-                id = '0', 
-                name = 'a', 
-                inputs_checksum = '0', 
-                created_at = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'), 
-                runner_name = 'a', 
-                url = '0', 
-                runner_url = '0', 
-                outputs_url = '0'
+                id="0",
+                name="a",
+                inputs_checksum="0",
+                created_at=datetime.datetime.strptime(
+                    "2013-10-20 19:20:30.00", "%Y-%m-%d %H:%M:%S.%f"
+                ),
+                runner_name="a",
+                url="0",
+                runner_url="0",
+                outputs_url="0",
             )
-        else :
+        else:
             return Job(
-                id = '0',
-                name = 'a',
-                inputs_checksum = '0',
-                created_at = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
-                runner_name = 'a',
-                url = '0',
-                runner_url = '0',
-                outputs_url = '0',
-        )
+                id="0",
+                name="a",
+                inputs_checksum="0",
+                created_at=datetime.datetime.strptime(
+                    "2013-10-20 19:20:30.00", "%Y-%m-%d %H:%M:%S.%f"
+                ),
+                runner_name="a",
+                url="0",
+                runner_url="0",
+                outputs_url="0",
+            )
 
     def testJob(self):
         """Test Job"""
@@ -63,5 +68,5 @@ class TestJob(unittest.TestCase):
         inst_req_and_optional = self.make_instance(include_optional=True)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

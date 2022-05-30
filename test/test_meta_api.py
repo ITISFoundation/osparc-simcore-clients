@@ -41,5 +41,6 @@ class TestMetaApi(unittest.TestCase):
         assert meta.name == "simcore_service_api_server"
         assert meta.docs_url == "http://api.osparc.io/doc"
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

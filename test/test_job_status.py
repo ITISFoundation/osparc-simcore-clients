@@ -19,6 +19,7 @@ import osparc
 from osparc.models.job_status import JobStatus  # noqa: E501
 from osparc.rest import ApiException
 
+
 class TestJobStatus(unittest.TestCase):
     """JobStatus unit test stubs"""
 
@@ -30,25 +31,33 @@ class TestJobStatus(unittest.TestCase):
 
     def make_instance(self, include_optional):
         """Test JobStatus
-            include_option is a boolean, when False only required
-            params are included, when True both required and
-            optional params are included """
+        include_option is a boolean, when False only required
+        params are included, when True both required and
+        optional params are included"""
         # model = osparc.models.job_status.JobStatus()  # noqa: E501
-        if include_optional :
+        if include_optional:
             return JobStatus(
-                job_id = '0', 
-                state = 'undefined', 
-                progress = 0.0, 
-                submitted_at = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'), 
-                started_at = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'), 
-                stopped_at = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f')
+                job_id="0",
+                state="undefined",
+                progress=0.0,
+                submitted_at=datetime.datetime.strptime(
+                    "2013-10-20 19:20:30.00", "%Y-%m-%d %H:%M:%S.%f"
+                ),
+                started_at=datetime.datetime.strptime(
+                    "2013-10-20 19:20:30.00", "%Y-%m-%d %H:%M:%S.%f"
+                ),
+                stopped_at=datetime.datetime.strptime(
+                    "2013-10-20 19:20:30.00", "%Y-%m-%d %H:%M:%S.%f"
+                ),
             )
-        else :
+        else:
             return JobStatus(
-                job_id = '0',
-                state = 'undefined',
-                submitted_at = datetime.datetime.strptime('2013-10-20 19:20:30.00', '%Y-%m-%d %H:%M:%S.%f'),
-        )
+                job_id="0",
+                state="undefined",
+                submitted_at=datetime.datetime.strptime(
+                    "2013-10-20 19:20:30.00", "%Y-%m-%d %H:%M:%S.%f"
+                ),
+            )
 
     def testJobStatus(self):
         """Test JobStatus"""
@@ -56,5 +65,5 @@ class TestJobStatus(unittest.TestCase):
         inst_req_and_optional = self.make_instance(include_optional=True)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

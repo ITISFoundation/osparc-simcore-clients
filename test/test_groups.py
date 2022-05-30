@@ -19,6 +19,7 @@ import osparc
 from osparc.models.groups import Groups  # noqa: E501
 from osparc.rest import ApiException
 
+
 class TestGroups(unittest.TestCase):
     """Groups unit test stubs"""
 
@@ -30,38 +31,43 @@ class TestGroups(unittest.TestCase):
 
     def make_instance(self, include_optional):
         """Test Groups
-            include_option is a boolean, when False only required
-            params are included, when True both required and
-            optional params are included """
+        include_option is a boolean, when False only required
+        params are included, when True both required and
+        optional params are included"""
         # model = osparc.models.groups.Groups()  # noqa: E501
-        if include_optional :
+        if include_optional:
             return Groups(
-                me = osparc.models.users_group.UsersGroup(
-                    gid = '0', 
-                    label = '0', 
-                    description = '0', ), 
-                organizations = [
+                me=osparc.models.users_group.UsersGroup(
+                    gid="0",
+                    label="0",
+                    description="0",
+                ),
+                organizations=[
                     osparc.models.users_group.UsersGroup(
-                        gid = '0', 
-                        label = '0', 
-                        description = '0', )
-                    ], 
-                all = osparc.models.users_group.UsersGroup(
-                    gid = '0', 
-                    label = '0', 
-                    description = '0', )
+                        gid="0",
+                        label="0",
+                        description="0",
+                    )
+                ],
+                all=osparc.models.users_group.UsersGroup(
+                    gid="0",
+                    label="0",
+                    description="0",
+                ),
             )
-        else :
+        else:
             return Groups(
-                me = osparc.models.users_group.UsersGroup(
-                    gid = '0', 
-                    label = '0', 
-                    description = '0', ),
-                all = osparc.models.users_group.UsersGroup(
-                    gid = '0', 
-                    label = '0', 
-                    description = '0', ),
-        )
+                me=osparc.models.users_group.UsersGroup(
+                    gid="0",
+                    label="0",
+                    description="0",
+                ),
+                all=osparc.models.users_group.UsersGroup(
+                    gid="0",
+                    label="0",
+                    description="0",
+                ),
+            )
 
     def testGroups(self):
         """Test Groups"""
@@ -69,5 +75,5 @@ class TestGroups(unittest.TestCase):
         inst_req_and_optional = self.make_instance(include_optional=True)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
