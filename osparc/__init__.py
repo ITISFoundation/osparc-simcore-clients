@@ -30,11 +30,8 @@ from osparc.exceptions import ApiTypeError
 from osparc.exceptions import ApiValueError
 from osparc.exceptions import ApiKeyError
 from osparc.exceptions import ApiException
-
 # import models into sdk package
-from osparc.models.body_upload_file_v0_files_content_put import (
-    BodyUploadFileV0FilesContentPut,
-)
+from osparc.models.body_upload_file_v0_files_content_put import BodyUploadFileV0FilesContentPut
 from osparc.models.file import File
 from osparc.models.groups import Groups
 from osparc.models.http_validation_error import HTTPValidationError
@@ -50,3 +47,4 @@ from osparc.models.task_states import TaskStates
 from osparc.models.user_role_enum import UserRoleEnum
 from osparc.models.users_group import UsersGroup
 from osparc.models.validation_error import ValidationError
+

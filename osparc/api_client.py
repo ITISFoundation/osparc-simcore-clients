@@ -78,7 +78,7 @@ class ApiClient(object):
             self.default_headers[header_name] = header_value
         self.cookie = cookie
         # Set default User-Agent.
-        self.user_agent = 'osparc-api/0.4.0/python'
+        self.user_agent = 'osparc-api/0.5.0/python'
         self.client_side_validation = configuration.client_side_validation
 
     def __enter__(self):
@@ -288,11 +288,6 @@ class ApiClient(object):
             # convert str to class
             if klass in self.NATIVE_TYPES_MAPPING:
                 klass = self.NATIVE_TYPES_MAPPING[klass]
-            # PATCH ----------------------
-            elif klass.startswith("AnyOf"):
-                from .models._any_of import deserialize_any_of
-                return deserialize_any_of(data, self.__deserialize)
-            # PATCH ----------------------
             else:
                 klass = getattr(osparc.models, klass)
 
@@ -557,14 +552,10 @@ class ApiClient(object):
             filename = re.search(r'filename=[\'"]?([^\'"\s]+)[\'"]?',
                                  content_disposition).group(1)
             path = os.path.join(os.path.dirname(path), filename)
-        # PATCH -----------------
-        try:
-            with open(path, "w") as f:
-                f.write(response.data)
-        except TypeError:
-            with open(path, "wb") as f:
-                f.write(response.data)
-        # PATCH -----------------
+
+        with open(path, "wb") as f:
+            f.write(response.data)
+
         return path
 
     def __deserialize_primitive(self, data, klass):
