@@ -33,24 +33,33 @@ class Solver(object):
                             and the value is json key in definition.
     """
     openapi_types = {
-        'id': 'str',
-        'version': 'str',
-        'title': 'str',
-        'description': 'str',
-        'maintainer': 'str',
-        'url': 'str'
+        "id": "str",
+        "version": "str",
+        "title": "str",
+        "description": "str",
+        "maintainer": "str",
+        "url": "str",
     }
 
     attribute_map = {
-        'id': 'id',
-        'version': 'version',
-        'title': 'title',
-        'description': 'description',
-        'maintainer': 'maintainer',
-        'url': 'url'
+        "id": "id",
+        "version": "version",
+        "title": "title",
+        "description": "description",
+        "maintainer": "maintainer",
+        "url": "url",
     }
 
-    def __init__(self, id=None, version=None, title=None, description=None, maintainer=None, url=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(
+        self,
+        id=None,
+        version=None,
+        title=None,
+        description=None,
+        maintainer=None,
+        url=None,
+        local_vars_configuration=None,
+    ):  # noqa: E501
         """Solver - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
@@ -92,11 +101,18 @@ class Solver(object):
         :param id: The id of this Solver.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and id is None:  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation and id is None
+        ):  # noqa: E501
             raise ValueError("Invalid value for `id`, must not be `None`")  # noqa: E501
-        if (self.local_vars_configuration.client_side_validation and
-                id is not None and not re.search(r'^(simcore)\/(services)\/comp(\/[\w\/-]+)+$', id)):  # noqa: E501
-            raise ValueError(r"Invalid value for `id`, must be a follow pattern or equal to `/^(simcore)\/(services)\/comp(\/[\w\/-]+)+$/`")  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation
+            and id is not None
+            and not re.search(r"^(simcore)\/(services)\/comp(\/[\w\/-]+)+$", id)
+        ):  # noqa: E501
+            raise ValueError(
+                r"Invalid value for `id`, must be a follow pattern or equal to `/^(simcore)\/(services)\/comp(\/[\w\/-]+)+$/`"
+            )  # noqa: E501
 
         self._id = id
 
@@ -120,11 +136,23 @@ class Solver(object):
         :param version: The version of this Solver.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and version is None:  # noqa: E501
-            raise ValueError("Invalid value for `version`, must not be `None`")  # noqa: E501
-        if (self.local_vars_configuration.client_side_validation and
-                version is not None and not re.search(r'^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$', version)):  # noqa: E501
-            raise ValueError(r"Invalid value for `version`, must be a follow pattern or equal to `/^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$/`")  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation and version is None
+        ):  # noqa: E501
+            raise ValueError(
+                "Invalid value for `version`, must not be `None`"
+            )  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation
+            and version is not None
+            and not re.search(
+                r"^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$",
+                version,
+            )
+        ):  # noqa: E501
+            raise ValueError(
+                r"Invalid value for `version`, must be a follow pattern or equal to `/^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$/`"
+            )  # noqa: E501
 
         self._version = version
 
@@ -148,8 +176,12 @@ class Solver(object):
         :param title: The title of this Solver.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and title is None:  # noqa: E501
-            raise ValueError("Invalid value for `title`, must not be `None`")  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation and title is None
+        ):  # noqa: E501
+            raise ValueError(
+                "Invalid value for `title`, must not be `None`"
+            )  # noqa: E501
 
         self._title = title
 
@@ -192,8 +224,12 @@ class Solver(object):
         :param maintainer: The maintainer of this Solver.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and maintainer is None:  # noqa: E501
-            raise ValueError("Invalid value for `maintainer`, must not be `None`")  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation and maintainer is None
+        ):  # noqa: E501
+            raise ValueError(
+                "Invalid value for `maintainer`, must not be `None`"
+            )  # noqa: E501
 
         self._maintainer = maintainer
 
@@ -217,14 +253,28 @@ class Solver(object):
         :param url: The url of this Solver.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and url is None:  # noqa: E501
-            raise ValueError("Invalid value for `url`, must not be `None`")  # noqa: E501
-        if (self.local_vars_configuration.client_side_validation and
-                url is not None and len(url) > 2083):
-            raise ValueError("Invalid value for `url`, length must be less than or equal to `2083`")  # noqa: E501
-        if (self.local_vars_configuration.client_side_validation and
-                url is not None and len(url) < 1):
-            raise ValueError("Invalid value for `url`, length must be greater than or equal to `1`")  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation and url is None
+        ):  # noqa: E501
+            raise ValueError(
+                "Invalid value for `url`, must not be `None`"
+            )  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation
+            and url is not None
+            and len(url) > 2083
+        ):
+            raise ValueError(
+                "Invalid value for `url`, length must be less than or equal to `2083`"
+            )  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation
+            and url is not None
+            and len(url) < 1
+        ):
+            raise ValueError(
+                "Invalid value for `url`, length must be greater than or equal to `1`"
+            )  # noqa: E501
 
         self._url = url
 
@@ -235,18 +285,20 @@ class Solver(object):
         for attr, _ in six.iteritems(self.openapi_types):
             value = getattr(self, attr)
             if isinstance(value, list):
-                result[attr] = list(map(
-                    lambda x: x.to_dict() if hasattr(x, "to_dict") else x,
-                    value
-                ))
+                result[attr] = list(
+                    map(lambda x: x.to_dict() if hasattr(x, "to_dict") else x, value)
+                )
             elif hasattr(value, "to_dict"):
                 result[attr] = value.to_dict()
             elif isinstance(value, dict):
-                result[attr] = dict(map(
-                    lambda item: (item[0], item[1].to_dict())
-                    if hasattr(item[1], "to_dict") else item,
-                    value.items()
-                ))
+                result[attr] = dict(
+                    map(
+                        lambda item: (item[0], item[1].to_dict())
+                        if hasattr(item[1], "to_dict")
+                        else item,
+                        value.items(),
+                    )
+                )
             else:
                 result[attr] = value
 

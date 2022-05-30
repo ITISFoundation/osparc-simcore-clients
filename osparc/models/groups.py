@@ -33,18 +33,16 @@ class Groups(object):
                             and the value is json key in definition.
     """
     openapi_types = {
-        'me': 'UsersGroup',
-        'organizations': 'list[UsersGroup]',
-        'all': 'UsersGroup'
+        "me": "UsersGroup",
+        "organizations": "list[UsersGroup]",
+        "all": "UsersGroup",
     }
 
-    attribute_map = {
-        'me': 'me',
-        'organizations': 'organizations',
-        'all': 'all'
-    }
+    attribute_map = {"me": "me", "organizations": "organizations", "all": "all"}
 
-    def __init__(self, me=None, organizations=[], all=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(
+        self, me=None, organizations=[], all=None, local_vars_configuration=None
+    ):  # noqa: E501
         """Groups - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
@@ -78,7 +76,9 @@ class Groups(object):
         :param me: The me of this Groups.  # noqa: E501
         :type: UsersGroup
         """
-        if self.local_vars_configuration.client_side_validation and me is None:  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation and me is None
+        ):  # noqa: E501
             raise ValueError("Invalid value for `me`, must not be `None`")  # noqa: E501
 
         self._me = me
@@ -122,8 +122,12 @@ class Groups(object):
         :param all: The all of this Groups.  # noqa: E501
         :type: UsersGroup
         """
-        if self.local_vars_configuration.client_side_validation and all is None:  # noqa: E501
-            raise ValueError("Invalid value for `all`, must not be `None`")  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation and all is None
+        ):  # noqa: E501
+            raise ValueError(
+                "Invalid value for `all`, must not be `None`"
+            )  # noqa: E501
 
         self._all = all
 
@@ -134,18 +138,20 @@ class Groups(object):
         for attr, _ in six.iteritems(self.openapi_types):
             value = getattr(self, attr)
             if isinstance(value, list):
-                result[attr] = list(map(
-                    lambda x: x.to_dict() if hasattr(x, "to_dict") else x,
-                    value
-                ))
+                result[attr] = list(
+                    map(lambda x: x.to_dict() if hasattr(x, "to_dict") else x, value)
+                )
             elif hasattr(value, "to_dict"):
                 result[attr] = value.to_dict()
             elif isinstance(value, dict):
-                result[attr] = dict(map(
-                    lambda item: (item[0], item[1].to_dict())
-                    if hasattr(item[1], "to_dict") else item,
-                    value.items()
-                ))
+                result[attr] = dict(
+                    map(
+                        lambda item: (item[0], item[1].to_dict())
+                        if hasattr(item[1], "to_dict")
+                        else item,
+                        value.items(),
+                    )
+                )
             else:
                 result[attr] = value
 

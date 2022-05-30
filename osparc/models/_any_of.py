@@ -5,6 +5,7 @@ from .file import File
 
 AnyOfFilenumberintegerbooleanstring = Union[File, float, int, bool, str]
 
+
 def deserialize_any_of(
     data: Any,
     deserialize_func: Callable,

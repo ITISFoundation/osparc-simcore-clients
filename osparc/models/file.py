@@ -33,20 +33,27 @@ class File(object):
                             and the value is json key in definition.
     """
     openapi_types = {
-        'id': 'str',
-        'filename': 'str',
-        'content_type': 'str',
-        'checksum': 'str'
+        "id": "str",
+        "filename": "str",
+        "content_type": "str",
+        "checksum": "str",
     }
 
     attribute_map = {
-        'id': 'id',
-        'filename': 'filename',
-        'content_type': 'content_type',
-        'checksum': 'checksum'
+        "id": "id",
+        "filename": "filename",
+        "content_type": "content_type",
+        "checksum": "checksum",
     }
 
-    def __init__(self, id=None, filename=None, content_type=None, checksum=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(
+        self,
+        id=None,
+        filename=None,
+        content_type=None,
+        checksum=None,
+        local_vars_configuration=None,
+    ):  # noqa: E501
         """File - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
@@ -85,7 +92,9 @@ class File(object):
         :param id: The id of this File.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and id is None:  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation and id is None
+        ):  # noqa: E501
             raise ValueError("Invalid value for `id`, must not be `None`")  # noqa: E501
 
         self._id = id
@@ -110,8 +119,12 @@ class File(object):
         :param filename: The filename of this File.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and filename is None:  # noqa: E501
-            raise ValueError("Invalid value for `filename`, must not be `None`")  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation and filename is None
+        ):  # noqa: E501
+            raise ValueError(
+                "Invalid value for `filename`, must not be `None`"
+            )  # noqa: E501
 
         self._filename = filename
 
@@ -168,18 +181,20 @@ class File(object):
         for attr, _ in six.iteritems(self.openapi_types):
             value = getattr(self, attr)
             if isinstance(value, list):
-                result[attr] = list(map(
-                    lambda x: x.to_dict() if hasattr(x, "to_dict") else x,
-                    value
-                ))
+                result[attr] = list(
+                    map(lambda x: x.to_dict() if hasattr(x, "to_dict") else x, value)
+                )
             elif hasattr(value, "to_dict"):
                 result[attr] = value.to_dict()
             elif isinstance(value, dict):
-                result[attr] = dict(map(
-                    lambda item: (item[0], item[1].to_dict())
-                    if hasattr(item[1], "to_dict") else item,
-                    value.items()
-                ))
+                result[attr] = dict(
+                    map(
+                        lambda item: (item[0], item[1].to_dict())
+                        if hasattr(item[1], "to_dict")
+                        else item,
+                        value.items(),
+                    )
+                )
             else:
                 result[attr] = value
 

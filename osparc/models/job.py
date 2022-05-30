@@ -33,28 +33,39 @@ class Job(object):
                             and the value is json key in definition.
     """
     openapi_types = {
-        'id': 'str',
-        'name': 'str',
-        'inputs_checksum': 'str',
-        'created_at': 'datetime',
-        'runner_name': 'str',
-        'url': 'str',
-        'runner_url': 'str',
-        'outputs_url': 'str'
+        "id": "str",
+        "name": "str",
+        "inputs_checksum": "str",
+        "created_at": "datetime",
+        "runner_name": "str",
+        "url": "str",
+        "runner_url": "str",
+        "outputs_url": "str",
     }
 
     attribute_map = {
-        'id': 'id',
-        'name': 'name',
-        'inputs_checksum': 'inputs_checksum',
-        'created_at': 'created_at',
-        'runner_name': 'runner_name',
-        'url': 'url',
-        'runner_url': 'runner_url',
-        'outputs_url': 'outputs_url'
+        "id": "id",
+        "name": "name",
+        "inputs_checksum": "inputs_checksum",
+        "created_at": "created_at",
+        "runner_name": "runner_name",
+        "url": "url",
+        "runner_url": "runner_url",
+        "outputs_url": "outputs_url",
     }
 
-    def __init__(self, id=None, name=None, inputs_checksum=None, created_at=None, runner_name=None, url=None, runner_url=None, outputs_url=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(
+        self,
+        id=None,
+        name=None,
+        inputs_checksum=None,
+        created_at=None,
+        runner_name=None,
+        url=None,
+        runner_url=None,
+        outputs_url=None,
+        local_vars_configuration=None,
+    ):  # noqa: E501
         """Job - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
@@ -97,7 +108,9 @@ class Job(object):
         :param id: The id of this Job.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and id is None:  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation and id is None
+        ):  # noqa: E501
             raise ValueError("Invalid value for `id`, must not be `None`")  # noqa: E501
 
         self._id = id
@@ -120,11 +133,20 @@ class Job(object):
         :param name: The name of this Job.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and name is None:  # noqa: E501
-            raise ValueError("Invalid value for `name`, must not be `None`")  # noqa: E501
-        if (self.local_vars_configuration.client_side_validation and
-                name is not None and not re.search(r'^([^\s\/]+\/?)+$', name)):  # noqa: E501
-            raise ValueError(r"Invalid value for `name`, must be a follow pattern or equal to `/^([^\s\/]+\/?)+$/`")  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation and name is None
+        ):  # noqa: E501
+            raise ValueError(
+                "Invalid value for `name`, must not be `None`"
+            )  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation
+            and name is not None
+            and not re.search(r"^([^\s\/]+\/?)+$", name)
+        ):  # noqa: E501
+            raise ValueError(
+                r"Invalid value for `name`, must be a follow pattern or equal to `/^([^\s\/]+\/?)+$/`"
+            )  # noqa: E501
 
         self._name = name
 
@@ -148,8 +170,13 @@ class Job(object):
         :param inputs_checksum: The inputs_checksum of this Job.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and inputs_checksum is None:  # noqa: E501
-            raise ValueError("Invalid value for `inputs_checksum`, must not be `None`")  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation
+            and inputs_checksum is None
+        ):  # noqa: E501
+            raise ValueError(
+                "Invalid value for `inputs_checksum`, must not be `None`"
+            )  # noqa: E501
 
         self._inputs_checksum = inputs_checksum
 
@@ -173,8 +200,12 @@ class Job(object):
         :param created_at: The created_at of this Job.  # noqa: E501
         :type: datetime
         """
-        if self.local_vars_configuration.client_side_validation and created_at is None:  # noqa: E501
-            raise ValueError("Invalid value for `created_at`, must not be `None`")  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation and created_at is None
+        ):  # noqa: E501
+            raise ValueError(
+                "Invalid value for `created_at`, must not be `None`"
+            )  # noqa: E501
 
         self._created_at = created_at
 
@@ -198,11 +229,20 @@ class Job(object):
         :param runner_name: The runner_name of this Job.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and runner_name is None:  # noqa: E501
-            raise ValueError("Invalid value for `runner_name`, must not be `None`")  # noqa: E501
-        if (self.local_vars_configuration.client_side_validation and
-                runner_name is not None and not re.search(r'^([^\s\/]+\/?)+$', runner_name)):  # noqa: E501
-            raise ValueError(r"Invalid value for `runner_name`, must be a follow pattern or equal to `/^([^\s\/]+\/?)+$/`")  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation and runner_name is None
+        ):  # noqa: E501
+            raise ValueError(
+                "Invalid value for `runner_name`, must not be `None`"
+            )  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation
+            and runner_name is not None
+            and not re.search(r"^([^\s\/]+\/?)+$", runner_name)
+        ):  # noqa: E501
+            raise ValueError(
+                r"Invalid value for `runner_name`, must be a follow pattern or equal to `/^([^\s\/]+\/?)+$/`"
+            )  # noqa: E501
 
         self._runner_name = runner_name
 
@@ -226,14 +266,28 @@ class Job(object):
         :param url: The url of this Job.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and url is None:  # noqa: E501
-            raise ValueError("Invalid value for `url`, must not be `None`")  # noqa: E501
-        if (self.local_vars_configuration.client_side_validation and
-                url is not None and len(url) > 2083):
-            raise ValueError("Invalid value for `url`, length must be less than or equal to `2083`")  # noqa: E501
-        if (self.local_vars_configuration.client_side_validation and
-                url is not None and len(url) < 1):
-            raise ValueError("Invalid value for `url`, length must be greater than or equal to `1`")  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation and url is None
+        ):  # noqa: E501
+            raise ValueError(
+                "Invalid value for `url`, must not be `None`"
+            )  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation
+            and url is not None
+            and len(url) > 2083
+        ):
+            raise ValueError(
+                "Invalid value for `url`, length must be less than or equal to `2083`"
+            )  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation
+            and url is not None
+            and len(url) < 1
+        ):
+            raise ValueError(
+                "Invalid value for `url`, length must be greater than or equal to `1`"
+            )  # noqa: E501
 
         self._url = url
 
@@ -257,14 +311,28 @@ class Job(object):
         :param runner_url: The runner_url of this Job.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and runner_url is None:  # noqa: E501
-            raise ValueError("Invalid value for `runner_url`, must not be `None`")  # noqa: E501
-        if (self.local_vars_configuration.client_side_validation and
-                runner_url is not None and len(runner_url) > 2083):
-            raise ValueError("Invalid value for `runner_url`, length must be less than or equal to `2083`")  # noqa: E501
-        if (self.local_vars_configuration.client_side_validation and
-                runner_url is not None and len(runner_url) < 1):
-            raise ValueError("Invalid value for `runner_url`, length must be greater than or equal to `1`")  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation and runner_url is None
+        ):  # noqa: E501
+            raise ValueError(
+                "Invalid value for `runner_url`, must not be `None`"
+            )  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation
+            and runner_url is not None
+            and len(runner_url) > 2083
+        ):
+            raise ValueError(
+                "Invalid value for `runner_url`, length must be less than or equal to `2083`"
+            )  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation
+            and runner_url is not None
+            and len(runner_url) < 1
+        ):
+            raise ValueError(
+                "Invalid value for `runner_url`, length must be greater than or equal to `1`"
+            )  # noqa: E501
 
         self._runner_url = runner_url
 
@@ -288,14 +356,28 @@ class Job(object):
         :param outputs_url: The outputs_url of this Job.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and outputs_url is None:  # noqa: E501
-            raise ValueError("Invalid value for `outputs_url`, must not be `None`")  # noqa: E501
-        if (self.local_vars_configuration.client_side_validation and
-                outputs_url is not None and len(outputs_url) > 2083):
-            raise ValueError("Invalid value for `outputs_url`, length must be less than or equal to `2083`")  # noqa: E501
-        if (self.local_vars_configuration.client_side_validation and
-                outputs_url is not None and len(outputs_url) < 1):
-            raise ValueError("Invalid value for `outputs_url`, length must be greater than or equal to `1`")  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation and outputs_url is None
+        ):  # noqa: E501
+            raise ValueError(
+                "Invalid value for `outputs_url`, must not be `None`"
+            )  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation
+            and outputs_url is not None
+            and len(outputs_url) > 2083
+        ):
+            raise ValueError(
+                "Invalid value for `outputs_url`, length must be less than or equal to `2083`"
+            )  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation
+            and outputs_url is not None
+            and len(outputs_url) < 1
+        ):
+            raise ValueError(
+                "Invalid value for `outputs_url`, length must be greater than or equal to `1`"
+            )  # noqa: E501
 
         self._outputs_url = outputs_url
 
@@ -306,18 +388,20 @@ class Job(object):
         for attr, _ in six.iteritems(self.openapi_types):
             value = getattr(self, attr)
             if isinstance(value, list):
-                result[attr] = list(map(
-                    lambda x: x.to_dict() if hasattr(x, "to_dict") else x,
-                    value
-                ))
+                result[attr] = list(
+                    map(lambda x: x.to_dict() if hasattr(x, "to_dict") else x, value)
+                )
             elif hasattr(value, "to_dict"):
                 result[attr] = value.to_dict()
             elif isinstance(value, dict):
-                result[attr] = dict(map(
-                    lambda item: (item[0], item[1].to_dict())
-                    if hasattr(item[1], "to_dict") else item,
-                    value.items()
-                ))
+                result[attr] = dict(
+                    map(
+                        lambda item: (item[0], item[1].to_dict())
+                        if hasattr(item[1], "to_dict")
+                        else item,
+                        value.items(),
+                    )
+                )
             else:
                 result[attr] = value
 

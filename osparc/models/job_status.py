@@ -33,24 +33,33 @@ class JobStatus(object):
                             and the value is json key in definition.
     """
     openapi_types = {
-        'job_id': 'str',
-        'state': 'TaskStates',
-        'progress': 'int',
-        'submitted_at': 'datetime',
-        'started_at': 'datetime',
-        'stopped_at': 'datetime'
+        "job_id": "str",
+        "state": "TaskStates",
+        "progress": "int",
+        "submitted_at": "datetime",
+        "started_at": "datetime",
+        "stopped_at": "datetime",
     }
 
     attribute_map = {
-        'job_id': 'job_id',
-        'state': 'state',
-        'progress': 'progress',
-        'submitted_at': 'submitted_at',
-        'started_at': 'started_at',
-        'stopped_at': 'stopped_at'
+        "job_id": "job_id",
+        "state": "state",
+        "progress": "progress",
+        "submitted_at": "submitted_at",
+        "started_at": "started_at",
+        "stopped_at": "stopped_at",
     }
 
-    def __init__(self, job_id=None, state=None, progress=0, submitted_at=None, started_at=None, stopped_at=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(
+        self,
+        job_id=None,
+        state=None,
+        progress=0,
+        submitted_at=None,
+        started_at=None,
+        stopped_at=None,
+        local_vars_configuration=None,
+    ):  # noqa: E501
         """JobStatus - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
@@ -92,8 +101,12 @@ class JobStatus(object):
         :param job_id: The job_id of this JobStatus.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and job_id is None:  # noqa: E501
-            raise ValueError("Invalid value for `job_id`, must not be `None`")  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation and job_id is None
+        ):  # noqa: E501
+            raise ValueError(
+                "Invalid value for `job_id`, must not be `None`"
+            )  # noqa: E501
 
         self._job_id = job_id
 
@@ -115,8 +128,12 @@ class JobStatus(object):
         :param state: The state of this JobStatus.  # noqa: E501
         :type: TaskStates
         """
-        if self.local_vars_configuration.client_side_validation and state is None:  # noqa: E501
-            raise ValueError("Invalid value for `state`, must not be `None`")  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation and state is None
+        ):  # noqa: E501
+            raise ValueError(
+                "Invalid value for `state`, must not be `None`"
+            )  # noqa: E501
 
         self._state = state
 
@@ -138,12 +155,22 @@ class JobStatus(object):
         :param progress: The progress of this JobStatus.  # noqa: E501
         :type: int
         """
-        if (self.local_vars_configuration.client_side_validation and
-                progress is not None and progress > 100):  # noqa: E501
-            raise ValueError("Invalid value for `progress`, must be a value less than or equal to `100`")  # noqa: E501
-        if (self.local_vars_configuration.client_side_validation and
-                progress is not None and progress < 0):  # noqa: E501
-            raise ValueError("Invalid value for `progress`, must be a value greater than or equal to `0`")  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation
+            and progress is not None
+            and progress > 100
+        ):  # noqa: E501
+            raise ValueError(
+                "Invalid value for `progress`, must be a value less than or equal to `100`"
+            )  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation
+            and progress is not None
+            and progress < 0
+        ):  # noqa: E501
+            raise ValueError(
+                "Invalid value for `progress`, must be a value greater than or equal to `0`"
+            )  # noqa: E501
 
         self._progress = progress
 
@@ -165,8 +192,13 @@ class JobStatus(object):
         :param submitted_at: The submitted_at of this JobStatus.  # noqa: E501
         :type: datetime
         """
-        if self.local_vars_configuration.client_side_validation and submitted_at is None:  # noqa: E501
-            raise ValueError("Invalid value for `submitted_at`, must not be `None`")  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation
+            and submitted_at is None
+        ):  # noqa: E501
+            raise ValueError(
+                "Invalid value for `submitted_at`, must not be `None`"
+            )  # noqa: E501
 
         self._submitted_at = submitted_at
 
@@ -223,18 +255,20 @@ class JobStatus(object):
         for attr, _ in six.iteritems(self.openapi_types):
             value = getattr(self, attr)
             if isinstance(value, list):
-                result[attr] = list(map(
-                    lambda x: x.to_dict() if hasattr(x, "to_dict") else x,
-                    value
-                ))
+                result[attr] = list(
+                    map(lambda x: x.to_dict() if hasattr(x, "to_dict") else x, value)
+                )
             elif hasattr(value, "to_dict"):
                 result[attr] = value.to_dict()
             elif isinstance(value, dict):
-                result[attr] = dict(map(
-                    lambda item: (item[0], item[1].to_dict())
-                    if hasattr(item[1], "to_dict") else item,
-                    value.items()
-                ))
+                result[attr] = dict(
+                    map(
+                        lambda item: (item[0], item[1].to_dict())
+                        if hasattr(item[1], "to_dict")
+                        else item,
+                        value.items(),
+                    )
+                )
             else:
                 result[attr] = value
 
