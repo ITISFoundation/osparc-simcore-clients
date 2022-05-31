@@ -12,21 +12,21 @@ from __future__ import absolute_import
 
 import atexit
 import datetime
-from dateutil.parser import parse
 import json
 import mimetypes
-from multiprocessing.pool import ThreadPool
 import os
 import re
 import tempfile
+from multiprocessing.pool import ThreadPool
 
 # python 2 and python 3 compatibility library
 import six
+from dateutil.parser import parse
 from six.moves.urllib.parse import quote
 
-from osparc.configuration import Configuration
 import osparc.models
 from osparc import rest
+from osparc.configuration import Configuration
 from osparc.exceptions import ApiValueError
 
 
@@ -309,6 +309,11 @@ class ApiClient(object):
             # convert str to class
             if klass in self.NATIVE_TYPES_MAPPING:
                 klass = self.NATIVE_TYPES_MAPPING[klass]
+            # PATCH ----------------------
+            elif klass.startswith("AnyOf"):
+                from .models._any_of import deserialize_any_of
+                return deserialize_any_of(data, self.__deserialize)
+            # PATCH ----------------------
             else:
                 klass = getattr(osparc.models, klass)
 
@@ -630,10 +635,14 @@ class ApiClient(object):
                 r'filename=[\'"]?([^\'"\s]+)[\'"]?', content_disposition
             ).group(1)
             path = os.path.join(os.path.dirname(path), filename)
-
-        with open(path, "wb") as f:
-            f.write(response.data)
-
+        # PATCH -----------------
+        try:
+            with open(path, "w") as f:
+                f.write(response.data)
+        except TypeError:
+            with open(path, "wb") as f:
+                f.write(response.data)
+        # PATCH -----------------
         return path
 
     def __deserialize_primitive(self, data, klass):
