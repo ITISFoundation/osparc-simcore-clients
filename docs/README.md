@@ -123,4 +123,6 @@ All URIs are relative to *https://api.osparc.io*
 
 ## Author
 
-Made with love at [Zurich43](www.z43.swiss)
+<p align="center">
+<image src="_media/mwl.png" alt="made with love at z43" width="20%" />
+</p>
