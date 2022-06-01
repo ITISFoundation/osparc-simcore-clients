@@ -17,6 +17,7 @@ To setup the client, we need to provide a username and password to the configura
 
 ```python
 
+import os
 import osparc
 
 cfg = osparc.Configuration(
@@ -73,11 +74,18 @@ Let's use the sleepers computational service to illustrate a typical workflow. T
 
 
 ```python
-import osparc
+import time
+from pathlib import Path
+from zipfile import ZipFile
 
+import osparc
 from osparc.api import FilesApi, SolversApi
 from osparc.models import File, Job, JobInputs, JobOutputs, JobStatus, Solver
 
+CLIENT_VERSION = tuple(map(int, osparc.__version__.split(".")))
+assert CLIENT_VERSION >= (0, 4, 3)
+
+Path("file_with_number.txt").write_text("3")
 
 with osparc.ApiClient(cfg) as api_client:
 
@@ -125,9 +133,36 @@ with osparc.ApiClient(cfg) as api_client:
     # 'id': '9fb4f70e-3589-3e9e-991e-3059086c3aae'}
     # output_2 = 4.0
 
+    if CLIENT_VERSION >= (0, 5, 0):
+        logfile_path: str = solvers_api.get_job_output_logfile(
+            solver.id, solver.version, job.id
+        )
+        zip_path = Path(logfile_path)
 
-    results_file: File = outputs.results["output_1"]
-    download_path: str = files_api.download_file(file_id=results_file.id)
+        extract_dir = Path("./extracted")
+        extract_dir.mkdir()
+
+        with ZipFile(f"{zip_path}") as fzip:
+            fzip.extractall(f"{extract_dir}")
+
+        logfiles = list(extract_dir.glob("*.log*"))
+        print("Unzipped", logfiles[0], "contains:\n", logfiles[0].read_text())
+    #
+    # Unzipped extracted/sleeper_2.0.2.logs contains:
+    # 2022-06-01T18:15:00.405035847+02:00 Entrypoint for stage production ...
+    # 2022-06-01T18:15:00.421279969+02:00 User : uid=0(root) gid=0(root) groups=0(root)
+    # 2022-06-01T18:15:00.421560331+02:00 Workdir : /home/scu
+    # ...
+    # 2022-06-01T18:15:00.864550043+02:00 
+    # 2022-06-01T18:15:03.923876794+02:00 Will sleep for 3 seconds
+    # 2022-06-01T18:15:03.924473521+02:00 [PROGRESS] 1/3...
+    # 2022-06-01T18:15:03.925021846+02:00 Remaining sleep time 0.9999995231628418
+    # 2022-06-01T18:15:03.925558026+02:00 [PROGRESS] 2/3...
+    # 2022-06-01T18:15:03.926103062+02:00 Remaining sleep time 0.9999985694885254
+    # 2022-06-01T18:15:03.926643184+02:00 [PROGRESS] 3/3...
+    # 2022-06-01T18:15:03.933544384+02:00 Remaining sleep time 0.9999983310699463
+
+    download_path: str = files_api.download_file(file_id=outputs.results["output_1"].id)
     print(Path(download_path).read_text())
     #
     # 7
@@ -141,7 +176,8 @@ The script above
 3. Runs the ``sleeper`` and provides a reference to the uploaded file and other values as input parameters
 4. Monitors the status of the solver while it is running in the platform
 5. When the execution completes, it checks the outputs
-6. One of the outputs is a file and it is downloaded
+6. The logs are downloaded, unzipped and saved to a new ```extracted``` directory
+7. One of the outputs is a file and it is downloaded
 
 
 #### Files
@@ -265,6 +301,23 @@ A solver runs in a plaforma starts a ``Job``. Using the ``solvers_api``, allows 
      time.sleep(3)
      status = solvers_api.inspect_job(solver.id, solver.version, job.id)
      print("Solver progress", f"{status.progress}/100", flush=True)
+```
+
+#### Logs
+
+When a solver runs, it will generate logs during execution which are then saved as .log files. Starting from the osparc Python Client version 0.5.0, The ``solvers_api`` also allows us to obtain the ``logfile_path`` associated with a particular ``Job``. This is a zip file that can then be extracted and saved. For instance
+
+```python
+logfile_path: str = solvers_api.get_job_output_logfile(
+    solver.id, solver.version, job.id
+)
+zip_path = Path(logfile_path)
+
+extract_dir = Path("./extracted")
+extract_dir.mkdir()
+
+with ZipFile(f"{zip_path}") as fzip:
+    fzip.extractall(f"{extract_dir}")
 ```
 
 ## References
