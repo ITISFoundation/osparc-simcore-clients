@@ -54,8 +54,10 @@ devenv: .venv
 		pip \
 		wheel \
 		setuptools
-	# installing tools
+	# Installing tools
 	@$@/bin/pip3 install -r requirements-tools.txt
+	# Installing pre-commit hooks in current .git repo
+	@$</bin/pre-commit install
 	@echo "To activate the venv, execute 'source .venv/bin/activate'"
 
 
