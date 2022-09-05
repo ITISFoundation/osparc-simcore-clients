@@ -1,5 +1,5 @@
 from contextlib import suppress
-from typing import Any, Callable, List, Union
+from typing import Any, Callable, Union
 
 from .file import File
 

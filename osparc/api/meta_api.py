@@ -18,7 +18,7 @@ import re  # noqa: F401
 import six
 
 from osparc.api_client import ApiClient
-from osparc.exceptions import ApiTypeError, ApiValueError
+from osparc.exceptions import ApiTypeError
 
 
 class MetaApi(object):
