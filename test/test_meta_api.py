@@ -16,7 +16,6 @@ import unittest
 
 import osparc
 from osparc.api.meta_api import MetaApi  # noqa: E501
-from osparc.rest import ApiException
 from osparc.models.meta import Meta
 
 
@@ -41,5 +40,6 @@ class TestMetaApi(unittest.TestCase):
         assert meta.name == "simcore_service_api_server"
         assert meta.docs_url == "http://api.osparc.io/doc"
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

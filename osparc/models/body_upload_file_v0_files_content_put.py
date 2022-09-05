@@ -32,13 +32,9 @@ class BodyUploadFileV0FilesContentPut(object):
       attribute_map (dict): The key is attribute name
                             and the value is json key in definition.
     """
-    openapi_types = {
-        'file': 'file'
-    }
+    openapi_types = {"file": "file"}
 
-    attribute_map = {
-        'file': 'file'
-    }
+    attribute_map = {"file": "file"}
 
     def __init__(self, file=None, local_vars_configuration=None):  # noqa: E501
         """BodyUploadFileV0FilesContentPut - a model defined in OpenAPI"""  # noqa: E501
@@ -69,8 +65,12 @@ class BodyUploadFileV0FilesContentPut(object):
         :param file: The file of this BodyUploadFileV0FilesContentPut.  # noqa: E501
         :type: file
         """
-        if self.local_vars_configuration.client_side_validation and file is None:  # noqa: E501
-            raise ValueError("Invalid value for `file`, must not be `None`")  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation and file is None
+        ):  # noqa: E501
+            raise ValueError(
+                "Invalid value for `file`, must not be `None`"
+            )  # noqa: E501
 
         self._file = file
 
@@ -81,18 +81,20 @@ class BodyUploadFileV0FilesContentPut(object):
         for attr, _ in six.iteritems(self.openapi_types):
             value = getattr(self, attr)
             if isinstance(value, list):
-                result[attr] = list(map(
-                    lambda x: x.to_dict() if hasattr(x, "to_dict") else x,
-                    value
-                ))
+                result[attr] = list(
+                    map(lambda x: x.to_dict() if hasattr(x, "to_dict") else x, value)
+                )
             elif hasattr(value, "to_dict"):
                 result[attr] = value.to_dict()
             elif isinstance(value, dict):
-                result[attr] = dict(map(
-                    lambda item: (item[0], item[1].to_dict())
-                    if hasattr(item[1], "to_dict") else item,
-                    value.items()
-                ))
+                result[attr] = dict(
+                    map(
+                        lambda item: (item[0], item[1].to_dict())
+                        if hasattr(item[1], "to_dict")
+                        else item,
+                        value.items(),
+                    )
+                )
             else:
                 result[attr] = value
 

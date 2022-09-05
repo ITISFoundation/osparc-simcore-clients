@@ -33,22 +33,30 @@ class Meta(object):
                             and the value is json key in definition.
     """
     openapi_types = {
-        'name': 'str',
-        'version': 'str',
-        'released': 'dict(str, str)',
-        'docs_url': 'str',
-        'docs_dev_url': 'str'
+        "name": "str",
+        "version": "str",
+        "released": "dict(str, str)",
+        "docs_url": "str",
+        "docs_dev_url": "str",
     }
 
     attribute_map = {
-        'name': 'name',
-        'version': 'version',
-        'released': 'released',
-        'docs_url': 'docs_url',
-        'docs_dev_url': 'docs_dev_url'
+        "name": "name",
+        "version": "version",
+        "released": "released",
+        "docs_url": "docs_url",
+        "docs_dev_url": "docs_dev_url",
     }
 
-    def __init__(self, name=None, version=None, released=None, docs_url='https://docs.osparc.io', docs_dev_url='https://api.osparc.io/dev/docs', local_vars_configuration=None):  # noqa: E501
+    def __init__(
+        self,
+        name=None,
+        version=None,
+        released=None,
+        docs_url="https://docs.osparc.io",
+        docs_dev_url="https://api.osparc.io/dev/docs",
+        local_vars_configuration=None,
+    ):  # noqa: E501
         """Meta - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
@@ -88,8 +96,12 @@ class Meta(object):
         :param name: The name of this Meta.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and name is None:  # noqa: E501
-            raise ValueError("Invalid value for `name`, must not be `None`")  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation and name is None
+        ):  # noqa: E501
+            raise ValueError(
+                "Invalid value for `name`, must not be `None`"
+            )  # noqa: E501
 
         self._name = name
 
@@ -111,11 +123,23 @@ class Meta(object):
         :param version: The version of this Meta.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and version is None:  # noqa: E501
-            raise ValueError("Invalid value for `version`, must not be `None`")  # noqa: E501
-        if (self.local_vars_configuration.client_side_validation and
-                version is not None and not re.search(r'^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$', version)):  # noqa: E501
-            raise ValueError(r"Invalid value for `version`, must be a follow pattern or equal to `/^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$/`")  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation and version is None
+        ):  # noqa: E501
+            raise ValueError(
+                "Invalid value for `version`, must not be `None`"
+            )  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation
+            and version is not None
+            and not re.search(
+                r"^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$",
+                version,
+            )
+        ):  # noqa: E501
+            raise ValueError(
+                r"Invalid value for `version`, must be a follow pattern or equal to `/^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$/`"
+            )  # noqa: E501
 
         self._version = version
 
@@ -160,12 +184,22 @@ class Meta(object):
         :param docs_url: The docs_url of this Meta.  # noqa: E501
         :type: str
         """
-        if (self.local_vars_configuration.client_side_validation and
-                docs_url is not None and len(docs_url) > 65536):
-            raise ValueError("Invalid value for `docs_url`, length must be less than or equal to `65536`")  # noqa: E501
-        if (self.local_vars_configuration.client_side_validation and
-                docs_url is not None and len(docs_url) < 1):
-            raise ValueError("Invalid value for `docs_url`, length must be greater than or equal to `1`")  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation
+            and docs_url is not None
+            and len(docs_url) > 65536
+        ):
+            raise ValueError(
+                "Invalid value for `docs_url`, length must be less than or equal to `65536`"
+            )  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation
+            and docs_url is not None
+            and len(docs_url) < 1
+        ):
+            raise ValueError(
+                "Invalid value for `docs_url`, length must be greater than or equal to `1`"
+            )  # noqa: E501
 
         self._docs_url = docs_url
 
@@ -187,12 +221,22 @@ class Meta(object):
         :param docs_dev_url: The docs_dev_url of this Meta.  # noqa: E501
         :type: str
         """
-        if (self.local_vars_configuration.client_side_validation and
-                docs_dev_url is not None and len(docs_dev_url) > 65536):
-            raise ValueError("Invalid value for `docs_dev_url`, length must be less than or equal to `65536`")  # noqa: E501
-        if (self.local_vars_configuration.client_side_validation and
-                docs_dev_url is not None and len(docs_dev_url) < 1):
-            raise ValueError("Invalid value for `docs_dev_url`, length must be greater than or equal to `1`")  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation
+            and docs_dev_url is not None
+            and len(docs_dev_url) > 65536
+        ):
+            raise ValueError(
+                "Invalid value for `docs_dev_url`, length must be less than or equal to `65536`"
+            )  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation
+            and docs_dev_url is not None
+            and len(docs_dev_url) < 1
+        ):
+            raise ValueError(
+                "Invalid value for `docs_dev_url`, length must be greater than or equal to `1`"
+            )  # noqa: E501
 
         self._docs_dev_url = docs_dev_url
 
@@ -203,18 +247,20 @@ class Meta(object):
         for attr, _ in six.iteritems(self.openapi_types):
             value = getattr(self, attr)
             if isinstance(value, list):
-                result[attr] = list(map(
-                    lambda x: x.to_dict() if hasattr(x, "to_dict") else x,
-                    value
-                ))
+                result[attr] = list(
+                    map(lambda x: x.to_dict() if hasattr(x, "to_dict") else x, value)
+                )
             elif hasattr(value, "to_dict"):
                 result[attr] = value.to_dict()
             elif isinstance(value, dict):
-                result[attr] = dict(map(
-                    lambda item: (item[0], item[1].to_dict())
-                    if hasattr(item[1], "to_dict") else item,
-                    value.items()
-                ))
+                result[attr] = dict(
+                    map(
+                        lambda item: (item[0], item[1].to_dict())
+                        if hasattr(item[1], "to_dict")
+                        else item,
+                        value.items(),
+                    )
+                )
             else:
                 result[attr] = value
 

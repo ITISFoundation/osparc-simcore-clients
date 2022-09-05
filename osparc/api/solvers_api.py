@@ -18,10 +18,7 @@ import re  # noqa: F401
 import six
 
 from osparc.api_client import ApiClient
-from osparc.exceptions import (
-    ApiTypeError,
-    ApiValueError
-)
+from osparc.exceptions import ApiTypeError, ApiValueError
 
 
 class SolversApi(object):
@@ -60,10 +57,14 @@ class SolversApi(object):
                  If the method is called asynchronously,
                  returns the request thread.
         """
-        kwargs['_return_http_data_only'] = True
-        return self.create_job_with_http_info(solver_key, version, job_inputs, **kwargs)  # noqa: E501
+        kwargs["_return_http_data_only"] = True
+        return self.create_job_with_http_info(
+            solver_key, version, job_inputs, **kwargs
+        )  # noqa: E501
 
-    def create_job_with_http_info(self, solver_key, version, job_inputs, **kwargs):  # noqa: E501
+    def create_job_with_http_info(
+        self, solver_key, version, job_inputs, **kwargs
+    ):  # noqa: E501
         """Create Job  # noqa: E501
 
         Creates a job in a specific release with given inputs.  NOTE: This operation does **not** start the job  # noqa: E501
@@ -92,42 +93,63 @@ class SolversApi(object):
 
         local_var_params = locals()
 
-        all_params = ['solver_key', 'version', 'job_inputs']  # noqa: E501
-        all_params.append('async_req')
-        all_params.append('_return_http_data_only')
-        all_params.append('_preload_content')
-        all_params.append('_request_timeout')
+        all_params = ["solver_key", "version", "job_inputs"]  # noqa: E501
+        all_params.append("async_req")
+        all_params.append("_return_http_data_only")
+        all_params.append("_preload_content")
+        all_params.append("_request_timeout")
 
-        for key, val in six.iteritems(local_var_params['kwargs']):
+        for key, val in six.iteritems(local_var_params["kwargs"]):
             if key not in all_params:
                 raise ApiTypeError(
                     "Got an unexpected keyword argument '%s'"
                     " to method create_job" % key
                 )
             local_var_params[key] = val
-        del local_var_params['kwargs']
+        del local_var_params["kwargs"]
         # verify the required parameter 'solver_key' is set
-        if self.api_client.client_side_validation and ('solver_key' not in local_var_params or  # noqa: E501
-                                                        local_var_params['solver_key'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `solver_key` when calling `create_job`")  # noqa: E501
+        if self.api_client.client_side_validation and (
+            "solver_key" not in local_var_params
+            or local_var_params["solver_key"] is None  # noqa: E501
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Missing the required parameter `solver_key` when calling `create_job`"
+            )  # noqa: E501
         # verify the required parameter 'version' is set
-        if self.api_client.client_side_validation and ('version' not in local_var_params or  # noqa: E501
-                                                        local_var_params['version'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `version` when calling `create_job`")  # noqa: E501
+        if self.api_client.client_side_validation and (
+            "version" not in local_var_params
+            or local_var_params["version"] is None  # noqa: E501
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Missing the required parameter `version` when calling `create_job`"
+            )  # noqa: E501
         # verify the required parameter 'job_inputs' is set
-        if self.api_client.client_side_validation and ('job_inputs' not in local_var_params or  # noqa: E501
-                                                        local_var_params['job_inputs'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `job_inputs` when calling `create_job`")  # noqa: E501
+        if self.api_client.client_side_validation and (
+            "job_inputs" not in local_var_params
+            or local_var_params["job_inputs"] is None  # noqa: E501
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Missing the required parameter `job_inputs` when calling `create_job`"
+            )  # noqa: E501
 
-        if self.api_client.client_side_validation and 'solver_key' in local_var_params and not re.search(r'^(simcore)\/(services)\/comp(\/[\w\/-]+)+$', local_var_params['solver_key']):  # noqa: E501
-            raise ApiValueError("Invalid value for parameter `solver_key` when calling `create_job`, must conform to the pattern `/^(simcore)\/(services)\/comp(\/[\w\/-]+)+$/`")  # noqa: E501
+        if (
+            self.api_client.client_side_validation
+            and "solver_key" in local_var_params
+            and not re.search(
+                r"^(simcore)\/(services)\/comp(\/[\w\/-]+)+$",
+                local_var_params["solver_key"],
+            )
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Invalid value for parameter `solver_key` when calling `create_job`, must conform to the pattern `/^(simcore)\/(services)\/comp(\/[\w\/-]+)+$/`"
+            )  # noqa: E501
         collection_formats = {}
 
         path_params = {}
-        if 'solver_key' in local_var_params:
-            path_params['solver_key'] = local_var_params['solver_key']  # noqa: E501
-        if 'version' in local_var_params:
-            path_params['version'] = local_var_params['version']  # noqa: E501
+        if "solver_key" in local_var_params:
+            path_params["solver_key"] = local_var_params["solver_key"]  # noqa: E501
+        if "version" in local_var_params:
+            path_params["version"] = local_var_params["version"]  # noqa: E501
 
         query_params = []
 
@@ -137,34 +159,42 @@ class SolversApi(object):
         local_var_files = {}
 
         body_params = None
-        if 'job_inputs' in local_var_params:
-            body_params = local_var_params['job_inputs']
+        if "job_inputs" in local_var_params:
+            body_params = local_var_params["job_inputs"]
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json'])  # noqa: E501
+        header_params["Accept"] = self.api_client.select_header_accept(
+            ["application/json"]
+        )  # noqa: E501
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
-            ['application/json'])  # noqa: E501
+        header_params[
+            "Content-Type"
+        ] = self.api_client.select_header_content_type(  # noqa: E501
+            ["application/json"]
+        )  # noqa: E501
 
         # Authentication setting
-        auth_settings = ['HTTPBasic']  # noqa: E501
+        auth_settings = ["HTTPBasic"]  # noqa: E501
 
         return self.api_client.call_api(
-            '/v0/solvers/{solver_key}/releases/{version}/jobs', 'POST',
+            "/v0/solvers/{solver_key}/releases/{version}/jobs",
+            "POST",
             path_params,
             query_params,
             header_params,
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='Job',  # noqa: E501
+            response_type="Job",  # noqa: E501
             auth_settings=auth_settings,
-            async_req=local_var_params.get('async_req'),
-            _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
-            _preload_content=local_var_params.get('_preload_content', True),
-            _request_timeout=local_var_params.get('_request_timeout'),
-            collection_formats=collection_formats)
+            async_req=local_var_params.get("async_req"),
+            _return_http_data_only=local_var_params.get(
+                "_return_http_data_only"
+            ),  # noqa: E501
+            _preload_content=local_var_params.get("_preload_content", True),
+            _request_timeout=local_var_params.get("_request_timeout"),
+            collection_formats=collection_formats,
+        )
 
     def get_job(self, solver_key, version, job_id, **kwargs):  # noqa: E501
         """Get Job  # noqa: E501
@@ -190,10 +220,14 @@ class SolversApi(object):
                  If the method is called asynchronously,
                  returns the request thread.
         """
-        kwargs['_return_http_data_only'] = True
-        return self.get_job_with_http_info(solver_key, version, job_id, **kwargs)  # noqa: E501
+        kwargs["_return_http_data_only"] = True
+        return self.get_job_with_http_info(
+            solver_key, version, job_id, **kwargs
+        )  # noqa: E501
 
-    def get_job_with_http_info(self, solver_key, version, job_id, **kwargs):  # noqa: E501
+    def get_job_with_http_info(
+        self, solver_key, version, job_id, **kwargs
+    ):  # noqa: E501
         """Get Job  # noqa: E501
 
         Gets job of a given solver   # noqa: E501
@@ -222,46 +256,75 @@ class SolversApi(object):
 
         local_var_params = locals()
 
-        all_params = ['solver_key', 'version', 'job_id']  # noqa: E501
-        all_params.append('async_req')
-        all_params.append('_return_http_data_only')
-        all_params.append('_preload_content')
-        all_params.append('_request_timeout')
+        all_params = ["solver_key", "version", "job_id"]  # noqa: E501
+        all_params.append("async_req")
+        all_params.append("_return_http_data_only")
+        all_params.append("_preload_content")
+        all_params.append("_request_timeout")
 
-        for key, val in six.iteritems(local_var_params['kwargs']):
+        for key, val in six.iteritems(local_var_params["kwargs"]):
             if key not in all_params:
                 raise ApiTypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method get_job" % key
+                    "Got an unexpected keyword argument '%s'" " to method get_job" % key
                 )
             local_var_params[key] = val
-        del local_var_params['kwargs']
+        del local_var_params["kwargs"]
         # verify the required parameter 'solver_key' is set
-        if self.api_client.client_side_validation and ('solver_key' not in local_var_params or  # noqa: E501
-                                                        local_var_params['solver_key'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `solver_key` when calling `get_job`")  # noqa: E501
+        if self.api_client.client_side_validation and (
+            "solver_key" not in local_var_params
+            or local_var_params["solver_key"] is None  # noqa: E501
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Missing the required parameter `solver_key` when calling `get_job`"
+            )  # noqa: E501
         # verify the required parameter 'version' is set
-        if self.api_client.client_side_validation and ('version' not in local_var_params or  # noqa: E501
-                                                        local_var_params['version'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `version` when calling `get_job`")  # noqa: E501
+        if self.api_client.client_side_validation and (
+            "version" not in local_var_params
+            or local_var_params["version"] is None  # noqa: E501
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Missing the required parameter `version` when calling `get_job`"
+            )  # noqa: E501
         # verify the required parameter 'job_id' is set
-        if self.api_client.client_side_validation and ('job_id' not in local_var_params or  # noqa: E501
-                                                        local_var_params['job_id'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `job_id` when calling `get_job`")  # noqa: E501
+        if self.api_client.client_side_validation and (
+            "job_id" not in local_var_params
+            or local_var_params["job_id"] is None  # noqa: E501
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Missing the required parameter `job_id` when calling `get_job`"
+            )  # noqa: E501
 
-        if self.api_client.client_side_validation and 'solver_key' in local_var_params and not re.search(r'^(simcore)\/(services)\/comp(\/[\w\/-]+)+$', local_var_params['solver_key']):  # noqa: E501
-            raise ApiValueError("Invalid value for parameter `solver_key` when calling `get_job`, must conform to the pattern `/^(simcore)\/(services)\/comp(\/[\w\/-]+)+$/`")  # noqa: E501
-        if self.api_client.client_side_validation and 'version' in local_var_params and not re.search(r'^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$', local_var_params['version']):  # noqa: E501
-            raise ApiValueError("Invalid value for parameter `version` when calling `get_job`, must conform to the pattern `/^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$/`")  # noqa: E501
+        if (
+            self.api_client.client_side_validation
+            and "solver_key" in local_var_params
+            and not re.search(
+                r"^(simcore)\/(services)\/comp(\/[\w\/-]+)+$",
+                local_var_params["solver_key"],
+            )
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Invalid value for parameter `solver_key` when calling `get_job`, must conform to the pattern `/^(simcore)\/(services)\/comp(\/[\w\/-]+)+$/`"
+            )  # noqa: E501
+        if (
+            self.api_client.client_side_validation
+            and "version" in local_var_params
+            and not re.search(
+                r"^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$",
+                local_var_params["version"],
+            )
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Invalid value for parameter `version` when calling `get_job`, must conform to the pattern `/^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$/`"
+            )  # noqa: E501
         collection_formats = {}
 
         path_params = {}
-        if 'solver_key' in local_var_params:
-            path_params['solver_key'] = local_var_params['solver_key']  # noqa: E501
-        if 'version' in local_var_params:
-            path_params['version'] = local_var_params['version']  # noqa: E501
-        if 'job_id' in local_var_params:
-            path_params['job_id'] = local_var_params['job_id']  # noqa: E501
+        if "solver_key" in local_var_params:
+            path_params["solver_key"] = local_var_params["solver_key"]  # noqa: E501
+        if "version" in local_var_params:
+            path_params["version"] = local_var_params["version"]  # noqa: E501
+        if "job_id" in local_var_params:
+            path_params["job_id"] = local_var_params["job_id"]  # noqa: E501
 
         query_params = []
 
@@ -272,27 +335,32 @@ class SolversApi(object):
 
         body_params = None
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json'])  # noqa: E501
+        header_params["Accept"] = self.api_client.select_header_accept(
+            ["application/json"]
+        )  # noqa: E501
 
         # Authentication setting
-        auth_settings = ['HTTPBasic']  # noqa: E501
+        auth_settings = ["HTTPBasic"]  # noqa: E501
 
         return self.api_client.call_api(
-            '/v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}', 'GET',
+            "/v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}",
+            "GET",
             path_params,
             query_params,
             header_params,
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='Job',  # noqa: E501
+            response_type="Job",  # noqa: E501
             auth_settings=auth_settings,
-            async_req=local_var_params.get('async_req'),
-            _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
-            _preload_content=local_var_params.get('_preload_content', True),
-            _request_timeout=local_var_params.get('_request_timeout'),
-            collection_formats=collection_formats)
+            async_req=local_var_params.get("async_req"),
+            _return_http_data_only=local_var_params.get(
+                "_return_http_data_only"
+            ),  # noqa: E501
+            _preload_content=local_var_params.get("_preload_content", True),
+            _request_timeout=local_var_params.get("_request_timeout"),
+            collection_formats=collection_formats,
+        )
 
     def get_job_outputs(self, solver_key, version, job_id, **kwargs):  # noqa: E501
         """Get Job Outputs  # noqa: E501
@@ -317,10 +385,14 @@ class SolversApi(object):
                  If the method is called asynchronously,
                  returns the request thread.
         """
-        kwargs['_return_http_data_only'] = True
-        return self.get_job_outputs_with_http_info(solver_key, version, job_id, **kwargs)  # noqa: E501
+        kwargs["_return_http_data_only"] = True
+        return self.get_job_outputs_with_http_info(
+            solver_key, version, job_id, **kwargs
+        )  # noqa: E501
 
-    def get_job_outputs_with_http_info(self, solver_key, version, job_id, **kwargs):  # noqa: E501
+    def get_job_outputs_with_http_info(
+        self, solver_key, version, job_id, **kwargs
+    ):  # noqa: E501
         """Get Job Outputs  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
@@ -348,46 +420,76 @@ class SolversApi(object):
 
         local_var_params = locals()
 
-        all_params = ['solver_key', 'version', 'job_id']  # noqa: E501
-        all_params.append('async_req')
-        all_params.append('_return_http_data_only')
-        all_params.append('_preload_content')
-        all_params.append('_request_timeout')
+        all_params = ["solver_key", "version", "job_id"]  # noqa: E501
+        all_params.append("async_req")
+        all_params.append("_return_http_data_only")
+        all_params.append("_preload_content")
+        all_params.append("_request_timeout")
 
-        for key, val in six.iteritems(local_var_params['kwargs']):
+        for key, val in six.iteritems(local_var_params["kwargs"]):
             if key not in all_params:
                 raise ApiTypeError(
                     "Got an unexpected keyword argument '%s'"
                     " to method get_job_outputs" % key
                 )
             local_var_params[key] = val
-        del local_var_params['kwargs']
+        del local_var_params["kwargs"]
         # verify the required parameter 'solver_key' is set
-        if self.api_client.client_side_validation and ('solver_key' not in local_var_params or  # noqa: E501
-                                                        local_var_params['solver_key'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `solver_key` when calling `get_job_outputs`")  # noqa: E501
+        if self.api_client.client_side_validation and (
+            "solver_key" not in local_var_params
+            or local_var_params["solver_key"] is None  # noqa: E501
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Missing the required parameter `solver_key` when calling `get_job_outputs`"
+            )  # noqa: E501
         # verify the required parameter 'version' is set
-        if self.api_client.client_side_validation and ('version' not in local_var_params or  # noqa: E501
-                                                        local_var_params['version'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `version` when calling `get_job_outputs`")  # noqa: E501
+        if self.api_client.client_side_validation and (
+            "version" not in local_var_params
+            or local_var_params["version"] is None  # noqa: E501
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Missing the required parameter `version` when calling `get_job_outputs`"
+            )  # noqa: E501
         # verify the required parameter 'job_id' is set
-        if self.api_client.client_side_validation and ('job_id' not in local_var_params or  # noqa: E501
-                                                        local_var_params['job_id'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `job_id` when calling `get_job_outputs`")  # noqa: E501
+        if self.api_client.client_side_validation and (
+            "job_id" not in local_var_params
+            or local_var_params["job_id"] is None  # noqa: E501
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Missing the required parameter `job_id` when calling `get_job_outputs`"
+            )  # noqa: E501
 
-        if self.api_client.client_side_validation and 'solver_key' in local_var_params and not re.search(r'^(simcore)\/(services)\/comp(\/[\w\/-]+)+$', local_var_params['solver_key']):  # noqa: E501
-            raise ApiValueError("Invalid value for parameter `solver_key` when calling `get_job_outputs`, must conform to the pattern `/^(simcore)\/(services)\/comp(\/[\w\/-]+)+$/`")  # noqa: E501
-        if self.api_client.client_side_validation and 'version' in local_var_params and not re.search(r'^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$', local_var_params['version']):  # noqa: E501
-            raise ApiValueError("Invalid value for parameter `version` when calling `get_job_outputs`, must conform to the pattern `/^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$/`")  # noqa: E501
+        if (
+            self.api_client.client_side_validation
+            and "solver_key" in local_var_params
+            and not re.search(
+                r"^(simcore)\/(services)\/comp(\/[\w\/-]+)+$",
+                local_var_params["solver_key"],
+            )
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Invalid value for parameter `solver_key` when calling `get_job_outputs`, must conform to the pattern `/^(simcore)\/(services)\/comp(\/[\w\/-]+)+$/`"
+            )  # noqa: E501
+        if (
+            self.api_client.client_side_validation
+            and "version" in local_var_params
+            and not re.search(
+                r"^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$",
+                local_var_params["version"],
+            )
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Invalid value for parameter `version` when calling `get_job_outputs`, must conform to the pattern `/^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$/`"
+            )  # noqa: E501
         collection_formats = {}
 
         path_params = {}
-        if 'solver_key' in local_var_params:
-            path_params['solver_key'] = local_var_params['solver_key']  # noqa: E501
-        if 'version' in local_var_params:
-            path_params['version'] = local_var_params['version']  # noqa: E501
-        if 'job_id' in local_var_params:
-            path_params['job_id'] = local_var_params['job_id']  # noqa: E501
+        if "solver_key" in local_var_params:
+            path_params["solver_key"] = local_var_params["solver_key"]  # noqa: E501
+        if "version" in local_var_params:
+            path_params["version"] = local_var_params["version"]  # noqa: E501
+        if "job_id" in local_var_params:
+            path_params["job_id"] = local_var_params["job_id"]  # noqa: E501
 
         query_params = []
 
@@ -398,27 +500,32 @@ class SolversApi(object):
 
         body_params = None
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json'])  # noqa: E501
+        header_params["Accept"] = self.api_client.select_header_accept(
+            ["application/json"]
+        )  # noqa: E501
 
         # Authentication setting
-        auth_settings = ['HTTPBasic']  # noqa: E501
+        auth_settings = ["HTTPBasic"]  # noqa: E501
 
         return self.api_client.call_api(
-            '/v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}/outputs', 'GET',
+            "/v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}/outputs",
+            "GET",
             path_params,
             query_params,
             header_params,
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='JobOutputs',  # noqa: E501
+            response_type="JobOutputs",  # noqa: E501
             auth_settings=auth_settings,
-            async_req=local_var_params.get('async_req'),
-            _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
-            _preload_content=local_var_params.get('_preload_content', True),
-            _request_timeout=local_var_params.get('_request_timeout'),
-            collection_formats=collection_formats)
+            async_req=local_var_params.get("async_req"),
+            _return_http_data_only=local_var_params.get(
+                "_return_http_data_only"
+            ),  # noqa: E501
+            _preload_content=local_var_params.get("_preload_content", True),
+            _request_timeout=local_var_params.get("_request_timeout"),
+            collection_formats=collection_formats,
+        )
 
     def get_solver(self, solver_key, **kwargs):  # noqa: E501
         """Get Latest Release of a Solver  # noqa: E501
@@ -442,7 +549,7 @@ class SolversApi(object):
                  If the method is called asynchronously,
                  returns the request thread.
         """
-        kwargs['_return_http_data_only'] = True
+        kwargs["_return_http_data_only"] = True
         return self.get_solver_with_http_info(solver_key, **kwargs)  # noqa: E501
 
     def get_solver_with_http_info(self, solver_key, **kwargs):  # noqa: E501
@@ -472,32 +579,45 @@ class SolversApi(object):
 
         local_var_params = locals()
 
-        all_params = ['solver_key']  # noqa: E501
-        all_params.append('async_req')
-        all_params.append('_return_http_data_only')
-        all_params.append('_preload_content')
-        all_params.append('_request_timeout')
+        all_params = ["solver_key"]  # noqa: E501
+        all_params.append("async_req")
+        all_params.append("_return_http_data_only")
+        all_params.append("_preload_content")
+        all_params.append("_request_timeout")
 
-        for key, val in six.iteritems(local_var_params['kwargs']):
+        for key, val in six.iteritems(local_var_params["kwargs"]):
             if key not in all_params:
                 raise ApiTypeError(
                     "Got an unexpected keyword argument '%s'"
                     " to method get_solver" % key
                 )
             local_var_params[key] = val
-        del local_var_params['kwargs']
+        del local_var_params["kwargs"]
         # verify the required parameter 'solver_key' is set
-        if self.api_client.client_side_validation and ('solver_key' not in local_var_params or  # noqa: E501
-                                                        local_var_params['solver_key'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `solver_key` when calling `get_solver`")  # noqa: E501
+        if self.api_client.client_side_validation and (
+            "solver_key" not in local_var_params
+            or local_var_params["solver_key"] is None  # noqa: E501
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Missing the required parameter `solver_key` when calling `get_solver`"
+            )  # noqa: E501
 
-        if self.api_client.client_side_validation and 'solver_key' in local_var_params and not re.search(r'^(simcore)\/(services)\/comp(\/[\w\/-]+)+$', local_var_params['solver_key']):  # noqa: E501
-            raise ApiValueError("Invalid value for parameter `solver_key` when calling `get_solver`, must conform to the pattern `/^(simcore)\/(services)\/comp(\/[\w\/-]+)+$/`")  # noqa: E501
+        if (
+            self.api_client.client_side_validation
+            and "solver_key" in local_var_params
+            and not re.search(
+                r"^(simcore)\/(services)\/comp(\/[\w\/-]+)+$",
+                local_var_params["solver_key"],
+            )
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Invalid value for parameter `solver_key` when calling `get_solver`, must conform to the pattern `/^(simcore)\/(services)\/comp(\/[\w\/-]+)+$/`"
+            )  # noqa: E501
         collection_formats = {}
 
         path_params = {}
-        if 'solver_key' in local_var_params:
-            path_params['solver_key'] = local_var_params['solver_key']  # noqa: E501
+        if "solver_key" in local_var_params:
+            path_params["solver_key"] = local_var_params["solver_key"]  # noqa: E501
 
         query_params = []
 
@@ -508,27 +628,32 @@ class SolversApi(object):
 
         body_params = None
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json'])  # noqa: E501
+        header_params["Accept"] = self.api_client.select_header_accept(
+            ["application/json"]
+        )  # noqa: E501
 
         # Authentication setting
-        auth_settings = ['HTTPBasic']  # noqa: E501
+        auth_settings = ["HTTPBasic"]  # noqa: E501
 
         return self.api_client.call_api(
-            '/v0/solvers/{solver_key}/latest', 'GET',
+            "/v0/solvers/{solver_key}/latest",
+            "GET",
             path_params,
             query_params,
             header_params,
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='Solver',  # noqa: E501
+            response_type="Solver",  # noqa: E501
             auth_settings=auth_settings,
-            async_req=local_var_params.get('async_req'),
-            _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
-            _preload_content=local_var_params.get('_preload_content', True),
-            _request_timeout=local_var_params.get('_request_timeout'),
-            collection_formats=collection_formats)
+            async_req=local_var_params.get("async_req"),
+            _return_http_data_only=local_var_params.get(
+                "_return_http_data_only"
+            ),  # noqa: E501
+            _preload_content=local_var_params.get("_preload_content", True),
+            _request_timeout=local_var_params.get("_request_timeout"),
+            collection_formats=collection_formats,
+        )
 
     def get_solver_release(self, solver_key, version, **kwargs):  # noqa: E501
         """Get Solver Release  # noqa: E501
@@ -553,10 +678,14 @@ class SolversApi(object):
                  If the method is called asynchronously,
                  returns the request thread.
         """
-        kwargs['_return_http_data_only'] = True
-        return self.get_solver_release_with_http_info(solver_key, version, **kwargs)  # noqa: E501
+        kwargs["_return_http_data_only"] = True
+        return self.get_solver_release_with_http_info(
+            solver_key, version, **kwargs
+        )  # noqa: E501
 
-    def get_solver_release_with_http_info(self, solver_key, version, **kwargs):  # noqa: E501
+    def get_solver_release_with_http_info(
+        self, solver_key, version, **kwargs
+    ):  # noqa: E501
         """Get Solver Release  # noqa: E501
 
         Gets a specific release of a solver   # noqa: E501
@@ -584,40 +713,66 @@ class SolversApi(object):
 
         local_var_params = locals()
 
-        all_params = ['solver_key', 'version']  # noqa: E501
-        all_params.append('async_req')
-        all_params.append('_return_http_data_only')
-        all_params.append('_preload_content')
-        all_params.append('_request_timeout')
+        all_params = ["solver_key", "version"]  # noqa: E501
+        all_params.append("async_req")
+        all_params.append("_return_http_data_only")
+        all_params.append("_preload_content")
+        all_params.append("_request_timeout")
 
-        for key, val in six.iteritems(local_var_params['kwargs']):
+        for key, val in six.iteritems(local_var_params["kwargs"]):
             if key not in all_params:
                 raise ApiTypeError(
                     "Got an unexpected keyword argument '%s'"
                     " to method get_solver_release" % key
                 )
             local_var_params[key] = val
-        del local_var_params['kwargs']
+        del local_var_params["kwargs"]
         # verify the required parameter 'solver_key' is set
-        if self.api_client.client_side_validation and ('solver_key' not in local_var_params or  # noqa: E501
-                                                        local_var_params['solver_key'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `solver_key` when calling `get_solver_release`")  # noqa: E501
+        if self.api_client.client_side_validation and (
+            "solver_key" not in local_var_params
+            or local_var_params["solver_key"] is None  # noqa: E501
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Missing the required parameter `solver_key` when calling `get_solver_release`"
+            )  # noqa: E501
         # verify the required parameter 'version' is set
-        if self.api_client.client_side_validation and ('version' not in local_var_params or  # noqa: E501
-                                                        local_var_params['version'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `version` when calling `get_solver_release`")  # noqa: E501
+        if self.api_client.client_side_validation and (
+            "version" not in local_var_params
+            or local_var_params["version"] is None  # noqa: E501
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Missing the required parameter `version` when calling `get_solver_release`"
+            )  # noqa: E501
 
-        if self.api_client.client_side_validation and 'solver_key' in local_var_params and not re.search(r'^(simcore)\/(services)\/comp(\/[\w\/-]+)+$', local_var_params['solver_key']):  # noqa: E501
-            raise ApiValueError("Invalid value for parameter `solver_key` when calling `get_solver_release`, must conform to the pattern `/^(simcore)\/(services)\/comp(\/[\w\/-]+)+$/`")  # noqa: E501
-        if self.api_client.client_side_validation and 'version' in local_var_params and not re.search(r'^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$', local_var_params['version']):  # noqa: E501
-            raise ApiValueError("Invalid value for parameter `version` when calling `get_solver_release`, must conform to the pattern `/^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$/`")  # noqa: E501
+        if (
+            self.api_client.client_side_validation
+            and "solver_key" in local_var_params
+            and not re.search(
+                r"^(simcore)\/(services)\/comp(\/[\w\/-]+)+$",
+                local_var_params["solver_key"],
+            )
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Invalid value for parameter `solver_key` when calling `get_solver_release`, must conform to the pattern `/^(simcore)\/(services)\/comp(\/[\w\/-]+)+$/`"
+            )  # noqa: E501
+        if (
+            self.api_client.client_side_validation
+            and "version" in local_var_params
+            and not re.search(
+                r"^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$",
+                local_var_params["version"],
+            )
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Invalid value for parameter `version` when calling `get_solver_release`, must conform to the pattern `/^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$/`"
+            )  # noqa: E501
         collection_formats = {}
 
         path_params = {}
-        if 'solver_key' in local_var_params:
-            path_params['solver_key'] = local_var_params['solver_key']  # noqa: E501
-        if 'version' in local_var_params:
-            path_params['version'] = local_var_params['version']  # noqa: E501
+        if "solver_key" in local_var_params:
+            path_params["solver_key"] = local_var_params["solver_key"]  # noqa: E501
+        if "version" in local_var_params:
+            path_params["version"] = local_var_params["version"]  # noqa: E501
 
         query_params = []
 
@@ -628,27 +783,32 @@ class SolversApi(object):
 
         body_params = None
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json'])  # noqa: E501
+        header_params["Accept"] = self.api_client.select_header_accept(
+            ["application/json"]
+        )  # noqa: E501
 
         # Authentication setting
-        auth_settings = ['HTTPBasic']  # noqa: E501
+        auth_settings = ["HTTPBasic"]  # noqa: E501
 
         return self.api_client.call_api(
-            '/v0/solvers/{solver_key}/releases/{version}', 'GET',
+            "/v0/solvers/{solver_key}/releases/{version}",
+            "GET",
             path_params,
             query_params,
             header_params,
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='Solver',  # noqa: E501
+            response_type="Solver",  # noqa: E501
             auth_settings=auth_settings,
-            async_req=local_var_params.get('async_req'),
-            _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
-            _preload_content=local_var_params.get('_preload_content', True),
-            _request_timeout=local_var_params.get('_request_timeout'),
-            collection_formats=collection_formats)
+            async_req=local_var_params.get("async_req"),
+            _return_http_data_only=local_var_params.get(
+                "_return_http_data_only"
+            ),  # noqa: E501
+            _preload_content=local_var_params.get("_preload_content", True),
+            _request_timeout=local_var_params.get("_request_timeout"),
+            collection_formats=collection_formats,
+        )
 
     def inspect_job(self, solver_key, version, job_id, **kwargs):  # noqa: E501
         """Inspect Job  # noqa: E501
@@ -673,10 +833,14 @@ class SolversApi(object):
                  If the method is called asynchronously,
                  returns the request thread.
         """
-        kwargs['_return_http_data_only'] = True
-        return self.inspect_job_with_http_info(solver_key, version, job_id, **kwargs)  # noqa: E501
+        kwargs["_return_http_data_only"] = True
+        return self.inspect_job_with_http_info(
+            solver_key, version, job_id, **kwargs
+        )  # noqa: E501
 
-    def inspect_job_with_http_info(self, solver_key, version, job_id, **kwargs):  # noqa: E501
+    def inspect_job_with_http_info(
+        self, solver_key, version, job_id, **kwargs
+    ):  # noqa: E501
         """Inspect Job  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
@@ -704,46 +868,76 @@ class SolversApi(object):
 
         local_var_params = locals()
 
-        all_params = ['solver_key', 'version', 'job_id']  # noqa: E501
-        all_params.append('async_req')
-        all_params.append('_return_http_data_only')
-        all_params.append('_preload_content')
-        all_params.append('_request_timeout')
+        all_params = ["solver_key", "version", "job_id"]  # noqa: E501
+        all_params.append("async_req")
+        all_params.append("_return_http_data_only")
+        all_params.append("_preload_content")
+        all_params.append("_request_timeout")
 
-        for key, val in six.iteritems(local_var_params['kwargs']):
+        for key, val in six.iteritems(local_var_params["kwargs"]):
             if key not in all_params:
                 raise ApiTypeError(
                     "Got an unexpected keyword argument '%s'"
                     " to method inspect_job" % key
                 )
             local_var_params[key] = val
-        del local_var_params['kwargs']
+        del local_var_params["kwargs"]
         # verify the required parameter 'solver_key' is set
-        if self.api_client.client_side_validation and ('solver_key' not in local_var_params or  # noqa: E501
-                                                        local_var_params['solver_key'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `solver_key` when calling `inspect_job`")  # noqa: E501
+        if self.api_client.client_side_validation and (
+            "solver_key" not in local_var_params
+            or local_var_params["solver_key"] is None  # noqa: E501
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Missing the required parameter `solver_key` when calling `inspect_job`"
+            )  # noqa: E501
         # verify the required parameter 'version' is set
-        if self.api_client.client_side_validation and ('version' not in local_var_params or  # noqa: E501
-                                                        local_var_params['version'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `version` when calling `inspect_job`")  # noqa: E501
+        if self.api_client.client_side_validation and (
+            "version" not in local_var_params
+            or local_var_params["version"] is None  # noqa: E501
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Missing the required parameter `version` when calling `inspect_job`"
+            )  # noqa: E501
         # verify the required parameter 'job_id' is set
-        if self.api_client.client_side_validation and ('job_id' not in local_var_params or  # noqa: E501
-                                                        local_var_params['job_id'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `job_id` when calling `inspect_job`")  # noqa: E501
+        if self.api_client.client_side_validation and (
+            "job_id" not in local_var_params
+            or local_var_params["job_id"] is None  # noqa: E501
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Missing the required parameter `job_id` when calling `inspect_job`"
+            )  # noqa: E501
 
-        if self.api_client.client_side_validation and 'solver_key' in local_var_params and not re.search(r'^(simcore)\/(services)\/comp(\/[\w\/-]+)+$', local_var_params['solver_key']):  # noqa: E501
-            raise ApiValueError("Invalid value for parameter `solver_key` when calling `inspect_job`, must conform to the pattern `/^(simcore)\/(services)\/comp(\/[\w\/-]+)+$/`")  # noqa: E501
-        if self.api_client.client_side_validation and 'version' in local_var_params and not re.search(r'^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$', local_var_params['version']):  # noqa: E501
-            raise ApiValueError("Invalid value for parameter `version` when calling `inspect_job`, must conform to the pattern `/^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$/`")  # noqa: E501
+        if (
+            self.api_client.client_side_validation
+            and "solver_key" in local_var_params
+            and not re.search(
+                r"^(simcore)\/(services)\/comp(\/[\w\/-]+)+$",
+                local_var_params["solver_key"],
+            )
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Invalid value for parameter `solver_key` when calling `inspect_job`, must conform to the pattern `/^(simcore)\/(services)\/comp(\/[\w\/-]+)+$/`"
+            )  # noqa: E501
+        if (
+            self.api_client.client_side_validation
+            and "version" in local_var_params
+            and not re.search(
+                r"^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$",
+                local_var_params["version"],
+            )
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Invalid value for parameter `version` when calling `inspect_job`, must conform to the pattern `/^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$/`"
+            )  # noqa: E501
         collection_formats = {}
 
         path_params = {}
-        if 'solver_key' in local_var_params:
-            path_params['solver_key'] = local_var_params['solver_key']  # noqa: E501
-        if 'version' in local_var_params:
-            path_params['version'] = local_var_params['version']  # noqa: E501
-        if 'job_id' in local_var_params:
-            path_params['job_id'] = local_var_params['job_id']  # noqa: E501
+        if "solver_key" in local_var_params:
+            path_params["solver_key"] = local_var_params["solver_key"]  # noqa: E501
+        if "version" in local_var_params:
+            path_params["version"] = local_var_params["version"]  # noqa: E501
+        if "job_id" in local_var_params:
+            path_params["job_id"] = local_var_params["job_id"]  # noqa: E501
 
         query_params = []
 
@@ -754,27 +948,32 @@ class SolversApi(object):
 
         body_params = None
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json'])  # noqa: E501
+        header_params["Accept"] = self.api_client.select_header_accept(
+            ["application/json"]
+        )  # noqa: E501
 
         # Authentication setting
-        auth_settings = ['HTTPBasic']  # noqa: E501
+        auth_settings = ["HTTPBasic"]  # noqa: E501
 
         return self.api_client.call_api(
-            '/v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:inspect', 'POST',
+            "/v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:inspect",
+            "POST",
             path_params,
             query_params,
             header_params,
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='JobStatus',  # noqa: E501
+            response_type="JobStatus",  # noqa: E501
             auth_settings=auth_settings,
-            async_req=local_var_params.get('async_req'),
-            _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
-            _preload_content=local_var_params.get('_preload_content', True),
-            _request_timeout=local_var_params.get('_request_timeout'),
-            collection_formats=collection_formats)
+            async_req=local_var_params.get("async_req"),
+            _return_http_data_only=local_var_params.get(
+                "_return_http_data_only"
+            ),  # noqa: E501
+            _preload_content=local_var_params.get("_preload_content", True),
+            _request_timeout=local_var_params.get("_request_timeout"),
+            collection_formats=collection_formats,
+        )
 
     def list_jobs(self, solver_key, version, **kwargs):  # noqa: E501
         """List Jobs  # noqa: E501
@@ -799,8 +998,10 @@ class SolversApi(object):
                  If the method is called asynchronously,
                  returns the request thread.
         """
-        kwargs['_return_http_data_only'] = True
-        return self.list_jobs_with_http_info(solver_key, version, **kwargs)  # noqa: E501
+        kwargs["_return_http_data_only"] = True
+        return self.list_jobs_with_http_info(
+            solver_key, version, **kwargs
+        )  # noqa: E501
 
     def list_jobs_with_http_info(self, solver_key, version, **kwargs):  # noqa: E501
         """List Jobs  # noqa: E501
@@ -830,38 +1031,55 @@ class SolversApi(object):
 
         local_var_params = locals()
 
-        all_params = ['solver_key', 'version']  # noqa: E501
-        all_params.append('async_req')
-        all_params.append('_return_http_data_only')
-        all_params.append('_preload_content')
-        all_params.append('_request_timeout')
+        all_params = ["solver_key", "version"]  # noqa: E501
+        all_params.append("async_req")
+        all_params.append("_return_http_data_only")
+        all_params.append("_preload_content")
+        all_params.append("_request_timeout")
 
-        for key, val in six.iteritems(local_var_params['kwargs']):
+        for key, val in six.iteritems(local_var_params["kwargs"]):
             if key not in all_params:
                 raise ApiTypeError(
                     "Got an unexpected keyword argument '%s'"
                     " to method list_jobs" % key
                 )
             local_var_params[key] = val
-        del local_var_params['kwargs']
+        del local_var_params["kwargs"]
         # verify the required parameter 'solver_key' is set
-        if self.api_client.client_side_validation and ('solver_key' not in local_var_params or  # noqa: E501
-                                                        local_var_params['solver_key'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `solver_key` when calling `list_jobs`")  # noqa: E501
+        if self.api_client.client_side_validation and (
+            "solver_key" not in local_var_params
+            or local_var_params["solver_key"] is None  # noqa: E501
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Missing the required parameter `solver_key` when calling `list_jobs`"
+            )  # noqa: E501
         # verify the required parameter 'version' is set
-        if self.api_client.client_side_validation and ('version' not in local_var_params or  # noqa: E501
-                                                        local_var_params['version'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `version` when calling `list_jobs`")  # noqa: E501
+        if self.api_client.client_side_validation and (
+            "version" not in local_var_params
+            or local_var_params["version"] is None  # noqa: E501
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Missing the required parameter `version` when calling `list_jobs`"
+            )  # noqa: E501
 
-        if self.api_client.client_side_validation and 'solver_key' in local_var_params and not re.search(r'^(simcore)\/(services)\/comp(\/[\w\/-]+)+$', local_var_params['solver_key']):  # noqa: E501
-            raise ApiValueError("Invalid value for parameter `solver_key` when calling `list_jobs`, must conform to the pattern `/^(simcore)\/(services)\/comp(\/[\w\/-]+)+$/`")  # noqa: E501
+        if (
+            self.api_client.client_side_validation
+            and "solver_key" in local_var_params
+            and not re.search(
+                r"^(simcore)\/(services)\/comp(\/[\w\/-]+)+$",
+                local_var_params["solver_key"],
+            )
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Invalid value for parameter `solver_key` when calling `list_jobs`, must conform to the pattern `/^(simcore)\/(services)\/comp(\/[\w\/-]+)+$/`"
+            )  # noqa: E501
         collection_formats = {}
 
         path_params = {}
-        if 'solver_key' in local_var_params:
-            path_params['solver_key'] = local_var_params['solver_key']  # noqa: E501
-        if 'version' in local_var_params:
-            path_params['version'] = local_var_params['version']  # noqa: E501
+        if "solver_key" in local_var_params:
+            path_params["solver_key"] = local_var_params["solver_key"]  # noqa: E501
+        if "version" in local_var_params:
+            path_params["version"] = local_var_params["version"]  # noqa: E501
 
         query_params = []
 
@@ -872,27 +1090,32 @@ class SolversApi(object):
 
         body_params = None
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json'])  # noqa: E501
+        header_params["Accept"] = self.api_client.select_header_accept(
+            ["application/json"]
+        )  # noqa: E501
 
         # Authentication setting
-        auth_settings = ['HTTPBasic']  # noqa: E501
+        auth_settings = ["HTTPBasic"]  # noqa: E501
 
         return self.api_client.call_api(
-            '/v0/solvers/{solver_key}/releases/{version}/jobs', 'GET',
+            "/v0/solvers/{solver_key}/releases/{version}/jobs",
+            "GET",
             path_params,
             query_params,
             header_params,
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='list[Job]',  # noqa: E501
+            response_type="list[Job]",  # noqa: E501
             auth_settings=auth_settings,
-            async_req=local_var_params.get('async_req'),
-            _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
-            _preload_content=local_var_params.get('_preload_content', True),
-            _request_timeout=local_var_params.get('_request_timeout'),
-            collection_formats=collection_formats)
+            async_req=local_var_params.get("async_req"),
+            _return_http_data_only=local_var_params.get(
+                "_return_http_data_only"
+            ),  # noqa: E501
+            _preload_content=local_var_params.get("_preload_content", True),
+            _request_timeout=local_var_params.get("_request_timeout"),
+            collection_formats=collection_formats,
+        )
 
     def list_solver_releases(self, solver_key, **kwargs):  # noqa: E501
         """List Solver Releases  # noqa: E501
@@ -916,8 +1139,10 @@ class SolversApi(object):
                  If the method is called asynchronously,
                  returns the request thread.
         """
-        kwargs['_return_http_data_only'] = True
-        return self.list_solver_releases_with_http_info(solver_key, **kwargs)  # noqa: E501
+        kwargs["_return_http_data_only"] = True
+        return self.list_solver_releases_with_http_info(
+            solver_key, **kwargs
+        )  # noqa: E501
 
     def list_solver_releases_with_http_info(self, solver_key, **kwargs):  # noqa: E501
         """List Solver Releases  # noqa: E501
@@ -946,32 +1171,45 @@ class SolversApi(object):
 
         local_var_params = locals()
 
-        all_params = ['solver_key']  # noqa: E501
-        all_params.append('async_req')
-        all_params.append('_return_http_data_only')
-        all_params.append('_preload_content')
-        all_params.append('_request_timeout')
+        all_params = ["solver_key"]  # noqa: E501
+        all_params.append("async_req")
+        all_params.append("_return_http_data_only")
+        all_params.append("_preload_content")
+        all_params.append("_request_timeout")
 
-        for key, val in six.iteritems(local_var_params['kwargs']):
+        for key, val in six.iteritems(local_var_params["kwargs"]):
             if key not in all_params:
                 raise ApiTypeError(
                     "Got an unexpected keyword argument '%s'"
                     " to method list_solver_releases" % key
                 )
             local_var_params[key] = val
-        del local_var_params['kwargs']
+        del local_var_params["kwargs"]
         # verify the required parameter 'solver_key' is set
-        if self.api_client.client_side_validation and ('solver_key' not in local_var_params or  # noqa: E501
-                                                        local_var_params['solver_key'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `solver_key` when calling `list_solver_releases`")  # noqa: E501
+        if self.api_client.client_side_validation and (
+            "solver_key" not in local_var_params
+            or local_var_params["solver_key"] is None  # noqa: E501
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Missing the required parameter `solver_key` when calling `list_solver_releases`"
+            )  # noqa: E501
 
-        if self.api_client.client_side_validation and 'solver_key' in local_var_params and not re.search(r'^(simcore)\/(services)\/comp(\/[\w\/-]+)+$', local_var_params['solver_key']):  # noqa: E501
-            raise ApiValueError("Invalid value for parameter `solver_key` when calling `list_solver_releases`, must conform to the pattern `/^(simcore)\/(services)\/comp(\/[\w\/-]+)+$/`")  # noqa: E501
+        if (
+            self.api_client.client_side_validation
+            and "solver_key" in local_var_params
+            and not re.search(
+                r"^(simcore)\/(services)\/comp(\/[\w\/-]+)+$",
+                local_var_params["solver_key"],
+            )
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Invalid value for parameter `solver_key` when calling `list_solver_releases`, must conform to the pattern `/^(simcore)\/(services)\/comp(\/[\w\/-]+)+$/`"
+            )  # noqa: E501
         collection_formats = {}
 
         path_params = {}
-        if 'solver_key' in local_var_params:
-            path_params['solver_key'] = local_var_params['solver_key']  # noqa: E501
+        if "solver_key" in local_var_params:
+            path_params["solver_key"] = local_var_params["solver_key"]  # noqa: E501
 
         query_params = []
 
@@ -982,27 +1220,32 @@ class SolversApi(object):
 
         body_params = None
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json'])  # noqa: E501
+        header_params["Accept"] = self.api_client.select_header_accept(
+            ["application/json"]
+        )  # noqa: E501
 
         # Authentication setting
-        auth_settings = ['HTTPBasic']  # noqa: E501
+        auth_settings = ["HTTPBasic"]  # noqa: E501
 
         return self.api_client.call_api(
-            '/v0/solvers/{solver_key}/releases', 'GET',
+            "/v0/solvers/{solver_key}/releases",
+            "GET",
             path_params,
             query_params,
             header_params,
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='list[Solver]',  # noqa: E501
+            response_type="list[Solver]",  # noqa: E501
             auth_settings=auth_settings,
-            async_req=local_var_params.get('async_req'),
-            _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
-            _preload_content=local_var_params.get('_preload_content', True),
-            _request_timeout=local_var_params.get('_request_timeout'),
-            collection_formats=collection_formats)
+            async_req=local_var_params.get("async_req"),
+            _return_http_data_only=local_var_params.get(
+                "_return_http_data_only"
+            ),  # noqa: E501
+            _preload_content=local_var_params.get("_preload_content", True),
+            _request_timeout=local_var_params.get("_request_timeout"),
+            collection_formats=collection_formats,
+        )
 
     def list_solvers(self, **kwargs):  # noqa: E501
         """List Solvers  # noqa: E501
@@ -1025,7 +1268,7 @@ class SolversApi(object):
                  If the method is called asynchronously,
                  returns the request thread.
         """
-        kwargs['_return_http_data_only'] = True
+        kwargs["_return_http_data_only"] = True
         return self.list_solvers_with_http_info(**kwargs)  # noqa: E501
 
     def list_solvers_with_http_info(self, **kwargs):  # noqa: E501
@@ -1055,19 +1298,19 @@ class SolversApi(object):
         local_var_params = locals()
 
         all_params = []  # noqa: E501
-        all_params.append('async_req')
-        all_params.append('_return_http_data_only')
-        all_params.append('_preload_content')
-        all_params.append('_request_timeout')
+        all_params.append("async_req")
+        all_params.append("_return_http_data_only")
+        all_params.append("_preload_content")
+        all_params.append("_request_timeout")
 
-        for key, val in six.iteritems(local_var_params['kwargs']):
+        for key, val in six.iteritems(local_var_params["kwargs"]):
             if key not in all_params:
                 raise ApiTypeError(
                     "Got an unexpected keyword argument '%s'"
                     " to method list_solvers" % key
                 )
             local_var_params[key] = val
-        del local_var_params['kwargs']
+        del local_var_params["kwargs"]
 
         collection_formats = {}
 
@@ -1082,27 +1325,32 @@ class SolversApi(object):
 
         body_params = None
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json'])  # noqa: E501
+        header_params["Accept"] = self.api_client.select_header_accept(
+            ["application/json"]
+        )  # noqa: E501
 
         # Authentication setting
-        auth_settings = ['HTTPBasic']  # noqa: E501
+        auth_settings = ["HTTPBasic"]  # noqa: E501
 
         return self.api_client.call_api(
-            '/v0/solvers', 'GET',
+            "/v0/solvers",
+            "GET",
             path_params,
             query_params,
             header_params,
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='list[Solver]',  # noqa: E501
+            response_type="list[Solver]",  # noqa: E501
             auth_settings=auth_settings,
-            async_req=local_var_params.get('async_req'),
-            _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
-            _preload_content=local_var_params.get('_preload_content', True),
-            _request_timeout=local_var_params.get('_request_timeout'),
-            collection_formats=collection_formats)
+            async_req=local_var_params.get("async_req"),
+            _return_http_data_only=local_var_params.get(
+                "_return_http_data_only"
+            ),  # noqa: E501
+            _preload_content=local_var_params.get("_preload_content", True),
+            _request_timeout=local_var_params.get("_request_timeout"),
+            collection_formats=collection_formats,
+        )
 
     def list_solvers_releases(self, **kwargs):  # noqa: E501
         """Lists All Releases  # noqa: E501
@@ -1125,7 +1373,7 @@ class SolversApi(object):
                  If the method is called asynchronously,
                  returns the request thread.
         """
-        kwargs['_return_http_data_only'] = True
+        kwargs["_return_http_data_only"] = True
         return self.list_solvers_releases_with_http_info(**kwargs)  # noqa: E501
 
     def list_solvers_releases_with_http_info(self, **kwargs):  # noqa: E501
@@ -1155,19 +1403,19 @@ class SolversApi(object):
         local_var_params = locals()
 
         all_params = []  # noqa: E501
-        all_params.append('async_req')
-        all_params.append('_return_http_data_only')
-        all_params.append('_preload_content')
-        all_params.append('_request_timeout')
+        all_params.append("async_req")
+        all_params.append("_return_http_data_only")
+        all_params.append("_preload_content")
+        all_params.append("_request_timeout")
 
-        for key, val in six.iteritems(local_var_params['kwargs']):
+        for key, val in six.iteritems(local_var_params["kwargs"]):
             if key not in all_params:
                 raise ApiTypeError(
                     "Got an unexpected keyword argument '%s'"
                     " to method list_solvers_releases" % key
                 )
             local_var_params[key] = val
-        del local_var_params['kwargs']
+        del local_var_params["kwargs"]
 
         collection_formats = {}
 
@@ -1182,27 +1430,32 @@ class SolversApi(object):
 
         body_params = None
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json'])  # noqa: E501
+        header_params["Accept"] = self.api_client.select_header_accept(
+            ["application/json"]
+        )  # noqa: E501
 
         # Authentication setting
-        auth_settings = ['HTTPBasic']  # noqa: E501
+        auth_settings = ["HTTPBasic"]  # noqa: E501
 
         return self.api_client.call_api(
-            '/v0/solvers/releases', 'GET',
+            "/v0/solvers/releases",
+            "GET",
             path_params,
             query_params,
             header_params,
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='list[Solver]',  # noqa: E501
+            response_type="list[Solver]",  # noqa: E501
             auth_settings=auth_settings,
-            async_req=local_var_params.get('async_req'),
-            _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
-            _preload_content=local_var_params.get('_preload_content', True),
-            _request_timeout=local_var_params.get('_request_timeout'),
-            collection_formats=collection_formats)
+            async_req=local_var_params.get("async_req"),
+            _return_http_data_only=local_var_params.get(
+                "_return_http_data_only"
+            ),  # noqa: E501
+            _preload_content=local_var_params.get("_preload_content", True),
+            _request_timeout=local_var_params.get("_request_timeout"),
+            collection_formats=collection_formats,
+        )
 
     def start_job(self, solver_key, version, job_id, **kwargs):  # noqa: E501
         """Start Job  # noqa: E501
@@ -1227,10 +1480,14 @@ class SolversApi(object):
                  If the method is called asynchronously,
                  returns the request thread.
         """
-        kwargs['_return_http_data_only'] = True
-        return self.start_job_with_http_info(solver_key, version, job_id, **kwargs)  # noqa: E501
+        kwargs["_return_http_data_only"] = True
+        return self.start_job_with_http_info(
+            solver_key, version, job_id, **kwargs
+        )  # noqa: E501
 
-    def start_job_with_http_info(self, solver_key, version, job_id, **kwargs):  # noqa: E501
+    def start_job_with_http_info(
+        self, solver_key, version, job_id, **kwargs
+    ):  # noqa: E501
         """Start Job  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
@@ -1258,46 +1515,76 @@ class SolversApi(object):
 
         local_var_params = locals()
 
-        all_params = ['solver_key', 'version', 'job_id']  # noqa: E501
-        all_params.append('async_req')
-        all_params.append('_return_http_data_only')
-        all_params.append('_preload_content')
-        all_params.append('_request_timeout')
+        all_params = ["solver_key", "version", "job_id"]  # noqa: E501
+        all_params.append("async_req")
+        all_params.append("_return_http_data_only")
+        all_params.append("_preload_content")
+        all_params.append("_request_timeout")
 
-        for key, val in six.iteritems(local_var_params['kwargs']):
+        for key, val in six.iteritems(local_var_params["kwargs"]):
             if key not in all_params:
                 raise ApiTypeError(
                     "Got an unexpected keyword argument '%s'"
                     " to method start_job" % key
                 )
             local_var_params[key] = val
-        del local_var_params['kwargs']
+        del local_var_params["kwargs"]
         # verify the required parameter 'solver_key' is set
-        if self.api_client.client_side_validation and ('solver_key' not in local_var_params or  # noqa: E501
-                                                        local_var_params['solver_key'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `solver_key` when calling `start_job`")  # noqa: E501
+        if self.api_client.client_side_validation and (
+            "solver_key" not in local_var_params
+            or local_var_params["solver_key"] is None  # noqa: E501
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Missing the required parameter `solver_key` when calling `start_job`"
+            )  # noqa: E501
         # verify the required parameter 'version' is set
-        if self.api_client.client_side_validation and ('version' not in local_var_params or  # noqa: E501
-                                                        local_var_params['version'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `version` when calling `start_job`")  # noqa: E501
+        if self.api_client.client_side_validation and (
+            "version" not in local_var_params
+            or local_var_params["version"] is None  # noqa: E501
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Missing the required parameter `version` when calling `start_job`"
+            )  # noqa: E501
         # verify the required parameter 'job_id' is set
-        if self.api_client.client_side_validation and ('job_id' not in local_var_params or  # noqa: E501
-                                                        local_var_params['job_id'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `job_id` when calling `start_job`")  # noqa: E501
+        if self.api_client.client_side_validation and (
+            "job_id" not in local_var_params
+            or local_var_params["job_id"] is None  # noqa: E501
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Missing the required parameter `job_id` when calling `start_job`"
+            )  # noqa: E501
 
-        if self.api_client.client_side_validation and 'solver_key' in local_var_params and not re.search(r'^(simcore)\/(services)\/comp(\/[\w\/-]+)+$', local_var_params['solver_key']):  # noqa: E501
-            raise ApiValueError("Invalid value for parameter `solver_key` when calling `start_job`, must conform to the pattern `/^(simcore)\/(services)\/comp(\/[\w\/-]+)+$/`")  # noqa: E501
-        if self.api_client.client_side_validation and 'version' in local_var_params and not re.search(r'^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$', local_var_params['version']):  # noqa: E501
-            raise ApiValueError("Invalid value for parameter `version` when calling `start_job`, must conform to the pattern `/^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$/`")  # noqa: E501
+        if (
+            self.api_client.client_side_validation
+            and "solver_key" in local_var_params
+            and not re.search(
+                r"^(simcore)\/(services)\/comp(\/[\w\/-]+)+$",
+                local_var_params["solver_key"],
+            )
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Invalid value for parameter `solver_key` when calling `start_job`, must conform to the pattern `/^(simcore)\/(services)\/comp(\/[\w\/-]+)+$/`"
+            )  # noqa: E501
+        if (
+            self.api_client.client_side_validation
+            and "version" in local_var_params
+            and not re.search(
+                r"^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$",
+                local_var_params["version"],
+            )
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Invalid value for parameter `version` when calling `start_job`, must conform to the pattern `/^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$/`"
+            )  # noqa: E501
         collection_formats = {}
 
         path_params = {}
-        if 'solver_key' in local_var_params:
-            path_params['solver_key'] = local_var_params['solver_key']  # noqa: E501
-        if 'version' in local_var_params:
-            path_params['version'] = local_var_params['version']  # noqa: E501
-        if 'job_id' in local_var_params:
-            path_params['job_id'] = local_var_params['job_id']  # noqa: E501
+        if "solver_key" in local_var_params:
+            path_params["solver_key"] = local_var_params["solver_key"]  # noqa: E501
+        if "version" in local_var_params:
+            path_params["version"] = local_var_params["version"]  # noqa: E501
+        if "job_id" in local_var_params:
+            path_params["job_id"] = local_var_params["job_id"]  # noqa: E501
 
         query_params = []
 
@@ -1308,27 +1595,32 @@ class SolversApi(object):
 
         body_params = None
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json'])  # noqa: E501
+        header_params["Accept"] = self.api_client.select_header_accept(
+            ["application/json"]
+        )  # noqa: E501
 
         # Authentication setting
-        auth_settings = ['HTTPBasic']  # noqa: E501
+        auth_settings = ["HTTPBasic"]  # noqa: E501
 
         return self.api_client.call_api(
-            '/v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:start', 'POST',
+            "/v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:start",
+            "POST",
             path_params,
             query_params,
             header_params,
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='JobStatus',  # noqa: E501
+            response_type="JobStatus",  # noqa: E501
             auth_settings=auth_settings,
-            async_req=local_var_params.get('async_req'),
-            _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
-            _preload_content=local_var_params.get('_preload_content', True),
-            _request_timeout=local_var_params.get('_request_timeout'),
-            collection_formats=collection_formats)
+            async_req=local_var_params.get("async_req"),
+            _return_http_data_only=local_var_params.get(
+                "_return_http_data_only"
+            ),  # noqa: E501
+            _preload_content=local_var_params.get("_preload_content", True),
+            _request_timeout=local_var_params.get("_request_timeout"),
+            collection_formats=collection_formats,
+        )
 
     def stop_job(self, solver_key, version, job_id, **kwargs):  # noqa: E501
         """Stop Job  # noqa: E501
@@ -1353,10 +1645,14 @@ class SolversApi(object):
                  If the method is called asynchronously,
                  returns the request thread.
         """
-        kwargs['_return_http_data_only'] = True
-        return self.stop_job_with_http_info(solver_key, version, job_id, **kwargs)  # noqa: E501
+        kwargs["_return_http_data_only"] = True
+        return self.stop_job_with_http_info(
+            solver_key, version, job_id, **kwargs
+        )  # noqa: E501
 
-    def stop_job_with_http_info(self, solver_key, version, job_id, **kwargs):  # noqa: E501
+    def stop_job_with_http_info(
+        self, solver_key, version, job_id, **kwargs
+    ):  # noqa: E501
         """Stop Job  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
@@ -1384,46 +1680,76 @@ class SolversApi(object):
 
         local_var_params = locals()
 
-        all_params = ['solver_key', 'version', 'job_id']  # noqa: E501
-        all_params.append('async_req')
-        all_params.append('_return_http_data_only')
-        all_params.append('_preload_content')
-        all_params.append('_request_timeout')
+        all_params = ["solver_key", "version", "job_id"]  # noqa: E501
+        all_params.append("async_req")
+        all_params.append("_return_http_data_only")
+        all_params.append("_preload_content")
+        all_params.append("_request_timeout")
 
-        for key, val in six.iteritems(local_var_params['kwargs']):
+        for key, val in six.iteritems(local_var_params["kwargs"]):
             if key not in all_params:
                 raise ApiTypeError(
                     "Got an unexpected keyword argument '%s'"
                     " to method stop_job" % key
                 )
             local_var_params[key] = val
-        del local_var_params['kwargs']
+        del local_var_params["kwargs"]
         # verify the required parameter 'solver_key' is set
-        if self.api_client.client_side_validation and ('solver_key' not in local_var_params or  # noqa: E501
-                                                        local_var_params['solver_key'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `solver_key` when calling `stop_job`")  # noqa: E501
+        if self.api_client.client_side_validation and (
+            "solver_key" not in local_var_params
+            or local_var_params["solver_key"] is None  # noqa: E501
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Missing the required parameter `solver_key` when calling `stop_job`"
+            )  # noqa: E501
         # verify the required parameter 'version' is set
-        if self.api_client.client_side_validation and ('version' not in local_var_params or  # noqa: E501
-                                                        local_var_params['version'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `version` when calling `stop_job`")  # noqa: E501
+        if self.api_client.client_side_validation and (
+            "version" not in local_var_params
+            or local_var_params["version"] is None  # noqa: E501
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Missing the required parameter `version` when calling `stop_job`"
+            )  # noqa: E501
         # verify the required parameter 'job_id' is set
-        if self.api_client.client_side_validation and ('job_id' not in local_var_params or  # noqa: E501
-                                                        local_var_params['job_id'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `job_id` when calling `stop_job`")  # noqa: E501
+        if self.api_client.client_side_validation and (
+            "job_id" not in local_var_params
+            or local_var_params["job_id"] is None  # noqa: E501
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Missing the required parameter `job_id` when calling `stop_job`"
+            )  # noqa: E501
 
-        if self.api_client.client_side_validation and 'solver_key' in local_var_params and not re.search(r'^(simcore)\/(services)\/comp(\/[\w\/-]+)+$', local_var_params['solver_key']):  # noqa: E501
-            raise ApiValueError("Invalid value for parameter `solver_key` when calling `stop_job`, must conform to the pattern `/^(simcore)\/(services)\/comp(\/[\w\/-]+)+$/`")  # noqa: E501
-        if self.api_client.client_side_validation and 'version' in local_var_params and not re.search(r'^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$', local_var_params['version']):  # noqa: E501
-            raise ApiValueError("Invalid value for parameter `version` when calling `stop_job`, must conform to the pattern `/^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$/`")  # noqa: E501
+        if (
+            self.api_client.client_side_validation
+            and "solver_key" in local_var_params
+            and not re.search(
+                r"^(simcore)\/(services)\/comp(\/[\w\/-]+)+$",
+                local_var_params["solver_key"],
+            )
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Invalid value for parameter `solver_key` when calling `stop_job`, must conform to the pattern `/^(simcore)\/(services)\/comp(\/[\w\/-]+)+$/`"
+            )  # noqa: E501
+        if (
+            self.api_client.client_side_validation
+            and "version" in local_var_params
+            and not re.search(
+                r"^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$",
+                local_var_params["version"],
+            )
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Invalid value for parameter `version` when calling `stop_job`, must conform to the pattern `/^(0|[1-9]\d*)(\.(0|[1-9]\d*)){2}(-(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*)(\.(0|[1-9]\d*|\d*[-a-zA-Z][-\da-zA-Z]*))*)?(\+[-\da-zA-Z]+(\.[-\da-zA-Z-]+)*)?$/`"
+            )  # noqa: E501
         collection_formats = {}
 
         path_params = {}
-        if 'solver_key' in local_var_params:
-            path_params['solver_key'] = local_var_params['solver_key']  # noqa: E501
-        if 'version' in local_var_params:
-            path_params['version'] = local_var_params['version']  # noqa: E501
-        if 'job_id' in local_var_params:
-            path_params['job_id'] = local_var_params['job_id']  # noqa: E501
+        if "solver_key" in local_var_params:
+            path_params["solver_key"] = local_var_params["solver_key"]  # noqa: E501
+        if "version" in local_var_params:
+            path_params["version"] = local_var_params["version"]  # noqa: E501
+        if "job_id" in local_var_params:
+            path_params["job_id"] = local_var_params["job_id"]  # noqa: E501
 
         query_params = []
 
@@ -1434,24 +1760,29 @@ class SolversApi(object):
 
         body_params = None
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json'])  # noqa: E501
+        header_params["Accept"] = self.api_client.select_header_accept(
+            ["application/json"]
+        )  # noqa: E501
 
         # Authentication setting
-        auth_settings = ['HTTPBasic']  # noqa: E501
+        auth_settings = ["HTTPBasic"]  # noqa: E501
 
         return self.api_client.call_api(
-            '/v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:stop', 'POST',
+            "/v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:stop",
+            "POST",
             path_params,
             query_params,
             header_params,
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='Job',  # noqa: E501
+            response_type="Job",  # noqa: E501
             auth_settings=auth_settings,
-            async_req=local_var_params.get('async_req'),
-            _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
-            _preload_content=local_var_params.get('_preload_content', True),
-            _request_timeout=local_var_params.get('_request_timeout'),
-            collection_formats=collection_formats)
+            async_req=local_var_params.get("async_req"),
+            _return_http_data_only=local_var_params.get(
+                "_return_http_data_only"
+            ),  # noqa: E501
+            _preload_content=local_var_params.get("_preload_content", True),
+            _request_timeout=local_var_params.get("_request_timeout"),
+            collection_formats=collection_formats,
+        )

@@ -33,24 +33,33 @@ class Profile(object):
                             and the value is json key in definition.
     """
     openapi_types = {
-        'first_name': 'str',
-        'last_name': 'str',
-        'login': 'str',
-        'role': 'UserRoleEnum',
-        'groups': 'Groups',
-        'gravatar_id': 'str'
+        "first_name": "str",
+        "last_name": "str",
+        "login": "str",
+        "role": "UserRoleEnum",
+        "groups": "Groups",
+        "gravatar_id": "str",
     }
 
     attribute_map = {
-        'first_name': 'first_name',
-        'last_name': 'last_name',
-        'login': 'login',
-        'role': 'role',
-        'groups': 'groups',
-        'gravatar_id': 'gravatar_id'
+        "first_name": "first_name",
+        "last_name": "last_name",
+        "login": "login",
+        "role": "role",
+        "groups": "groups",
+        "gravatar_id": "gravatar_id",
     }
 
-    def __init__(self, first_name=None, last_name=None, login=None, role=None, groups=None, gravatar_id=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(
+        self,
+        first_name=None,
+        last_name=None,
+        login=None,
+        role=None,
+        groups=None,
+        gravatar_id=None,
+        local_vars_configuration=None,
+    ):  # noqa: E501
         """Profile - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
@@ -135,8 +144,12 @@ class Profile(object):
         :param login: The login of this Profile.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and login is None:  # noqa: E501
-            raise ValueError("Invalid value for `login`, must not be `None`")  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation and login is None
+        ):  # noqa: E501
+            raise ValueError(
+                "Invalid value for `login`, must not be `None`"
+            )  # noqa: E501
 
         self._login = login
 
@@ -158,8 +171,12 @@ class Profile(object):
         :param role: The role of this Profile.  # noqa: E501
         :type: UserRoleEnum
         """
-        if self.local_vars_configuration.client_side_validation and role is None:  # noqa: E501
-            raise ValueError("Invalid value for `role`, must not be `None`")  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation and role is None
+        ):  # noqa: E501
+            raise ValueError(
+                "Invalid value for `role`, must not be `None`"
+            )  # noqa: E501
 
         self._role = role
 
@@ -204,9 +221,14 @@ class Profile(object):
         :param gravatar_id: The gravatar_id of this Profile.  # noqa: E501
         :type: str
         """
-        if (self.local_vars_configuration.client_side_validation and
-                gravatar_id is not None and len(gravatar_id) > 40):
-            raise ValueError("Invalid value for `gravatar_id`, length must be less than or equal to `40`")  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation
+            and gravatar_id is not None
+            and len(gravatar_id) > 40
+        ):
+            raise ValueError(
+                "Invalid value for `gravatar_id`, length must be less than or equal to `40`"
+            )  # noqa: E501
 
         self._gravatar_id = gravatar_id
 
@@ -217,18 +239,20 @@ class Profile(object):
         for attr, _ in six.iteritems(self.openapi_types):
             value = getattr(self, attr)
             if isinstance(value, list):
-                result[attr] = list(map(
-                    lambda x: x.to_dict() if hasattr(x, "to_dict") else x,
-                    value
-                ))
+                result[attr] = list(
+                    map(lambda x: x.to_dict() if hasattr(x, "to_dict") else x, value)
+                )
             elif hasattr(value, "to_dict"):
                 result[attr] = value.to_dict()
             elif isinstance(value, dict):
-                result[attr] = dict(map(
-                    lambda item: (item[0], item[1].to_dict())
-                    if hasattr(item[1], "to_dict") else item,
-                    value.items()
-                ))
+                result[attr] = dict(
+                    map(
+                        lambda item: (item[0], item[1].to_dict())
+                        if hasattr(item[1], "to_dict")
+                        else item,
+                        value.items(),
+                    )
+                )
             else:
                 result[attr] = value
 

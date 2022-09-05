@@ -16,7 +16,6 @@ import unittest
 
 import osparc
 from osparc.api.files_api import FilesApi  # noqa: E501
-from osparc.rest import ApiException
 
 
 class TestFilesApi(unittest.TestCase):
@@ -57,5 +56,5 @@ class TestFilesApi(unittest.TestCase):
         pass
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -16,7 +16,6 @@ import unittest
 
 import osparc
 from osparc.api.solvers_api import SolversApi  # noqa: E501
-from osparc.rest import ApiException
 
 
 class TestSolversApi(unittest.TestCase):
@@ -113,5 +112,5 @@ class TestSolversApi(unittest.TestCase):
         pass
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

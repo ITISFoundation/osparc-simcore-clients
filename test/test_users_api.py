@@ -16,7 +16,6 @@ import unittest
 
 import osparc
 from osparc.api.users_api import UsersApi  # noqa: E501
-from osparc.rest import ApiException
 
 
 class TestUsersApi(unittest.TestCase):
@@ -43,5 +42,5 @@ class TestUsersApi(unittest.TestCase):
         pass
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

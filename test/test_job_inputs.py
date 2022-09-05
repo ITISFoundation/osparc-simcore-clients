@@ -13,11 +13,9 @@
 from __future__ import absolute_import
 
 import unittest
-import datetime
 
-import osparc
 from osparc.models.job_inputs import JobInputs  # noqa: E501
-from osparc.rest import ApiException
+
 
 class TestJobInputs(unittest.TestCase):
     """JobInputs unit test stubs"""
@@ -30,22 +28,16 @@ class TestJobInputs(unittest.TestCase):
 
     def make_instance(self, include_optional):
         """Test JobInputs
-            include_option is a boolean, when False only required
-            params are included, when True both required and
-            optional params are included """
+        include_option is a boolean, when False only required
+        params are included, when True both required and
+        optional params are included"""
         # model = osparc.models.job_inputs.JobInputs()  # noqa: E501
-        if include_optional :
+        if include_optional:
+            return JobInputs(values={"key": 33})
+        else:
             return JobInputs(
-                values = {
-                    'key' : 33
-                    }
+                values={"key": 34},
             )
-        else :
-            return JobInputs(
-                values = {
-                    'key' : 34
-                    },
-        )
 
     def testJobInputs(self):
         """Test JobInputs"""
@@ -53,5 +45,5 @@ class TestJobInputs(unittest.TestCase):
         inst_req_and_optional = self.make_instance(include_optional=True)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

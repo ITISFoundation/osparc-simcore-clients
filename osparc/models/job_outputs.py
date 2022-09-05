@@ -33,16 +33,15 @@ class JobOutputs(object):
                             and the value is json key in definition.
     """
     openapi_types = {
-        'job_id': 'str',
-        'results': 'dict(str, AnyOfFilenumberintegerstring)'
+        "job_id": "str",
+        "results": "dict(str, AnyOfFilenumberintegerstring)",
     }
 
-    attribute_map = {
-        'job_id': 'job_id',
-        'results': 'results'
-    }
+    attribute_map = {"job_id": "job_id", "results": "results"}
 
-    def __init__(self, job_id=None, results=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(
+        self, job_id=None, results=None, local_vars_configuration=None
+    ):  # noqa: E501
         """JobOutputs - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
@@ -75,8 +74,12 @@ class JobOutputs(object):
         :param job_id: The job_id of this JobOutputs.  # noqa: E501
         :type: str
         """
-        if self.local_vars_configuration.client_side_validation and job_id is None:  # noqa: E501
-            raise ValueError("Invalid value for `job_id`, must not be `None`")  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation and job_id is None
+        ):  # noqa: E501
+            raise ValueError(
+                "Invalid value for `job_id`, must not be `None`"
+            )  # noqa: E501
 
         self._job_id = job_id
 
@@ -98,8 +101,12 @@ class JobOutputs(object):
         :param results: The results of this JobOutputs.  # noqa: E501
         :type: dict(str, AnyOfFilenumberintegerstring)
         """
-        if self.local_vars_configuration.client_side_validation and results is None:  # noqa: E501
-            raise ValueError("Invalid value for `results`, must not be `None`")  # noqa: E501
+        if (
+            self.local_vars_configuration.client_side_validation and results is None
+        ):  # noqa: E501
+            raise ValueError(
+                "Invalid value for `results`, must not be `None`"
+            )  # noqa: E501
 
         self._results = results
 
@@ -110,18 +117,20 @@ class JobOutputs(object):
         for attr, _ in six.iteritems(self.openapi_types):
             value = getattr(self, attr)
             if isinstance(value, list):
-                result[attr] = list(map(
-                    lambda x: x.to_dict() if hasattr(x, "to_dict") else x,
-                    value
-                ))
+                result[attr] = list(
+                    map(lambda x: x.to_dict() if hasattr(x, "to_dict") else x, value)
+                )
             elif hasattr(value, "to_dict"):
                 result[attr] = value.to_dict()
             elif isinstance(value, dict):
-                result[attr] = dict(map(
-                    lambda item: (item[0], item[1].to_dict())
-                    if hasattr(item[1], "to_dict") else item,
-                    value.items()
-                ))
+                result[attr] = dict(
+                    map(
+                        lambda item: (item[0], item[1].to_dict())
+                        if hasattr(item[1], "to_dict")
+                        else item,
+                        value.items(),
+                    )
+                )
             else:
                 result[attr] = value
 

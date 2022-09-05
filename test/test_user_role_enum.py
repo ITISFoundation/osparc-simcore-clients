@@ -13,11 +13,9 @@
 from __future__ import absolute_import
 
 import unittest
-import datetime
 
-import osparc
 from osparc.models.user_role_enum import UserRoleEnum  # noqa: E501
-from osparc.rest import ApiException
+
 
 class TestUserRoleEnum(unittest.TestCase):
     """UserRoleEnum unit test stubs"""
@@ -30,16 +28,14 @@ class TestUserRoleEnum(unittest.TestCase):
 
     def make_instance(self, include_optional):
         """Test UserRoleEnum
-            include_option is a boolean, when False only required
-            params are included, when True both required and
-            optional params are included """
+        include_option is a boolean, when False only required
+        params are included, when True both required and
+        optional params are included"""
         # model = osparc.models.user_role_enum.UserRoleEnum()  # noqa: E501
-        if include_optional :
-            return UserRoleEnum(
-            )
-        else :
-            return UserRoleEnum(
-        )
+        if include_optional:
+            return UserRoleEnum()
+        else:
+            return UserRoleEnum()
 
     def testUserRoleEnum(self):
         """Test UserRoleEnum"""
@@ -47,5 +43,5 @@ class TestUserRoleEnum(unittest.TestCase):
         inst_req_and_optional = self.make_instance(include_optional=True)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
