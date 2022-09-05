@@ -1,10 +1,12 @@
-.DEFAULT_GOAL := info
+.DEFAULT_GOAL := help
 SHELL         := /bin/bash
 VCS_URL       := $(shell git config --get remote.origin.url)
 VCS_REF       := $(shell git rev-parse --short HEAD)
 NOW_TIMESTAMP := $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
-APP_NAME          = $(notdir $(CURDIR))
-APP_VERSION    = $(shell python setup.py --version)
+APP_NAME      := $(notdir $(CURDIR))
+APP_VERSION   := $(shell python setup.py --version)
+
+REPO_BASE_DIR := $(shell git rev-parse --show-toplevel)
 
 
 help: ## help on rule's targets
@@ -18,6 +20,9 @@ info:
 	@echo ' NOW_TIMESTAMP    : ${NOW_TIMESTAMP}'
 	@echo ' VCS_URL          : ${VCS_URL}'
 	@echo ' VCS_REF          : ${VCS_REF}'
+	@echo ' REPO_BASE_DIR    : ${REPO_BASE_DIR}'
+	@echo ' APP_NAME         : ${APP_NAME}'
+	@echo ' APP_VERSION      : ${APP_VERSION}'
 	# installed in .venv
 	@which python
 	@pip list
@@ -38,25 +43,30 @@ info:
 	@echo "WARNING ##### $@ does not exist, cloning $< as $@ ############"; cp $< $@)
 
 
+.venv:
+	@python3 --version
+	python3 -m venv $@
+	## upgrading tools to latest version in $(shell python3 --version)
+	$@/bin/pip3 --quiet install --upgrade \
+		pip~=22.0 \
+		wheel \
+		setuptools
+	@$@/bin/pip3 list --verbose
+
+devenv: .venv ## create a python virtual environment with dev tools (e.g. linters, etc)
+	$</bin/pip3 --quiet install -r requirements-tools.txt
+	# Installing pre-commit hooks in current .git repo
+	@$</bin/pre-commit install
+	@echo "To activate the venv, execute 'source .venv/bin/activate'"
+
+
 _check_venv_active:
 	# checking whether virtual environment was activated
 	@python3 -c "import sys; assert sys.base_prefix!=sys.prefix"
 
-devenv: .venv
-.venv: .env
-	# creating virtual-env in $@
-	@python3 -m venv $@
-	@$@/bin/pip3 --quiet install --upgrade \
-		pip \
-		wheel \
-		setuptools
-	# installing tools
-	@$@/bin/pip3 install -r requirements-tools.txt
-	@echo "To activate the venv, execute 'source .venv/bin/activate'"
-
 
 .PHONY: install-dev
-install-dev: _check_venv_active 
+install-dev: _check_venv_active
 	pip install -r requirements-tests.txt
 	pip install -e .
 
@@ -65,6 +75,21 @@ install-dev: _check_venv_active
 test-dev: _check_venv_active
 	# runs tests for development (e.g w/ pdb)
 	pytest -vv --exitfirst --failed-first --durations=10 --pdb $(CURDIR)
+
+
+
+## DOCKER -------------------------------------------------------------------------------
+
+
+.PHONY: build
+image:
+	docker build -f Dockerfile -t $(APP_NAME):$(APP_VERSION) $(CURDIR)
+
+.PHONY: shell
+shell:
+	docker run -it $(APP_NAME):latest /bin/bash
+
+
 
 
 ## NOTEBOOKS -----------------------------------------------------------------------------
@@ -84,20 +109,10 @@ docs/md/code_samples/%.ipynb:docs/md/%.md
 
 ## DOCUMENTATION ------------------------------------------------------------------------
 
-.PHONY: serve-doc
-serve-doc: # serves doc
+.PHONY: http-doc
+http-doc: ## serves doc
 	# starting doc website
-	cd docs && python3 -m http.server 50001
-
-
-# TODO: 
-# - update README.md 
-#	- from ## Documentation for API Endpoints to ## Author )
-#   - all paths docs/ -> docs/md/
-#   - copy to docs and replaces all docs/  -> md/
-# - move all to docs/md
-# - replace :\n``  -> :\n\n``
-# - replace http://localhost https://api.osparc.io
+	cd docs && python3 -m http.server 50001 --bind 127.0.0.1
 
 ## RELEASE -------------------------------------------------------------------------------
 
@@ -116,10 +131,6 @@ define _bumpversion
 endef
 
 
-.PHONY: clean
-clean:
-	git clean -dxf -e .vscode
-
 
 .PHONY: build
 build:
@@ -132,20 +143,9 @@ build:
 #	python -m twine upload dist/*
 
 
-## DOCKER -------------------------------------------------------------------------------
 
 
-.PHONY: build
-image:
-	docker build -f Dockerfile -t $(APP_NAME):$(APP_VERSION) $(CURDIR)
-
-.PHONY: shell
-shell:
-	docker run -it $(APP_NAME):latest /bin/bash
-
-
-
-# RELEASE --------------------------------------------------------------------------------------------------------------------------------------------
+# RELEASE -------------------------------------------------------------------------------
 
 staging_prefix := staging_
 prod_prefix := v
@@ -189,3 +189,24 @@ release-hotfix: ## Helper to create a hotfix release in Github (usage: make rele
 	@git pull --tags
 	@echo -e "\e[33mOpen the following link to create the $(if $(findstring -staging, $@),staging,production) release:";
 	@echo -e "\e[32mhttps://github.com/$(_git_get_repo_orga_name)/releases/new?prerelease=$(if $(findstring -staging, $@),1,0)&target=$(_url_encoded_target)&tag=$(_url_encoded_tag)&title=$(_url_encoded_title)&body=$(_url_encoded_logs)";
+
+
+## CLEAN -------------------------------------------------------------------------------
+
+
+.PHONY: clean-hooks
+clean-hooks: ## Uninstalls git pre-commit hooks
+	@-pre-commit uninstall 2> /dev/null || rm .git/hooks/pre-commit
+
+_git_clean_args := -dx --force --exclude=.vscode --exclude=TODO.md --exclude=.venv --exclude=.python-version --exclude="*keep*"
+
+
+.check-clean:
+	@git clean -n $(_git_clean_args)
+	@echo -n "Are you sure? [y/N] " && read ans && [ $${ans:-N} = y ]
+	@echo -n "$(shell whoami), are you REALLY sure? [y/N] " && read ans && [ $${ans:-N} = y ]
+
+
+clean: .check-clean ## cleans all unversioned files in project and temp files create by this makefile
+	# Cleaning unversioned
+	@git clean $(_git_clean_args)
