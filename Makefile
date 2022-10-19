@@ -159,7 +159,7 @@ _git_get_current_branch = $(shell git rev-parse --abbrev-ref HEAD)
 # NOTE: be careful that GNU Make replaces newlines with space which is why this command cannot work using a Make function
 _url_encoded_title = $(APP_VERSION)
 _url_encoded_tag = $(prod_prefix)$(APP_VERSION)
-_url_encoded_target = $(if $(git_sha),$(git_sha),$(if $(findstring -hotfix, $@),$(_git_get_current_branch),master))
+_url_encoded_target = $(if $(git_sha),$(git_sha),master)
 _prettify_logs = $$(git log \
 		$$(git describe --match="$(prod_prefix)*" --abbrev=0 --tags)..$(if $(git_sha),$(git_sha),HEAD) \
 		--pretty=format:"- %s")
