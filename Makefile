@@ -127,9 +127,13 @@ clean: ## cleans
 	git clean -dxf -e .vscode
 
 
-.PHONY: build
-build: ## builds distribution wheel
-	python setup.py sdist bdist_wheel
+.PHONY: dist
+dist: ## builds distribution wheel
+	# installs pypa/build
+	python -m pip install build
+    # Build a binary wheel and a source tarball
+	python -m build --sdist --wheel --outdir dist/ $(CURDIR)
+
 
 
 #.PHONY: release
