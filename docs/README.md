@@ -49,6 +49,8 @@ cfg = osparc.Configuration(
 )
 
 with osparc.ApiClient(cfg) as api_client:
+    users_api = osparc.UsersApi(api_client)
+    print(users_api.get_my_profile())
 
     files_api = FilesApi(api_client)
     input_file: File = files_api.upload_file(file="path/to/input-file.h5")
