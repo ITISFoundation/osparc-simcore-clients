@@ -76,15 +76,13 @@ install-dev: _check_venv_active ## install package for development
 
 .PHONY: pylint
 pylint: _check_venv_active ## runs linter (only to check errors. SEE .pylintrc enabled)
-	pylint --rcfile "$(CURDIR)/.pylintrc"	"$(CURDIR)/osparc"
+	pylint --rcfile "$(CURDIR)/.pylintrc" -v "$(CURDIR)/osparc" -v "$(CURDIR)/tests"
 
 
 .PHONY: test-dev
 test-dev: _check_venv_active ## runs tests during development
 	# runs tests for development (e.g w/ pdb)
 	pytest -vv --exitfirst --failed-first --durations=10 --pdb $(CURDIR)
-
-
 
 
 
