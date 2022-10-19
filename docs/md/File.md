@@ -9,6 +9,6 @@ Represents a file stored on the server side i.e. a unique reference to a file in
 | **content_type** | **str** | Guess of type content [EXPERIMENTAL]              | [optional] |
 | **checksum**     | **str** | MD5 hash of the file&#39;s content [EXPERIMENTAL] | [optional] |
 
-[[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
+[[Back to Model list]](../README.md#documentation-for-models) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to README]](../README.md)
 
 

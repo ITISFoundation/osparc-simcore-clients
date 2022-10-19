@@ -8,7 +8,6 @@ Python client for osparc-simcore public web API
 
 - API version: 0.4.0
 - Package version: 0.5.0
-- Build package: org.openapitools.codegen.languages.PythonClientCodegen
 
 ## Requirements
 
@@ -34,7 +33,7 @@ import osparc
 
 ## Getting Started
 
-Please follow the installation procedure above and then run the following:
+Please follow the installation procedure above, create an API key and secret in *https:/osparc.io*, add them as environment variables ``MY_API_KEY``, ``MY_API_SECRET`` and then run the following:
 
 ```python
 import os
@@ -45,7 +44,6 @@ from osparc.models import File, Solver, Job, JobStatus, JobInputs, JobOutputs
 from osparc.api import FilesApi, SolversApi
 
 cfg = osparc.Configuration(
-    host=os.environ.get("OSPARC_API_URL", "http://127.0.0.1:8006"),
     username=os.environ.get("MY_API_KEY"),
     password=os.environ.get("MY_API_SECRET"),
 )

@@ -11,6 +11,6 @@ A released solver with a specific version
 | **maintainer**  | **str** |                                     |
 | **url**         | **str** | Link to get this resource           |
 
-[[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
+[[Back to Model list]](../README.md#documentation-for-models) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to README]](../README.md)
 
 

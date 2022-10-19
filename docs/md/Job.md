@@ -12,6 +12,6 @@
 | **runner_url**      | **str**      | Link to the solver&#39;s job (parent collection) |
 | **outputs_url**     | **str**      | Link to the job outputs (sub-collection          |
 
-[[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
+[[Back to Model list]](../README.md#documentation-for-models) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to README]](../README.md)
 
 

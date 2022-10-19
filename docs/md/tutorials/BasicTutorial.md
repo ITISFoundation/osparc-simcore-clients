@@ -327,4 +327,4 @@ with ZipFile(f"{zip_path}") as fzip:
 - A full script with this tutorial: [``sleeper.py``](https://github.com/ITISFoundation/osparc-simcore/blob/master/tests/public-api/examples/sleeper.py)
 
 [osparc API python client]:https://itisfoundation.github.io/osparc-simcore-python-client
-[osparc API]:https://api.staging.osparc.io/doc
+[osparc API]:https://api.osparc.io/doc

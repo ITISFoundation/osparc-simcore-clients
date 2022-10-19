@@ -42,8 +42,7 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-# Defining host is optional and default to https://api.osparc.io
-configuration.host = "https://api.osparc.io"
+
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -88,7 +87,7 @@ with osparc.ApiClient(configuration) as api_client:
 | **200**     | Successful Response | -                |
 | **422**     | Validation Error    | -                |
 
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+[[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_job**
 
@@ -114,8 +113,7 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-# Defining host is optional and default to https://api.osparc.io
-configuration.host = "https://api.osparc.io"
+
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -160,7 +158,7 @@ with osparc.ApiClient(configuration) as api_client:
 | **200**     | Successful Response | -                |
 | **422**     | Validation Error    | -                |
 
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+[[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_job_output_logfile**
 
@@ -185,8 +183,7 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-# Defining host is optional and default to https://api.osparc.io
-configuration.host = "https://api.osparc.io"
+
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -233,7 +230,7 @@ with osparc.ApiClient(configuration) as api_client:
 | **404**     | Log not found       | -                |
 | **422**     | Validation Error    | -                |
 
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+[[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_job_outputs**
 
@@ -256,8 +253,7 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-# Defining host is optional and default to https://api.osparc.io
-configuration.host = "https://api.osparc.io"
+
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -301,7 +297,7 @@ with osparc.ApiClient(configuration) as api_client:
 | **200**     | Successful Response | -                |
 | **422**     | Validation Error    | -                |
 
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+[[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_solver**
 > Solver get_solver(solver_key)
@@ -325,8 +321,7 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-# Defining host is optional and default to https://api.osparc.io
-configuration.host = "https://api.osparc.io"
+
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -366,7 +361,7 @@ with osparc.ApiClient(configuration) as api_client:
 | **200**     | Successful Response | -                |
 | **422**     | Validation Error    | -                |
 
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+[[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_solver_release**
 > Solver get_solver_release(solver_key, version)
@@ -390,8 +385,7 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-# Defining host is optional and default to https://api.osparc.io
-configuration.host = "https://api.osparc.io"
+
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -433,7 +427,7 @@ with osparc.ApiClient(configuration) as api_client:
 | **200**     | Successful Response | -                |
 | **422**     | Validation Error    | -                |
 
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+[[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **inspect_job**
 > JobStatus inspect_job(solver_key, version, job_id)
@@ -455,8 +449,7 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-# Defining host is optional and default to https://api.osparc.io
-configuration.host = "https://api.osparc.io"
+
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -500,7 +493,7 @@ with osparc.ApiClient(configuration) as api_client:
 | **200**     | Successful Response | -                |
 | **422**     | Validation Error    | -                |
 
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+[[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_jobs**
 > list[Job] list_jobs(solver_key, version)
@@ -524,8 +517,7 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-# Defining host is optional and default to https://api.osparc.io
-configuration.host = "https://api.osparc.io"
+
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -567,7 +559,7 @@ with osparc.ApiClient(configuration) as api_client:
 | **200**     | Successful Response | -                |
 | **422**     | Validation Error    | -                |
 
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+[[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_solver_releases**
 > list[Solver] list_solver_releases(solver_key)
@@ -591,8 +583,7 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-# Defining host is optional and default to https://api.osparc.io
-configuration.host = "https://api.osparc.io"
+
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -632,7 +623,7 @@ with osparc.ApiClient(configuration) as api_client:
 | **200**     | Successful Response | -                |
 | **422**     | Validation Error    | -                |
 
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+[[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_solvers**
 > list[Solver] list_solvers()
@@ -656,8 +647,7 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-# Defining host is optional and default to https://api.osparc.io
-configuration.host = "https://api.osparc.io"
+
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -692,7 +682,7 @@ This endpoint does not need any parameter.
 | ----------- | ------------------- | ---------------- |
 | **200**     | Successful Response | -                |
 
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+[[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_solvers_releases**
 > list[Solver] list_solvers_releases()
@@ -716,8 +706,7 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-# Defining host is optional and default to https://api.osparc.io
-configuration.host = "https://api.osparc.io"
+
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -752,7 +741,7 @@ This endpoint does not need any parameter.
 | ----------- | ------------------- | ---------------- |
 | **200**     | Successful Response | -                |
 
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+[[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **start_job**
 > JobStatus start_job(solver_key, version, job_id)
@@ -774,8 +763,7 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-# Defining host is optional and default to https://api.osparc.io
-configuration.host = "https://api.osparc.io"
+
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -819,7 +807,7 @@ with osparc.ApiClient(configuration) as api_client:
 | **200**     | Successful Response | -                |
 | **422**     | Validation Error    | -                |
 
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+[[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **stop_job**
 > Job stop_job(solver_key, version, job_id)
@@ -841,8 +829,7 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-# Defining host is optional and default to https://api.osparc.io
-configuration.host = "https://api.osparc.io"
+
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -886,5 +873,5 @@ with osparc.ApiClient(configuration) as api_client:
 | **200**     | Successful Response | -                |
 | **422**     | Validation Error    | -                |
 
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+[[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
