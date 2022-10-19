@@ -64,8 +64,13 @@ devenv: .venv
 
 .PHONY: install-dev
 install-dev: _check_venv_active ## install package for development
-	pip install -r requirements-tests.txt
+	pip install -r requirements-dev.txt
 	pip install -e .
+
+
+.PHONY: pylint
+pylint: _check_venv_active ## runs linter (only to check errors. SEE .pylintrc enabled)
+	pylint --rcfile "$(CURDIR)/.pylintrc"	"$(CURDIR)/osparc"
 
 
 .PHONY: test-dev
