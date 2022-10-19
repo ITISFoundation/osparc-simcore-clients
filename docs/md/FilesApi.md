@@ -45,7 +45,6 @@ with osparc.ApiClient(configuration) as api_client:
     except ApiException as e:
         print("Exception when calling FilesApi->download_file: %s\n" % e)
 ```
-[Download docs/md/code_samples/FilesApi](md/code_samples/FilesApi.ipynb ':ignore')
 ### Parameters
 
 | Name        | Type           | Description | Notes |
@@ -270,4 +269,4 @@ with osparc.ApiClient(configuration) as api_client:
 
 [[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-[Download FilesApi.ipynb](md/code_samples/FilesApi.ipynb ':ignore')
+[Download as FilesApi.ipynb](md/code_samples/FilesApi.ipynb ':ignore')

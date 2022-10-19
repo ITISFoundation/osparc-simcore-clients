@@ -86,12 +86,14 @@ markdowns  = $(wildcard docs/md/*Api.md)
 markdowns += $(wildcard docs/md/tutorials/*.md)
 outputs:=$(subst docs/md,docs/md/code_samples,$(markdowns:.md=.ipynb))
 
-notebooks: $(outputs)
+notebooks: $(outputs) ## converts selected markdowns into notebooks
 
 docs/md/code_samples/%.ipynb:docs/md/%.md
+	# Removing link in markdown
+	@sed -i "/\b$(notdir $@)\b/d" $<
 	notedown $< >$@
-	# Appending link to markdown (WARNING: might append multiple times)
-	@echo "[Download $(notdir $@)]($(subst docs/,,$@) ':ignore')" >> $<
+	# Appending link to markdown
+	@echo "[Download as $(notdir $@)]($(subst docs/,,$@) ':ignore')" >> $<
 
 
 

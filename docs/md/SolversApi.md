@@ -875,4 +875,4 @@ with osparc.ApiClient(configuration) as api_client:
 
 [[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-[Download SolversApi.ipynb](md/code_samples/SolversApi.ipynb ':ignore')
+[Download as SolversApi.ipynb](md/code_samples/SolversApi.ipynb ':ignore')

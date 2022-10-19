@@ -58,4 +58,4 @@ No authorization required
 
 [[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-[Download MetaApi.ipynb](md/code_samples/MetaApi.ipynb ':ignore')
+[Download as MetaApi.ipynb](md/code_samples/MetaApi.ipynb ':ignore')
