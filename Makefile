@@ -15,7 +15,7 @@ help: ## help on rule's targets
 
 
 .PHONY: info
-info:
+info: ## general informatino
 	# system
 	@echo ' CURDIR           : ${CURDIR}'
 	@echo ' NOW_TIMESTAMP    : ${NOW_TIMESTAMP}'
@@ -27,6 +27,9 @@ info:
 	# package
 	-@echo ' name         : ' $(shell python ${CURDIR}/setup.py --name)
 	-@echo ' version      : ' $(shell python ${CURDIR}/setup.py --version)
+	# API
+	@echo  ' title        : ' $(shell jq ".info.title" ${CURDIR}/api/openapi.json)
+	@echo  ' version      : ' $(shell jq ".info.version" ${CURDIR}/api/openapi.json)
 	# nox
 	@echo nox --list-session
 
@@ -60,13 +63,13 @@ devenv: .venv
 
 
 .PHONY: install-dev
-install-dev: _check_venv_active
+install-dev: _check_venv_active ## install package for development
 	pip install -r requirements-tests.txt
 	pip install -e .
 
 
 .PHONY: test-dev
-test-dev: _check_venv_active
+test-dev: _check_venv_active ## runs tests during development
 	# runs tests for development (e.g w/ pdb)
 	pytest -vv --exitfirst --failed-first --durations=10 --pdb $(CURDIR)
 
@@ -111,12 +114,12 @@ endef
 
 
 .PHONY: clean
-clean:
+clean: ## cleans
 	git clean -dxf -e .vscode
 
 
 .PHONY: build
-build:
+build: ## builds distribution wheel
 	python setup.py sdist bdist_wheel
 
 
@@ -130,11 +133,11 @@ build:
 
 
 .PHONY: build
-image:
+image: ## builds image $(APP_NAME):$(APP_VERSION)
 	docker build -f Dockerfile -t $(APP_NAME):$(APP_VERSION) $(CURDIR)
 
 .PHONY: shell
-shell:
+shell: ## runs container and opens bash shell
 	docker run -it $(APP_NAME):latest /bin/bash
 
 
@@ -217,9 +220,8 @@ space := $(null) #
 comma := ,
 
 
-python-client: api/openapi.json ## runs python client generator
+python-client: api/openapi.json ## auto-generates client from api/openapi.json specs
 	# generates
-	cd $(CURDIR); \
 	$(SCRIPTS_DIR)/openapi-generator-cli.bash generate \
 		--generator-name=$(GENERATOR_NAME) \
 		--git-user-id=$(GIT_USER_ID)\
