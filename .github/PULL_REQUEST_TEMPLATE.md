@@ -14,7 +14,7 @@ PREFIX:
   🔥    Remove code or files.
   🔨    Add or update development scripts.
 
-or from https://gitmoji.dev/ 
+or from https://gitmoji.dev/
 -->
 
 ## What do these changes do?
@@ -44,7 +44,7 @@ e.g.
 - [ ] Update [``api/openapi.json``](./api/openapi.json)
 - [ ] Update code
 - [ ] Update doc
-- [ ] Follow NOTES.md](./NOTES.md)
+- [ ] Follow [NOTES.md](./NOTES.md)
 
 <!-- This is YOUR section
 
