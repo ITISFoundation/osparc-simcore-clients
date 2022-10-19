@@ -82,15 +82,17 @@ test-dev: _check_venv_active ## runs tests during development
 ## NOTEBOOKS -----------------------------------------------------------------------------
 .PHONY: notebooks
 
-markdowns:=$(wildcard docs/md/*Api.md)
+markdowns  = $(wildcard docs/md/*Api.md)
+markdowns += $(wildcard docs/md/tutorials/*.md)
 outputs:=$(subst docs/md,docs/md/code_samples,$(markdowns:.md=.ipynb))
-
 
 notebooks: $(outputs)
 
-# FIXME: should add a link in mds and REMOVE them from notebooks
 docs/md/code_samples/%.ipynb:docs/md/%.md
 	notedown $< >$@
+	# Appending link to markdown (WARNING: might append multiple times)
+	@echo "[Download $(notdir $@)]($(subst docs/,,$@) ':ignore')" >> $<
+
 
 
 
