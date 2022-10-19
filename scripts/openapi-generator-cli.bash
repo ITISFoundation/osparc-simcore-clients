@@ -23,17 +23,15 @@
 USERID=$(stat --format=%u "$PWD")
 GROUPID=$(stat --format=%g "$PWD")
 
-# FIXME: replaces automatically $PWD by /local so it maps correctly in the container
-#PATTERN=s+$PWD+/local+
-#CMD=$(echo "$@" | sed $PATTERN)
-
-# TODO: check SAME digest. Perhaps push into itisfoundation repo?
+#
 # openapitools/openapi-generator-cli   v4.2.3   sha256:c90e7f2d63340574bba015ad88a5abb55d5b25ab3d5460c02e14a566574e8d55
+#
 
-exec docker run --rm \
+exec docker run \
+    --rm \
     --user "$USERID:$GROUPID" \
     --volume "$PWD:/local" \
-    openapitools/openapi-generator-cli:v4.2.3 "$@"
+    openapitools/openapi-generator-cli@sha256:c90e7f2d63340574bba015ad88a5abb55d5b25ab3d5460c02e14a566574e8d55 "$@"
 
 # Example
 #   openapi-generator-cli generate -i /local/api/specs/webserver/openapi.yaml -g python -o /local/out/sdk/webserver
