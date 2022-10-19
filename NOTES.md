@@ -28,7 +28,7 @@ configuration.host = "https://api.osparc.io"```
 
 ----
 
-# :tada:  Released new ``osparc==0.5.0`` python client library
+# @channel :tada:  Released new ``osparc==0.5.0`` python client library
 
 ## Highlights:
 
