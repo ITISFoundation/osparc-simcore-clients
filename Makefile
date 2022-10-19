@@ -49,7 +49,7 @@ _check_venv_active:
 	@python3 -c "import sys; assert sys.base_prefix!=sys.prefix"
 
 
-devenv: .venv
+devenv: .venv ## builds python development environment
 .venv: .env
 	# creating virtual-env in $@
 	@python3 -m venv $@
@@ -79,33 +79,10 @@ test-dev: _check_venv_active ## runs tests during development
 	pytest -vv --exitfirst --failed-first --durations=10 --pdb $(CURDIR)
 
 
-## NOTEBOOKS -----------------------------------------------------------------------------
-.PHONY: notebooks
-
-markdowns  = $(wildcard docs/md/*Api.md)
-markdowns += $(wildcard docs/md/tutorials/*.md)
-outputs:=$(subst docs/md,docs/md/code_samples,$(markdowns:.md=.ipynb))
-
-notebooks: $(outputs) ## converts selected markdowns into notebooks
-
-docs/md/code_samples/%.ipynb:docs/md/%.md
-	# Removing link in markdown
-	@sed -i "/\b$(notdir $@)\b/d" $<
-	notedown $< >$@
-	# Appending link to markdown
-	@echo "[Download as $(notdir $@)]($(subst docs/,,$@) ':ignore')" >> $<
 
 
 
-
-## DOCUMENTATION ------------------------------------------------------------------------
-
-.PHONY: http-doc
-http-doc: ## serves doc
-	# starting doc website
-	cd docs && python3 -m http.server 50001 --bind 127.0.0.1
-
-## RELEASE -------------------------------------------------------------------------------
+## VERSION -------------------------------------------------------------------------------
 
 .PHONY: version-patch version-minor version-major
 
@@ -122,10 +99,6 @@ define _bumpversion
 endef
 
 
-.PHONY: clean
-clean: ## cleans
-	git clean -dxf -e .vscode
-
 
 .PHONY: dist
 dist: ## builds distribution wheel
@@ -136,10 +109,29 @@ dist: ## builds distribution wheel
 
 
 
-#.PHONY: release
-#release: build # release by-hand (TEMP SOLUTION until FIXME: https://github.com/ITISFoundation/osparc-simcore-python-client/issues/16)
-#	python -m pip install twine
-#	python -m twine upload dist/*
+## DOCUMENTATION ------------------------------------------------------------------------
+
+.PHONY: http-doc
+http-doc: ## serves doc
+	# starting doc website
+	cd docs && python3 -m http.server 50001 --bind 127.0.0.1
+
+
+.PHONY: notebooks
+
+markdowns  = $(wildcard docs/md/*Api.md)
+markdowns += $(wildcard docs/md/tutorials/*.md)
+outputs:=$(subst docs/md,docs/md/code_samples,$(markdowns:.md=.ipynb))
+
+notebooks: $(outputs) ## converts selected markdowns into notebooks
+
+docs/md/code_samples/%.ipynb:docs/md/%.md
+	# Removing link in markdown
+	@sed -i "/\b$(notdir $@)\b/d" $<
+	notedown $< >$@
+	# Appending link to markdown
+	@echo "[Download as $(notdir $@)]($(subst docs/,,$@) ':ignore')" >> $<
+
 
 
 ## DOCKER -------------------------------------------------------------------------------
@@ -246,3 +238,25 @@ generator-help: ## help on client-api generator
 	@$(SCRIPTS_DIR)/openapi-generator-cli.bash help generate
 	# generator config help
 	@$(SCRIPTS_DIR)/openapi-generator-cli.bash config-help -g $(GENERATOR_NAME)
+
+
+
+## CLEAN -------------------------------------------------------------------------------
+
+
+.PHONY: clean-hooks
+clean-hooks: ## Uninstalls git pre-commit hooks
+	@-pre-commit uninstall 2> /dev/null || rm .git/hooks/pre-commit
+
+_git_clean_args := -dx --force --exclude=.vscode --exclude=TODO.md --exclude=.venv --exclude=.python-version --exclude="*keep*"
+
+
+.check-clean:
+	@git clean -n $(_git_clean_args)
+	@echo -n "Are you sure? [y/N] " && read ans && [ $${ans:-N} = y ]
+	@echo -n "$(shell whoami), are you REALLY sure? [y/N] " && read ans && [ $${ans:-N} = y ]
+
+
+clean: .check-clean ## cleans all unversioned files in project and temp files create by this makefile
+	# Cleaning unversioned
+	@git clean $(_git_clean_args)
