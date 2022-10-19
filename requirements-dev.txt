@@ -1,8 +1,8 @@
 -c requirements-tests.txt
 
 black
-isort
-
-nox
-notedown
 bump2version
+isort
+notedown
+nox
+pylint

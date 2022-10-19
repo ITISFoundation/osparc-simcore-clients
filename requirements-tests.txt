@@ -1,6 +1,5 @@
 pytest
-
-python-dotenv
+pytest-asyncio
 pytest-cov
 pytest-randomly
-pytest-asyncio
+python-dotenv
