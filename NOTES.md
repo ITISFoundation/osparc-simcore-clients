@@ -15,5 +15,11 @@ For the moment, we have to apply some changes manually until we use [templates](
   - replace ``:\n`` -> ``:\n\n`` after titles. Otherwise it docsify fails to render it correctly
   - move all to docs/md
   - update README.md
+    - remove generator entry (since some custom changes)
     - from '## Documentation for API Endpoints' to '## Author'
+    - ``Documentation for API Classes`` instead of ``Documentation for API Endpoints``
+          - ``Back to API list`` to ``Back to API Classes``
     - ``## Author`` also is different in md/README.md
+  - remove ```# Defining host is optional and default to https://api.osparc.io
+configuration.host = "https://api.osparc.io"```
+  - Updates notebooks: ``make notebooks``

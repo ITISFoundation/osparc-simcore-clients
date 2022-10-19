@@ -1,10 +1,20 @@
 <!-- Common title prefixes/annotations:
+PREFIX:
 
-  WIP:
-  bugfix:
-  🏗️ maintenance:
+  WIP: work in progress
+  🐛    Fix a bug.
+  ✨    Introduce new features.
+  ♻️     Refactor code.
+  🚑️    Critical hotfix.
+  ⚗️     Perform experiments.
+  ⬆️    Upgrade dependencies.
+  📝    Add or update documentation.
+  🗑️    Deprecate code that needs to be cleaned up.
+  ⚰️     Remove dead code.
+  🔥    Remove code or files.
+  🔨    Add or update development scripts.
 
-  (⚠️ devops)  = changes in devops config required before deploying
+or from https://gitmoji.dev/ 
 -->
 
 ## What do these changes do?
@@ -31,17 +41,12 @@ e.g.
 
 ## Checklist
 
-- [ ] ``test/test_workflows.py`` runs against fake server
-- [ ] Is [``api/openapi.json``](./api/openapi.json) up-to-date
-- [ ] Auto-doc generated 
-- [ ] Links to notebooks modified
+- [ ] Update [``api/openapi.json``](./api/openapi.json)
+- [ ] Update code
+- [ ] Update doc
+- [ ] Follow NOTES.md](./NOTES.md)
 
 <!-- This is YOUR section
 
 Add here YOUR checklist/notes to guide and monitor the progress of the case!
-
-e.g.
-- [ ] Runs in the swarm
-- [ ] Documentation reflects the changes
-- [ ] New module? Add your github username to [.github/CODEOWNERS](.github/CODEOWNERS)
 -->
