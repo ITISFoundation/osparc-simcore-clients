@@ -44,27 +44,33 @@ info: ## general informatino
 	@echo "WARNING ##### $@ does not exist, cloning $< as $@ ############"; cp $< $@)
 
 
+
+.venv:
+	@python3 --version
+	python3 -m venv $@
+	## upgrading tools to latest version in $(shell python3 --version)
+	$@/bin/pip3 --quiet install --upgrade \
+		pip~=22.0 \
+		wheel \
+		setuptools
+	@$@/bin/pip3 list --verbose
+
+devenv: .venv ## create a python virtual environment with dev tools (e.g. linters, etc)
+	$</bin/pip3 --quiet install -r requirements-dev.txt
+	# Installing pre-commit hooks in current .git repo
+	@$</bin/pre-commit install
+	@echo "To activate the venv, execute 'source .venv/bin/activate'"
+
+
 _check_venv_active:
 	# checking whether virtual environment was activated
 	@python3 -c "import sys; assert sys.base_prefix!=sys.prefix"
 
 
-devenv: .venv ## builds python development environment
-.venv: .env
-	# creating virtual-env in $@
-	@python3 -m venv $@
-	@$@/bin/pip3 --quiet install --upgrade \
-		pip \
-		wheel \
-		setuptools
-	# installing tools
-	@$@/bin/pip3 install -r requirements-tools.txt
-	@echo "To activate the venv, execute 'source .venv/bin/activate'"
-
 
 .PHONY: install-dev
 install-dev: _check_venv_active ## install package for development
-	pip install -r requirements-dev.txt
+	pip install -r requirements-test.txt
 	pip install -e .
 
 
