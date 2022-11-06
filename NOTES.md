@@ -23,6 +23,7 @@ For the moment, we have to apply some changes manually until we use [templates](
   - remove ```# Defining host is optional and default to https://api.osparc.io
 configuration.host = "https://api.osparc.io"```
   - Updates notebooks: ``make notebooks``
+    - Apply fixes to ``BasicTutorial.ipynb``  as in https://github.com/ITISFoundation/osparc-simcore-python-client/pull/35
 
 
 
