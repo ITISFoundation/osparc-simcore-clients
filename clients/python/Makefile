@@ -24,6 +24,7 @@ python-client-from-templates: validate-api-specification ## generate python clie
 	@echo "Using template-dir: $(TEMPLATE_DIR)"
 	@docker run --rm \
 			--volume "$(REPO_ROOT):/local" \
+			--volume "$(TEMPLATE_DIR):/tmp/templates" \
 			$(OPENAPI_GENERATOR_IMAGE) generate \
 			--generator-name=$(GENERATOR) \
 			--git-user-id=$(GIT_USER_ID) \
@@ -34,8 +35,14 @@ python-client-from-templates: validate-api-specification ## generate python clie
 			--additional-properties=$(subst $(space),$(comma),$(strip $(ADDITIONAL_PROPS))) \
 			--package-name=osparc \
 			--release-note="Updated to $(APP_VERSION)" \
-			--template-dir $(TEMPLATE_DIR)
+			--template-dir=/tmp/templates
 
 generator-help: ## help on client-api generator
 	# generate help
 	@docker run --rm $(OPENAPI_GENERATOR_IMAGE) help generate
+
+
+
+.PHONY: pylint
+pylint: _check_venv_active ## runs linter (only to check errors. SEE .pylintrc enabled)
+	pylint --rcfile "$(CURDIR)/.pylintrc" -v "$(CURDIR)/osparc" -v "$(CURDIR)/tests"
