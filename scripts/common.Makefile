@@ -37,6 +37,6 @@ help: ## help on rule's targets
 # Validate openapi specification --------------------------------------------------------------
 
 validate-api-specification: ## validates openapi-specification
-	docker run --rm \
+	@docker run --rm \
 			--volume "$(REPO_ROOT):/local" \
 			$(OPENAPI_GENERATOR_IMAGE) validate --input-spec /local/$(REL_API_JSON_PATH)
