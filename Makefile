@@ -1,3 +1,7 @@
+
+include $(CURDIR)/scripts/common.Makefile
+
+
 .DEFAULT_GOAL := help
 SHELL         := /bin/bash
 VCS_URL       := $(shell git config --get remote.origin.url)
@@ -8,10 +12,7 @@ APP_VERSION   := $(shell python $(CURDIR)/clients/python/setup.py --version)
 
 REPO_BASE_DIR := $(shell git rev-parse --show-toplevel)
 SCRIPTS_DIR   := $(abspath $(REPO_BASE_DIR)/scripts)
-
-
-help: ## help on rule's targets
-	@awk --posix 'BEGIN {FS = ":.*?## "} /^[[:alpha:][:space:]_-]+:.*?## / {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+API_DIR       := $(abspath $(REPO_BASE_DIR)/api)
 
 
 .PHONY: info
@@ -187,62 +188,6 @@ release pre-release: .check-master-branch ## Creates github release link. Usage:
 	@echo -e "\e[33mOr open the following link to create a release and paste the logs:";
 	@echo -e "\e[32mhttps://github.com/$(_git_get_repo_orga_name)/releases/new?prerelease=$(if $(findstring pre-, $@),1,0)&target=$(_url_encoded_target)&tag=$(_url_encoded_tag)&title=$(_url_encoded_title)";
 	@echo -e "\e[34m$(_prettify_logs)"
-
-
-
-# GENERATION python client -----------------------------------------------------------------------------
-.PHONY: python-client generator-help
-
-# SEE https://openapi-generator.tech/docs/usage#generate
-# SEE https://openapi-generator.tech/docs/generators/python
-#
-# TODO: put instead to additional-props.yaml and --config=openapi-generator/python-config.yaml
-# TODO: copy this code to https://github.com/ITISFoundation/osparc-simcore-python-client/blob/master/Makefile
-#
-# NOTE: assumes this repo exists
-GIT_USER_ID := ITISFoundation
-GIT_REPO_ID := osparc-simcore-python-client
-
-GENERATOR_NAME := python
-
-ADDITIONAL_PROPS := \
-	generateSourceCodeOnly=false\
-	hideGenerationTimestamp=true\
-	library=urllib3\
-	packageName=osparc\
-	packageUrl=https://github.com/$(GIT_USER_ID)/${GIT_REPO_ID}.git\
-	packageVersion=$(APP_VERSION)\
-	projectName=osparc-simcore-python-api
-ADDITIONAL_PROPS := $(foreach prop,$(ADDITIONAL_PROPS),$(strip $(prop)))
-
-null  :=
-space := $(null) #
-comma := ,
-
-
-python-client: api/openapi.json ## auto-generates client from api/openapi.json specs
-	# generates
-	$(SCRIPTS_DIR)/openapi-generator-cli.bash generate \
-		--generator-name=$(GENERATOR_NAME) \
-		--git-user-id=$(GIT_USER_ID)\
-		--git-repo-id=$(GIT_REPO_ID)\
-		--http-user-agent="osparc-api/$(APP_VERSION)/python"\
-		--input-spec=/local/$< \
-		--output=/local \
-		--additional-properties=$(subst $(space),$(comma),$(strip $(ADDITIONAL_PROPS)))\
-		--package-name=osparc\
-		--release-note="Updated to $(APP_VERSION)"
-
-	# formatting code
-	@black osparc
-
-
-generator-help: ## help on client-api generator
-	# generate help
-	@$(SCRIPTS_DIR)/openapi-generator-cli.bash help generate
-	# generator config help
-	@$(SCRIPTS_DIR)/openapi-generator-cli.bash config-help -g $(GENERATOR_NAME)
-
 
 
 ## CLEAN -------------------------------------------------------------------------------
