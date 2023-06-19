@@ -73,3 +73,6 @@ site
 .nox
 tmp*
 .env
+
+# auto generated python code
+/clients/python/auto_generated_client/*
