@@ -19,7 +19,7 @@ python-client: validate-api-specification ## generate python client
 			--package-name=osparc \
 			--release-note="Updated to $(APP_VERSION)"
 
-python-client-from-templates: validate-api-specification ## generate python client using templates in a specified directory
+python-client-from-templates: validate-api-specification ## generate python client using templates in a specified directory (usage: 'make python-client-from-templates path/to/templates')
 	$(eval TEMPLATE_DIR := $(word 2, $(MAKECMDGOALS)))
 	@echo "Using template-dir: $(TEMPLATE_DIR)"
 	@docker run --rm \
