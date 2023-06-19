@@ -4,7 +4,7 @@ CONTAINER_API_JSON   := /local/$(REL_API_JSON_PATH)
 GENERATOR            := python
 
 # Generation of Python client
-
+.PHONY: python-client
 python-client: validate-api-specification ## generate python client
 	docker run --rm \
 			--volume "$(REPO_ROOT):/local" \
@@ -14,11 +14,12 @@ python-client: validate-api-specification ## generate python client
 			--git-repo-id=$(GIT_CLIENT_REPO_ID) \
 			--http-user-agent="osparc-api/$(APP_VERSION)/python" \
 			--input-spec=$(CONTAINER_API_JSON) \
-			--output=/local/clients/python \
+			--output=/local/clients/python/auto_generated_client \
 			--additional-properties=$(subst $(space),$(comma),$(strip $(ADDITIONAL_PROPS))) \
 			--package-name=osparc \
 			--release-note="Updated to $(APP_VERSION)"
 
+.PHONY: python-client-from-templates
 python-client-from-templates: validate-api-specification ## generate python client using templates in a specified directory (usage: 'make python-client-from-templates path/to/templates')
 	$(eval TEMPLATE_DIR := $(word 2, $(MAKECMDGOALS)))
 	@echo "Using template-dir: $(TEMPLATE_DIR)"
@@ -31,11 +32,14 @@ python-client-from-templates: validate-api-specification ## generate python clie
 			--git-repo-id=$(GIT_CLIENT_REPO_ID) \
 			--http-user-agent="osparc-api/$(APP_VERSION)/python" \
 			--input-spec=$(CONTAINER_API_JSON) \
-			--output=/local/clients/python \
+			--output=/local/clients/python/auto_generated_client \
 			--additional-properties=$(subst $(space),$(comma),$(strip $(ADDITIONAL_PROPS))) \
 			--package-name=osparc \
 			--release-note="Updated to $(APP_VERSION)" \
 			--template-dir=/tmp/templates
+
+copy-docs: ## This copies the automatically generated docs for the python client into clients/python/docs/md (N.B. check that the docs make sense before commiting into git)
+	cp $(PYTHON_DIR)/auto_generated_client/docs/* $(PYTHON_DIR)/docs/md
 
 generator-help: ## help on client-api generator
 	# generate help
