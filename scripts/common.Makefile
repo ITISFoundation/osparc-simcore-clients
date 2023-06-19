@@ -1,14 +1,24 @@
 # Globals to be included into all Makefiles
 # specification of the used openapi-generator-cli (see also https://github.com/ITISFoundation/openapi-generator)
 
+.DEFAULT_GOAL := help
+
 REPO_ROOT               := $(realpath $(dir $(abspath $(lastword $(MAKEFILE_LIST))))/..)
 SCRIPTS_DIR             := $(REPO_ROOT)/scripts
 CLIENTS_DIR             := $(REPO_ROOT)/clients
+SHELL         := /bin/bash
+VCS_URL       := $(shell git config --get remote.origin.url)
+VCS_REF       := $(shell git rev-parse --short HEAD)
+NOW_TIMESTAMP := $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
+APP_NAME      := $(notdir $(CURDIR))
+APP_VERSION   := $(shell python $(CLIENTS_DIR)/python/setup.py --version)
 
+# Specify which openapi generator should be used to generate the clients in this repo
 OPENAPI_GENERATOR_NAME  := itisfoundation/openapi-generator-cli-openapi-generator-v4.2.3
 OPENAPI_GENERATOR_TAG   := v0
 OPENAPI_GENERATOR_IMAGE := $(OPENAPI_GENERATOR_NAME):$(OPENAPI_GENERATOR_TAG)
 
+# openapi specification
 REL_API_JSON_PATH       := api/openapi.json
 ABS_API_JSON_PATH       := $(API_DIR)/$(REL_API_JSON_PATH)
 
@@ -21,7 +31,7 @@ ADDITIONAL_PROPS := \
 	hideGenerationTimestamp=true\
 	library=urllib3\
 	packageName=osparc\
-	packageUrl=https://github.com/$(GIT_USER_ID)/${GIT_CLIENT_REPO_ID}.git\
+	packageUrl=git config --get remote.origin.url\
 	packageVersion=$(APP_VERSION)\
 	projectName=osparc-simcore-python-api
 ADDITIONAL_PROPS := $(foreach prop,$(ADDITIONAL_PROPS),$(strip $(prop)))

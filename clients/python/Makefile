@@ -1,10 +1,9 @@
-
-PYTHON_DIR    := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
-
 -include ../../scripts/common.Makefile
-
+PYTHON_DIR := $(CLIENTS_DIR)/python
 CONTAINER_API_JSON   := /local/$(REL_API_JSON_PATH)
 GENERATOR            := python
+
+# Generation of Python client
 
 python-client: validate-api-specification ## generate python client
 	docker run --rm \
@@ -42,6 +41,17 @@ generator-help: ## help on client-api generator
 	# generate help
 	@docker run --rm $(OPENAPI_GENERATOR_IMAGE) help generate
 
+
+## PYTHON DEVELOPMENT  ------------------------------------------------------------------
+
+_check_venv_active:
+	# checking whether virtual environment was activated
+	@python3 -c "import sys; assert sys.base_prefix!=sys.prefix"
+
+.PHONY: install-dev
+install-dev: _check_venv_active ## install package for development
+	pip install -r requirements-tests.txt
+	pip install -e .
 
 
 .PHONY: pylint
@@ -134,23 +144,3 @@ release pre-release: .check-master-branch ## Creates github release link. Usage:
 	@echo -e "\e[33mOr open the following link to create a release and paste the logs:";
 	@echo -e "\e[32mhttps://github.com/$(_git_get_repo_orga_name)/releases/new?prerelease=$(if $(findstring pre-, $@),1,0)&target=$(_url_encoded_target)&tag=$(_url_encoded_tag)&title=$(_url_encoded_title)";
 	@echo -e "\e[34m$(_prettify_logs)"
-
-## CLEAN -------------------------------------------------------------------------------
-
-
-.PHONY: clean-hooks
-clean-hooks: ## Uninstalls git pre-commit hooks
-	@-pre-commit uninstall 2> /dev/null || rm .git/hooks/pre-commit
-
-_git_clean_args := -dx --force --exclude=.vscode --exclude=TODO.md --exclude=.venv --exclude=.python-version --exclude="*keep*"
-
-
-.check-clean:
-	@git clean -n $(_git_clean_args)
-	@echo -n "Are you sure? [y/N] " && read ans && [ $${ans:-N} = y ]
-	@echo -n "$(shell whoami), are you REALLY sure? [y/N] " && read ans && [ $${ans:-N} = y ]
-
-
-clean: .check-clean ## cleans all unversioned files in project and temp files create by this makefile
-	# Cleaning unversioned
-	@git clean $(_git_clean_args)
