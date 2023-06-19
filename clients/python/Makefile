@@ -38,12 +38,16 @@ python-client-from-templates: validate-api-specification ## generate python clie
 			--release-note="Updated to $(APP_VERSION)" \
 			--template-dir=/tmp/templates
 
-copy-docs: ## This copies the automatically generated docs for the python client into clients/python/docs/md (N.B. check that the docs make sense before commiting into git)
-	cp $(PYTHON_DIR)/auto_generated_client/docs/* $(PYTHON_DIR)/docs/md
-
 generator-help: ## help on client-api generator
 	# generate help
 	@docker run --rm $(OPENAPI_GENERATOR_IMAGE) help generate
+
+## Tools for "postprocessing" generate code --------------------------------------------
+
+copy-docs: ## Copy the automatically generated docs for the python client into clients/python/docs/md (N.B. check that the docs make sense before commiting into git)
+	rm -r $(PYTHON_DIR)/auto_generated_client/docs/*
+	cp $(PYTHON_DIR)/auto_generated_client/docs/* $(PYTHON_DIR)/docs/md
+
 
 
 ## PYTHON DEVELOPMENT  ------------------------------------------------------------------

@@ -1,7 +1,0 @@
-black
-bump2version
-isort
-notedown
-nox
-pre-commit
-pylint

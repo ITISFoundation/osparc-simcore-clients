@@ -1,7 +1,0 @@
--c ./requirements-dev.txt
-
-pytest
-pytest-asyncio
-pytest-cov
-pytest-randomly
-python-dotenv
