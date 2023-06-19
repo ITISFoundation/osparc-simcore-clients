@@ -12,9 +12,6 @@ info: ## general information
 	# installed in .venv
 	@which python
 	@pip list
-	# package
-	-@echo ' name         : ' $(shell python $(PYTHON_DIR)/setup.py --name)
-	-@echo ' version      : ' $(shell python $(PYTHON_DIR)/setup.py --version)
 	# API
 	@echo  ' title        : ' $(shell python $(SCRIPTS_DIR)/get_json_entry.py info.title $(REPO_ROOT)/api/openapi.json)
 	@echo  ' version      : ' $(shell python $(SCRIPTS_DIR)/get_json_entry.py info.version $(REPO_ROOT)/api/openapi.json)

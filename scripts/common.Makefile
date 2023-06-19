@@ -11,7 +11,7 @@ VCS_URL       := $(shell git config --get remote.origin.url)
 VCS_REF       := $(shell git rev-parse --short HEAD)
 NOW_TIMESTAMP := $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 APP_NAME      := $(notdir $(CURDIR))
-APP_VERSION   := $(shell python $(CLIENTS_DIR)/python/setup.py --version)
+APP_VERSION   := 0.5.0
 
 # Specify which openapi generator should be used to generate the clients in this repo
 OPENAPI_GENERATOR_NAME  := itisfoundation/openapi-generator-cli-openapi-generator-v4.2.3
