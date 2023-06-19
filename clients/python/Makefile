@@ -50,7 +50,7 @@ generator-help: ## help on client-api generator
 ## Tools for "postprocessing" generate code --------------------------------------------
 
 copy-docs: ## Copy the automatically generated docs for the python client into clients/python/docs/md (N.B. check that the docs make sense before commiting into git)
-	rm -r $(PYTHON_DIR)/docs/md/*
+	rm -r $(PYTHON_DIR)/docs/md
 	mkdir $(PYTHON_DIR)/docs/md
 	cp $(PYTHON_DIR)/auto_generated_client/docs/* $(PYTHON_DIR)/docs/md
 
