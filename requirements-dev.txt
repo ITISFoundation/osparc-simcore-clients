@@ -1,9 +1,1 @@
--c requirements-tests.txt
-
-black
-bump2version
-isort
-notedown
-nox
-pre-commit
-pylint
+-r clients/python/requirements-dev.txt

@@ -326,6 +326,6 @@ with ZipFile(f"{zip_path}") as fzip:
 - [osparc API] documentation
 - A full script with this tutorial: [``sleeper.py``](https://github.com/ITISFoundation/osparc-simcore/blob/master/tests/public-api/examples/sleeper.py)
 
-[osparc API python client]:https://itisfoundation.github.io/osparc-simcore-python-client
+[osparc API python client]:https://itisfoundation.github.io/osparc-simcore-clients
 [osparc API]:https://api.osparc.io/doc
 [Download as BasicTutorial.ipynb](md/code_samples/tutorials/BasicTutorial.ipynb ':ignore')

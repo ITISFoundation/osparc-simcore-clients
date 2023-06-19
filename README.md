@@ -22,7 +22,7 @@ For the moment, we have to apply some changes manually until we use [templates](
   - remove ```# Defining host is optional and default to https://api.osparc.io
 configuration.host = "https://api.osparc.io"```
   - Updates notebooks: ``make notebooks``
-    - Apply fixes to ``BasicTutorial.ipynb``  as in https://github.com/ITISFoundation/osparc-simcore-python-client/pull/35
+    - Apply fixes to ``BasicTutorial.ipynb``  as in https://github.com/ITISFoundation/osparc-simcore-clients/pull/35
 
 
 
@@ -33,10 +33,10 @@ configuration.host = "https://api.osparc.io"```
 ## Highlights:
 
 - ✨ adds ``SolverApi.get_job_output_logfile`` to download logfile after a job run (#27)
-- Checkout updated [doc](https://itisfoundation.github.io/osparc-simcore-python-client) and [tutorial](https://itisfoundation.github.io/osparc-simcore-python-client/#/md/tutorials/BasicTutorial?id=basic-tutorial)
-- Do you to want to report a bug, have a request or a question about ``osparc`` library? Drop it [in our issue tracker](https://github.com/ITISFoundation/osparc-simcore-python-client/issues/new/choose)
+- Checkout updated [doc](https://itisfoundation.github.io/osparc-simcore-clients) and [tutorial](https://itisfoundation.github.io/osparc-simcore-clients/#/md/tutorials/BasicTutorial?id=basic-tutorial)
+- Do you to want to report a bug, have a request or a question about ``osparc`` library? Drop it [in our issue tracker](https://github.com/ITISFoundation/osparc-simcore-clients/issues/new/choose)
 
 ## More details
-- [Release Notes](https://github.com/ITISFoundation/osparc-simcore-python-client/releases)
-- [Documentation](https://itisfoundation.github.io/osparc-simcore-python-client)
-- [Repository](https://github.com/ITISFoundation/osparc-simcore-python-client)
+- [Release Notes](https://github.com/ITISFoundation/osparc-simcore-clients/releases)
+- [Documentation](https://itisfoundation.github.io/osparc-simcore-clients)
+- [Repository](https://github.com/ITISFoundation/osparc-simcore-clients)

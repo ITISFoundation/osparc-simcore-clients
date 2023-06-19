@@ -1,4 +1,4 @@
-![test](https://github.com/ITISFoundation/osparc-simcore-python-client/workflows/test/badge.svg)
+![test](https://github.com/ITISFoundation/osparc-simcore-clients/workflows/test/badge.svg)
 [![PyPI](https://img.shields.io/pypi/v/osparc)](https://pypi.org/project/osparc/)
 [![](https://img.shields.io/pypi/status/osparc)](https://pypi.org/project/osparc/)
 [![](https://img.shields.io/pypi/l/osparc)](https://pypi.org/project/osparc/)
@@ -15,14 +15,14 @@ Python 3.6+
 
 ## Installation & Usage
 
-Install the [latest release](https://github.com/ITISFoundation/osparc-simcore-python-client/releases) with
+Install the [latest release](https://github.com/ITISFoundation/osparc-simcore-clients/releases) with
 
 ```sh
 pip install osparc
 ```
 or directly from the repository
 ```sh
-pip install git+https://github.com/ITISFoundation/osparc-simcore-python-client.git
+pip install git+https://github.com/ITISFoundation/osparc-simcore-clients.git
 ```
 
 Then import the package:

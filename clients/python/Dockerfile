@@ -15,6 +15,6 @@ RUN mkdir .git\
         pip \
         wheel\
         setuptools \
-    && pip install -r requirements-tools.txt \
+    && pip install -r requirements-dev.txt \
     && pip install -r requirements-tests.txt \
     && pip install .
