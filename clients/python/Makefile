@@ -58,8 +58,8 @@ _check_venv_active:
 
 .PHONY: install-dev
 install-dev: _check_venv_active ## install package for development
-	pip install -r requirements-tests.txt
-	pip install -e .
+	pip install -r auto_generated_client/test-requirements.txt
+	pip install -e auto_generated_client/
 
 
 .PHONY: pylint
