@@ -1,11 +1,16 @@
 -include ../../scripts/common.Makefile
 PYTHON_DIR := $(CLIENTS_DIR)/python
+GENERATED_PY_CLIENT_DIR := $(PYTHON_DIR)/auto_generated_client
 CONTAINER_API_JSON   := /local/$(REL_API_JSON_PATH)
 GENERATOR            := python
 
+setup_client_dir:
+	-rm -rf $(GENERATED_PY_CLIENT_DIR)
+	mkdir $(GENERATED_PY_CLIENT_DIR)
+
 # Generation of Python client
 .PHONY: python-client
-python-client: validate-api-specification ## generate python client
+python-client: validate-api-specification setup_client_dir## generate python client
 	docker run --rm \
 			--volume "$(REPO_ROOT):/local" \
 			$(OPENAPI_GENERATOR_IMAGE) generate \
@@ -20,7 +25,7 @@ python-client: validate-api-specification ## generate python client
 			--release-note="Updated to $(APP_VERSION)"
 
 .PHONY: python-client-from-templates
-python-client-from-templates: validate-api-specification ## generate python client using templates in a specified directory (usage: 'make python-client-from-templates path/to/templates')
+python-client-from-templates: validate-api-specification setup_client_dir## generate python client using templates in a specified directory (usage: 'make python-client-from-templates path/to/templates')
 	$(eval TEMPLATE_DIR := $(word 2, $(MAKECMDGOALS)))
 	@echo "Using template-dir: $(TEMPLATE_DIR)"
 	@docker run --rm \
