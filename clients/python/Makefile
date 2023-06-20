@@ -53,19 +53,23 @@ generator-help: ## help on client-api generator
 
 .PHONY: copy-docs
 copy-docs: ## Replace git tracked docs in clients/python/docs/md by the automatically generated docs (N.B. check that the docs make sense before commiting into git)
-	rm -r $(PYTHON_DIR)/docs/md
-	mkdir $(PYTHON_DIR)/docs/md
-	mkdir $(PYTHON_DIR)/docs/md/code_samples
-	cp $(PYTHON_DIR)/auto_generated_client/docs/* $(PYTHON_DIR)/docs/md
+	@rm -r $(PYTHON_DIR)/docs/auto_generated_docs
+	@mkdir $(PYTHON_DIR)/docs/auto_generated_docs
+	@mkdir $(PYTHON_DIR)/docs/auto_generated_docs/code_samples
+	@cp $(PYTHON_DIR)/auto_generated_client/docs/* $(PYTHON_DIR)/docs/auto_generated_docs
 
-markdowns  = $(wildcard docs/md/*Api.md)
-markdowns += $(wildcard docs/md/tutorials/*.md)
-outputs:=$(subst docs/md,docs/md/code_samples,$(markdowns:.md=.ipynb))
+markdowns  = $(wildcard docs/auto_generated_docs/*Api.md)
+outputs:=$(subst docs/auto_generated_docs,docs/auto_generated_docs/code_samples,$(markdowns:.md=.ipynb))
+
+.PHONY: echo-outputs
+echo-outputs:
+	@echo "markdowns: $(markdowns)"
+	@echo "outputs: $(outputs)"
 
 .PHONY: postprocess-docs
 postprocess-docs: copy-docs $(outputs) ## converts selected markdowns into notebooks
 
-docs/md/code_samples/%.ipynb:docs/md/%.md
+docs/auto_generated_docs/code_samples/%.ipynb:docs/auto_generated_docs/%.md
 	# Removing link in markdown
 	@sed -i "/\b$(notdir $@)\b/d" $<
 	notedown $< >$@
