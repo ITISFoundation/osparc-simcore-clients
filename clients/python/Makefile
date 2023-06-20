@@ -51,6 +51,7 @@ generator-help: ## help on client-api generator
 
 ## Tools for "postprocessing" generated documentation --------------------------------------------
 
+
 .PHONY: copy-docs
 copy-docs: ## Replace git tracked docs in clients/python/docs/md by the automatically generated docs (N.B. check that the docs make sense before commiting into git)
 	@-rm -r $(PYTHON_DIR)/docs/auto_generated_docs
