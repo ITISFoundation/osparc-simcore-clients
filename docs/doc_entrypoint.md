@@ -7,4 +7,4 @@
 
 Currently there is only a single client:
 
-- [Python](../clients/python/docs/README.md)
+- [Python](../clients/python/docs/auto_generated_docs/README.md)
