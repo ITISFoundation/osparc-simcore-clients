@@ -81,36 +81,36 @@ with osparc.ApiClient(cfg) as api_client:
 
 ## Tutorials
 
-- [Basic tutorial](md/tutorials/BasicTutorial.md)
+- [Basic tutorial](tutorials_and_samples/tutorials/BasicTutorial.md)
 
 
 ## Documentation for API Classes
 
 All URIs are relative to *https://api.osparc.io*
 
-- [MetaApi](md/MetaApi.md)
-- [FilesApi](md/FilesApi.md)
-- [SolversApi](md/SolversApi.md)
-- [UsersApi](md/UsersApi.md)
+- [MetaApi](auto_generated_docs/MetaApi.md)
+- [FilesApi](auto_generated_docs/FilesApi.md)
+- [SolversApi](auto_generated_docs/SolversApi.md)
+- [UsersApi](auto_generated_docs/UsersApi.md)
 
 
 ## Documentation For Models
 
- - [File](md/File.md)
- - [Groups](md/Groups.md)
- - [HTTPValidationError](md/HTTPValidationError.md)
- - [Job](md/Job.md)
- - [JobInputs](md/JobInputs.md)
- - [JobOutputs](md/JobOutputs.md)
- - [JobStatus](md/JobStatus.md)
- - [Meta](md/Meta.md)
- - [Profile](md/Profile.md)
- - [ProfileUpdate](md/ProfileUpdate.md)
- - [Solver](md/Solver.md)
- - [TaskStates](md/TaskStates.md)
- - [UserRoleEnum](md/UserRoleEnum.md)
- - [UsersGroup](md/UsersGroup.md)
- - [ValidationError](md/ValidationError.md)
+ - [File](auto_generated_docs/File.md)
+ - [Groups](auto_generated_docs/Groups.md)
+ - [HTTPValidationError](auto_generated_docs/HTTPValidationError.md)
+ - [Job](auto_generated_docs/Job.md)
+ - [JobInputs](auto_generated_docs/JobInputs.md)
+ - [JobOutputs](auto_generated_docs/JobOutputs.md)
+ - [JobStatus](auto_generated_docs/JobStatus.md)
+ - [Meta](auto_generated_docs/Meta.md)
+ - [Profile](auto_generated_docs/Profile.md)
+ - [ProfileUpdate](auto_generated_docs/ProfileUpdate.md)
+ - [Solver](auto_generated_docs/Solver.md)
+ - [TaskStates](auto_generated_docs/TaskStates.md)
+ - [UserRoleEnum](auto_generated_docs/UserRoleEnum.md)
+ - [UsersGroup](auto_generated_docs/UsersGroup.md)
+ - [ValidationError](auto_generated_docs/ValidationError.md)
 
 
 ## Documentation For Authorization
