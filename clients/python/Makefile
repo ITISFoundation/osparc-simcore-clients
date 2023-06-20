@@ -43,17 +43,33 @@ python-client-from-templates: validate-api-specification setup_client_dir## gene
 			--release-note="Updated to $(APP_VERSION)" \
 			--template-dir=/tmp/templates
 
+.PHONY: generator-help
 generator-help: ## help on client-api generator
 	# generate help
 	@docker run --rm $(OPENAPI_GENERATOR_IMAGE) help generate
 
-## Tools for "postprocessing" generate code --------------------------------------------
+## Tools for "postprocessing" generated documentation --------------------------------------------
 
-copy-docs: ## Copy the automatically generated docs for the python client into clients/python/docs/md (N.B. check that the docs make sense before commiting into git)
+.PHONY: copy-docs
+copy-docs: ## Replace git tracked docs in clients/python/docs/md by the automatically generated docs (N.B. check that the docs make sense before commiting into git)
 	rm -r $(PYTHON_DIR)/docs/md
 	mkdir $(PYTHON_DIR)/docs/md
+	mkdir $(PYTHON_DIR)/docs/md/code_samples
 	cp $(PYTHON_DIR)/auto_generated_client/docs/* $(PYTHON_DIR)/docs/md
 
+markdowns  = $(wildcard docs/md/*Api.md)
+markdowns += $(wildcard docs/md/tutorials/*.md)
+outputs:=$(subst docs/md,docs/md/code_samples,$(markdowns:.md=.ipynb))
+
+.PHONY: notebooks
+notebooks: $(outputs) ## converts selected markdowns into notebooks
+
+docs/md/code_samples/%.ipynb:docs/md/%.md
+	# Removing link in markdown
+	@sed -i "/\b$(notdir $@)\b/d" $<
+	notedown $< >$@
+	# Appending link to markdown
+	@echo "[Download as $(notdir $@)]($(subst docs/,,$@) ':ignore')" >> $<
 
 
 ## PYTHON DEVELOPMENT  ------------------------------------------------------------------
@@ -84,25 +100,6 @@ dist: ## builds distribution wheel
 	python -m pip install build
     # Build a binary wheel and a source tarball
 	python -m build --sdist --wheel --outdir dist/ $(CURDIR)
-
-
-## DOCUMENTATION ------------------------------------------------------------------------
-
-.PHONY: notebooks
-
-markdowns  = $(wildcard docs/md/*Api.md)
-markdowns += $(wildcard docs/md/tutorials/*.md)
-outputs:=$(subst docs/md,docs/md/code_samples,$(markdowns:.md=.ipynb))
-
-notebooks: $(outputs) ## converts selected markdowns into notebooks
-
-docs/md/code_samples/%.ipynb:docs/md/%.md
-	# Removing link in markdown
-	@sed -i "/\b$(notdir $@)\b/d" $<
-	notedown $< >$@
-	# Appending link to markdown
-	@echo "[Download as $(notdir $@)]($(subst docs/,,$@) ':ignore')" >> $<
-
 
 
 ## DOCKER -------------------------------------------------------------------------------
