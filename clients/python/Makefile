@@ -79,7 +79,11 @@ _check_venv_active:
 	@python3 -c "import sys; assert sys.base_prefix!=sys.prefix"
 
 .PHONY: install-dev
-install-dev: _check_venv_active ## install package for development
+install-dev: _check_venv_active ## install packages for development
+	pip install -r requirements/dev.txt
+
+.PHONY: install-test
+install-client: _check_venv_active install-dev ## install packages for testing client
 	pip install -r auto_generated_client/test-requirements.txt
 	pip install -e auto_generated_client/
 
