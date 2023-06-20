@@ -74,7 +74,7 @@ docs/auto_generated_docs/code_samples/%.ipynb:docs/auto_generated_docs/%.md
 	@sed -i "/\b$(notdir $@)\b/d" $<
 	notedown $< >$@
 	# Appending link to markdown
-	@echo "[Download as $(notdir $@)]($(subst docs/,,$@) ':ignore')" >> $<
+	@echo "[Download as $(notdir $@)]($(subst docs/auto_generated_docs/,,$@) ':ignore')" >> $<
 
 
 ## PYTHON DEVELOPMENT  ------------------------------------------------------------------

@@ -2,25 +2,24 @@
 
 All URIs are relative to *https://api.osparc.io*
 
-| Method                                                             | HTTP request                                                                      | Description                    |
-| ------------------------------------------------------------------ | --------------------------------------------------------------------------------- | ------------------------------ |
-| [**create_job**](SolversApi.md#create_job)                         | **POST** /v0/solvers/{solver_key}/releases/{version}/jobs                         | Create Job                     |
-| [**get_job**](SolversApi.md#get_job)                               | **GET** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}                 | Get Job                        |
-| [**get_job_output_logfile**](SolversApi.md#get_job_output_logfile) | **GET** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}/outputs/logfile | Get Job Output Logfile         |
-| [**get_job_outputs**](SolversApi.md#get_job_outputs)               | **GET** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}/outputs         | Get Job Outputs                |
-| [**get_solver**](SolversApi.md#get_solver)                         | **GET** /v0/solvers/{solver_key}/latest                                           | Get Latest Release of a Solver |
-| [**get_solver_release**](SolversApi.md#get_solver_release)         | **GET** /v0/solvers/{solver_key}/releases/{version}                               | Get Solver Release             |
-| [**inspect_job**](SolversApi.md#inspect_job)                       | **POST** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:inspect        | Inspect Job                    |
-| [**list_jobs**](SolversApi.md#list_jobs)                           | **GET** /v0/solvers/{solver_key}/releases/{version}/jobs                          | List Jobs                      |
-| [**list_solver_releases**](SolversApi.md#list_solver_releases)     | **GET** /v0/solvers/{solver_key}/releases                                         | List Solver Releases           |
-| [**list_solvers**](SolversApi.md#list_solvers)                     | **GET** /v0/solvers                                                               | List Solvers                   |
-| [**list_solvers_releases**](SolversApi.md#list_solvers_releases)   | **GET** /v0/solvers/releases                                                      | Lists All Releases             |
-| [**start_job**](SolversApi.md#start_job)                           | **POST** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:start          | Start Job                      |
-| [**stop_job**](SolversApi.md#stop_job)                             | **POST** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:stop           | Stop Job                       |
+Method | HTTP request | Description
+------------- | ------------- | -------------
+[**create_job**](SolversApi.md#create_job) | **POST** /v0/solvers/{solver_key}/releases/{version}/jobs | Create Job
+[**get_job**](SolversApi.md#get_job) | **GET** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id} | Get Job
+[**get_job_output_logfile**](SolversApi.md#get_job_output_logfile) | **GET** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}/outputs/logfile | Get Job Output Logfile
+[**get_job_outputs**](SolversApi.md#get_job_outputs) | **GET** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}/outputs | Get Job Outputs
+[**get_solver**](SolversApi.md#get_solver) | **GET** /v0/solvers/{solver_key}/latest | Get Latest Release of a Solver
+[**get_solver_release**](SolversApi.md#get_solver_release) | **GET** /v0/solvers/{solver_key}/releases/{version} | Get Solver Release
+[**inspect_job**](SolversApi.md#inspect_job) | **POST** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:inspect | Inspect Job
+[**list_jobs**](SolversApi.md#list_jobs) | **GET** /v0/solvers/{solver_key}/releases/{version}/jobs | List Jobs
+[**list_solver_releases**](SolversApi.md#list_solver_releases) | **GET** /v0/solvers/{solver_key}/releases | List Solver Releases
+[**list_solvers**](SolversApi.md#list_solvers) | **GET** /v0/solvers | List Solvers
+[**list_solvers_releases**](SolversApi.md#list_solvers_releases) | **GET** /v0/solvers/releases | Lists All Releases
+[**start_job**](SolversApi.md#start_job) | **POST** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:start | Start Job
+[**stop_job**](SolversApi.md#stop_job) | **POST** /v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:stop | Stop Job
 
 
 # **create_job**
-
 > Job create_job(solver_key, version, job_inputs)
 
 Create Job
@@ -42,14 +41,15 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-
+# Defining host is optional and default to https://api.osparc.io
+configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
-    solver_key = 'simcore/services/comp/isolve' # str |
-    version = '1.2.3' # str |
-    job_inputs = osparc.JobInputs() # JobInputs |
+    solver_key = 'solver_key_example' # str |
+version = 'version_example' # str |
+job_inputs = osparc.JobInputs() # JobInputs |
 
     try:
         # Create Job
@@ -61,11 +61,11 @@ with osparc.ApiClient(configuration) as api_client:
 
 ### Parameters
 
-| Name           | Type                          | Description | Notes |
-| -------------- | ----------------------------- | ----------- | ----- |
-| **solver_key** | **str**                       |             |
-| **version**    | **str**                       |             |
-| **job_inputs** | [**JobInputs**](JobInputs.md) |             |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **solver_key** | **str**|  |
+ **version** | **str**|  |
+ **job_inputs** | [**JobInputs**](JobInputs.md)|  |
 
 ### Return type
 
@@ -81,16 +81,14 @@ with osparc.ApiClient(configuration) as api_client:
  - **Accept**: application/json
 
 ### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
 
-| Status code | Description         | Response headers |
-| ----------- | ------------------- | ---------------- |
-| **200**     | Successful Response | -                |
-| **422**     | Validation Error    | -                |
-
-[[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_job**
-
 > Job get_job(solver_key, version, job_id)
 
 Get Job
@@ -107,20 +105,20 @@ import time
 import osparc
 from osparc.rest import ApiException
 from pprint import pprint
-
 configuration = osparc.Configuration()
 # Configure HTTP basic authorization: HTTPBasic
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-
+# Defining host is optional and default to https://api.osparc.io
+configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
-    solver_key = 'simcore/services/comp/isolve' # str |
-    version = '1.2.3' # str |
-    job_id = '6d43f058-cb99-4720-833a-be367b766a73' # str |
+    solver_key = 'solver_key_example' # str |
+version = 'version_example' # str |
+job_id = 'job_id_example' # str |
 
     try:
         # Get Job
@@ -132,11 +130,11 @@ with osparc.ApiClient(configuration) as api_client:
 
 ### Parameters
 
-| Name           | Type           | Description | Notes |
-| -------------- | -------------- | ----------- | ----- |
-| **solver_key** | **str**        |             |
-| **version**    | **str**        |             |
-| **job_id**     | [**str**](.md) |             |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **solver_key** | **str**|  |
+ **version** | **str**|  |
+ **job_id** | [**str**](.md)|  |
 
 ### Return type
 
@@ -152,16 +150,14 @@ with osparc.ApiClient(configuration) as api_client:
  - **Accept**: application/json
 
 ### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
 
-| Status code | Description         | Response headers |
-| ----------- | ------------------- | ---------------- |
-| **200**     | Successful Response | -                |
-| **422**     | Validation Error    | -                |
-
-[[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_job_output_logfile**
-
 > file get_job_output_logfile(solver_key, version, job_id)
 
 Get Job Output Logfile
@@ -183,14 +179,15 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-
+# Defining host is optional and default to https://api.osparc.io
+configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
-    solver_key = 'simcore/services/comp/isolve' # str |
-    version = '1.2.3' # str |
-    job_id = '6d43f058-cb99-4720-833a-be367b766a73' # str |
+    solver_key = 'solver_key_example' # str |
+version = 'version_example' # str |
+job_id = 'job_id_example' # str |
 
     try:
         # Get Job Output Logfile
@@ -202,11 +199,11 @@ with osparc.ApiClient(configuration) as api_client:
 
 ### Parameters
 
-| Name           | Type           | Description | Notes |
-| -------------- | -------------- | ----------- | ----- |
-| **solver_key** | **str**        |             |
-| **version**    | **str**        |             |
-| **job_id**     | [**str**](.md) |             |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **solver_key** | **str**|  |
+ **version** | **str**|  |
+ **job_id** | [**str**](.md)|  |
 
 ### Return type
 
@@ -222,18 +219,16 @@ with osparc.ApiClient(configuration) as api_client:
  - **Accept**: application/octet-stream, application/zip, text/plain, application/json
 
 ### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**307** | Successful Response |  -  |
+**200** | Returns a log file |  -  |
+**404** | Log not found |  -  |
+**422** | Validation Error |  -  |
 
-| Status code | Description         | Response headers |
-| ----------- | ------------------- | ---------------- |
-| **307**     | Successful Response | -                |
-| **200**     | Returns a log file  | -                |
-| **404**     | Log not found       | -                |
-| **422**     | Validation Error    | -                |
-
-[[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_job_outputs**
-
 > JobOutputs get_job_outputs(solver_key, version, job_id)
 
 Get Job Outputs
@@ -253,14 +248,15 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-
+# Defining host is optional and default to https://api.osparc.io
+configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
-    solver_key = 'simcore/services/comp/isolve' # str |
-    version = '1.2.3' # str |
-    job_id = '6d43f058-cb99-4720-833a-be367b766a73' # str |
+    solver_key = 'solver_key_example' # str |
+version = 'version_example' # str |
+job_id = 'job_id_example' # str |
 
     try:
         # Get Job Outputs
@@ -272,11 +268,11 @@ with osparc.ApiClient(configuration) as api_client:
 
 ### Parameters
 
-| Name           | Type           | Description | Notes |
-| -------------- | -------------- | ----------- | ----- |
-| **solver_key** | **str**        |             |
-| **version**    | **str**        |             |
-| **job_id**     | [**str**](.md) |             |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **solver_key** | **str**|  |
+ **version** | **str**|  |
+ **job_id** | [**str**](.md)|  |
 
 ### Return type
 
@@ -292,12 +288,12 @@ with osparc.ApiClient(configuration) as api_client:
  - **Accept**: application/json
 
 ### HTTP response details
-| Status code | Description         | Response headers |
-| ----------- | ------------------- | ---------------- |
-| **200**     | Successful Response | -                |
-| **422**     | Validation Error    | -                |
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
 
-[[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_solver**
 > Solver get_solver(solver_key)
@@ -321,12 +317,13 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-
+# Defining host is optional and default to https://api.osparc.io
+configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
-    solver_key = 'simcore/services/comp/isolve' # str |
+    solver_key = 'solver_key_example' # str |
 
     try:
         # Get Latest Release of a Solver
@@ -338,9 +335,9 @@ with osparc.ApiClient(configuration) as api_client:
 
 ### Parameters
 
-| Name           | Type    | Description | Notes |
-| -------------- | ------- | ----------- | ----- |
-| **solver_key** | **str** |             |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **solver_key** | **str**|  |
 
 ### Return type
 
@@ -356,12 +353,12 @@ with osparc.ApiClient(configuration) as api_client:
  - **Accept**: application/json
 
 ### HTTP response details
-| Status code | Description         | Response headers |
-| ----------- | ------------------- | ---------------- |
-| **200**     | Successful Response | -                |
-| **422**     | Validation Error    | -                |
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
 
-[[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_solver_release**
 > Solver get_solver_release(solver_key, version)
@@ -385,13 +382,14 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-
+# Defining host is optional and default to https://api.osparc.io
+configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
-    solver_key = 'simcore/services/comp/isolve' # str |
-    version = '1.2.3' # str |
+    solver_key = 'solver_key_example' # str |
+version = 'version_example' # str |
 
     try:
         # Get Solver Release
@@ -403,10 +401,10 @@ with osparc.ApiClient(configuration) as api_client:
 
 ### Parameters
 
-| Name           | Type    | Description | Notes |
-| -------------- | ------- | ----------- | ----- |
-| **solver_key** | **str** |             |
-| **version**    | **str** |             |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **solver_key** | **str**|  |
+ **version** | **str**|  |
 
 ### Return type
 
@@ -422,12 +420,12 @@ with osparc.ApiClient(configuration) as api_client:
  - **Accept**: application/json
 
 ### HTTP response details
-| Status code | Description         | Response headers |
-| ----------- | ------------------- | ---------------- |
-| **200**     | Successful Response | -                |
-| **422**     | Validation Error    | -                |
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
 
-[[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **inspect_job**
 > JobStatus inspect_job(solver_key, version, job_id)
@@ -449,14 +447,15 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-
+# Defining host is optional and default to https://api.osparc.io
+configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
-    solver_key = 'simcore/services/comp/isolve' # str |
-    version = '1.2.3' # str |
-    job_id = '6d43f058-cb99-4720-833a-be367b766a73' # str |
+    solver_key = 'solver_key_example' # str |
+version = 'version_example' # str |
+job_id = 'job_id_example' # str |
 
     try:
         # Inspect Job
@@ -468,11 +467,11 @@ with osparc.ApiClient(configuration) as api_client:
 
 ### Parameters
 
-| Name           | Type           | Description | Notes |
-| -------------- | -------------- | ----------- | ----- |
-| **solver_key** | **str**        |             |
-| **version**    | **str**        |             |
-| **job_id**     | [**str**](.md) |             |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **solver_key** | **str**|  |
+ **version** | **str**|  |
+ **job_id** | [**str**](.md)|  |
 
 ### Return type
 
@@ -488,12 +487,12 @@ with osparc.ApiClient(configuration) as api_client:
  - **Accept**: application/json
 
 ### HTTP response details
-| Status code | Description         | Response headers |
-| ----------- | ------------------- | ---------------- |
-| **200**     | Successful Response | -                |
-| **422**     | Validation Error    | -                |
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
 
-[[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_jobs**
 > list[Job] list_jobs(solver_key, version)
@@ -517,13 +516,14 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-
+# Defining host is optional and default to https://api.osparc.io
+configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
-    solver_key = 'simcore/services/comp/isolve' # str |
-    version = '1.2.3' # str |
+    solver_key = 'solver_key_example' # str |
+version = 'version_example' # str |
 
     try:
         # List Jobs
@@ -535,10 +535,10 @@ with osparc.ApiClient(configuration) as api_client:
 
 ### Parameters
 
-| Name           | Type    | Description | Notes |
-| -------------- | ------- | ----------- | ----- |
-| **solver_key** | **str** |             |
-| **version**    | **str** |             |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **solver_key** | **str**|  |
+ **version** | **str**|  |
 
 ### Return type
 
@@ -554,12 +554,12 @@ with osparc.ApiClient(configuration) as api_client:
  - **Accept**: application/json
 
 ### HTTP response details
-| Status code | Description         | Response headers |
-| ----------- | ------------------- | ---------------- |
-| **200**     | Successful Response | -                |
-| **422**     | Validation Error    | -                |
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
 
-[[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_solver_releases**
 > list[Solver] list_solver_releases(solver_key)
@@ -583,12 +583,13 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-
+# Defining host is optional and default to https://api.osparc.io
+configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
-    solver_key = 'simcore/services/comp/isolve' # str |
+    solver_key = 'solver_key_example' # str |
 
     try:
         # List Solver Releases
@@ -600,9 +601,9 @@ with osparc.ApiClient(configuration) as api_client:
 
 ### Parameters
 
-| Name           | Type    | Description | Notes |
-| -------------- | ------- | ----------- | ----- |
-| **solver_key** | **str** |             |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **solver_key** | **str**|  |
 
 ### Return type
 
@@ -618,12 +619,12 @@ with osparc.ApiClient(configuration) as api_client:
  - **Accept**: application/json
 
 ### HTTP response details
-| Status code | Description         | Response headers |
-| ----------- | ------------------- | ---------------- |
-| **200**     | Successful Response | -                |
-| **422**     | Validation Error    | -                |
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
 
-[[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_solvers**
 > list[Solver] list_solvers()
@@ -647,7 +648,8 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-
+# Defining host is optional and default to https://api.osparc.io
+configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -678,11 +680,11 @@ This endpoint does not need any parameter.
  - **Accept**: application/json
 
 ### HTTP response details
-| Status code | Description         | Response headers |
-| ----------- | ------------------- | ---------------- |
-| **200**     | Successful Response | -                |
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
 
-[[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **list_solvers_releases**
 > list[Solver] list_solvers_releases()
@@ -706,7 +708,8 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-
+# Defining host is optional and default to https://api.osparc.io
+configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -737,11 +740,11 @@ This endpoint does not need any parameter.
  - **Accept**: application/json
 
 ### HTTP response details
-| Status code | Description         | Response headers |
-| ----------- | ------------------- | ---------------- |
-| **200**     | Successful Response | -                |
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
 
-[[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **start_job**
 > JobStatus start_job(solver_key, version, job_id)
@@ -763,14 +766,15 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-
+# Defining host is optional and default to https://api.osparc.io
+configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
-    solver_key = 'simcore/services/comp/isolve' # str |
-    version = '1.2.3' # str |
-    job_id = '6d43f058-cb99-4720-833a-be367b766a73' # str |
+    solver_key = 'solver_key_example' # str |
+version = 'version_example' # str |
+job_id = 'job_id_example' # str |
 
     try:
         # Start Job
@@ -782,11 +786,11 @@ with osparc.ApiClient(configuration) as api_client:
 
 ### Parameters
 
-| Name           | Type           | Description | Notes |
-| -------------- | -------------- | ----------- | ----- |
-| **solver_key** | **str**        |             |
-| **version**    | **str**        |             |
-| **job_id**     | [**str**](.md) |             |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **solver_key** | **str**|  |
+ **version** | **str**|  |
+ **job_id** | [**str**](.md)|  |
 
 ### Return type
 
@@ -802,12 +806,12 @@ with osparc.ApiClient(configuration) as api_client:
  - **Accept**: application/json
 
 ### HTTP response details
-| Status code | Description         | Response headers |
-| ----------- | ------------------- | ---------------- |
-| **200**     | Successful Response | -                |
-| **422**     | Validation Error    | -                |
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
 
-[[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **stop_job**
 > Job stop_job(solver_key, version, job_id)
@@ -829,14 +833,15 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-
+# Defining host is optional and default to https://api.osparc.io
+configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = osparc.SolversApi(api_client)
-    solver_key = 'simcore/services/comp/isolve' # str |
-    version = '1.2.3' # str |
-    job_id = '6d43f058-cb99-4720-833a-be367b766a73' # str |
+    solver_key = 'solver_key_example' # str |
+version = 'version_example' # str |
+job_id = 'job_id_example' # str |
 
     try:
         # Stop Job
@@ -848,11 +853,11 @@ with osparc.ApiClient(configuration) as api_client:
 
 ### Parameters
 
-| Name           | Type           | Description | Notes |
-| -------------- | -------------- | ----------- | ----- |
-| **solver_key** | **str**        |             |
-| **version**    | **str**        |             |
-| **job_id**     | [**str**](.md) |             |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **solver_key** | **str**|  |
+ **version** | **str**|  |
+ **job_id** | [**str**](.md)|  |
 
 ### Return type
 
@@ -868,11 +873,11 @@ with osparc.ApiClient(configuration) as api_client:
  - **Accept**: application/json
 
 ### HTTP response details
-| Status code | Description         | Response headers |
-| ----------- | ------------------- | ---------------- |
-| **200**     | Successful Response | -                |
-| **422**     | Validation Error    | -                |
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
+**422** | Validation Error |  -  |
 
-[[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-[Download as SolversApi.ipynb](md/code_samples/SolversApi.ipynb ':ignore')
+[Download as SolversApi.ipynb](code_samples/SolversApi.ipynb ':ignore')

@@ -1,10 +1,10 @@
 # ValidationError
 
 ## Properties
-| Name     | Type          | Description | Notes |
-| -------- | ------------- | ----------- | ----- |
-| **loc**  | **list[str]** |             |
-| **msg**  | **str**       |             |
-| **type** | **str**       |             |
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+**loc** | **list[str]** |  |
+**msg** | **str** |  |
+**type** | **str** |  |
 
-[[Back to Model list]](../README.md#documentation-for-models) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to README]](../README.md)
+[[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

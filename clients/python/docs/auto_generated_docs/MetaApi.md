@@ -2,9 +2,9 @@
 
 All URIs are relative to *https://api.osparc.io*
 
-| Method                                                      | HTTP request     | Description          |
-| ----------------------------------------------------------- | ---------------- | -------------------- |
-| [**get_service_metadata**](MetaApi.md#get_service_metadata) | **GET** /v0/meta | Get Service Metadata |
+Method | HTTP request | Description
+------------- | ------------- | -------------
+[**get_service_metadata**](MetaApi.md#get_service_metadata) | **GET** /v0/meta | Get Service Metadata
 
 
 # **get_service_metadata**
@@ -13,6 +13,7 @@ All URIs are relative to *https://api.osparc.io*
 Get Service Metadata
 
 ### Example
+
 
 ```python
 from __future__ import print_function
@@ -51,11 +52,10 @@ No authorization required
  - **Accept**: application/json
 
 ### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Successful Response |  -  |
 
-| Status code | Description         | Response headers |
-| ----------- | ------------------- | ---------------- |
-| **200**     | Successful Response | -                |
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-[[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-classes) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-[Download as MetaApi.ipynb](md/code_samples/MetaApi.ipynb ':ignore')
+[Download as MetaApi.ipynb](code_samples/MetaApi.ipynb ':ignore')
