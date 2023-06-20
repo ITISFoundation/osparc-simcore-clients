@@ -3,6 +3,7 @@ PYTHON_DIR := $(CLIENTS_DIR)/python
 GENERATED_PY_CLIENT_DIR := $(PYTHON_DIR)/auto_generated_client
 CONTAINER_API_JSON   := /local/$(REL_API_JSON_PATH)
 GENERATOR            := python
+UID                  := $(shell id -u)
 
 setup_client_dir:
 	-rm -rf $(GENERATED_PY_CLIENT_DIR)
@@ -11,7 +12,7 @@ setup_client_dir:
 # Generation of Python client
 .PHONY: python-client
 python-client: validate-api-specification setup_client_dir## generate python client
-	docker run --rm \
+	docker run --rm --user $(UID):$(UID)\
 			--volume "$(REPO_ROOT):/local" \
 			$(OPENAPI_GENERATOR_IMAGE) generate \
 			--generator-name=$(GENERATOR) \
@@ -28,7 +29,7 @@ python-client: validate-api-specification setup_client_dir## generate python cli
 python-client-from-templates: validate-api-specification setup_client_dir## generate python client using templates in a specified directory (usage: 'make python-client-from-templates path/to/templates')
 	$(eval TEMPLATE_DIR := $(word 2, $(MAKECMDGOALS)))
 	@echo "Using template-dir: $(TEMPLATE_DIR)"
-	@docker run --rm \
+	@docker run --rm --user $(UID):$(UID)\
 			--volume "$(REPO_ROOT):/local" \
 			--volume "$(TEMPLATE_DIR):/tmp/templates" \
 			$(OPENAPI_GENERATOR_IMAGE) generate \
@@ -61,8 +62,8 @@ markdowns  = $(wildcard docs/md/*Api.md)
 markdowns += $(wildcard docs/md/tutorials/*.md)
 outputs:=$(subst docs/md,docs/md/code_samples,$(markdowns:.md=.ipynb))
 
-.PHONY: notebooks
-notebooks: $(outputs) ## converts selected markdowns into notebooks
+.PHONY: postprocess-docs
+postprocess-docs: copy-docs $(outputs) ## converts selected markdowns into notebooks
 
 docs/md/code_samples/%.ipynb:docs/md/%.md
 	# Removing link in markdown
