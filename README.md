@@ -6,19 +6,7 @@ For the moment, we have to apply some changes manually until we use [templates](
 
 - update OAS -> ``api/openapi.json``
 - generate client ``make python-client``
-- md doc files
-  - format all md?
-  - update README.md
-    - remove generator entry (since some custom changes)
-    - from '## Documentation for API Endpoints' to '## Author'
-    - ``Documentation for API Classes`` instead of ``Documentation for API Endpoints``
-          - ``Back to API list`` to ``Back to API Classes``
-    - ``## Author`` also is different in md/README.md
-  - remove ```# Defining host is optional and default to https://api.osparc.io
-configuration.host = "https://api.osparc.io"```
-  - Updates notebooks: ``make notebooks``
-    - Apply fixes to ``BasicTutorial.ipynb``  as in https://github.com/ITISFoundation/osparc-simcore-clients/pull/35
-
+- generate documentation ``make postprocess-docs``
 
 
 ----
