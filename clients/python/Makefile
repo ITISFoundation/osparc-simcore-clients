@@ -92,7 +92,7 @@ install-client: _check_venv_active install-dev ## install packages for testing c
 
 .PHONY: pylint
 pylint: _check_venv_active ## runs linter (only to check errors. SEE .pylintrc enabled)
-	pylint --rcfile "$(PYTHON_DIR)/.pylintrc" -v "$(PYTHON_DIR)/osparc" -v "$(PYTHON_DIR)/test"
+	pylint --rcfile "$(PYTHON_DIR)/.pylintrc" -v "$(PYTHON_DIR)/auto_generated_client"
 
 
 .PHONY: test-dev
