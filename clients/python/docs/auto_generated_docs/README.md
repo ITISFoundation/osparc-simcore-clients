@@ -10,7 +10,7 @@ Python client for osparc-simcore public web API
 
 ## Requirements.
 
-Python 2.7 and 3.4+
+Python 3.6+
 
 ## Installation & Usage
 ### pip install
@@ -77,7 +77,7 @@ with osparc.ApiClient(configuration) as api_client:
 
 ## Tutorials
 
-- [Basic tutorial](../tutorials/BasicTutorial.md)
+- [Basic tutorial](../tutorials_and_samples/tutorials/BasicTutorial.md)
 
 ## Documentation for API Classes
 

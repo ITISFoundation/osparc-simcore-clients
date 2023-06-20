@@ -57,3 +57,5 @@ No authorization required
 **200** | Successful Response |  -  |
 
 [[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+[Download as MetaApi.ipynb](../code_samples/MetaApi.ipynb ':ignore')

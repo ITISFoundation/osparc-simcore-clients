@@ -61,17 +61,17 @@ copy-docs: ## Replace git tracked docs in clients/python/docs/md by the automati
 	@cp $(PYTHON_DIR)/auto_generated_client/docs/* $(PYTHON_DIR)/docs/auto_generated_docs/docs
 
 markdowns  = $(wildcard docs/auto_generated_docs/docs/*Api.md)
-outputs:=$(subst docs/auto_generated_docs,docs/auto_generated_docs/code_samples,$(markdowns:.md=.ipynb))
+outputs:=$(subst docs/auto_generated_docs/docs,docs/auto_generated_docs/code_samples,$(markdowns:.md=.ipynb))
 
 .PHONY: postprocess-docs
 postprocess-docs: copy-docs $(outputs) ## converts selected markdowns into notebooks
 
-docs/auto_generated_docs/code_samples/%.ipynb:docs/auto_generated_docs/%.md
+docs/auto_generated_docs/code_samples/%.ipynb:docs/auto_generated_docs/docs/%.md
 	# Removing link in markdown
 	@sed -i "/\b$(notdir $@)\b/d" $<
 	notedown $< >$@
 	# Appending link to markdown
-	@echo "[Download as $(notdir $@)]($(subst docs/auto_generated_docs/,,$@) ':ignore')" >> $<
+	@echo "[Download as $(notdir $@)]($(subst docs/auto_generated_docs/,../,$@) ':ignore')" >> $<
 
 
 ## PYTHON DEVELOPMENT  ------------------------------------------------------------------

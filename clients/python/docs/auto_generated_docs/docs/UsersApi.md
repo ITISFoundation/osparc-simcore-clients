@@ -124,3 +124,5 @@ Name | Type | Description  | Notes
 **422** | Validation Error |  -  |
 
 [[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+[Download as UsersApi.ipynb](../code_samples/UsersApi.ipynb ':ignore')
