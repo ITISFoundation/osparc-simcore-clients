@@ -41,8 +41,6 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-# Defining host is optional and default to https://api.osparc.io
-configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -110,8 +108,6 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-# Defining host is optional and default to https://api.osparc.io
-configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -179,8 +175,6 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-# Defining host is optional and default to https://api.osparc.io
-configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -248,8 +242,6 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-# Defining host is optional and default to https://api.osparc.io
-configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -317,8 +309,6 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-# Defining host is optional and default to https://api.osparc.io
-configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -382,8 +372,6 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-# Defining host is optional and default to https://api.osparc.io
-configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -447,8 +435,6 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-# Defining host is optional and default to https://api.osparc.io
-configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -516,8 +502,6 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-# Defining host is optional and default to https://api.osparc.io
-configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -583,8 +567,6 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-# Defining host is optional and default to https://api.osparc.io
-configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -648,8 +630,6 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-# Defining host is optional and default to https://api.osparc.io
-configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -708,8 +688,6 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-# Defining host is optional and default to https://api.osparc.io
-configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -766,8 +744,6 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-# Defining host is optional and default to https://api.osparc.io
-configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
@@ -833,8 +809,6 @@ configuration = osparc.Configuration()
 configuration.username = 'YOUR_API_KEY_HERE'
 configuration.password = 'YOUR_API_SECRET_HERE'
 
-# Defining host is optional and default to https://api.osparc.io
-configuration.host = "https://api.osparc.io"
 # Enter a context with an instance of the API client
 with osparc.ApiClient(configuration) as api_client:
     # Create an instance of the API class
