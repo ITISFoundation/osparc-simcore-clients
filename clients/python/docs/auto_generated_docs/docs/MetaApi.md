@@ -58,4 +58,4 @@ No authorization required
 
 [[Back to top]](#) [[Back to API Classes]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-[Download as MetaApi.ipynb](../code_samples/MetaApi.ipynb ':ignore')
+[Download as MetaApi.ipynb](clients/python/docs/auto_generated_docs/code_samples/MetaApi.ipynb ":ignore title")
