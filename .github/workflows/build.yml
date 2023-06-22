@@ -22,4 +22,5 @@ jobs:
       - name: Upload wheel
         uses: actions/upload-artifact@v3
         with:
+          name: osparc_python_client
           path: clients/python/dist/
