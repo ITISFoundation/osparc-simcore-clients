@@ -16,6 +16,7 @@ jobs:
           source .venv/bin/activate
           cd clients/python
           make install-dev
+          make python-client
           make dist
       - name: Upload wheel
         uses: actions/upload-artifact@v3
