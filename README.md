@@ -23,3 +23,9 @@ See the different `clients/<language>/README.md` for the workflows for generatin
 - To generate a client one needs two "ingredients":
     1. The openapi specification which is a json file located in `api/openapi.json`. This generated in [osparc-simcore](https://github.com/ITISFoundation/osparc-simcore/tree/master/services/api-server) and then moved here.
     2. The [openapi-generator](https://github.com/ITISFoundation/openapi-generator)-tool. The exact docker image of this tool to use is specifies in `scripts/common.Makefile`.
+# Repos which depend on this one
+
+Here is an inexhaustive list which have this repo as a dependency. So changing stuff here might break stuff there:
+
+- [e2e-portal-testing](https://git.speag.com/oSparc/e2e-portal-testing/-/commit/950762bde1a60c7ce23286da9c100150ed6926e4)
+- [osparc-simcore](https://github.com/ITISFoundation/osparc-simcore/actions/runs/5319311892/jobs/9631979977)
