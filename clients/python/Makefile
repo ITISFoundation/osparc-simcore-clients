@@ -114,7 +114,7 @@ dist: ## builds distribution wheel
 	python -m build --sdist --wheel --outdir dist/ $(PYTHON_DIR)/auto_generated_client
 
 .PHONY: dist-ci
-dist-ci: install-dev python-client dist
+dist-ci: install-dev python-client dist ## build wheel and tar ball in a single command
 
 ## DOCKER -------------------------------------------------------------------------------
 
