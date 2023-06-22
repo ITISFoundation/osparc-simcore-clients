@@ -9,6 +9,14 @@ The following is the general workflow and guidelines for developing the Python c
 
 *Please do not manually `git commit` auto generated code into this repository, except for the documentation described above*
 
+# Testing
+Tests are located in `PYDIR/test` and can be run by executing the following commands from PYDIR:
+```bash
+make install-test
+make test-dev
+```
+after the client has been generated (see the [workflow section](#workflow)). These tests should test the user-facing API.
+
 # Tips
 When modifying templates on the [openapi-generator](https://github.com/ITISFoundation/openapi-generator) repository the pace at which you can progress is determined by the speed at which you can loop through the following diagram
 
