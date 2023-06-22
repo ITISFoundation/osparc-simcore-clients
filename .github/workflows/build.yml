@@ -15,9 +15,7 @@ jobs:
           make devenv
           source .venv/bin/activate
           cd clients/python
-          make install-dev
-          make python-client
-          make dist
+          make dist-ci
       - name: Upload wheel
         uses: actions/upload-artifact@v3
         with:
