@@ -2,7 +2,7 @@
 name: 🐛 Bug
 about: File a bug/issue
 labels: bug
-assignees: pcrespov
+assignees: pcrespov,bisgaard-itis
 ---
 
 ## What version of ``osparc`` are you using?

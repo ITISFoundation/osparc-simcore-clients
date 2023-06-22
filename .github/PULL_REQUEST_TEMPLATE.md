@@ -37,16 +37,3 @@ e.g.
 ## How to test
 
 <!-- Give REVIEWERS some hits or code snippets on how could this be tested -->
-
-
-## Checklist
-
-- [ ] Update [``api/openapi.json``](./api/openapi.json)
-- [ ] Update code
-- [ ] Update doc
-- [ ] Follow [NOTES.md](./NOTES.md)
-
-<!-- This is YOUR section
-
-Add here YOUR checklist/notes to guide and monitor the progress of the case!
--->

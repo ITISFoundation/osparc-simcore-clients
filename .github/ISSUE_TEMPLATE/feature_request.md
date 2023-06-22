@@ -2,6 +2,7 @@
 name: ✨  Feature request
 about: Suggest an idea to implement
 labels: enhancement
+assignees: bisgaard-itis
 ---
 
 ## User Story
