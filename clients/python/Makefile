@@ -52,8 +52,7 @@ generator-help: ## help on client-api generator
 ## Tools for "postprocessing" generated documentation --------------------------------------------
 
 
-.PHONY: copy-docs
-copy-docs: ## Replace git tracked docs in clients/python/docs/md by the automatically generated docs (N.B. check that the docs make sense before commiting into git)
+_copy-docs: ## Replace git tracked docs in clients/python/docs/md by the automatically generated docs (N.B. check that the docs make sense before commiting into git)
 	@-rm -r $(PYTHON_DIR)/docs/auto_generated_docs
 	@mkdir $(PYTHON_DIR)/docs/auto_generated_docs
 	@mkdir $(PYTHON_DIR)/docs/auto_generated_docs/docs
@@ -61,11 +60,17 @@ copy-docs: ## Replace git tracked docs in clients/python/docs/md by the automati
 	@cp $(PYTHON_DIR)/auto_generated_client/README.md $(PYTHON_DIR)/docs/auto_generated_docs/README.md
 	@cp $(PYTHON_DIR)/auto_generated_client/docs/* $(PYTHON_DIR)/docs/auto_generated_docs/docs
 
+.PHONY: _copy-tests
+_copy-tests: ## Replace git tracked tests clients/python/test by the automatically generated docs (N.B. check that the docs make sense before commiting into git)
+	@-rm -r $(PYTHON_DIR)/test
+	@mkdir $(PYTHON_DIR)/test
+	@cp $(PYTHON_DIR)/auto_generated_client/test/* $(PYTHON_DIR)/test/
+
 markdowns  = $(wildcard docs/auto_generated_docs/docs/*Api.md)
 outputs:=$(subst docs/auto_generated_docs/docs,docs/auto_generated_docs/code_samples,$(markdowns:.md=.ipynb))
 
 .PHONY: postprocess-generated-files
-postprocess-generated-files: copy-docs $(outputs) ## converts selected markdowns into notebooks
+postprocess-generated-files: _copy-docs $(outputs) _copy_tests ## converts selected markdowns into notebooks
 
 docs/auto_generated_docs/code_samples/%.ipynb:docs/auto_generated_docs/docs/%.md
 	# Removing link in markdown
@@ -99,7 +104,7 @@ pylint: _check_venv_active ## runs linter (only to check errors. SEE .pylintrc e
 .PHONY: test-dev
 test-dev: _check_venv_active ## runs tests during development
 	# runs tests for development (e.g w/ pdb)
-	pytest -vv --exitfirst --failed-first --durations=10 --pdb $(PYTHON_DIR)
+	pytest -vv --exitfirst --failed-first --durations=10 --pdb --ignore=$(PYTHON_DIR)/auto_generated_client $(PYTHON_DIR)
 
 .PHONY: dist
 dist: ## builds distribution wheel
