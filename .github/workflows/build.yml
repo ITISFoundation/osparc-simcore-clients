@@ -21,4 +21,4 @@ jobs:
       - name: Upload wheel
         uses: actions/upload-artifact@v3
         with:
-          path: ./dist/*.whl
+          path: ./dist/osparc_simcore_python_api-0.5.0-py3-none-any.whl
