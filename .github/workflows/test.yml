@@ -44,7 +44,7 @@ jobs:
           make python-client
           nox -s test-${{ matrix.python-version }}
   test-latest:
-    name: python ${{ matrix.python-version }}
+    name: python ${{ matrix.python-version }} ubuntu-latest
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
