@@ -18,7 +18,6 @@ jobs:
           make install-dev
           make python-client
           make dist
-          ls ./dist
       - name: Upload wheel
         uses: actions/upload-artifact@v3
         with:
