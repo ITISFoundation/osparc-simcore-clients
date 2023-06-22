@@ -1,25 +1,25 @@
-# NOTES
+<h1 align="center">Osparc-Simcore-Clients</h1>
 
-For the moment, we have to apply some changes manually until we use [templates](https://openapi-generator.tech/docs/templating) or [customization](https://openapi-generator.tech/docs/customization)
-
-### Workflow
-
-- update OAS -> ``api/openapi.json``
-- generate client ``make python-client``
-- generate documentation ``make postprocess-docs``
-
-
-----
-
-# @channel :tada:  Released new ``osparc==0.5.0`` python client library
-
-## Highlights:
-
-- ✨ adds ``SolverApi.get_job_output_logfile`` to download logfile after a job run (#27)
-- Checkout updated [doc](https://itisfoundation.github.io/osparc-simcore-clients) and [tutorial](https://itisfoundation.github.io/osparc-simcore-clients/#/md/tutorials/BasicTutorial?id=basic-tutorial)
-- Do you to want to report a bug, have a request or a question about ``osparc`` library? Drop it [in our issue tracker](https://github.com/ITISFoundation/osparc-simcore-clients/issues/new/choose)
-
-## More details
-- [Release Notes](https://github.com/ITISFoundation/osparc-simcore-clients/releases)
+To get started using the tools developed in this repository, take a look at the the following links:
+- [Basic tutorial](https://itisfoundation.github.io/osparc-simcore-clients/#/md/tutorials/BasicTutorial?id=basic-tutorial)
 - [Documentation](https://itisfoundation.github.io/osparc-simcore-clients)
-- [Repository](https://github.com/ITISFoundation/osparc-simcore-clients)
+
+For more in depth knowledge concerning the development of the repository, take a look at
+- [Release Notes](https://github.com/ITISFoundation/osparc-simcore-clients/releases)
+- [Development notes](#development-notes)
+
+For reporting an issue, use our [issue tracker](https://github.com/ITISFoundation/osparc-simcore-clients/issues/new/choose)
+
+# Development notes
+
+These notes are intended for people who want to contribute to the development of this repository.
+
+The different clients for the osparc public API are generated using the [openapi-generator](https://github.com/ITISFoundation/openapi-generator)-tool. *The generated files should not be changed manually!* Instead proposed changes should be implemented directly on the [openapi-generator](https://github.com/ITISFoundation/openapi-generator)-repository. See also [templates](https://openapi-generator.tech/docs/templating) and [customization](https://openapi-generator.tech/docs/customization).
+
+## Workflow
+
+See the different `clients/<language>/README.md` for the workflows for generating the different clients. Here is the workflow which all clients have in common:
+
+- To generate a client one needs two "ingredients":
+    1. The openapi specification which is a json file located in `api/openapi.json`. This generated in [osparc-simcore](https://github.com/ITISFoundation/osparc-simcore/tree/master/services/api-server) and then moved here.
+    2. The [openapi-generator](https://github.com/ITISFoundation/openapi-generator)-tool. The exact docker image of this tool to use is specifies in `scripts/common.Makefile`.
