@@ -111,7 +111,7 @@ dist: ## builds distribution wheel
 	# installs pypa/build
 	python -m pip install build
     # Build a binary wheel and a source tarball
-	python -m build --sdist --wheel --outdir dist/ $(CURDIR)
+	python -m build --sdist --wheel --outdir dist/ $(PYTHON_DIR)/auto_generated_client
 
 
 ## DOCKER -------------------------------------------------------------------------------

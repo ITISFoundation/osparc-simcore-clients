@@ -1,0 +1,23 @@
+name: build-osparc-client
+run-name: building osparc client
+on: [push]
+jobs:
+  build-and-uplad-wheel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Generate client
+        run: |
+          make devenv
+          source .venv/bin/activate
+          cd clients/python
+          make install-dev
+          make dist
+      - name: Upload wheel
+        uses: actions/upload-artifact@v3
+        with:
+          path: ./dist/*.whl
