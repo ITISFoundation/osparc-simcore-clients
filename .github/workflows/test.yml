@@ -41,6 +41,7 @@ jobs:
         run: |
           pip install --upgrade nox
           cd clients/python
+          make python-client
           nox -s test-${{ matrix.python-version }}
     # TODO: add coverage
     # - name: Upload coverage report
