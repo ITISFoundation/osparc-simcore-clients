@@ -1,4 +1,4 @@
-name: generate-osparc-python-client
+name: Osparc Python client artifact
 run-name: python client
 on: [push]
 jobs:
