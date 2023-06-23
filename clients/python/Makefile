@@ -69,7 +69,6 @@ postprocess-generated-docs:  ## converts selected markdowns into notebooks and a
 
 artifacts/client/docs/code_samples/%.ipynb:artifacts/client/docs/%.md
 	# Removing link in markdown
-	@echo "Reached here 2"
 	@sed -i "/\b$(notdir $@)\b/d" $<
 	notedown $< >$@
 	# Appending link to markdown
