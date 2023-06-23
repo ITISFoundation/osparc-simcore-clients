@@ -1,9 +1,9 @@
 {
   "openapi": "3.0.2",
   "info": {
-    "title": "osparc.io web API",
-    "description": "osparc-simcore public web API specifications",
-    "version": "0.4.0",
+    "title": "osparc.io web API (alpha)",
+    "description": "osparc-simcore public API specifications",
+    "version": "0.4.5-alpha",
     "x-logo": {
       "url": "https://raw.githubusercontent.com/ITISFoundation/osparc-manual/b809d93619512eb60c827b7e769c6145758378d0/_media/osparc-logo.svg",
       "altText": "osparc-simcore logo"
@@ -377,7 +377,7 @@
             "required": true,
             "schema": {
               "title": "Solver Key",
-              "pattern": "^(simcore)/(services)/comp(/[\\w/-]+)+$",
+              "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
               "type": "string"
             },
             "name": "solver_key",
@@ -426,7 +426,7 @@
             "required": true,
             "schema": {
               "title": "Solver Key",
-              "pattern": "^(simcore)/(services)/comp(/[\\w/-]+)+$",
+              "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
               "type": "string"
             },
             "name": "solver_key",
@@ -479,7 +479,7 @@
             "required": true,
             "schema": {
               "title": "Solver Key",
-              "pattern": "^(simcore)/(services)/comp(/[\\w/-]+)+$",
+              "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
               "type": "string"
             },
             "name": "solver_key",
@@ -525,20 +525,20 @@
         ]
       }
     },
-    "/v0/solvers/{solver_key}/releases/{version}/jobs": {
+    "/v0/solvers/{solver_key}/releases/{version}/ports": {
       "get": {
         "tags": [
           "solvers"
         ],
-        "summary": "List Jobs",
-        "description": "List of all jobs in a specific released solver",
-        "operationId": "list_jobs",
+        "summary": "List Solver Ports",
+        "description": "Lists inputs and outputs of a given solver\n\nNew in *version 0.5.0* (only with API_SERVER_DEV_FEATURES_ENABLED=1)",
+        "operationId": "list_solver_ports",
         "parameters": [
           {
             "required": true,
             "schema": {
               "title": "Solver Key",
-              "pattern": "^(simcore)/(services)/comp(/[\\w/-]+)+$",
+              "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
               "type": "string"
             },
             "name": "solver_key",
@@ -548,6 +548,70 @@
             "required": true,
             "schema": {
               "title": "Version",
+              "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
+              "type": "string"
+            },
+            "name": "version",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response List Solver Ports V0 Solvers  Solver Key  Releases  Version  Ports Get",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SolverPort"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
+      }
+    },
+    "/v0/solvers/{solver_key}/releases/{version}/jobs": {
+      "get": {
+        "tags": [
+          "solvers"
+        ],
+        "summary": "List Jobs",
+        "description": "List of jobs in a specific released solver (limited to 20 jobs)",
+        "operationId": "list_jobs",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Solver Key",
+              "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
+              "type": "string"
+            },
+            "name": "solver_key",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Version",
+              "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
               "type": "string"
             },
             "name": "version",
@@ -598,7 +662,7 @@
             "required": true,
             "schema": {
               "title": "Solver Key",
-              "pattern": "^(simcore)/(services)/comp(/[\\w/-]+)+$",
+              "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
               "type": "string"
             },
             "name": "solver_key",
@@ -608,6 +672,7 @@
             "required": true,
             "schema": {
               "title": "Version",
+              "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
               "type": "string"
             },
             "name": "version",
@@ -653,6 +718,88 @@
         ]
       }
     },
+    "/v0/solvers/{solver_key}/releases/{version}/jobs/page": {
+      "get": {
+        "tags": [
+          "solvers"
+        ],
+        "summary": "Get Jobs Page",
+        "description": "List of jobs on a specific released solver (includes pagination)\n\n\nBreaking change in *version 0.5*: response model changed from list[Job] to pagination Page[Job].",
+        "operationId": "get_jobs_page",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Solver Key",
+              "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
+              "type": "string"
+            },
+            "name": "solver_key",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Version",
+              "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
+              "type": "string"
+            },
+            "name": "version",
+            "in": "path"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "Limit",
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "default": 50
+            },
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "Offset",
+              "minimum": 0,
+              "type": "integer",
+              "default": 0
+            },
+            "name": "offset",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LimitOffsetPage_Job_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
+      }
+    },
     "/v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}": {
       "get": {
         "tags": [
@@ -666,7 +813,7 @@
             "required": true,
             "schema": {
               "title": "Solver Key",
-              "pattern": "^(simcore)/(services)/comp(/[\\w/-]+)+$",
+              "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
               "type": "string"
             },
             "name": "solver_key",
@@ -720,21 +867,20 @@
             "HTTPBasic": []
           }
         ]
-      }
-    },
-    "/v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:start": {
-      "post": {
+      },
+      "delete": {
         "tags": [
           "solvers"
         ],
-        "summary": "Start Job",
-        "operationId": "start_job",
+        "summary": "Delete Job",
+        "description": "Deletes an existing solver job\n\nNew in *version 0.5*",
+        "operationId": "delete_job",
         "parameters": [
           {
             "required": true,
             "schema": {
               "title": "Solver Key",
-              "pattern": "^(simcore)/(services)/comp(/[\\w/-]+)+$",
+              "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
               "type": "string"
             },
             "name": "solver_key",
@@ -759,6 +905,88 @@
             },
             "name": "job_id",
             "in": "path"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
+      }
+    },
+    "/v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}:start": {
+      "post": {
+        "tags": [
+          "solvers"
+        ],
+        "summary": "Start Job",
+        "description": "Starts job job_id created with the solver solver_key:version\n\nNew in *version 0.4.3*: cluster_id",
+        "operationId": "start_job",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Solver Key",
+              "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
+              "type": "string"
+            },
+            "name": "solver_key",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Version",
+              "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
+              "type": "string"
+            },
+            "name": "version",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Job Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "job_id",
+            "in": "path"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "Cluster Id",
+              "minimum": 0,
+              "type": "integer"
+            },
+            "name": "cluster_id",
+            "in": "query"
           }
         ],
         "responses": {
@@ -802,7 +1030,7 @@
             "required": true,
             "schema": {
               "title": "Solver Key",
-              "pattern": "^(simcore)/(services)/comp(/[\\w/-]+)+$",
+              "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
               "type": "string"
             },
             "name": "solver_key",
@@ -870,7 +1098,7 @@
             "required": true,
             "schema": {
               "title": "Solver Key",
-              "pattern": "^(simcore)/(services)/comp(/[\\w/-]+)+$",
+              "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
               "type": "string"
             },
             "name": "solver_key",
@@ -938,7 +1166,7 @@
             "required": true,
             "schema": {
               "title": "Solver Key",
-              "pattern": "^(simcore)/(services)/comp(/[\\w/-]+)+$",
+              "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
               "type": "string"
             },
             "name": "solver_key",
@@ -1000,14 +1228,14 @@
           "solvers"
         ],
         "summary": "Get Job Output Logfile",
-        "description": "Special extra output with persistent logs file for the solver run.\n\nNOTE: this is not a log stream but a predefined output that is only\navailable after the job is done.",
+        "description": "Special extra output with persistent logs file for the solver run.\n\nNOTE: this is not a log stream but a predefined output that is only\navailable after the job is done.\n\nNew in *version 0.4.0*",
         "operationId": "get_job_output_logfile",
         "parameters": [
           {
             "required": true,
             "schema": {
               "title": "Solver Key",
-              "pattern": "^(simcore)/(services)/comp(/[\\w/-]+)+$",
+              "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
               "type": "string"
             },
             "name": "solver_key",
@@ -1080,6 +1308,617 @@
           }
         ]
       }
+    },
+    "/v0/studies/": {
+      "get": {
+        "tags": [
+          "studies"
+        ],
+        "summary": "List Studies",
+        "operationId": "list_studies",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Study Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "study_id",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response List Studies V0 Studies  Get",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Study"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/studies/{study_id}": {
+      "get": {
+        "tags": [
+          "studies"
+        ],
+        "summary": "Get Study",
+        "operationId": "get_study",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Study Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "study_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Study"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/studies/{study_id}/ports": {
+      "get": {
+        "tags": [
+          "studies"
+        ],
+        "summary": "List Study Ports",
+        "description": "Lists metadata on ports of a given study\n\nNew in *version 0.5.0* (only with API_SERVER_DEV_FEATURES_ENABLED=1)",
+        "operationId": "list_study_ports",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Study Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "study_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response List Study Ports V0 Studies  Study Id  Ports Get",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StudyPort"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
+      }
+    },
+    "/v0/studies/studies/{study_id}/jobs": {
+      "get": {
+        "tags": [
+          "studies"
+        ],
+        "summary": "List Study Jobs",
+        "operationId": "list_study_jobs",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Study Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "study_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response List Study Jobs V0 Studies Studies  Study Id  Jobs Get",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Job"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "studies"
+        ],
+        "summary": "Create Study Job",
+        "operationId": "create_study_job",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Study Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "study_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/studies/studies/{study_id}/jobs/{job_id}": {
+      "get": {
+        "tags": [
+          "studies"
+        ],
+        "summary": "Get Study Job",
+        "operationId": "get_study_job",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Study Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "study_id",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Job Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "job_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "studies"
+        ],
+        "summary": "Delete Study Job",
+        "operationId": "delete_study_job",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Study Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "study_id",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Job Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "job_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/studies/studies/{study_id}/jobs/{job_id}:start": {
+      "post": {
+        "tags": [
+          "studies"
+        ],
+        "summary": "Start Study Job",
+        "operationId": "start_study_job",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Study Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "study_id",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Job Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "job_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobStatus"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/studies/studies/{study_id}/jobs/{job_id}:stop": {
+      "post": {
+        "tags": [
+          "studies"
+        ],
+        "summary": "Stop Study Job",
+        "operationId": "stop_study_job",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Study Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "study_id",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Job Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "job_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/studies/studies/{study_id}/job/{job_id}:inspect": {
+      "post": {
+        "tags": [
+          "studies"
+        ],
+        "summary": "Inspect Study Job",
+        "operationId": "inspect_study_job",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Study Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "study_id",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Job Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "job_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobStatus"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/studies/studies/{study_id}/job/{job_id}/outputs": {
+      "post": {
+        "tags": [
+          "studies"
+        ],
+        "summary": "Get Study Job Outputs",
+        "operationId": "get_study_job_outputs",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Study Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "study_id",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Job Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "job_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobOutputs"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/studies/studies/{study_id}/job/{job_id}/outputs/logfile": {
+      "post": {
+        "tags": [
+          "studies"
+        ],
+        "summary": "Get Study Job Output Logfile",
+        "operationId": "get_study_job_output_logfile",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Study Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "study_id",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Job Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "job_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "307": {
+            "description": "Successful Response"
+          },
+          "200": {
+            "description": "Returns a log file",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/zip": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Log not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1095,6 +1934,20 @@
             "title": "File",
             "type": "string",
             "format": "binary"
+          }
+        }
+      },
+      "ErrorGet": {
+        "title": "ErrorGet",
+        "required": [
+          "errors"
+        ],
+        "type": "object",
+        "properties": {
+          "errors": {
+            "title": "Errors",
+            "type": "array",
+            "items": {}
           }
         }
       },
@@ -1188,7 +2041,7 @@
           },
           "name": {
             "title": "Name",
-            "pattern": "^([^\\s/]+/?)+$",
+            "pattern": "^([^\\s/]+/?){1,10}$",
             "type": "string"
           },
           "inputs_checksum": {
@@ -1204,7 +2057,7 @@
           },
           "runner_name": {
             "title": "Runner Name",
-            "pattern": "^([^\\s/]+/?)+$",
+            "pattern": "^([^\\s/]+/?){1,10}$",
             "type": "string",
             "description": "Runner that executes job"
           },
@@ -1229,7 +2082,7 @@
             "maxLength": 2083,
             "minLength": 1,
             "type": "string",
-            "description": "Link to the job outputs (sub-collection",
+            "description": "Link to the job outputs (sub-collection)",
             "format": "uri"
           }
         },
@@ -1239,9 +2092,9 @@
           "runner_name": "solvers/isolve/releases/1.3.4",
           "inputs_checksum": "12345",
           "created_at": "2021-01-22T23:59:52.322176",
-          "url": "https://api.osparc.io/v0/jobs/f622946d-fd29-35b9-a193-abdd1095167c",
+          "url": "https://api.osparc.io/v0/solvers/isolve/releases/1.3.4/jobs/f622946d-fd29-35b9-a193-abdd1095167c",
           "runner_url": "https://api.osparc.io/v0/solvers/isolve/releases/1.3.4",
-          "outputs_url": "https://api.osparc.io/v0/jobs/f622946d-fd29-35b9-a193-abdd1095167c/outputs"
+          "outputs_url": "https://api.osparc.io/v0/solvers/isolve/releases/1.3.4/jobs/f622946d-fd29-35b9-a193-abdd1095167c/outputs"
         }
       },
       "JobInputs": {
@@ -1270,6 +2123,10 @@
                 },
                 {
                   "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {}
                 }
               ]
             }
@@ -1282,9 +2139,8 @@
             "title": "Temperature",
             "enabled": true,
             "input_file": {
-              "id": "0a3b2c56-dbcd-4871-b93b-d454b7883f9f",
               "filename": "input.txt",
-              "content_type": "text/plain"
+              "id": "0a3b2c56-dbcd-4871-b93b-d454b7883f9f"
             }
           }
         }
@@ -1322,6 +2178,10 @@
                 },
                 {
                   "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {}
                 }
               ]
             }
@@ -1335,9 +2195,8 @@
             "title": "Specific Absorption Rate",
             "enabled": false,
             "output_file": {
-              "id": "0a3b2c56-dbcd-4871-b93b-d454b7883f9f",
               "filename": "sar_matrix.txt",
-              "content_type": "text/plain"
+              "id": "0a3b2c56-dbcd-4871-b93b-d454b7883f9f"
             }
           }
         }
@@ -1357,18 +2216,19 @@
             "format": "uuid"
           },
           "state": {
-            "$ref": "#/components/schemas/TaskStates"
+            "$ref": "#/components/schemas/RunningState"
           },
           "progress": {
             "title": "Progress",
-            "maximum": 100.0,
-            "minimum": 0.0,
+            "maximum": 100,
+            "minimum": 0,
             "type": "integer",
             "default": 0
           },
           "submitted_at": {
             "title": "Submitted At",
             "type": "string",
+            "description": "Last modification timestamp of the solver job",
             "format": "date-time"
           },
           "started_at": {
@@ -1392,11 +2252,80 @@
           "started_at": "2021-04-01 07:16:43.670610"
         }
       },
+      "LimitOffsetPage_Job_": {
+        "title": "LimitOffsetPage[Job]",
+        "required": [
+          "items",
+          "total",
+          "links"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "title": "Items",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Job"
+            }
+          },
+          "total": {
+            "title": "Total",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "limit": {
+            "title": "Limit",
+            "minimum": 1,
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        }
+      },
+      "Links": {
+        "title": "Links",
+        "type": "object",
+        "properties": {
+          "first": {
+            "title": "First",
+            "type": "string",
+            "example": "/api/v1/users?limit=1&offset1"
+          },
+          "last": {
+            "title": "Last",
+            "type": "string",
+            "example": "/api/v1/users?limit=1&offset1"
+          },
+          "self": {
+            "title": "Self",
+            "type": "string",
+            "example": "/api/v1/users?limit=1&offset1"
+          },
+          "next": {
+            "title": "Next",
+            "type": "string",
+            "example": "/api/v1/users?limit=1&offset1"
+          },
+          "prev": {
+            "title": "Prev",
+            "type": "string",
+            "example": "/api/v1/users?limit=1&offset1"
+          }
+        }
+      },
       "Meta": {
         "title": "Meta",
         "required": [
           "name",
-          "version"
+          "version",
+          "docs_url",
+          "docs_dev_url"
         ],
         "type": "object",
         "properties": {
@@ -1423,16 +2352,14 @@
             "maxLength": 65536,
             "minLength": 1,
             "type": "string",
-            "format": "uri",
-            "default": "https://docs.osparc.io"
+            "format": "uri"
           },
           "docs_dev_url": {
             "title": "Docs Dev Url",
             "maxLength": 65536,
             "minLength": 1,
             "type": "string",
-            "format": "uri",
-            "default": "https://api.osparc.io/dev/docs"
+            "format": "uri"
           }
         },
         "example": {
@@ -1442,8 +2369,8 @@
             "v1": "1.3.4",
             "v2": "2.4.45"
           },
-          "doc_url": "https://api.osparc.io/doc",
-          "doc_dev_url": "https://api.osparc.io/dev/doc"
+          "docs_url": "https://api.osparc.io/doc",
+          "docs_dev_url": "https://api.osparc.io/dev/doc"
         }
       },
       "Profile": {
@@ -1519,6 +2446,22 @@
           }
         }
       },
+      "RunningState": {
+        "title": "RunningState",
+        "enum": [
+          "UNKNOWN",
+          "PUBLISHED",
+          "NOT_STARTED",
+          "PENDING",
+          "STARTED",
+          "RETRY",
+          "SUCCESS",
+          "FAILED",
+          "ABORTED"
+        ],
+        "type": "string",
+        "description": "State of execution of a project's computational workflow\n\nSEE StateType for task state"
+      },
       "Solver": {
         "title": "Solver",
         "required": [
@@ -1532,7 +2475,7 @@
         "properties": {
           "id": {
             "title": "Id",
-            "pattern": "^(simcore)/(services)/comp(/[\\w/-]+)+$",
+            "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
             "type": "string",
             "description": "Solver identifier"
           },
@@ -1574,21 +2517,99 @@
           "url": "https://api.osparc.io/v0/solvers/simcore%2Fservices%2Fcomp%2Fisolve/releases/2.1.1"
         }
       },
-      "TaskStates": {
-        "title": "TaskStates",
-        "enum": [
-          "UNKNOWN",
-          "PUBLISHED",
-          "NOT_STARTED",
-          "PENDING",
-          "STARTED",
-          "RETRY",
-          "SUCCESS",
-          "FAILED",
-          "ABORTED"
+      "SolverPort": {
+        "title": "SolverPort",
+        "required": [
+          "key",
+          "kind"
         ],
-        "type": "string",
-        "description": "An enumeration."
+        "type": "object",
+        "properties": {
+          "key": {
+            "title": "Key name",
+            "pattern": "^[^_\\W0-9]\\w*$",
+            "type": "string",
+            "description": "port identifier name"
+          },
+          "kind": {
+            "title": "Kind",
+            "enum": [
+              "input",
+              "output"
+            ],
+            "type": "string"
+          },
+          "content_schema": {
+            "title": "Content Schema",
+            "type": "object",
+            "description": "jsonschema for the port's value. SEE https://json-schema.org"
+          }
+        },
+        "example": {
+          "key": "input_2",
+          "kind": "input",
+          "content_schema": {
+            "title": "Sleep interval",
+            "type": "integer",
+            "x_unit": "second",
+            "minimum": 0,
+            "maximum": 5
+          }
+        }
+      },
+      "Study": {
+        "title": "Study",
+        "required": [
+          "uid"
+        ],
+        "type": "object",
+        "properties": {
+          "uid": {
+            "title": "Uid",
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "StudyPort": {
+        "title": "StudyPort",
+        "required": [
+          "key",
+          "kind"
+        ],
+        "type": "object",
+        "properties": {
+          "key": {
+            "title": "Key name",
+            "type": "string",
+            "description": "port identifier name.Correponds to the UUID of the parameter/probe node in the study",
+            "format": "uuid"
+          },
+          "kind": {
+            "title": "Kind",
+            "enum": [
+              "input",
+              "output"
+            ],
+            "type": "string"
+          },
+          "content_schema": {
+            "title": "Content Schema",
+            "type": "object",
+            "description": "jsonschema for the port's value. SEE https://json-schema.org"
+          }
+        },
+        "example": {
+          "key": "input_2",
+          "kind": "input",
+          "content_schema": {
+            "title": "Sleep interval",
+            "type": "integer",
+            "x_unit": "second",
+            "minimum": 0,
+            "maximum": 5
+          }
+        }
       },
       "UserRoleEnum": {
         "title": "UserRoleEnum",
@@ -1637,7 +2658,14 @@
             "title": "Location",
             "type": "array",
             "items": {
-              "type": "string"
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
             }
           },
           "msg": {
