@@ -1,17 +1,18 @@
 -include ../../scripts/common.Makefile
-PYTHON_DIR := $(CLIENTS_DIR)/python
-GENERATED_PY_CLIENT_DIR := $(PYTHON_DIR)/auto_generated_client
+PYTHON_DIR           := $(CLIENTS_DIR)/python
+ARTIFACTS_DIR        := $(PYTHON_DIR)/artifacts
 CONTAINER_API_JSON   := /local/$(REL_API_JSON_PATH)
 GENERATOR            := python
 UID                  := $(shell id -u)
 
-setup_client_dir:
-	-rm -rf $(GENERATED_PY_CLIENT_DIR)
-	mkdir $(GENERATED_PY_CLIENT_DIR)
+.PHONY: artifacts_dir
+artifacts_dir:
+	-mkdir $(ARTIFACTS_DIR)
 
 # Generation of Python client
 .PHONY: python-client
-python-client: validate-api-specification setup_client_dir## generate python client
+python-client: validate-api-specification artifacts_dir ## generate python client
+	-rm -r $(ARTIFACTS_DIR)/client
 	docker run --rm --user $(UID):$(UID)\
 			--volume "$(REPO_ROOT):/local" \
 			$(OPENAPI_GENERATOR_IMAGE) generate \
@@ -20,29 +21,30 @@ python-client: validate-api-specification setup_client_dir## generate python cli
 			--git-repo-id=$(GIT_CLIENT_REPO_ID) \
 			--http-user-agent="osparc-api/$(APP_VERSION)/python" \
 			--input-spec=$(CONTAINER_API_JSON) \
-			--output=/local/clients/python/auto_generated_client \
+			--output=/local/clients/python/artifacts/client \
 			--additional-properties=$(subst $(space),$(comma),$(strip $(ADDITIONAL_PROPS))) \
 			--package-name=osparc \
 			--release-note="Updated to $(APP_VERSION)"
 
 .PHONY: python-client-from-templates
-python-client-from-templates: validate-api-specification setup_client_dir## generate python client using templates in a specified directory (usage: 'make python-client-from-templates path/to/templates')
+python-client-from-templates: validate-api-specification artifacts_dir ## generate python client using templates in a specified directory (usage: 'make python-client-from-templates path/to/templates')
 	$(eval TEMPLATE_DIR := $(word 2, $(MAKECMDGOALS)))
 	@echo "Using template-dir: $(TEMPLATE_DIR)"
+	-rm -r $(ARTIFACTS_DIR)/client
 	@docker run --rm --user $(UID):$(UID)\
 			--volume "$(REPO_ROOT):/local" \
-			--volume "$(TEMPLATE_DIR):/tmp/templates" \
+			--volume "$(TEMPLATE_DIR):/tmp/python_templates" \
 			$(OPENAPI_GENERATOR_IMAGE) generate \
 			--generator-name=$(GENERATOR) \
 			--git-user-id=$(GIT_USER_ID) \
 			--git-repo-id=$(GIT_CLIENT_REPO_ID) \
 			--http-user-agent="osparc-api/$(APP_VERSION)/python" \
 			--input-spec=$(CONTAINER_API_JSON) \
-			--output=/local/clients/python/auto_generated_client \
+			--output=/local/clients/python/artifacts/client \
 			--additional-properties=$(subst $(space),$(comma),$(strip $(ADDITIONAL_PROPS))) \
 			--package-name=osparc \
 			--release-note="Updated to $(APP_VERSION)" \
-			--template-dir=/tmp/templates
+			--template-dir=/tmp/python_templates
 
 .PHONY: generator-help
 generator-help: ## help on client-api generator
@@ -57,14 +59,14 @@ _copy-docs: ## Replace git tracked docs in clients/python/docs/md by the automat
 	@mkdir $(PYTHON_DIR)/docs/auto_generated_docs
 	@mkdir $(PYTHON_DIR)/docs/auto_generated_docs/docs
 	@mkdir $(PYTHON_DIR)/docs/auto_generated_docs/code_samples
-	@cp $(PYTHON_DIR)/auto_generated_client/README.md $(PYTHON_DIR)/docs/auto_generated_docs/README.md
-	@cp $(PYTHON_DIR)/auto_generated_client/docs/* $(PYTHON_DIR)/docs/auto_generated_docs/docs
+	@cp $(ARTIFACTS_DIR)/client/README.md $(PYTHON_DIR)/docs/auto_generated_docs/README.md
+	@cp $(ARTIFACTS_DIR)/client/docs/* $(PYTHON_DIR)/docs/auto_generated_docs/docs
 
 .PHONY: _copy-tests
 _copy-tests: ## Replace git tracked tests clients/python/test by the automatically generated docs (N.B. check that the docs make sense before commiting into git)
 	@-rm -r $(PYTHON_DIR)/test
 	@mkdir $(PYTHON_DIR)/test
-	@cp $(PYTHON_DIR)/auto_generated_client/test/* $(PYTHON_DIR)/test/
+	@cp $(ARTIFACTS_DIR)/client/test/* $(PYTHON_DIR)/test/
 
 markdowns  = $(wildcard docs/auto_generated_docs/docs/*Api.md)
 outputs:=$(subst docs/auto_generated_docs/docs,docs/auto_generated_docs/code_samples,$(markdowns:.md=.ipynb))
@@ -92,26 +94,26 @@ install-dev: _check_venv_active ## install packages for development
 
 .PHONY: install-test
 install-test: _check_venv_active install-dev ## install packages for testing client
-	pip install -r auto_generated_client/test-requirements.txt
-	pip install -e auto_generated_client/
+	pip install -r $(ARTIFACTS_DIR)/client/test-requirements.txt
+	pip install -e $(ARTIFACTS_DIR)/client/
 
 
 .PHONY: pylint
 pylint: _check_venv_active ## runs linter (only to check errors. SEE .pylintrc enabled)
-	pylint --rcfile "$(PYTHON_DIR)/.pylintrc" -v "$(PYTHON_DIR)/auto_generated_client"
+	pylint --rcfile "$(PYTHON_DIR)/.pylintrc" -v "$(ARTIFACTS_DIR)/client"
 
 
 .PHONY: test-dev
 test-dev: _check_venv_active ## runs tests during development
 	# runs tests for development (e.g w/ pdb)
-	pytest -vv --exitfirst --failed-first --durations=10 --pdb --ignore=$(PYTHON_DIR)/auto_generated_client $(PYTHON_DIR)
+	pytest -vv --exitfirst --failed-first --durations=10 --pdb --ignore=$(ARTIFACTS_DIR)/client $(PYTHON_DIR)
 
 .PHONY: dist
-dist: ## builds distribution wheel
+dist: artifacts_dir ## builds distribution wheel
 	# installs pypa/build
 	python -m pip install build
     # Build a binary wheel and a source tarball
-	python -m build --sdist --wheel --outdir dist/ $(PYTHON_DIR)/auto_generated_client
+	python -m build --sdist --wheel --outdir $(ARTIFACTS_DIR)/dist/ $(ARTIFACTS_DIR)/client
 
 .PHONY: dist-ci
 dist-ci: install-dev python-client dist ## build wheel and tar ball in a single command
