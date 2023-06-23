@@ -1,4 +1,4 @@
-name: Python client artifact
+name: python-client-artifact
 run-name: python client
 on: [push]
 jobs:
