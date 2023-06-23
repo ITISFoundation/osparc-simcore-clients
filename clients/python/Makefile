@@ -75,7 +75,7 @@ artifacts/client/docs/code_samples/%.ipynb:artifacts/client/docs/%.md
 	# Appending link to markdown
 	@echo "[Download as $(notdir $@)]($(subst artifacts/,clients/python/artifacts/,$@) \":ignore title\")" >> $<
 
-
+.PHONY: docs
 docs: python-client postprocess-generated-docs ## generate the python client documentation
 
 ## PYTHON DEVELOPMENT  ------------------------------------------------------------------
