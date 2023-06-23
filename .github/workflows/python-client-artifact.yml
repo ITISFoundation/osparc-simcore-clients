@@ -1,4 +1,4 @@
-name: Osparc Python client artifact
+name: Python client artifact
 run-name: python client
 on: [push]
 jobs:

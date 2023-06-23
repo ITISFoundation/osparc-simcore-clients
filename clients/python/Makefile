@@ -76,6 +76,8 @@ artifacts/client/docs/code_samples/%.ipynb:artifacts/client/docs/%.md
 	@echo "[Download as $(notdir $@)]($(subst artifacts/,clients/python/artifacts/,$@) \":ignore title\")" >> $<
 
 
+docs: python-client postprocess-generated-docs ## generate the python client documentation
+
 ## PYTHON DEVELOPMENT  ------------------------------------------------------------------
 
 _check_venv_active:
