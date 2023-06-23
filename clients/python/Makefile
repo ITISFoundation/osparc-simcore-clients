@@ -110,7 +110,7 @@ dist: artifacts_dir ## builds distribution wheel
 	python -m build --sdist --wheel --outdir $(ARTIFACTS_DIR)/dist/ $(ARTIFACTS_DIR)/client
 
 .PHONY: dist-ci
-dist-ci: install-dev python-client dist ## build wheel and tar ball in a single command
+dist-ci: python-client dist ## build wheel and tar ball in a single command
 
 ## DOCKER -------------------------------------------------------------------------------
 
