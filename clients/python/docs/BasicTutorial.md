@@ -328,4 +328,4 @@ with ZipFile(f"{zip_path}") as fzip:
 
 [osparc API python client]:https://itisfoundation.github.io/osparc-simcore-clients
 [osparc API]:https://api.osparc.io/doc
-[Download as BasicTutorial.ipynb](clients/python/docs/tutorials_and_samples/tutorials/BasicTutorial.ipynb ":ignore title")
+[Download as BasicTutorial.ipynb](clients/python/docs/BasicTutorial.ipynb ":ignore title")

@@ -53,33 +53,27 @@ generator-help: ## help on client-api generator
 
 ## Tools for "postprocessing" generated documentation --------------------------------------------
 
-
-_copy-docs: ## Replace git tracked docs in clients/python/docs/md by the automatically generated docs (N.B. check that the docs make sense before commiting into git)
-	@-rm -r $(PYTHON_DIR)/docs/auto_generated_docs
-	@mkdir $(PYTHON_DIR)/docs/auto_generated_docs
-	@mkdir $(PYTHON_DIR)/docs/auto_generated_docs/docs
-	@mkdir $(PYTHON_DIR)/docs/auto_generated_docs/code_samples
-	@cp $(ARTIFACTS_DIR)/client/README.md $(PYTHON_DIR)/docs/auto_generated_docs/README.md
-	@cp $(ARTIFACTS_DIR)/client/docs/* $(PYTHON_DIR)/docs/auto_generated_docs/docs
-
 .PHONY: _copy-tests
 _copy-tests: ## Replace git tracked tests clients/python/test by the automatically generated docs (N.B. check that the docs make sense before commiting into git)
 	@-rm -r $(PYTHON_DIR)/test
 	@mkdir $(PYTHON_DIR)/test
 	@cp $(ARTIFACTS_DIR)/client/test/* $(PYTHON_DIR)/test/
 
-markdowns  = $(wildcard docs/auto_generated_docs/docs/*Api.md)
-outputs:=$(subst docs/auto_generated_docs/docs,docs/auto_generated_docs/code_samples,$(markdowns:.md=.ipynb))
+markdowns  = $(wildcard artifacts/client/docs/*Api.md)
+outputs:=$(subst artifacts/client/docs/,artifacts/client/docs/code_samples/,$(markdowns:.md=.ipynb))
 
-.PHONY: postprocess-generated-files
-postprocess-generated-files: _copy-docs $(outputs) ## converts selected markdowns into notebooks
+.PHONY: postprocess-generated-docs
+postprocess-generated-docs:  ## converts selected markdowns into notebooks and adds them to the documentation
+	@-mkdir artifacts/client/docs/code_samples
+	$(MAKE) $(outputs)
 
-docs/auto_generated_docs/code_samples/%.ipynb:docs/auto_generated_docs/docs/%.md
+artifacts/client/docs/code_samples/%.ipynb:artifacts/client/docs/%.md
 	# Removing link in markdown
+	@echo "Reached here 2"
 	@sed -i "/\b$(notdir $@)\b/d" $<
 	notedown $< >$@
 	# Appending link to markdown
-	@echo "[Download as $(notdir $@)]($(subst docs/auto_generated_docs/,clients/python/docs/auto_generated_docs/,$@) \":ignore title\")" >> $<
+	@echo "[Download as $(notdir $@)]($(subst artifacts/,clients/python/artifacts/,$@) \":ignore title\")" >> $<
 
 
 ## PYTHON DEVELOPMENT  ------------------------------------------------------------------

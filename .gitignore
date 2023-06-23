@@ -75,4 +75,4 @@ tmp*
 .env
 
 # auto generated python code
-/clients/python/auto_generated_client/*
+/clients/python/artifacts/*
