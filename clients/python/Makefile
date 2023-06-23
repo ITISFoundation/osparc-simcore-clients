@@ -59,12 +59,11 @@ _copy-tests: ## Replace git tracked tests clients/python/test by the automatical
 	@mkdir $(PYTHON_DIR)/test
 	@cp $(ARTIFACTS_DIR)/client/test/* $(PYTHON_DIR)/test/
 
-markdowns  = $(wildcard artifacts/client/docs/*Api.md)
-outputs:=$(subst artifacts/client/docs/,artifacts/client/docs/code_samples/,$(markdowns:.md=.ipynb))
-
 .PHONY: postprocess-generated-docs
 postprocess-generated-docs:  ## converts selected markdowns into notebooks and adds them to the documentation
 	@-mkdir artifacts/client/docs/code_samples
+	$(eval markdowns := $(shell ls artifacts/client/docs/*Api.md))
+	$(eval outputs := $(subst artifacts/client/docs/,artifacts/client/docs/code_samples/,$(markdowns:.md=.ipynb)))
 	$(MAKE) $(outputs)
 
 artifacts/client/docs/code_samples/%.ipynb:artifacts/client/docs/%.md
