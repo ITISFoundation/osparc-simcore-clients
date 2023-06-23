@@ -1,5 +1,5 @@
-name: build-osparc-client
-run-name: building osparc client
+name: generate-osparc-python-client
+run-name: python client
 on: [push]
 jobs:
   build-and-upload-wheel:
@@ -20,4 +20,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: osparc_python_client
-          path: clients/python/dist/
+          path: clients/python/artifacts/dist/
