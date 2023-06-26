@@ -33,7 +33,7 @@ ADDITIONAL_PROPS := \
 	packageName=osparc\
 	packageUrl=$(shell gh repo view $(VCS_URL) --json=homepageUrl --jq=.[])\
 	packageVersion=$(APP_VERSION)\
-	projectName=osparc-simcore-python-api
+	projectName=osparc-python-client
 ADDITIONAL_PROPS := $(foreach prop,$(ADDITIONAL_PROPS),$(strip $(prop)))
 
 null  :=
