@@ -24,15 +24,18 @@ jobs:
         with:
           python-version: 3.9
       - name: Download open api json
+        if: github.event_name == 'workflow_dispatch'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           rm ./api/openapi.json
-          gh run download ${{ github.event.inputs.run_id }}  --repo=bisgaard-itis/osparc-simcore-clients --dir ./api
-        if: github.event_name == 'workflow_dispatch'
+          gh run download ${{ github.event.inputs.run_id }}  --repo=${{ github.event.inputs.repo }} --dir ./api
+          if [ ! -e "./api/openapi.json" ]; then
+            echo "Could not correctly download openapi.json"
+            ls ./api
+            exit 1
+          fi
       - name: Generate client
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git status
           make devenv
@@ -40,7 +43,7 @@ jobs:
           cd clients/python
           make install-dev
           make dist-ci
-      - name: Determine artifact wheel
+      - name: Determine wheel artifact
         id: find-wheel
         run: |
           WHEEL=$(ls clients/python/artifacts/dist/*whl)
