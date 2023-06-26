@@ -44,18 +44,10 @@ jobs:
         id: find-wheel
         run: |
           WHEEL=$(ls clients/python/artifacts/dist/*whl)
-          echo "::set-output name=file-path::${WHEEL}"
-          echo "::set-output name=file-name::$(basename ${WHEEL})"
+          echo "file-path=${WHEEL}" >> $GITHUB_OUTPUT
+          echo "file-name=$(basename ${WHEEL})" >> $GITHUB_OUTPUT
       - name: Upload wheel
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.find-wheel.outputs.file-name }}
           path: ${{ steps.find-wheel.outputs.file-path }}
-
-      - name: Publish distribution 📦 to *Test* PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          password: ${{ secrets.TEST_PYPI_TOKEN }}
-          repository-url: https://test.pypi.org/legacy/
-          verbose: true
-          packages-dir: clients/python/artifacts/dist
