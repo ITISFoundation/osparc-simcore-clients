@@ -20,7 +20,7 @@ OPENAPI_GENERATOR_IMAGE := $(OPENAPI_GENERATOR_NAME):$(OPENAPI_GENERATOR_TAG)
 
 # openapi specification
 REL_API_JSON_PATH       := api/openapi.json
-ABS_API_JSON_PATH       := $(API_DIR)/$(REL_API_JSON_PATH)
+ABS_API_JSON_PATH       := $(REPO_ROOT)/$(REL_API_JSON_PATH)
 
 GIT_USER_ID := ITISFoundation
 GIT_CLIENT_REPO_ID := osparc-simcore-clients

@@ -4,25 +4,41 @@ permissions:
   id-token: write
 on:
   workflow_dispatch:
+    inputs:
+      repo:
+        description: "Repository where openapi-json was generated"
+        default: "ITISFoundation/osparc-simcore-clients"
+      run_id:
+        description: "Run ID of the workflow which generated openapi.json as an artifact"
+        required: true
   push:
 jobs:
   build-and-upload-wheel:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.client_payload.ref }}
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
-      - name: Generate client
+      - name: Download open api json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          gh run download ${{ github.event.inputs.run_id }}  --repo=bisgaard-itis/osparc-simcore-clients --dir ./api
+        if: github.event_name == 'workflow_dispatch'
+      - name: Generate client
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git status
           make devenv
           source .venv/bin/activate
           cd clients/python
           make install-dev
           make dist-ci
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload wheel
         uses: actions/upload-artifact@v3
         with:
