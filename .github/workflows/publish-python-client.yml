@@ -1,4 +1,4 @@
-name: python-client-artifact
+name: publish-python-client
 run-name: python client
 permissions:
   id-token: write
