@@ -27,6 +27,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          rm ./api/openapi.json
           gh run download ${{ github.event.inputs.run_id }}  --repo=bisgaard-itis/osparc-simcore-clients --dir ./api
         if: github.event_name == 'workflow_dispatch'
       - name: Generate client
@@ -43,7 +44,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: osparc_python_client
-          path: clients/python/artifacts/dist/
+          path: $(ls clients/python/artifacts/dist/*whl)
       - name: Publish distribution 📦 to *Test* PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
