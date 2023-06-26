@@ -1,5 +1,7 @@
 name: python-client-artifact
 run-name: python client
+permissions:
+  id-token: write
 on:
   workflow_dispatch:
   push:
