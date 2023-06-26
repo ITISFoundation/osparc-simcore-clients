@@ -31,7 +31,7 @@ ADDITIONAL_PROPS := \
 	hideGenerationTimestamp=true\
 	library=urllib3\
 	packageName=osparc\
-	packageUrl=git config --get remote.origin.url\
+	packageUrl=$(shell gh repo view $(VCS_URL) --json=homepageUrl --jq=.[])\
 	packageVersion=$(APP_VERSION)\
 	projectName=osparc-simcore-python-api
 ADDITIONAL_PROPS := $(foreach prop,$(ADDITIONAL_PROPS),$(strip $(prop)))
