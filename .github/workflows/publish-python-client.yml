@@ -43,7 +43,7 @@ jobs:
       - name: Determine artifact wheel
         id: find-wheel
         run: |
-          WHEEL=$(ls clients/python/artifacts/dist.*whl)
+          WHEEL=$(ls clients/python/artifacts/dist/*whl)
           echo "::set-output name=file-path::${WHEEL}"
           echo "::set-output name=file-name::$(basename ${WHEEL})"
       - name: Upload wheel
