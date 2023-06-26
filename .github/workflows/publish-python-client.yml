@@ -21,6 +21,8 @@ jobs:
           cd clients/python
           make install-dev
           make dist-ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload wheel
         uses: actions/upload-artifact@v3
         with:
