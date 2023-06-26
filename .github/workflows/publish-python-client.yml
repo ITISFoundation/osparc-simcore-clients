@@ -32,3 +32,4 @@ jobs:
           password: ${{ secrets.TEST_PYPI_TOKEN }}
           repository-url: https://test.pypi.org/legacy/
           verbose: true
+          packages-dir: clients/python/artifacts/dist
