@@ -40,11 +40,18 @@ jobs:
           cd clients/python
           make install-dev
           make dist-ci
+      - name: Determine artifact wheel
+        id: find-wheel
+        run: |
+          WHEEL=$(ls clients/python/artifacts/dist.*whl)
+          echo "::set-output name=file-path::${WHEEL}"
+          echo "::set-output name=file-name::$(basename ${WHEEL})"
       - name: Upload wheel
         uses: actions/upload-artifact@v3
         with:
-          name: osparc_python_client
-          path: $(ls clients/python/artifacts/dist/*whl)
+          name: ${{ steps.find-wheel.outputs.file-name }}
+          path: ${{ steps.find-wheel.outputs.file-path }}
+
       - name: Publish distribution 📦 to *Test* PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
