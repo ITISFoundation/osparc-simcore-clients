@@ -31,9 +31,9 @@ ADDITIONAL_PROPS := \
 	hideGenerationTimestamp=true\
 	library=urllib3\
 	packageName=osparc\
-	packageUrl=$(shell gh repo view $(VCS_URL) --json=homepageUrl --jq=.[])\
+	packageUrl=$(shell bash $(SCRIPTS_DIR)/gh.bash repo view $(VCS_URL) --json=homepageUrl --jq=.[])\
 	packageVersion=$(APP_VERSION)\
-	projectName=osparc-$(shell gh repo view $(VCS_URL) --json=owner --jq=.[].login)
+	projectName=osparc
 ADDITIONAL_PROPS := $(foreach prop,$(ADDITIONAL_PROPS),$(strip $(prop)))
 
 null  :=
