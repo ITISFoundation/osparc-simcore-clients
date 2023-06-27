@@ -28,7 +28,7 @@ setup(
     install_requires=REQUIRES,
     packages=find_packages(exclude=["test", "tests"]),
     include_package_data=True,
-    package_dir={"": "osparc"},
+    package_dir={"": "."},
     package_data={
         "": [
             "data/openapi.json",

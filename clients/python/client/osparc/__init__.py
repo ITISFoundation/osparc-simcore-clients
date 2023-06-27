@@ -1,5 +1,8 @@
 # from osparc_raw import *
 
+from .info import get_api
+
+
 from osparc_raw import (
     FilesApi,
     MetaApi,
