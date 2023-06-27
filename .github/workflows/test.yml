@@ -41,6 +41,7 @@ jobs:
         run: |
           pip install --upgrade nox
           cd clients/python
+          make install-dev
           make python-client
           nox -s test-${{ matrix.python-version }}
   test-latest:
@@ -67,6 +68,7 @@ jobs:
         run: |
           pip install --upgrade nox
           cd clients/python
+          make install-dev
           make python-client
           nox -s test-${{ matrix.python-version }}
     # TODO: add coverage
