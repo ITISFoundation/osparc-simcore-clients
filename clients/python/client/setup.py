@@ -1,8 +1,14 @@
 from setuptools import setup, find_packages  # noqa: H301
 from pathlib import Path
+import json
+from typing import Any
+
+repo_root: Path = (Path(__file__) / '../../../..').resolve()
+
+config: dict[str: Any] = json.loads((repo_root / 'api/config.json').read_text())
 
 NAME = "osparc"
-VERSION = "0.5.0"
+VERSION = f"{config['python']['version']}"
 # To install the library, run the following
 #
 # python setup.py install
@@ -11,7 +17,6 @@ VERSION = "0.5.0"
 # http://pypi.python.org/pypi/setuptools
 
 REQUIRES = [f"osparc_raw == {VERSION}"]
-README = Path("README.md").read_text()
 
 setup(
     name=NAME,
@@ -23,7 +28,8 @@ setup(
     install_requires=REQUIRES,
     packages=find_packages(exclude=["test", "tests"]),
     include_package_data=True,
-    long_description=README,
+    data_files=[('meta',[str('../../../../api/openapi.json')])],
+    long_description="osparc client",
     long_description_content_type="text/markdown",
     license="MIT",
     classifiers=[
