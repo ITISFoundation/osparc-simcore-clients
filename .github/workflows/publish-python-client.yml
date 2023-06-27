@@ -46,15 +46,24 @@ jobs:
       - name: Determine wheel artifact
         id: find-wheel
         run: |
-          WHEEL=$(ls clients/python/artifacts/dist/*whl)
-          echo "wheel-path=${WHEEL}" >> $GITHUB_OUTPUT
-          echo "wheel-dir=$(dirname ${WHEEL})" >> $GITHUB_OUTPUT
-          echo "wheel-name=$(basename ${WHEEL})" >> $GITHUB_OUTPUT
-      - name: Upload wheel
+          OSPARC_WHEEL=$(ls clients/python/artifacts/dist/osparc-*.whl)
+          OSPARC_AUTO_GENERATED_WHEEL=$(ls clients/python/artifacts/dist/osparc_auto_generated*.whl)
+          echo "osparc-wheel-path=${OSPARC_WHEEL}" >> $GITHUB_OUTPUT
+          echo "osparc-wheel-dir=$(dirname ${OSPARC_WHEEL})" >> $GITHUB_OUTPUT
+          echo "osparc-wheel-name=$(basename ${OSPARC_WHEEL})" >> $GITHUB_OUTPUT
+          echo "osparc-auto-wheel-path=${OSPARC_AUTO_GENERATED_WHEEL}" >> $GITHUB_OUTPUT
+          echo "osparc-auto-wheel-dir=$(dirname ${OSPARC_AUTO_GENERATED_WHEEL})" >> $GITHUB_OUTPUT
+          echo "osparc-auto-wheel-name=$(basename ${OSPARC_AUTO_GENERATED_WHEEL})" >> $GITHUB_OUTPUT
+      - name: Upload osparc wheel
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.find-wheel.outputs.wheel-name }}
-          path: ${{ steps.find-wheel.outputs.wheel-path }}
+          name: ${{ steps.find-wheel.outputs.osparc-wheel-name }}
+          path: ${{ steps.find-wheel.outputs.osparc-wheel-path }}
+      - name: Upload osparc_auto_generated wheel
+        uses: actions/upload-artifact@v3
+        with:
+            name: ${{ steps.find-wheel.outputs.osparc-auto-wheel-name }}
+            path: ${{ steps.find-wheel.outputs.osparc-auto-wheel-path }}
       - name: Publish package to Test PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
