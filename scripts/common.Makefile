@@ -31,7 +31,7 @@ ADDITIONAL_PROPS := \
 	hideGenerationTimestamp=true\
 	library=urllib3\
 	packageName=osparc\
-	packageUrl=$(shell bash $(SCRIPTS_DIR)/gh.bash repo view $(VCS_URL) --json=homepageUrl --jq=.[])\
+	packageUrl=https://bisgaard-itis.github.io/osparc-simcore-clients/#/clients/python/artifacts/client/README\
 	packageVersion=$(APP_VERSION)\
 	projectName=osparc
 ADDITIONAL_PROPS := $(foreach prop,$(ADDITIONAL_PROPS),$(strip $(prop)))
