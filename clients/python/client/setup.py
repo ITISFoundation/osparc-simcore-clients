@@ -3,9 +3,9 @@ from pathlib import Path
 import json
 from typing import Any
 
-repo_root: Path = (Path(__file__) / '../../../..').resolve()
+repo_root: Path = (Path(__file__) / "../../../..").resolve()
 
-config: dict[str, Any] = json.loads((repo_root / 'api/config.json').read_text())
+config: dict[str, Any] = json.loads((repo_root / "api/config.json").read_text())
 
 NAME = "osparc"
 VERSION = f"{config['python']['version']}"
@@ -34,7 +34,6 @@ setup(
             "data/openapi.json",
         ]
     },
-
     long_description="osparc client",
     long_description_content_type="text/markdown",
     license="MIT",

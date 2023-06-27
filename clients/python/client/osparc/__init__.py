@@ -28,5 +28,5 @@ from osparc_auto_generated import (
     TaskStates,
     UserRoleEnum,
     UsersGroup,
-    ValidationError
+    ValidationError,
 )

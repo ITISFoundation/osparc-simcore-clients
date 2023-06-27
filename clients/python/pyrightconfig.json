@@ -1,0 +1,9 @@
+{
+    "include": [
+      "client/osparc",
+      "artifacts/client/osparc_auto_generated"
+    ],
+    "exclude":[
+      "artifacts/client/osparc_auto_generated/test/*"
+    ]
+  }
