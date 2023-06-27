@@ -1,9 +1,7 @@
-# from osparc_raw import *
-
 from .info import get_api
 
 
-from osparc_raw import (
+from osparc_auto_generated import (
     FilesApi,
     MetaApi,
     SolversApi,

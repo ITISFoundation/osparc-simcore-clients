@@ -16,7 +16,7 @@ VERSION = f"{config['python']['version']}"
 # prerequisite: setuptools
 # http://pypi.python.org/pypi/setuptools
 
-REQUIRES = [f"osparc_raw=={VERSION}"]
+REQUIRES = [f"osparc_auto_generated=={VERSION}"]
 
 setup(
     name=NAME,
