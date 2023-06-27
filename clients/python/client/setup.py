@@ -5,7 +5,7 @@ from typing import Any
 
 repo_root: Path = (Path(__file__) / '../../../..').resolve()
 
-config: dict[str: Any] = json.loads((repo_root / 'api/config.json').read_text())
+config: dict[str, Any] = json.loads((repo_root / 'api/config.json').read_text())
 
 NAME = "osparc"
 VERSION = f"{config['python']['version']}"
@@ -16,7 +16,7 @@ VERSION = f"{config['python']['version']}"
 # prerequisite: setuptools
 # http://pypi.python.org/pypi/setuptools
 
-REQUIRES = [f"osparc_raw == {VERSION}"]
+REQUIRES = [f"osparc_raw=={VERSION}"]
 
 setup(
     name=NAME,
@@ -28,7 +28,13 @@ setup(
     install_requires=REQUIRES,
     packages=find_packages(exclude=["test", "tests"]),
     include_package_data=True,
-    data_files=[('meta',[str('../../../../api/openapi.json')])],
+    package_dir={"": "osparc"},
+    package_data={
+        "": [
+            "data/openapi.json",
+        ]
+    },
+
     long_description="osparc client",
     long_description_content_type="text/markdown",
     license="MIT",

@@ -108,6 +108,8 @@ dist: artifacts_dir ## builds distribution wheel
 	python -m pip install build
     # Build a binary wheel and a source tarball
 	python -m build --sdist --wheel --outdir $(ARTIFACTS_DIR)/dist $(ARTIFACTS_DIR)/client
+	@-mkdir $(PYTHON_DIR)/client/osparc/data/
+	@cp $(REPO_ROOT)/api/openapi.json $(PYTHON_DIR)/client/osparc/data/
 	python -m build --sdist --wheel --outdir $(ARTIFACTS_DIR)/dist $(PYTHON_DIR)/client
 
 .PHONY: dist-ci
