@@ -25,6 +25,7 @@ python-client: validate-api-specification artifacts_dir ## generate python clien
 			--additional-properties=$(subst $(space),$(comma),$(strip $(ADDITIONAL_PROPS))) \
 			--package-name=osparc_auto_generated \
 			--release-note="Updated to $(APP_VERSION)"
+	black $(PYTHON_DIR)/artifacts/client/*.py
 
 .PHONY: python-client-from-templates
 python-client-from-templates: validate-api-specification artifacts_dir ## generate python client using templates in a specified directory (usage: 'make python-client-from-templates path/to/templates')
@@ -45,6 +46,7 @@ python-client-from-templates: validate-api-specification artifacts_dir ## genera
 			--package-name=osparc_auto_generated \
 			--release-note="Updated to $(APP_VERSION)" \
 			--template-dir=/tmp/python_templates
+	black $(PYTHON_DIR)/artifacts/client/*.py
 
 .PHONY: generator-help
 generator-help: ## help on client-api generator
