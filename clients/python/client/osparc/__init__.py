@@ -2,6 +2,8 @@ from .info import get_api
 
 
 from osparc_auto_generated import (
+    api,
+    models,
     FilesApi,
     MetaApi,
     SolversApi,
