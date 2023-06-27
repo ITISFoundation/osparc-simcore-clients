@@ -23,7 +23,7 @@ python-client: validate-api-specification artifacts_dir ## generate python clien
 			--input-spec=$(CONTAINER_API_JSON) \
 			--output=/local/clients/python/artifacts/client \
 			--additional-properties=$(subst $(space),$(comma),$(strip $(ADDITIONAL_PROPS))) \
-			--package-name=osparc_raw \
+			--package-name=osparc_auto_generated \
 			--release-note="Updated to $(APP_VERSION)"
 
 .PHONY: python-client-from-templates
@@ -42,7 +42,7 @@ python-client-from-templates: validate-api-specification artifacts_dir ## genera
 			--input-spec=$(CONTAINER_API_JSON) \
 			--output=/local/clients/python/artifacts/client \
 			--additional-properties=$(subst $(space),$(comma),$(strip $(ADDITIONAL_PROPS))) \
-			--package-name=osparc_raw \
+			--package-name=osparc_auto_generated \
 			--release-note="Updated to $(APP_VERSION)" \
 			--template-dir=/tmp/python_templates
 
