@@ -39,11 +39,9 @@ jobs:
             ${{ runner.os }}-pip
       - name: Install and Test
         run: |
-          make devenv
-          source .venv/bin/activate
           pip install --upgrade nox
           cd clients/python
-          make install-dev
+          pip install -r requirements/generate.txt
           make python-client
           nox -s test-${{ matrix.python-version }}
   test-latest:
@@ -68,11 +66,9 @@ jobs:
             ${{ runner.os }}-pip
       - name: Install and Test
         run: |
-          make devenv
-          source .venv/bin/activate
           pip install --upgrade nox
           cd clients/python
-          make install-dev
+          pip install -r requirements/generate.txt
           make python-client
           nox -s test-${{ matrix.python-version }}
     # TODO: add coverage
