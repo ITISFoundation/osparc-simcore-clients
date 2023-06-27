@@ -1,5 +1,4 @@
 FROM ubuntu:20.04
-RUN echo ${buildkit}
 RUN type -p curl >/dev/null || (apt-get update && apt-get install curl -y)
 RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
     && chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
