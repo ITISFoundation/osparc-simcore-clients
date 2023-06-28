@@ -1,16 +1,9 @@
 name: test
 
 on:
-  pull_request:
-    paths-ignore:
-      - "*.md"
-      - "*.png"
-      - "*.svg"
-      - "docs/**"
-      - ".vscode/**"
   workflow_run:
     workflows:
-      - "publish-python-client"
+      - publish-python-client
     types:
       - completed
 jobs:

@@ -1,7 +1,5 @@
 name: publish-python-client
 run-name: python client
-permissions:
-  id-token: write
 on:
   workflow_dispatch:
     inputs:
