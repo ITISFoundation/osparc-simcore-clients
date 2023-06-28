@@ -105,11 +105,9 @@ jobs:
           path: clients/python/artifacts/dist/
       - name: Install and Test
         run: |
-          echo $(ls clients/python/artifacts/dist/)
-          echo $(ls clients/python/artifacts/dist/osparc_python_wheels)
           make devenv
           source .venv/bin/activate
+          python -m pip install ${{needs.build-n-publish.outputs.wheel}} --find-links=${{needs.build-n-publish.outputs.dist-dir}}
           cd clients/python
           make install-test
-          python -m pip install ${{needs.build-n-publish.outputs.wheel}} --find-links=${{needs.build-n-publish.outputs.dist-dir}}
           nox -s test-${{ matrix.python-version }}
