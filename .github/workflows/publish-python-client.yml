@@ -1,4 +1,4 @@
-name: publish-python-client
+name: publish-and-test-python-client
 on:
   workflow_dispatch:
     inputs:
@@ -10,8 +10,11 @@ on:
         required: true
   push:
 jobs:
-  build-and-upload-wheel:
+  build-n-publish:
     runs-on: ubuntu-latest
+    outputs:
+      wheel: ${{ steps.find-wheel.outputs.osparc-wheel-path }}
+      dist-dir: ${{ steps.find-wheel.outputs.osparc-auto-wheel-dir }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -71,3 +74,40 @@ jobs:
           password: ${{ secrets.PYPI_TOKEN }}
           verbose: true
           packages-dir: ${{ steps.find-wheel.outputs.wheel-dir }}
+
+  test-20-04:
+    name: python ${{ matrix.python-version }} ubuntu-20.04
+    runs-on: ubuntu-20.04
+    needs: build-n-publish
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.6, 3.7, 3.8, 3.9]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.client_payload.ref }}
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Pip cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-{{ matrix.python-version }}
+          restore-keys: |
+            ${{ runner.os }}-pip
+      - name: Donwload client
+        uses: actions/download-artifact@v3
+        with:
+          name: osparc_python_wheels
+          path: clients/python/artifacts/dist/
+      - name: Install and Test
+        run: |
+          make devenv
+          source .venv/bin/activate
+          cd clients/python
+          make install-test
+          python -m pip install ${{needs.build-n-publish.outputs.wheel}} --find-links=${{needs.build-n-publish.outputs.dist-dir}}
+          nox -s test-${{ matrix.python-version }}
