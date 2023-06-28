@@ -1,8 +1,7 @@
 name: test
 on:
   workflow_run:
-    workflows:
-      - publish-python-client
+    workflows: [publish-python-client]
     types:
       - completed
 jobs:
