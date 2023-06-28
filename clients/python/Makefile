@@ -103,16 +103,21 @@ dist: artifacts_dir ## builds distribution wheel
 	# installs pypa/build
 	python -m pip install build
     # Build a binary wheel and a source tarball
-	python -m build --sdist --wheel --outdir $(ARTIFACTS_DIR)/dist $(ARTIFACTS_DIR)/client
+	python -m build --sdist --wheel $(ARTIFACTS_DIR)/client
 	@-mkdir $(PYTHON_DIR)/client/osparc/data/
 	@cp $(REPO_ROOT)/api/openapi.json $(PYTHON_DIR)/client/osparc/data/
-	python -m build --sdist --wheel --outdir $(ARTIFACTS_DIR)/dist $(PYTHON_DIR)/client
+	python -m build --sdist --wheel $(PYTHON_DIR)/client
+	@-rm -rf $(ARTIFACTS_DIR)/dist
+	@mkdir $(ARTIFACTS_DIR)/dist
+	@cp $$(ls artifacts/client/dist/*.whl) $(ARTIFACTS_DIR)/dist
+	@cp $$(ls client/dist/*.whl) $(ARTIFACTS_DIR)/dist
+
 
 .PHONY: dist-ci
 dist-ci: python-client dist ## build wheel and tar ball in a single command
 
-.PHONY: build-n-install-osparc
-build-n-install-osparc: dist-ci ## install the built osparc package in editable mode
+.PHONY: build-n-install-osparc-dev
+build-n-install-osparc-dev: dist-ci ## install the built osparc package in editable mode
 	python -m pip install -e client/ --find-links=artifacts/dist
 
 

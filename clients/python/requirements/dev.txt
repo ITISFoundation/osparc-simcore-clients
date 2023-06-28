@@ -1,4 +1,4 @@
 -r ../../../requirements.txt
--r generate.txt
+-r test.txt
 notedown
 pylint
