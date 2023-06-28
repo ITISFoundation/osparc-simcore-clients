@@ -1,1 +1,1 @@
-osparc_auto_generated.api.solvers_api import SolversApi
+from osparc_auto_generated.api.solvers_api import SolversApi

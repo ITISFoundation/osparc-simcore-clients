@@ -17,7 +17,7 @@ import datetime
 
 import osparc
 from osparc.models.solver import Solver  # noqa: E501
-from osparc.rest import ApiException
+from osparc.exceptions import ApiException
 
 class TestSolver(unittest.TestCase):
     """Solver unit test stubs"""

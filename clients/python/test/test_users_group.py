@@ -17,7 +17,7 @@ import datetime
 
 import osparc
 from osparc.models.users_group import UsersGroup  # noqa: E501
-from osparc.rest import ApiException
+from osparc.exceptions import ApiException
 
 class TestUsersGroup(unittest.TestCase):
     """UsersGroup unit test stubs"""

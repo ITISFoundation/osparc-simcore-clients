@@ -16,7 +16,7 @@ import unittest
 
 import osparc
 from osparc.api.solvers_api import SolversApi  # noqa: E501
-from osparc.rest import ApiException
+from osparc.exceptions import ApiException
 
 
 class TestSolversApi(unittest.TestCase):

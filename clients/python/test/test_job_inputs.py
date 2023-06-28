@@ -17,7 +17,7 @@ import datetime
 
 import osparc
 from osparc.models.job_inputs import JobInputs  # noqa: E501
-from osparc.rest import ApiException
+from osparc.exceptions import ApiException
 
 class TestJobInputs(unittest.TestCase):
     """JobInputs unit test stubs"""

@@ -17,7 +17,7 @@ import datetime
 
 import osparc
 from osparc.models.body_upload_file_v0_files_content_put import BodyUploadFileV0FilesContentPut  # noqa: E501
-from osparc.rest import ApiException
+from osparc.exceptions import ApiException
 
 class TestBodyUploadFileV0FilesContentPut(unittest.TestCase):
     """BodyUploadFileV0FilesContentPut unit test stubs"""

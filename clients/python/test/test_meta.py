@@ -17,7 +17,7 @@ import datetime
 
 import osparc
 from osparc.models.meta import Meta  # noqa: E501
-from osparc.rest import ApiException
+from osparc.exceptions import ApiException
 
 class TestMeta(unittest.TestCase):
     """Meta unit test stubs"""

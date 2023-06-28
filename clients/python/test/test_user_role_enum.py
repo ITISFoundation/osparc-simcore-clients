@@ -17,7 +17,7 @@ import datetime
 
 import osparc
 from osparc.models.user_role_enum import UserRoleEnum  # noqa: E501
-from osparc.rest import ApiException
+from osparc.exceptions import ApiException
 
 class TestUserRoleEnum(unittest.TestCase):
     """UserRoleEnum unit test stubs"""

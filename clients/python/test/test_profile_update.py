@@ -17,7 +17,7 @@ import datetime
 
 import osparc
 from osparc.models.profile_update import ProfileUpdate  # noqa: E501
-from osparc.rest import ApiException
+from osparc.exceptions import ApiException
 
 class TestProfileUpdate(unittest.TestCase):
     """ProfileUpdate unit test stubs"""

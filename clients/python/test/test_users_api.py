@@ -16,7 +16,7 @@ import unittest
 
 import osparc
 from osparc.api.users_api import UsersApi  # noqa: E501
-from osparc.rest import ApiException
+from osparc.exceptions import ApiException
 
 
 class TestUsersApi(unittest.TestCase):

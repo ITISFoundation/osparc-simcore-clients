@@ -16,7 +16,7 @@ import unittest
 
 import osparc
 from osparc.api.files_api import FilesApi  # noqa: E501
-from osparc.rest import ApiException
+from osparc.exceptions import ApiException
 
 
 class TestFilesApi(unittest.TestCase):

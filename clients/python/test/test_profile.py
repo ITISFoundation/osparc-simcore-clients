@@ -17,7 +17,7 @@ import datetime
 
 import osparc
 from osparc.models.profile import Profile  # noqa: E501
-from osparc.rest import ApiException
+from osparc.exceptions import ApiException
 
 class TestProfile(unittest.TestCase):
     """Profile unit test stubs"""

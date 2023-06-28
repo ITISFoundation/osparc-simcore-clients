@@ -17,7 +17,7 @@ import datetime
 
 import osparc
 from osparc.models.validation_error import ValidationError  # noqa: E501
-from osparc.rest import ApiException
+from osparc.exceptions import ApiException
 
 class TestValidationError(unittest.TestCase):
     """ValidationError unit test stubs"""

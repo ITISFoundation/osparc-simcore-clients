@@ -16,7 +16,7 @@ import unittest
 
 import osparc
 from osparc.api.meta_api import MetaApi  # noqa: E501
-from osparc.rest import ApiException
+from osparc.exceptions import ApiException
 
 
 class TestMetaApi(unittest.TestCase):

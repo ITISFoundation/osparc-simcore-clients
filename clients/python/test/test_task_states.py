@@ -17,7 +17,7 @@ import datetime
 
 import osparc
 from osparc.models.task_states import TaskStates  # noqa: E501
-from osparc.rest import ApiException
+from osparc.exceptions import ApiException
 
 class TestTaskStates(unittest.TestCase):
     """TaskStates unit test stubs"""

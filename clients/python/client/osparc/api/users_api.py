@@ -1,1 +1,1 @@
-osparc_auto_generated.api.users_api import UsersApi
+from osparc_auto_generated.api.users_api import UsersApi

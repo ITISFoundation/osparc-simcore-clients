@@ -17,7 +17,7 @@ import datetime
 
 import osparc
 from osparc.models.file import File  # noqa: E501
-from osparc.rest import ApiException
+from osparc.exceptions import ApiException
 
 class TestFile(unittest.TestCase):
     """File unit test stubs"""
