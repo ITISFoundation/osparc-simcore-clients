@@ -144,5 +144,7 @@ jobs:
           source .venv/bin/activate
           cd clients/python
           make install-test
+          echo "${{job.build-n-publish.outputs.wheel}} "
+          echo "${{job.build-n-publish.outputs.dist-dir}}"
           python -m pip install ${{job.build-n-publish.outputs.wheel}} --find-links=${{job.build-n-publish.outputs.dist-dir}}
           pytest -v --ignore=/artifacts/client
