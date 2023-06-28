@@ -1,5 +1,4 @@
 name: publish-python-client
-run-name: python client
 on:
   workflow_dispatch:
     inputs:
