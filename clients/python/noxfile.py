@@ -10,9 +10,6 @@ source_files = ("osparc", "test", "setup.py", "noxfile.py")
 
 @nox.session(python=["3.6", "3.7", "3.8", "3.9"])
 def test(session):
-    session.install("-r", "artifacts/client/test-requirements.txt")
-    session.install("-e", "artifacts/client/")
-    session.install("-e", "client/")
 
     options = session.posargs
     if "-k" in options or "-x" in options:
