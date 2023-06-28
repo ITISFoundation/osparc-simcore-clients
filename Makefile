@@ -24,7 +24,7 @@ info: ## general information
 	python3 -m venv $@
 	## upgrading tools to latest version in $(shell python3 --version)
 	$@/bin/pip3 --quiet install --upgrade \
-		pip~=22.0 \
+		pip \
 		wheel \
 		setuptools
 	@$@/bin/pip3 list --verbose
