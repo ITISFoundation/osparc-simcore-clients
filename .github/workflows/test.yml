@@ -21,6 +21,8 @@ jobs:
         run: |
           gh run download ${{ github.event.workflow_run.id }} --dir=clients/python/artifacts
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
