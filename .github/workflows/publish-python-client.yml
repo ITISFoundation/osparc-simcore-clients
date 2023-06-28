@@ -47,7 +47,7 @@ jobs:
         id: find-wheel
         run: |
           OSPARC_WHEEL=$(ls clients/python/artifacts/dist/osparc-*.whl)
-          OSPARC_AUTO_GENERATED_WHEEL=$(ls clients/python/artifacts/dist/osparc_auto_generated*.whl)
+          OSPARC_AUTO_GENERATED_WHEEL=$(ls clients/python/artifacts/dist/osparc_client*.whl)
           echo "osparc-wheel-path=${OSPARC_WHEEL}" >> $GITHUB_OUTPUT
           echo "osparc-wheel-dir=$(dirname ${OSPARC_WHEEL})" >> $GITHUB_OUTPUT
           echo "osparc-wheel-name=$(basename ${OSPARC_WHEEL})" >> $GITHUB_OUTPUT

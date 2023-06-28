@@ -33,7 +33,7 @@ ADDITIONAL_PROPS := \
 	packageName=osparc\
 	packageUrl=$(shell bash $(SCRIPTS_DIR)/jq.bash -r .homepage $(REPO_ROOT)/api/config.json)\
 	packageVersion=$(APP_VERSION)\
-	projectName=osparc_auto_generated
+	projectName=osparc_client
 ADDITIONAL_PROPS := $(foreach prop,$(ADDITIONAL_PROPS),$(strip $(prop)))
 
 null  :=

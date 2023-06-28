@@ -4,6 +4,6 @@
       "client/osparc",
     ],
     "exclude":[
-      "artifacts/client/osparc_auto_generated/test/*"
+      "artifacts/client/osparc_client/test/*"
     ]
   }

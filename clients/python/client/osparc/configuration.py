@@ -1,1 +1,0 @@
-from osparc_auto_generated.configuration import Configuration

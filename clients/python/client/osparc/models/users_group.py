@@ -1,1 +1,0 @@
-from osparc_auto_generated.models.users_group import UsersGroup
