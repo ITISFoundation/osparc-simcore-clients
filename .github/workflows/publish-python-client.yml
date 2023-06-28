@@ -107,9 +107,8 @@ jobs:
         run: |
           make devenv
           source .venv/bin/activate
-          cd clients/python
-          make install-test
           python -m pip install ${{job.build-n-publish.outputs.wheel}} --find-links=${{job.build-n-publish.outputs.dist-dir}}
+          cd clients/python
           pytest -v --ignore=/artifacts/client
 
   test-latest:
@@ -142,9 +141,7 @@ jobs:
         run: |
           make devenv
           source .venv/bin/activate
+          python -m pip install ${{job.build-n-publish.outputs.wheel}} --find-links=${{job.build-n-publish.outputs.dist-dir}}
           cd clients/python
           make install-test
-          echo "${{job.build-n-publish.outputs.wheel}} "
-          echo "${{job.build-n-publish.outputs.dist-dir}}"
-          python -m pip install ${{job.build-n-publish.outputs.wheel}} --find-links=${{job.build-n-publish.outputs.dist-dir}}
           pytest -v --ignore=/artifacts/client
