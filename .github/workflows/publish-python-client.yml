@@ -143,4 +143,4 @@ jobs:
           source .venv/bin/activate
           cd clients/python
           make install-test
-          nox -s test-${{ matrix.python-version }}
+          nox -s test-${{ matrix.python-version }} -- --osparc_wheel=${{job.build-n-publish.outputs.wheel}} --osparc_auto_dir=${{job.build-n-publish.outputs.dist_dir}}
