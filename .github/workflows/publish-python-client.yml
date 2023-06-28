@@ -107,6 +107,7 @@ jobs:
         run: |
           make devenv
           source .venv/bin/activate
+          python -m pip install pytest
           python -m pip install ${{needs.build-n-publish.outputs.wheel}} --find-links=${{needs.build-n-publish.outputs.dist-dir}}
           cd clients/python
           pytest -v --ignore=/artifacts/client
@@ -141,6 +142,7 @@ jobs:
         run: |
           make devenv
           source .venv/bin/activate
+          python -m pip install pytest
           python -m pip install ${{needs.build-n-publish.outputs.wheel}} --find-links=${{needs.build-n-publish.outputs.dist-dir}}
           cd clients/python
           make install-test
