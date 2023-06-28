@@ -55,12 +55,6 @@ generator-help: ## help on client-api generator
 
 ## Tools for "postprocessing" generated documentation --------------------------------------------
 
-.PHONY: _copy-tests
-_copy-tests: ## Replace git tracked tests clients/python/test by the automatically generated docs (N.B. check that the docs make sense before commiting into git)
-	@-rm -r $(PYTHON_DIR)/test
-	@mkdir $(PYTHON_DIR)/test
-	@cp $(ARTIFACTS_DIR)/client/test/* $(PYTHON_DIR)/test/
-
 .PHONY: postprocess-generated-docs
 postprocess-generated-docs:  ## converts selected markdowns into notebooks and adds them to the documentation
 	@-mkdir artifacts/client/docs/code_samples
@@ -116,6 +110,11 @@ dist: artifacts_dir ## builds distribution wheel
 
 .PHONY: dist-ci
 dist-ci: python-client dist ## build wheel and tar ball in a single command
+
+.PHONY: build-n-install-osparc
+build-n-install-osparc: dist-ci ## install the built osparc package in editable mode
+	python -m pip install -e client/ --find-links=artifacts/dist
+
 
 ## DOCKER -------------------------------------------------------------------------------
 

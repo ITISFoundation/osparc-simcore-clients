@@ -1,0 +1,1 @@
+from osparc_auto_generated.models.profile_update import ProfileUpdate

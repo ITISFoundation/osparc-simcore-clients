@@ -1,0 +1,6 @@
+from osparc_auto_generated.exceptions import OpenApiException
+from osparc_auto_generated.exceptions import ApiTypeError
+from osparc_auto_generated.exceptions import ApiValueError
+from osparc_auto_generated.exceptions import ApiKeyError
+from osparc_auto_generated.exceptions import ApiException
+from osparc_auto_generated.exceptions import render_path
