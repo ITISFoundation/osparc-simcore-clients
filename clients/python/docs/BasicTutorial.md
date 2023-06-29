@@ -7,7 +7,7 @@ Install the python client and check the installation as follows:
 
 ```command
 $ pip install osparc
-$ python -c "import osparc; print(osparc.__version__)"
+$ python -c "import osparc; print(osparc.info.get_api())"
 ```
 
 
@@ -18,9 +18,9 @@ To setup the client, we need to provide a username and password to the configura
 ```python
 
 import os
-import osparc
+from osparc import osparc_client
 
-cfg = osparc.Configuration(
+cfg = osparc_client.Configuration(
     username=os.environ["OSPARC_API_KEY"],
     password=os.environ["OSPARC_API_SECRET"],
 )
@@ -34,14 +34,13 @@ The configuration can now be used to create an instance of the API client. The A
 The functions in the [osparc API] are grouped into sections such as *meta*, *users*, *files* or *solvers*. Each section address a different resource of the platform.
 
 
-
 For example, the *users* section includes functions about the user (i.e. you) and can be accessed initializing a ``UsersApi``:
 
 ```python
-import osparc
-from osparc.api import UsersApi
+from osparc import osparc_client
+from osparc_client.api import UsersApi
 
-with osparc.ApiClient(cfg) as api_client:
+with osparc_client.ApiClient(cfg) as api_client:
 
     users_api = UsersApi(api_client)
 
@@ -78,16 +77,16 @@ import time
 from pathlib import Path
 from zipfile import ZipFile
 
-import osparc
-from osparc.api import FilesApi, SolversApi
-from osparc.models import File, Job, JobInputs, JobOutputs, JobStatus, Solver
+from osparc import osparc_client
+from osparc_client.api import FilesApi, SolversApi
+from osparc_client.models import File, Job, JobInputs, JobOutputs, JobStatus, Solver
 
-CLIENT_VERSION = tuple(map(int, osparc.__version__.split(".")))
+CLIENT_VERSION = tuple(map(int, osparc_client.__version__.split(".")))
 assert CLIENT_VERSION >= (0, 4, 3)
 
 Path("file_with_number.txt").write_text("3")
 
-with osparc.ApiClient(cfg) as api_client:
+with osparc_client.ApiClient(cfg) as api_client:
 
     files_api = FilesApi(api_client)
     input_file: File = files_api.upload_file(file="file_with_number.txt")
