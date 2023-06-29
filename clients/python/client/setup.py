@@ -24,7 +24,7 @@ setup(
     description="osparc.io web API",
     author="pcrespov, bisgaard-itis",
     author_email="support@osparc.io",
-    url="",
+    url="https://itisfoundation.github.io/osparc-simcore-clients/",
     install_requires=REQUIRES,
     packages=find_packages(exclude=["test", "tests"]),
     include_package_data=True,
