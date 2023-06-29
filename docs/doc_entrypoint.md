@@ -7,4 +7,4 @@
 
 Currently there is only a single client:
 
-- [Python](../clients/python/artifacts/client/README.md)
+- [Python](../clients/python/docs/README.md)
