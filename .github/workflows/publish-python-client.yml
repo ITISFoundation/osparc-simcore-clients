@@ -9,6 +9,12 @@ on:
         description: "Run ID of the workflow which generated openapi.json as an artifact"
         required: true
   push:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - ready_for_review
+      - review_requested
 jobs:
   build-n-publish:
     runs-on: ubuntu-latest
