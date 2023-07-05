@@ -17,12 +17,12 @@ Changes to the client should not be performed within the generated python code, 
 *Please do not manually `git commit` auto generated code into this repository*
 
 # Testing
-Tests are located in `PYDIR/test` and can be run by executing the following commands from PYDIR:
+Tests are located in `PYDIR/test_osparc` and `PYDIR/test_osparc_client`. They can be run by executing the following commands from PYDIR:
 ```bash
 make install-test
 make test-dev
 ```
-after the client has been generated (see the [workflow section](#workflow)). These tests should test the user-facing API.
+after the client has been generated (see the [workflow section](#workflow)). These tests should test the user-facing API. Jupyter notebooks in the PYDIR/docs folder are automatically run as part of the tests via `test_notebooks.py`. Hence, when writing a tutorial jupyter script, also think of it as a test.
 
 # Tips
 When modifying templates on the [openapi-generator](https://github.com/ITISFoundation/openapi-generator) repository the pace at which you can progress is determined by the speed at which you can loop through the following diagram
