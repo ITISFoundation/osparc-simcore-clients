@@ -15,6 +15,6 @@ def test_run_notebooks():
         with TemporaryDirectory() as tmp_dir:
             tmp_nb = Path(tmp_dir) / nb.name
             shutil.copy(nb, tmp_nb)
-            assert tmp_nb.is_file(), 'Did not succeed to copy notebook'
+            assert tmp_nb.is_file(), 'Did not succeed in copying notebook'
             output:Path = Path(tmp_dir) / (tmp_nb.stem + '_output.ipynb')
             pm.execute_notebook(input_path=tmp_nb, output_path=output, kernel_name="python")
