@@ -91,6 +91,10 @@ jobs:
           name: osparc_python_wheels
           path: clients/python/artifacts/dist/
       - name: Install and Test
+        env:
+          OSPARC_API_HOST: ${{secrets.OSPARC_API_HOST}}
+          OSPARC_API_KEY: ${{secrets.OSPARC_API_KEY}}
+          OSPARC_API_SECRET: ${{secrets.OSPARC_API_SECRET}}
         run: |
           make devenv
           source .venv/bin/activate
@@ -126,6 +130,10 @@ jobs:
           name: osparc_python_wheels
           path: clients/python/artifacts/dist/
       - name: Install and Test
+        env:
+          OSPARC_API_HOST: ${{secrets.OSPARC_API_HOST}}
+          OSPARC_API_KEY: ${{secrets.OSPARC_API_KEY}}
+          OSPARC_API_SECRET: ${{secrets.OSPARC_API_SECRET}}
         run: |
           make devenv
           source .venv/bin/activate
