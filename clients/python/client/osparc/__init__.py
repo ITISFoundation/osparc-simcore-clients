@@ -1,11 +1,9 @@
 """
 0.5.0 osparc client
 """
-import sys
-import warnings
-
 from ._info import openapi
 from osparc_client import (
+    __version__,
     ApiClient,
     Configuration,
     OpenApiException,
@@ -39,6 +37,7 @@ from osparc_client import (
 
 __all__ = [
     # imports from osparc_client
+    "__version__",
     "api",
     "models",
     "FilesApi",
