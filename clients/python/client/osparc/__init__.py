@@ -1,6 +1,9 @@
 """
 0.5.0 osparc client
 """
+import sys
+import warnings
+
 from ._info import openapi
 from osparc_client import (
     ApiClient,

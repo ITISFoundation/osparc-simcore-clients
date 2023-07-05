@@ -36,3 +36,7 @@ When modifying templates on the [openapi-generator](https://github.com/ITISFound
 ```
 
 Hence, it is important to be able quickly modify the [templates](https://github.com/ITISFoundation/openapi-generator/tree/master/modules/openapi-generator/src/main/resources) and regenerate the client. To do this without rebuilding the docker image containing the openapi-generator, run `make python-client-from-templates path/to/template/dir` from `clients/python`.
+
+## Upcoming Deprecations
+
+  In the future the `models` and `api` submodules of the `osparc` package will be deprecated. All functionality contained in there should instead by imported directly from `osparc`.
