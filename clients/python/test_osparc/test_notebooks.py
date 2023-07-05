@@ -17,4 +17,4 @@ def test_run_notebooks():
             shutil.copy(nb, tmp_nb)
             assert tmp_nb.is_file(), 'Did not succeed to copy notebook'
             output:Path = Path(tmp_dir) / (tmp_nb.stem + '_output.ipynb')
-            pm.execute_notebook(input_path=tmp_nb, output_path=output)
+            pm.execute_notebook(input_path=tmp_nb, output_path=output, kernel_name="python")
