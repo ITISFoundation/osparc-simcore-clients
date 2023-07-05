@@ -2,7 +2,7 @@
 import warnings
 
 warn_msg:str = "osparc.models will be deprecated soon. Instead functionality within this module"
-warn_msg += "should be imported directly from osparc. I.e. please do 'from osparc impoot <fcn>' instead of 'from osparc.models import <fcn>'"
+warn_msg += "should be imported directly from osparc. I.e. please do 'from osparc import <fcn>' instead of 'from osparc.models import <fcn>'"
 warnings.warn(warn_msg, DeprecationWarning)
 
 

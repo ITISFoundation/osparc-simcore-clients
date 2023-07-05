@@ -2,8 +2,6 @@
 0.5.0 osparc client
 """
 from ._info import openapi
-from .models import *
-from .api import *
 from osparc_client import (
     ApiClient,
     Configuration,
@@ -11,7 +9,29 @@ from osparc_client import (
     ApiTypeError,
     ApiValueError,
     ApiKeyError,
-    ApiException
+    ApiException,
+    # model imports
+    BodyUploadFileV0FilesContentPut,
+    File,
+    Groups,
+    HTTPValidationError,
+    Job,
+    JobInputs,
+    JobOutputs,
+    JobStatus,
+    Meta,
+    Profile,
+    ProfileUpdate,
+    Solver,
+    TaskStates,
+    UserRoleEnum,
+    UsersGroup,
+    ValidationError,
+    # api imports
+    FilesApi,
+    MetaApi,
+    SolversApi,
+    UsersApi
 )
 
 __all__ = [
