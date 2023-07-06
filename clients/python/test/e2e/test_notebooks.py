@@ -6,7 +6,7 @@ import pytest
 from typing import List, Dict, Any
 import sys
 
-docs_dir:Path = Path(__file__).parent.parent / 'docs'
+docs_dir:Path = Path(__file__).parent.parent.parent / 'docs'
 all_notebooks:List[Path] = list(docs_dir.glob("*.ipynb"))
 
 
