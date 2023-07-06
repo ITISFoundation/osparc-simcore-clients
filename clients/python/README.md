@@ -39,4 +39,4 @@ Hence, it is important to be able quickly modify the [templates](https://github.
 
 ## Upcoming Deprecations
 
-In the future the `models` and `api` submodules of the `osparc` package will be deprecated. All functionality contained in there should instead by imported directly from `osparc`.
+`osparc.models` and `osparc.api` modules have been (now) deprecated and will be retired/removed in the next version, please used `osparc` to import all the functions instead
