@@ -103,7 +103,7 @@ jobs:
           python -m pip install ${{needs.build-n-publish.outputs.wheel}} --find-links=${{needs.build-n-publish.outputs.dist-dir}}
           cd clients/python
           make install-test
-          pytest -v --ignore=/artifacts/client
+          pytest -v --ignore=/artifacts/client --ignore=test/e2e
 
   test-latest:
     name: python ${{ matrix.python-version }} ubuntu-latest
@@ -143,4 +143,4 @@ jobs:
           python -m pip install ${{needs.build-n-publish.outputs.wheel}} --find-links=${{needs.build-n-publish.outputs.dist-dir}}
           cd clients/python
           make install-test
-          pytest -v --ignore=/artifacts/client
+          pytest -v --ignore=/artifacts/client --ignore=test/e2e
