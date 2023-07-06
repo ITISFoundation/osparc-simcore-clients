@@ -7,7 +7,7 @@ Install the python client and check the installation as follows:
 
 ```command
 $ pip install osparc
-$ python -c "import osparc; print(osparc.info.get_api())"
+$ python -c "import osparc; print(osparc.get_api())"
 ```
 
 
@@ -18,9 +18,9 @@ To setup the client, we need to provide a username and password to the configura
 ```python
 
 import os
-from osparc import osparc_client
+from osparc import Configuration
 
-cfg = osparc_client.Configuration(
+cfg = Configuration(
     username=os.environ["OSPARC_API_KEY"],
     password=os.environ["OSPARC_API_SECRET"],
 )
@@ -37,10 +37,9 @@ The functions in the [osparc API] are grouped into sections such as *meta*, *use
 For example, the *users* section includes functions about the user (i.e. you) and can be accessed initializing a ``UsersApi``:
 
 ```python
-from osparc import osparc_client
-from osparc_client.api import UsersApi
+from osparc import ApiClient, UsersApi
 
-with osparc_client.ApiClient(cfg) as api_client:
+with ApiClient(cfg) as api_client:
 
     users_api = UsersApi(api_client)
 
@@ -77,29 +76,27 @@ import time
 from pathlib import Path
 from zipfile import ZipFile
 
-from osparc import osparc_client
-from osparc_client.api import FilesApi, SolversApi
-from osparc_client.models import File, Job, JobInputs, JobOutputs, JobStatus, Solver
+import osparc
 
-CLIENT_VERSION = tuple(map(int, osparc_client.__version__.split(".")))
+CLIENT_VERSION = tuple(map(int, osparc.__version__.split(".")))
 assert CLIENT_VERSION >= (0, 4, 3)
 
 Path("file_with_number.txt").write_text("3")
 
-with osparc_client.ApiClient(cfg) as api_client:
+with osparc.ApiClient(cfg) as api_client:
 
-    files_api = FilesApi(api_client)
-    input_file: File = files_api.upload_file(file="file_with_number.txt")
+    files_api = osparc.FilesApi(api_client)
+    input_file: osparc.File = files_api.upload_file(file="file_with_number.txt")
 
-    solvers_api = SolversApi(api_client)
-    solver: Solver = solvers_api.get_solver_release(
+    solvers_api = osparc.SolversApi(api_client)
+    solver: osparc.Solver = solvers_api.get_solver_release(
         "simcore/services/comp/itis/sleeper", "2.0.2"
     )
 
-    job: Job = solvers_api.create_job(
+    job: osparc.Job = solvers_api.create_job(
         solver.id,
         solver.version,
-        JobInputs(
+        osparc.JobInputs(
             {
                 "input_3": 0,
                 "input_2": 3.0,
@@ -108,7 +105,7 @@ with osparc_client.ApiClient(cfg) as api_client:
         ),
     )
 
-    status: JobStatus = solvers_api.start_job(solver.id, solver.version, job.id)
+    status: osparc.JobStatus = solvers_api.start_job(solver.id, solver.version, job.id)
     while not status.stopped_at:
         time.sleep(3)
         status = solvers_api.inspect_job(solver.id, solver.version, job.id)
@@ -117,7 +114,7 @@ with osparc_client.ApiClient(cfg) as api_client:
     # Solver progress 0/100
     # Solver progress 100/100
 
-    outputs: JobOutputs = solvers_api.get_job_outputs(solver.id, solver.version, job.id)
+    outputs: osparc.JobOutputs = solvers_api.get_job_outputs(solver.id, solver.version, job.id)
 
     print(f"Job {outputs.job_id} got these results:")
     for output_name, result in outputs.results.items():
@@ -186,15 +183,15 @@ In order to use a file as input, it has to be uploaded first and the reference u
 
 
 ```python
-files_api = FilesApi(api_client)
+files_api = osparc.FilesApi(api_client)
 input_file: File = files_api.upload_file(file="file_with_number.txt")
 
 
 # ...
 
 
-outputs: JobOutputs = solvers_api.get_job_outputs(solver.id, solver.version, job.id)
-results_file: File = outputs.results["output_1"]
+outputs: osparc.JobOutputs = solvers_api.get_job_outputs(solver.id, solver.version, job.id)
+results_file: osparc.File = outputs.results["output_1"]
 download_path: str = files_api.download_file(file_id=results_file.id)
 
 ```
@@ -269,7 +266,7 @@ so this information determines which output corresponds to a number or a file in
 ```python
 # ...
 
-outputs: JobOutputs = solvers_api.get_job_outputs(solver.id, solver.version, job.id)
+outputs: osparc.JobOutputs = solvers_api.get_job_outputs(solver.id, solver.version, job.id)
 
 output_file = outputs.results["output_1"]
 number = outputs.results["output_2"]
@@ -295,7 +292,7 @@ Once the client script triggers the solver, the solver runs in the platform and 
 A solver runs in a plaforma starts a ``Job``. Using the ``solvers_api``, allows us to inspect the ``Job`` and get a ``JobStatus`` with information about its status. For instance
 
 ```python
- status: JobStatus = solvers_api.start_job(solver.id, solver.version, job.id)
+ status: osparc.JobStatus = solvers_api.start_job(solver.id, solver.version, job.id)
  while not status.stopped_at:
      time.sleep(3)
      status = solvers_api.inspect_job(solver.id, solver.version, job.id)
