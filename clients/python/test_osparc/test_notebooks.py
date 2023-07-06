@@ -15,8 +15,6 @@ def test_notebook_config():
     """
     config_test_nb:Path = Path(__file__).parent / 'data' / 'config_test.ipynb'
     assert config_test_nb.is_file()
-    # params = pm.inspect_notebook(config_test_nb)
-    # assert 'expected_python_bin' in params
     test_run_notebooks(config_test_nb,{'expected_python_bin':sys.executable})
 
 @pytest.mark.parametrize('notebook,params',list(zip(all_notebooks,[{}]*len(all_notebooks))))
