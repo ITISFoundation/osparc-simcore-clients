@@ -29,7 +29,6 @@ python-client: validate-api-specification artifacts_dir ## generate python clien
 
 .PHONY: python-client-from-templates
 python-client-from-templates: validate-api-specification artifacts_dir ## generate python client using templates in a specified directory (usage: 'make python-client-from-templates -e TEMPLATE_DIR=path/to/templates')
-	@echo "Using template-dir: $(TEMPLATE_DIR)"
 	$(if $(TEMPLATE_DIR),,$(error The TEMPLATE_DIR environment vairbale must be set))
 	@echo "Using template-dir: $(TEMPLATE_DIR)"
 	-rm -r $(ARTIFACTS_DIR)/client
