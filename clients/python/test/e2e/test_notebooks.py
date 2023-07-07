@@ -15,7 +15,7 @@ def test_notebook_config():
     """
     config_test_nb:Path = Path(__file__).parent / 'data' / 'config_test.ipynb'
     assert config_test_nb.is_file()
-    test_run_notebooks(config_test_nb,{'expected_python_bin':sys.executable, 'expected_osparc_version':str(osparc.__version__)})
+    test_run_notebooks(config_test_nb,{'expected_python_bin':sys.executable, 'expected_osparc_version':str(osparc.__version__), 'expected_osparc_file':osparc.__file__})
     assert len(all_notebooks) > 0, f'Did not find any notebooks in {docs_dir}'
 
 @pytest.mark.parametrize('notebook,params',list(zip(all_notebooks,[{}]*len(all_notebooks))))
