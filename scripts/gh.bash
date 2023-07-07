@@ -20,9 +20,10 @@ if [ -v GITHUB_ACTIONS ]; then
   gh "$@"
 else
   if [ ! -f "${GH_TOKEN_FILE}" ] && [ ! -v GH_TOKEN ]; then
-      echo "The GH_TOKEN environment variable was not defined and the file '${GH_TOKEN_FILE}' does not exist. To use this script one of them must be present to expose your GH_TOKEN to the docker image."
-      echo "Either 'export GH_TOKEN=<your github token>' or create the file '${GH_TOKEN_FILE}' and expose your github token in it as follows:"
-      echo "GH_TOKEN=<your github token>"
+      msg="The GH_TOKEN environment variable was not defined and the file '${GH_TOKEN_FILE}' does not exist. To use this script one of them must be present to expose your GH_TOKEN to the docker image. "
+      msg+="Either 'export GH_TOKEN=<your github token>' or create the file '${GH_TOKEN_FILE}' and expose your github token in it as follows: "
+      msg+="GH_TOKEN=<your github token> "
+      echo ${msg}
       exit 1
   fi
   env_file_flag=""
