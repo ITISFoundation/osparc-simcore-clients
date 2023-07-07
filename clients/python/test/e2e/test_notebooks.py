@@ -18,6 +18,7 @@ def test_notebook_config():
     test_run_notebooks(config_test_nb,{'expected_python_bin':sys.executable, 'expected_osparc_version':str(osparc.__version__), 'expected_osparc_file':osparc.__file__})
     assert len(all_notebooks) > 0, f'Did not find any notebooks in {docs_dir}'
 
+
 @pytest.mark.parametrize('notebook,params',list(zip(all_notebooks,[{}]*len(all_notebooks))))
 def test_run_notebooks(notebook:Path, params:Dict[str,Any]):
     """Run all notebooks in the documentation
