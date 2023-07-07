@@ -10,11 +10,9 @@ while getopts ":r:b:h" arg; do
   case $arg in
     r) # Define which repository to pick the client from
       CLIENT_REPO=${OPTARG}
-      echo "Using repo: ${CLIENT_REPO}"
       ;;
     b) # Define which branch to pick the client from
       CLIENT_BRANCH=${OPTARG}
-      echo "Using branch: ${CLIENT_BRANCH}"
       ;;
     h) # Display help.
       usage
