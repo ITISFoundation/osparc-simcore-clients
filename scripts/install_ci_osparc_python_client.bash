@@ -4,7 +4,7 @@ set -o errexit  # abort on nonzero exitstatus
 set -o nounset  # abort on unbound variable
 set -o pipefail # don't hide errors within pipes
 
-usage() { echo "$0 options (e.g. '-r ITISFoundation/osparc-simcore -b master'):" && grep " .)\ #" "$0"; }
+usage() { echo "$0 options (e.g. '-r ITISFoundation/osparc-simcore -b master'):" && grep " .)\ #" "$0"; exit 0;}
 [ $# -eq 0 ] && usage
 CLIENT_WORKFLOW=publish-and-test-python-client
 SCRIPTS_DIR=$(dirname "$0")
@@ -13,7 +13,7 @@ unset CLIENT_REPO
 unset CLIENT_BRANCH
 unset CLIENT_VERSION
 
-while getopts ":r:b:v:h" arg; do
+while getopts ":r:b:v" arg; do
   case $arg in
     r) # Define which repository to pick the client from
       CLIENT_REPO="${OPTARG}"
@@ -27,9 +27,9 @@ while getopts ":r:b:v:h" arg; do
       CLIENT_VERSION="${OPTARG}"
       echo "CLIENT_VERSION=${CLIENT_VERSION}"
       ;;
-    h | *) # Display help.
-      usage
-      exit 0
+    *)
+      echo "Recieved unknown flag"
+      exit 1
       ;;
   esac
 done
