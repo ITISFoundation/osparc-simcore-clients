@@ -3,7 +3,8 @@
 # Github CLI (https://cli.github.com/)
 # The Dockerfile for generating the image used here is located here: https://github.com/ITISFoundation/osparc-simcore-clients/blob/master/scripts/gh/Dockerfile
 # By default the pwd is mounted into the docker container and used as the current working directory
-# N.B. For Github actions: Remember to expose GITHUB_TOKEN in your Github workflow .yml file."
+# Github CLI will need to find the GH_TOKEN environment variable with a valid github token. To espose that to this script, either expose it directly be exporting it,
+# or create the file ~/gh-token exporting it.
 
 set -o errexit  # abort on nonzero exitstatus
 set -o nounset  # abort on unbound variable
