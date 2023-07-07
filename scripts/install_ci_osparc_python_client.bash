@@ -16,16 +16,25 @@ unset CLIENT_VERSION
 while getopts ":r:b:v" arg; do
   case $arg in
     r) # Define which repository to pick the client from
-      CLIENT_REPO="${OPTARG}"
-      echo "CLIENT_REPO=${CLIENT_REPO}"
+      ARG=${OPTARG:-}
+      if [[ -n ${ARG} ]]; then
+        CLIENT_REPO="${ARG}"
+        echo "CLIENT_REPO=${CLIENT_REPO}"
+      fi
       ;;
     b) # Define which branch to pick the client from
-      CLIENT_BRANCH="${OPTARG}"
-      echo "CLIENT_BRANCH=${CLIENT_BRANCH}"
+      ARG=${OPTARG:-}
+      if [[ -n ${ARG} ]]; then
+        CLIENT_BRANCH="${ARG}"
+        echo "CLIENT_BRANCH=${CLIENT_BRANCH}"
+      fi
       ;;
     v) # Define which version to install from PyPi. Use "-v latest" to install the latest version available on PyPi
-      CLIENT_VERSION="${OPTARG}"
-      echo "CLIENT_VERSION=${CLIENT_VERSION}"
+      ARG=${OPTARG:-}
+      if [[ -n ${ARG} ]]; then
+        CLIENT_VERSION="${ARG}"
+        echo "CLIENT_VERSION=${CLIENT_VERSION}"
+      fi
       ;;
     *)
       echo "Recieved unknown flag"
