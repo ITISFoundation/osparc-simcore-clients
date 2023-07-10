@@ -85,7 +85,6 @@ install-dev: _check_venv_active ## install packages for development
 .PHONY: install-test
 install-test: _check_venv_active install-dev ## install packages for testing client
 	pip install -r $(PYTHON_DIR)/requirements/test.txt
-	ipython kernel install --name "python3" --user
 
 .PHONY: pylint
 pylint: _check_venv_active ## runs linter (only to check errors. SEE .pylintrc enabled)
