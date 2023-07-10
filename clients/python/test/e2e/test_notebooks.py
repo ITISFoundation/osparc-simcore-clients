@@ -27,20 +27,19 @@ def test_notebook_config():
 
 
 @pytest.mark.parametrize("notebook", all_notebooks)
-def test_run_notebooks(notebook: Path, params: Dict[str, Any] = {}):
+def test_run_notebooks(tmp_path: Path, notebook: Path, params: Dict[str, Any] = {}):
     """Run all notebooks in the documentation"""
     print(f"Running {notebook.name} with parameters {params}")
     assert (
         notebook.is_file()
     ), f"{notebook.name} is not a file (full path: {notebook.resolve()})"
-    with TemporaryDirectory() as tmp_dir:
-        tmp_nb = Path(tmp_dir) / notebook.name
-        shutil.copy(notebook, tmp_nb)
-        assert tmp_nb.is_file(), "Did not succeed in copying notebook"
-        output: Path = Path(tmp_dir) / (tmp_nb.stem + "_output.ipynb")
-        pm.execute_notebook(
-            input_path=tmp_nb,
-            output_path=output,
-            kernel_name="python3",
-            parameters=params,
-        )
+    tmp_nb = tmp_path / notebook.name
+    shutil.copy(notebook, tmp_nb)
+    assert tmp_nb.is_file(), "Did not succeed in copying notebook"
+    output: Path = tmp_path / (tmp_nb.stem + "_output.ipynb")
+    pm.execute_notebook(
+        input_path=tmp_nb,
+        output_path=output,
+        kernel_name="python3",
+        parameters=params,
+    )
