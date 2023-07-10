@@ -26,7 +26,7 @@ def test_notebook_config():
     assert len(all_notebooks) > 0, f"Did not find any notebooks in {docs_dir}"
 
 
-@pytest.mark.parametrize("notebook,params", all_notebooks)
+@pytest.mark.parametrize("notebook", all_notebooks)
 def test_run_notebooks(notebook: Path, params: Dict[str, Any] = {}):
     """Run all notebooks in the documentation"""
     print(f"Running {notebook.name} with parameters {params}")
