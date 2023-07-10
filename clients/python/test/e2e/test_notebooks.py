@@ -11,11 +11,12 @@ docs_dir: Path = Path(__file__).parent.parent.parent / "docs"
 all_notebooks: List[Path] = list(docs_dir.glob("*.ipynb"))
 
 
-def test_notebook_config():
+def test_notebook_config(tmp_path: Path):
     """Checks the jupyter environment is configured correctly"""
     config_test_nb: Path = Path(__file__).parent / "data" / "config_test.ipynb"
     assert config_test_nb.is_file()
     test_run_notebooks(
+        tmp_path,
         config_test_nb,
         {
             "expected_python_bin": sys.executable,
