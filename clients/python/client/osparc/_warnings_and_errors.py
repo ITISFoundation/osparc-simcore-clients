@@ -1,4 +1,3 @@
-
 class VisibleDeprecationWarning(UserWarning):
     """Visible deprecation warning.
 

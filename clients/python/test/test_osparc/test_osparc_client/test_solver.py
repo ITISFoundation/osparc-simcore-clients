@@ -19,6 +19,7 @@ import osparc
 from osparc import Solver  # noqa: E501
 from osparc import ApiException
 
+
 class TestSolver(unittest.TestCase):
     """Solver unit test stubs"""
 
@@ -30,27 +31,27 @@ class TestSolver(unittest.TestCase):
 
     def make_instance(self, include_optional):
         """Test Solver
-            include_option is a boolean, when False only required
-            params are included, when True both required and
-            optional params are included """
+        include_option is a boolean, when False only required
+        params are included, when True both required and
+        optional params are included"""
         # model = osparc.models.solver.Solver()  # noqa: E501
-        if include_optional :
+        if include_optional:
             return Solver(
-                id = 'simcore/services/comp/sleeper',
-                version = '0.5.0',
-                title = '0',
-                description = '0',
-                maintainer = '0',
-                url = '0'
+                id="simcore/services/comp/sleeper",
+                version="0.5.0",
+                title="0",
+                description="0",
+                maintainer="0",
+                url="0",
             )
-        else :
+        else:
             return Solver(
-                id = 'simcore/services/comp/sleeper',
-                version = '0.5.0',
-                title = '0',
-                maintainer = '0',
-                url = '0',
-        )
+                id="simcore/services/comp/sleeper",
+                version="0.5.0",
+                title="0",
+                maintainer="0",
+                url="0",
+            )
 
     def testSolver(self):
         """Test Solver"""
@@ -58,5 +59,5 @@ class TestSolver(unittest.TestCase):
         inst_req_and_optional = self.make_instance(include_optional=True)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

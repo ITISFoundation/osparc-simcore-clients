@@ -32,7 +32,7 @@ from osparc_client import (
     FilesApi,
     MetaApi,
     SolversApi,
-    UsersApi
+    UsersApi,
 )
 
 __all__ = [
@@ -68,5 +68,5 @@ __all__ = [
     "ApiKeyError",
     "ApiException",
     # imports from osparc
-    "openapi"
+    "openapi",
 ]

@@ -19,6 +19,7 @@ import osparc
 from osparc import HTTPValidationError  # noqa: E501
 from osparc import ApiException, ValidationError
 
+
 class TestHTTPValidationError(unittest.TestCase):
     """HTTPValidationError unit test stubs"""
 
@@ -30,24 +31,22 @@ class TestHTTPValidationError(unittest.TestCase):
 
     def make_instance(self, include_optional):
         """Test HTTPValidationError
-            include_option is a boolean, when False only required
-            params are included, when True both required and
-            optional params are included """
+        include_option is a boolean, when False only required
+        params are included, when True both required and
+        optional params are included"""
         # model = osparc.models.http_validation_error.HTTPValidationError()  # noqa: E501
-        if include_optional :
+        if include_optional:
             return HTTPValidationError(
-                errors = [
+                errors=[
                     ValidationError(
-                        loc = [
-                            '0'
-                            ],
-                        msg = '0',
-                        type = '0', )
-                    ]
+                        loc=["0"],
+                        msg="0",
+                        type="0",
+                    )
+                ]
             )
-        else :
-            return HTTPValidationError(
-        )
+        else:
+            return HTTPValidationError()
 
     def testHTTPValidationError(self):
         """Test HTTPValidationError"""
@@ -55,5 +54,5 @@ class TestHTTPValidationError(unittest.TestCase):
         inst_req_and_optional = self.make_instance(include_optional=True)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

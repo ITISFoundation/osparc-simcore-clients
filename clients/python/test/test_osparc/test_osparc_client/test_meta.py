@@ -19,6 +19,7 @@ import osparc
 from osparc import Meta  # noqa: E501
 from osparc import ApiException
 
+
 class TestMeta(unittest.TestCase):
     """Meta unit test stubs"""
 
@@ -30,25 +31,23 @@ class TestMeta(unittest.TestCase):
 
     def make_instance(self, include_optional):
         """Test Meta
-            include_option is a boolean, when False only required
-            params are included, when True both required and
-            optional params are included """
+        include_option is a boolean, when False only required
+        params are included, when True both required and
+        optional params are included"""
         # model = osparc.models.meta.Meta()  # noqa: E501
-        if include_optional :
+        if include_optional:
             return Meta(
-                name = '0',
-                version = '0.5.0',
-                released = {
-                    'key' : 'a'
-                    },
-                docs_url = 'https://docs.osparc.io',
-                docs_dev_url = 'https://api.osparc.io/dev/docs'
+                name="0",
+                version="0.5.0",
+                released={"key": "a"},
+                docs_url="https://docs.osparc.io",
+                docs_dev_url="https://api.osparc.io/dev/docs",
             )
-        else :
+        else:
             return Meta(
-                name = '0',
-                version = '0.5.0',
-        )
+                name="0",
+                version="0.5.0",
+            )
 
     def testMeta(self):
         """Test Meta"""
@@ -56,5 +55,5 @@ class TestMeta(unittest.TestCase):
         inst_req_and_optional = self.make_instance(include_optional=True)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

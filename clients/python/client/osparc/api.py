@@ -8,17 +8,7 @@ warning_msg: Final[str] = (
 )
 warnings.warn(warning_msg, VisibleDeprecationWarning)
 
-from osparc_client.api import (
-    FilesApi,
-    MetaApi,
-    SolversApi,
-    UsersApi
-)
+from osparc_client.api import FilesApi, MetaApi, SolversApi, UsersApi
 
 
-__all__ = [
-    "FilesApi",
-    "MetaApi",
-    "SolversApi",
-    "UsersApi"
-]
+__all__ = ["FilesApi", "MetaApi", "SolversApi", "UsersApi"]

@@ -19,6 +19,7 @@ import osparc
 from osparc import BodyUploadFileV0FilesContentPut  # noqa: E501
 from osparc import ApiException
 
+
 class TestBodyUploadFileV0FilesContentPut(unittest.TestCase):
     """BodyUploadFileV0FilesContentPut unit test stubs"""
 
@@ -30,18 +31,16 @@ class TestBodyUploadFileV0FilesContentPut(unittest.TestCase):
 
     def make_instance(self, include_optional):
         """Test BodyUploadFileV0FilesContentPut
-            include_option is a boolean, when False only required
-            params are included, when True both required and
-            optional params are included """
+        include_option is a boolean, when False only required
+        params are included, when True both required and
+        optional params are included"""
         # model = osparc.models.body_upload_file_v0_files_content_put.BodyUploadFileV0FilesContentPut()  # noqa: E501
-        if include_optional :
+        if include_optional:
+            return BodyUploadFileV0FilesContentPut(file=bytes(b"blah"))
+        else:
             return BodyUploadFileV0FilesContentPut(
-                file = bytes(b'blah')
+                file=bytes(b"blah"),
             )
-        else :
-            return BodyUploadFileV0FilesContentPut(
-                file = bytes(b'blah'),
-        )
 
     def testBodyUploadFileV0FilesContentPut(self):
         """Test BodyUploadFileV0FilesContentPut"""
@@ -49,5 +48,5 @@ class TestBodyUploadFileV0FilesContentPut(unittest.TestCase):
         inst_req_and_optional = self.make_instance(include_optional=True)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

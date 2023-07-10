@@ -19,6 +19,7 @@ import osparc
 from osparc import UsersGroup  # noqa: E501
 from osparc import ApiException
 
+
 class TestUsersGroup(unittest.TestCase):
     """UsersGroup unit test stubs"""
 
@@ -30,21 +31,17 @@ class TestUsersGroup(unittest.TestCase):
 
     def make_instance(self, include_optional):
         """Test UsersGroup
-            include_option is a boolean, when False only required
-            params are included, when True both required and
-            optional params are included """
+        include_option is a boolean, when False only required
+        params are included, when True both required and
+        optional params are included"""
         # model = osparc.models.users_group.UsersGroup()  # noqa: E501
-        if include_optional :
+        if include_optional:
+            return UsersGroup(gid="0", label="0", description="0")
+        else:
             return UsersGroup(
-                gid = '0',
-                label = '0',
-                description = '0'
+                gid="0",
+                label="0",
             )
-        else :
-            return UsersGroup(
-                gid = '0',
-                label = '0',
-        )
 
     def testUsersGroup(self):
         """Test UsersGroup"""
@@ -52,5 +49,5 @@ class TestUsersGroup(unittest.TestCase):
         inst_req_and_optional = self.make_instance(include_optional=True)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

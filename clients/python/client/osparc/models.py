@@ -1,4 +1,3 @@
-
 import warnings
 from ._warnings_and_errors import VisibleDeprecationWarning
 from typing import Final
@@ -26,7 +25,7 @@ from osparc_client.models import (
     TaskStates,
     UserRoleEnum,
     UsersGroup,
-    ValidationError
+    ValidationError,
 )
 
 __all__ = [
@@ -45,5 +44,5 @@ __all__ = [
     "TaskStates",
     "UserRoleEnum",
     "UsersGroup",
-    "ValidationError"
+    "ValidationError",
 ]

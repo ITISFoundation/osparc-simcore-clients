@@ -19,6 +19,7 @@ import osparc
 from osparc import ProfileUpdate  # noqa: E501
 from osparc import ApiException
 
+
 class TestProfileUpdate(unittest.TestCase):
     """ProfileUpdate unit test stubs"""
 
@@ -30,18 +31,14 @@ class TestProfileUpdate(unittest.TestCase):
 
     def make_instance(self, include_optional):
         """Test ProfileUpdate
-            include_option is a boolean, when False only required
-            params are included, when True both required and
-            optional params are included """
+        include_option is a boolean, when False only required
+        params are included, when True both required and
+        optional params are included"""
         # model = osparc.models.profile_update.ProfileUpdate()  # noqa: E501
-        if include_optional :
-            return ProfileUpdate(
-                first_name = 'James',
-                last_name = 'Maxwell'
-            )
-        else :
-            return ProfileUpdate(
-        )
+        if include_optional:
+            return ProfileUpdate(first_name="James", last_name="Maxwell")
+        else:
+            return ProfileUpdate()
 
     def testProfileUpdate(self):
         """Test ProfileUpdate"""
@@ -49,5 +46,5 @@ class TestProfileUpdate(unittest.TestCase):
         inst_req_and_optional = self.make_instance(include_optional=True)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -19,6 +19,7 @@ import osparc
 from osparc import ValidationError  # noqa: E501
 from osparc import ApiException
 
+
 class TestValidationError(unittest.TestCase):
     """ValidationError unit test stubs"""
 
@@ -30,26 +31,18 @@ class TestValidationError(unittest.TestCase):
 
     def make_instance(self, include_optional):
         """Test ValidationError
-            include_option is a boolean, when False only required
-            params are included, when True both required and
-            optional params are included """
+        include_option is a boolean, when False only required
+        params are included, when True both required and
+        optional params are included"""
         # model = osparc.models.validation_error.ValidationError()  # noqa: E501
-        if include_optional :
+        if include_optional:
+            return ValidationError(loc=["0"], msg="0", type="0")
+        else:
             return ValidationError(
-                loc = [
-                    '0'
-                    ],
-                msg = '0',
-                type = '0'
+                loc=["0"],
+                msg="0",
+                type="0",
             )
-        else :
-            return ValidationError(
-                loc = [
-                    '0'
-                    ],
-                msg = '0',
-                type = '0',
-        )
 
     def testValidationError(self):
         """Test ValidationError"""
@@ -57,5 +50,5 @@ class TestValidationError(unittest.TestCase):
         inst_req_and_optional = self.make_instance(include_optional=True)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
