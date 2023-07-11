@@ -55,12 +55,15 @@ generator-help: ## help on client-api generator
 
 ## Tools for "postprocessing" generated documentation --------------------------------------------
 
-.PHONY: postprocess-generated-docs
-postprocess-generated-docs:  ## converts selected markdowns into notebooks and adds them to the documentation
-	@-mkdir artifacts/client/docs/code_samples
-	$(eval markdowns := $(shell ls artifacts/client/docs/*Api.md))
-	$(eval outputs := $(subst artifacts/client/docs/,artifacts/client/docs/code_samples/,$(markdowns:.md=.ipynb)))
-	$(MAKE) $(outputs)
+ARTIFACTS_DOCS := $(PYTHON_DIR)/artifacts/docs
+
+.PHONY: docs
+docs: artifacts_dir ## generate the python client documentation
+	@-rm -rf $(ARTIFACTS_DOCS)
+	@-mkdir $(ARTIFACTS_DOCS)
+	$(eval notebooks := $(shell ls docs/*.ipynb))
+	$(eval markdowns := $(basenamr $(notebooks:.ipynb=.md)))
+	echo $(markdowns)
 
 artifacts/client/docs/code_samples/%.ipynb:artifacts/client/docs/%.md
 	# Removing link in markdown
@@ -69,8 +72,7 @@ artifacts/client/docs/code_samples/%.ipynb:artifacts/client/docs/%.md
 	# Appending link to markdown
 	@echo "[Download as $(notdir $@)]($(subst artifacts/,clients/python/artifacts/,$@) \":ignore title\")" >> $<
 
-.PHONY: docs
-docs: python-client postprocess-generated-docs ## generate the python client documentation
+
 
 ## PYTHON DEVELOPMENT  ------------------------------------------------------------------
 
