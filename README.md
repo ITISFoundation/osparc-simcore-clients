@@ -23,6 +23,12 @@ See the different `clients/<language>/README.md` for the workflows for generatin
 - To generate a client one needs two "ingredients":
     1. The openapi specification which is a json file located in `api/openapi.json`. This generated in [osparc-simcore](https://github.com/ITISFoundation/osparc-simcore/tree/master/services/api-server) and then moved here.
     2. The [openapi-generator](https://github.com/ITISFoundation/openapi-generator)-tool. The exact docker image of this tool to use is specifies in `scripts/common.Makefile`.
+
+
+## Documentation
+
+Each client (corresponding to a directory `clients/<language>`) should have a make recipy called `install-doc` which installs packages needed to generate the documentation for that client, as well as a make recipe `docs` which generates the documentation. All of these recipes are called from the root's `docs` recipe, which is what is called when the website is published.
+
 # Repos which depend on this one
 
 Here is an inexhaustive list which have this repo as a dependency. So changing stuff here might break stuff there:
