@@ -60,6 +60,7 @@ http-doc: ## generates and serves doc
 	@for client in $(CLIENTS); do \
 		echo "generating $${client} doc"; \
 		pushd clients/$${client}; \
+		make install-doc; \
 		make docs; \
 		popd; \
 	done

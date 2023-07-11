@@ -68,7 +68,7 @@ docs: artifacts_dir ## generate the python client documentation
 artifacts/docs/%.md: docs/%.ipynb
 	python -m nbconvert $< --to markdown --output-dir $(ARTIFACTS_DOCS)
 	# Appending link to markdown
-	@echo "[Download as $(notdir $<)]($(subst docs/,clients/python/artifacts/,$<) \":ignore title\")" >> $@
+	@echo "[Download as $(notdir $<)]($(subst docs/,clients/python/docs/,$<) \":ignore title\")" >> $@
 
 
 
@@ -85,6 +85,10 @@ install-dev: _check_venv_active ## install packages for development
 .PHONY: install-test
 install-test: _check_venv_active install-dev ## install packages for testing client
 	pip install -r $(PYTHON_DIR)/requirements/test.txt
+
+.PHONY: install-doc
+install-test: _check_venv_active install-dev ## install packages for generating documentation
+	pip install -r $(PYTHON_DIR)/requirements/doc.txt
 
 .PHONY: pylint
 pylint: _check_venv_active ## runs linter (only to check errors. SEE .pylintrc enabled)
