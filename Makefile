@@ -54,7 +54,15 @@ endef
 
 ## DOCUMENTATION ------------------------------------------------------------------------
 .PHONY: http-doc
-http-doc: ## serves doc
+http-doc: ## generates and serves doc
+	# generate documentation
+	$(eval CLIENTS := $(shell ls clients))
+	@for client in $(CLIENTS); do \
+		echo "generating $${client} doc"; \
+		pushd clients/$${client}; \
+		make docs; \
+		popd; \
+	done
 	# starting doc website
 	@echo "Check site on http://127.0.0.1:50001/"
 	python3 -m http.server 50001 --bind 127.0.0.1

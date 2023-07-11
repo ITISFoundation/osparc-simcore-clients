@@ -55,22 +55,20 @@ generator-help: ## help on client-api generator
 
 ## Tools for "postprocessing" generated documentation --------------------------------------------
 
-ARTIFACTS_DOCS := $(PYTHON_DIR)/artifacts/docs
+ARTIFACTS_DOCS := artifacts/docs
 
 .PHONY: docs
 docs: artifacts_dir ## generate the python client documentation
 	@-rm -rf $(ARTIFACTS_DOCS)
 	@-mkdir $(ARTIFACTS_DOCS)
 	$(eval notebooks := $(shell ls docs/*.ipynb))
-	$(eval markdowns := $(basenamr $(notebooks:.ipynb=.md)))
-	echo $(markdowns)
+	$(eval markdowns := $(subst docs/, $(ARTIFACTS_DOCS)/, $(notebooks:.ipynb=.md)))
+	$(MAKE) $(markdowns)
 
-artifacts/client/docs/code_samples/%.ipynb:artifacts/client/docs/%.md
-	# Removing link in markdown
-	@sed -i "/\b$(notdir $@)\b/d" $<
-	notedown $< >$@
+artifacts/docs/%.md: docs/%.ipynb
+	python -m nbconvert $< --to markdown --output-dir $(ARTIFACTS_DOCS)
 	# Appending link to markdown
-	@echo "[Download as $(notdir $@)]($(subst artifacts/,clients/python/artifacts/,$@) \":ignore title\")" >> $<
+	@echo "[Download as $(notdir $<)]($(subst docs/,clients/python/artifacts/,$<) \":ignore title\")" >> $@
 
 
 
