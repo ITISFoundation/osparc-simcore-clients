@@ -5,3 +5,5 @@ pytest
 papermill
 ipython
 ipykernel
+pandas
+packaging

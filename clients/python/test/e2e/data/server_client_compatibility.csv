@@ -1,0 +1,6 @@
+,master,0.5.0
+api.osparc-master.speag.com,True,True
+api.osparc-staging.speag.com,False,True
+api.osparc.speag.com,False,True
+api.staging.osparc.io,False,True
+api.osparc.io,False,True
