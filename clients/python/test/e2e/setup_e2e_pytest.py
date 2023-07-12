@@ -8,21 +8,18 @@ from packaging import version
 import json
 
 # keys to be found in input dicts
-surl: str = 'OSPARC_API_HOST'
-skey: str = 'OSPARC_API_KEY'
-ssecret: str = 'OSPARC_API_SECRET'
-skeys: List[str] = [surl,skey,ssecret]
+surl: str = "OSPARC_API_HOST"
+skey: str = "OSPARC_API_KEY"
+ssecret: str = "OSPARC_API_SECRET"
+skeys: List[str] = [surl, skey, ssecret]
 
-crepo: str = 'OSPARC_CLIENT_REPO'
-cbranch: str = 'OSPARC_CLIENT_BRANCH'
-cversion: str = 'OSPARC_CLIENT_VERSION'
+crepo: str = "OSPARC_CLIENT_REPO"
+cbranch: str = "OSPARC_CLIENT_BRANCH"
+cversion: str = "OSPARC_CLIENT_VERSION"
 ckeys: List[str] = [crepo, cbranch, cversion]
 
 
-
-def main(
-    ccfg: Union[str,Dict[str,str]], scfg: Union[str,Dict[str,str]]
-) -> bool:
+def main(client_config: str, server_config: str) -> bool:
     """
     Generates a toml configuration file pytest e2e tests
 
@@ -31,14 +28,16 @@ def main(
         A bool indicating whether or not the (client, server) pair are compatible
     """
     # read in data
-    if isinstance(ccfg,str):
-        ccfg = json.loads(ccfg)
-    if isinstance(scfg,str):
-        scfg = json.loads(scfg)
-    assert isinstance(ccfg,dict)
-    assert isinstance(scfg,dict)
-    assert len(set(ccfg.keys())-set(ckeys)) == 0, f"the following client inputs were missing: {set(ccfg.keys())-set(ckeys)}"
-    assert len(set(scfg.keys())-set(skeys)) == 0, f"the following servr inputs were missing: {set(scfg.keys())-set(skeys)}"
+    ccfg = json.loads(client_config)
+    scfg = json.loads(server_config)
+    assert isinstance(ccfg, dict)
+    assert isinstance(scfg, dict)
+    assert all(
+        key in ckeys for key in ccfg.keys()
+    ), f"the following client inputs are required: {ckeys}. Received: {set(ccfg.keys())}"
+    assert all(
+        key in skeys for key in scfg.keys()
+    ), f"the following server inputs are required: {skeys}. Received: {set(scfg.keys())}"
 
     osparc_url: ParseResult = urlparse(scfg[surl])
     ini_file: Path = Path(__file__).parent / "pyproject.toml"
@@ -48,7 +47,9 @@ def main(
     )
 
     # sanity check client inputs
-    assert (ccfg[cbranch] == "" or ccfg[cversion] == ""), f"{cbranch}={ccfg[cbranch]}, {cversion}={ccfg[cversion]}"
+    assert (
+        ccfg[cbranch] == "" or ccfg[cversion] == ""
+    ), f"{cbranch}={ccfg[cbranch]}, {cversion}={ccfg[cversion]}"
     # sanity checks
     if ccfg[cversion] != "":
         _ = version.parse(ccfg[cversion])
@@ -63,9 +64,9 @@ def main(
 
     # save client setting (mainly for logging)
     client_settings: List[str] = []
-    client_settings.append(f"CLIENT_REPO = {ccfg[crepo]}")
-    client_settings.append(f"CLIENT_BRANCH = {ccfg[crepo]}")
-    client_settings.append(f"CLIENT_VERSION = {ccfg[crepo]}")
+    client_settings.append(f"OSPARC_CLIENT_REPO = {ccfg[crepo]}")
+    client_settings.append(f"OSPARC_CLIENT_BRANCH = {ccfg[cbranch]}")
+    client_settings.append(f"OSPARC_CLIENT_VERSION = {ccfg[cversion]}")
 
     pytest_settings: Dict[str, Any] = {}
     pytest_settings["env"] = envs
@@ -88,6 +89,7 @@ def main(
     ), f"invalid server_url: {osparc_url.netloc}\nValid ones are: {list(comp_df.index)}"
 
     return comp_df[client_ref][osparc_url.netloc]
+
 
 if __name__ == "__main__":
     typer.run(main)
