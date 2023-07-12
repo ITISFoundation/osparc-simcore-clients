@@ -25,8 +25,8 @@ def main(
     )
 
     # generate client_ref
-    assert (client_repo == "" and client_branch == "") or (client_version == "")
-    assert (client_repo != "" and client_branch != "") or (client_version != "")
+    assert (client_repo == "" and client_branch == "") or (client_version == ""), f"client_repo={client_repo}, client_branch={client_branch}, client_version={client_version}"
+    assert (client_repo != "" and client_branch != "") or (client_version != ""), f"client_repo={client_repo}, client_branch={client_branch}, client_version={client_version}"
     if client_version != "":
         # raise exception if not valid version
         _ = version.parse(client_version)
