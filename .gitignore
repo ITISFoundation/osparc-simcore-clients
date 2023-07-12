@@ -78,3 +78,4 @@ tmp*
 /clients/python/artifacts/*
 /clients/python/client/build/*
 /clients/python/client/osparc/data/openapi.json
+/clients/python/test/e2e/pyproject.toml
