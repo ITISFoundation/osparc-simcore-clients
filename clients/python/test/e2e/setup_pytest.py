@@ -3,10 +3,12 @@ from pathlib import Path
 import pandas as pd
 from urllib.parse import urlparse, ParseResult
 from typing import List, Dict, Any
+import typer
+
 
 def generate_pytest_ini(client_ref:str, osparc_server:str, osparc_key:str, osparc_secret:str):
     """
-    Generates a configuration file for pytest to parse
+    Generates a toml configuration file pytest e2e tests
     """
     osparc_url: ParseResult = urlparse(osparc_server)
     ini_file:Path = Path(__file__).parent / 'pyproject.toml'
@@ -31,4 +33,4 @@ def generate_pytest_ini(client_ref:str, osparc_server:str, osparc_key:str, ospar
         toml.dump(config, f)
 
 if __name__ == '__main__':
-    generate_pytest_ini('master', 'https://api.osparc-master.speag.com/', 'mykey', 'mysecret')
+    typer.run(generate_pytest_ini)
