@@ -28,7 +28,7 @@ def main(pytest_exit_code: int) -> None:
     """
     Postprocess results from e2e pytests
     This scripts appends the pytest exit code to clients/python/artifacts/e2e/<client_ref>.json for it to be parsed later
-    It also moved the pyproject.toml to clients/python/artifacts/e2e in order to be able to reproduce tests later
+    It also moves the pyproject.toml to clients/python/artifacts/e2e in order to be able to reproduce tests later
 
     arguments:
     ----------
@@ -71,7 +71,7 @@ def main(pytest_exit_code: int) -> None:
     # copy toml to artifacts dir
     toml_dir: Path = artifact_dir / (client_ref + "+" + urlparse(url).netloc)
     toml_dir.mkdir(exist_ok=False)
-    shutil.copy(cfg_file, toml_dir / cfg_file.name)
+    shutil.move(cfg_file, toml_dir / cfg_file.name)
 
 
 if __name__ == "__main__":
