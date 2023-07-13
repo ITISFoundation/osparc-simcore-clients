@@ -76,5 +76,4 @@ def main(pytest_exit_code: int) -> None:
 
 
 if __name__ == "__main__":
-    main(1)
-    #typer.run(main)
+    typer.run(main)
