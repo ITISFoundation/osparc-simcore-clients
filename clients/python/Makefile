@@ -125,8 +125,6 @@ e2e-shell: ## shell for running e2e tests
 	docker run -it itisfoundation/osparc_python_tutorial_testing:v1
 
 
-
-
 ## DOCKER -------------------------------------------------------------------------------
 
 .env: .env-template ## creates .env file from defaults in .env-devel
