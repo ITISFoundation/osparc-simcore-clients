@@ -7,18 +7,19 @@ CI_DIR=$(realpath "$(dirname "$0")")
 E2E_DIR=$(realpath "${CI_DIR}/..")
 PYTHON_DIR=$(realpath "${E2E_DIR}/../..")
 
-doc="Run e2e Setup client configuration for e2e testing of the osparc python client\n"
+doc="Run e2e osparc python client tests\n"
 doc+="Input:\n"
 doc+="------\n"
-doc+="\tA single json string containing the three fields OSPARC_CLIENT_VERSION, OSPARC_CLIENT_REPO and OSPARC_CLIENT_BRANCH and meeting exactly one of the following two conditions:\n"
-doc+="\t\t- the field OSPARC_CLIENT_VERSION is empty\n"
-doc+="\t\t- the two fields OSPARC_CLIENT_REPO and OSPARC_CLIENT_BRANCH are empty\n"
-doc+="\tOSPARC_CLIENT_VERSION can either be the version of a client (e.g. \"0.5.0\") or \"latest\"\n"
-doc+="\tExample 1: bash setup_client_config.bash '{\"OSPARC_CLIENT_REPO\": \"ITISFoundation/osparc-simcore-clients\", \"OSPARC_CLIENT_BRANCH\": \"master\", \"OSPARC_CLIENT_VERSION\": \"\"}'\n"
-doc+="\tExample 2: bash setup_client_config.bash '{\"OSPARC_CLIENT_REPO\": \"\", \"OSPARC_CLIENT_BRANCH\": \"\", \"OSPARC_CLIENT_VERSION\": \"0.5.0\"}'\n"
+doc+="\tTwo json strings: A client json configuration and a server json configuration. Example: \"bash run_e2e_python_tests.bash -c <client json> -s <server json>\".\n"
+doc+="\tThe client array must adhere to the requirements of setup_client_config.bash (run \"bash setup_client_config.bash\").\n"
+doc+="\tThe server json string must be an array of json objects. Each json object must contain the following fields:\n"
+doc+="\t\t - OSPARC_API_HOST\n"
+doc+="\t\t - OSPARC_API_KEY\n"
+doc+="\t\t - OSPARC_API_SECRET\n"
 doc+="Output:\n"
 doc+="-------\n"
-doc+="\tA json string which, when passed to install_osparc_python_client.bash installs the wanted python client"
+doc+="\tTest results are stored in clients/python/artifacts/e2e/<client branch or version>.json and the \"pyproject.toml\" file from which one can completely\n"
+doc+="\treproduce the testrun is stored in clients/python/artifacts/e2e/<branch+server_url>/pyproject.toml\n"
 
 print_doc() { echo -e "$doc"; }
 [ $# -eq 0 ] && print_doc && exit 0
