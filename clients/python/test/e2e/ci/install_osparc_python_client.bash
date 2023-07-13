@@ -4,7 +4,10 @@ set -o errexit  # abort on nonzero exitstatus
 set -o nounset  # abort on unbound variable
 set -o pipefail # don't hide errors within pipes
 
-doc="error"
+doc="Install osparc python client\n"
+doc+="Input:\n"
+doc+="------\n"
+doc+="\tA single json string. This json string is expected to be the output of setup_client_config.bash or as logged in the pyproject.toml"
 
 print_doc() { echo -e "$doc"; }
 [ $# -eq 0 ] && print_doc && exit 0
