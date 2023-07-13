@@ -16,6 +16,7 @@ doc+="\tThe server json string must be an array of json objects. Each json objec
 doc+="\t\t - OSPARC_API_HOST\n"
 doc+="\t\t - OSPARC_API_KEY\n"
 doc+="\t\t - OSPARC_API_SECRET\n"
+doc+="\tExample: [{\"OSPARC_API_HOST\":\"https://api.osparc-master.speag.com\", \"OSPARC_API_KEY\":\"mykey\", \"OSPARC_API_SECRET\":\"mysecret\"}] \n"
 doc+="Output:\n"
 doc+="-------\n"
 doc+="\tTest results are stored in clients/python/artifacts/e2e/<client branch or version>.json and the \"pyproject.toml\" file from which one can completely\n"
