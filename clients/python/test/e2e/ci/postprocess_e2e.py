@@ -5,6 +5,7 @@ from typing import Dict, List
 import pandas as pd
 from urllib.parse import urlparse
 import shutil
+import json
 
 # pyproject.toml keys
 surl: str = "OSPARC_API_HOST"
@@ -39,17 +40,17 @@ def main(pytest_exit_code: int) -> None:
         None
     """
     artifact_dir: Path = Path(__file__).parent.parent.parent / "artifacts" / "e2e"
-    cfg_file: Path = Path(__file__).parent / "pyproject.toml"
+    cfg_file: Path = Path(__file__).parent.parent / "pyproject.toml"
     artifact_dir.mkdir(parents=True, exist_ok=True)
-    assert cfg_file.is_file()
+    assert cfg_file.is_file(), f"cfg_file={cfg_file}"
 
     # extract values
-    cfg: Dict = toml.load(cfg_file)["tool"]["pytest"]["ini_options"]
-    client_settings: List[str] = cfg["client_settings"]
-    assert isinstance(client_settings, list)
-    branch: str = extract_val(client_settings, cbranch)
-    version: str = extract_val(client_settings, cversion)
-    envs: List[str] = cfg["env"]
+    pytest_cfg: Dict = toml.load(cfg_file)["tool"]["pytest"]["ini_options"]
+    client_cfg: Dict[str,str] = json.loads(toml.load(cfg_file)["client"]["install_cmd"])
+    assert isinstance(client_cfg, dict)
+    branch: str = client_cfg[cbranch]
+    version: str = client_cfg[cversion]
+    envs: List[str] = pytest_cfg["env"]
     assert isinstance(envs, list)
     url: str = extract_val(envs, surl)
 
@@ -75,4 +76,5 @@ def main(pytest_exit_code: int) -> None:
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    main(1)
+    #typer.run(main)
