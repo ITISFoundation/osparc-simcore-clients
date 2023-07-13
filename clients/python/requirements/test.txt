@@ -7,3 +7,6 @@ ipython
 ipykernel
 pandas
 packaging
+toml
+typer
+pytest-env
