@@ -6,7 +6,7 @@ import pandas as pd
 from urllib.parse import urlparse
 import shutil
 
-# keys to be found in input dicts
+# pyproject.toml keys
 surl: str = "OSPARC_API_HOST"
 skey: str = "OSPARC_API_KEY"
 ssecret: str = "OSPARC_API_SECRET"
