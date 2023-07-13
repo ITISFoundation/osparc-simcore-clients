@@ -4,8 +4,8 @@ set -o errexit  # abort on nonzero exitstatus
 set -o nounset  # abort on unbound variable
 set -o pipefail # don't hide errors within pipes
 
-ROOT_DIR=$(realpath "$(dirname "$0")/..")
-PYTHON_DIR=${ROOT_DIR}/clients/python
+CI_DIR=$(realpath "$(dirname "$0")")
+E2E_DIR=$(realpath "${CI_DIR}/..")
 
 unset CLIENT_CONFIG
 unset SERVER_CONFIG
@@ -15,7 +15,7 @@ while getopts ":c:s:" arg; do
     c) # Define client configuration
       CLIENT_CONFIG="${OPTARG}"
       ;;
-    s)
+    s) # Define server configuration
       SERVER_CONFIG="${OPTARG}"
       ;;
     *)
@@ -30,9 +30,10 @@ NSCONFIG=$(echo "${SERVER_CONFIG}" | jq length)
 for (( ii=0; ii<NSCONFIG; ii++ ))
 do
     SCONFIG=$(echo "${SERVER_CONFIG}" | jq .[${ii}] )
-    python "${PYTHON_DIR}"/test/e2e/setup_e2e_pytest.py "${CLIENT_CONFIG}" "${SCONFIG}"
+    python "${CI_DIR}"/setup_e2e_pytest.py "${CLIENT_CONFIG}" "${SCONFIG}"
     (
       # run in subshell to ensure env doesnt survive
-      pytest "${PYTHON_DIR}"/test/e2e -p env
+      pytest "${E2E_DIR}" -p env
+      python "${CI_DIR}"/postprocess_e2e.py $?
     )
 done
