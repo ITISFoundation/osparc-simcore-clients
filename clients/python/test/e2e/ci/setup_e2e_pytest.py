@@ -33,17 +33,14 @@ def main(client_config: str, server_config: str) -> bool:
     assert isinstance(ccfg, dict)
     assert isinstance(scfg, dict)
     assert all(
-        key in ckeys for key in ccfg.keys()
-    ), f"the following client inputs are required: {ckeys}. Received: {set(ccfg.keys())}"
-    assert all(
         key in skeys for key in scfg.keys()
     ), f"the following server inputs are required: {skeys}. Received: {set(scfg.keys())}"
 
     osparc_url: ParseResult = urlparse(scfg[surl])
-    ini_file: Path = Path(__file__).parent / "pyproject.toml"
+    ini_file: Path = Path(__file__).parent.parent / "pyproject.toml"
     ini_file.unlink(missing_ok=True)
     comp_df: pd.DataFrame = pd.read_json(
-        Path(__file__).parent / "data" / "server_client_compatibility.json"
+        Path(__file__).parent.parent / "data" / "server_client_compatibility.json"
     )
 
     # sanity check client inputs
@@ -62,19 +59,12 @@ def main(client_config: str, server_config: str) -> bool:
     envs.append(f"OSPARC_API_KEY = {scfg[skey]}")
     envs.append(f"OSPARC_API_SECRET = {scfg[ssecret]}")
 
-    # save client setting (mainly for logging)
-    client_settings: List[str] = []
-    client_settings.append(f"OSPARC_CLIENT_REPO = {ccfg[crepo]}")
-    client_settings.append(f"OSPARC_CLIENT_BRANCH = {ccfg[cbranch]}")
-    client_settings.append(f"OSPARC_CLIENT_VERSION = {ccfg[cversion]}")
-
     pytest_settings: Dict[str, Any] = {}
     pytest_settings["env"] = envs
-    pytest_settings["client_settings"] = client_settings
 
     config: Dict[str, Any] = {}
     config["tool"] = {"pytest": {"ini_options": pytest_settings}}
-
+    config["client"] = {"install_cmd": json.dumps(json.loads(client_config))}
     # generate toml file
     with open(str(ini_file), "w") as f:
         toml.dump(config, f)

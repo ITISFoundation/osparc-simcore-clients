@@ -26,7 +26,7 @@ while getopts ":c:s:" arg; do
 done
 
 OSPARC_CLIENT_CONFIG=$(bash "${CI_DIR}"/setup_client_config.bash "${OSPARC_CLIENT_CONFIG}")
-echo "OSPARC_CLIENT_CONFIG: $OSPARC_CLIENT_CONFIG"
+bash "${CI_DIR}"/install_osparc_python_client.bash "${OSPARC_CLIENT_CONFIG}"
 
 NSCONFIG=$(echo "${OSPARC_SERVER_CONFIGS}" | jq length)
 for (( ii=0; ii<NSCONFIG; ii++ ))
