@@ -101,11 +101,13 @@ def main(client_config: str, server_config: str) -> bool:
             f"invalid client_ref: {client_ref}.\nValid ones are: {comp_df.keys()}",
             CiScriptFailure,
         )
+        raise typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
     if not osparc_url.netloc in comp_df.index:
         warnings.warn(
             f"invalid server_url: {osparc_url.netloc}\nValid ones are: {list(comp_df.index)}",
             CiScriptFailure,
         )
+        raise typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
 
     is_compatible: bool = comp_df[client_ref][osparc_url.netloc]
     raise typer.Exit(
