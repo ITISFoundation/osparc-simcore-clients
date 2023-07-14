@@ -33,13 +33,26 @@ def main(pytest_exit_code: int) -> None:
 
     arguments:
     ----------
-        pytest_exit_code : integer exit code from running pytests or -1 which indicates the client and server are incompatible.
+        pytest_exit_code : Integer exit code from running pytests or -1 which indicates the client and server are incompatible.
                            N.B. -1 doesn't clash with pytest exitcodes: https://docs.pytest.org/en/7.1.x/reference/exit-codes.html
 
     returns:
     --------
         None
     """
+    assert pytest_exit_code in [
+        -1,
+        0,
+        1,
+    ], f"Received unexpected pytest exitcode {pytest_exit_code}. See https://docs.pytest.org/en/7.1.x/reference/exit-codes.html"
+    return_msg: str
+    if pytest_exit_code == -1:
+        return_msg = "incompatible"
+    elif pytest_exit_code == 0:
+        return_msg = "pass"
+    else:
+        return_msg = "fail"
+
     artifact_dir: Path = (
         Path(__file__).parent.parent.parent.parent / "artifacts" / "e2e"
     )
@@ -63,7 +76,7 @@ def main(pytest_exit_code: int) -> None:
     client_ref: str = branch + version
     result_file: Path = artifact_dir / (client_ref + ".json")
     new_df: pd.DataFrame = pd.DataFrame(
-        columns=[client_ref], index=[urlparse(url).netloc], data=[pytest_exit_code]
+        columns=[client_ref], index=[urlparse(url).netloc], data=[return_msg]
     )
     result_df: pd.DataFrame
     if result_file.is_file():
