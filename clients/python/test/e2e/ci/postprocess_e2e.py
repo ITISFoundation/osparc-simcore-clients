@@ -21,13 +21,6 @@ cbranch: str = "OSPARC_CLIENT_BRANCH"
 cversion: str = "OSPARC_CLIENT_VERSION"
 ckeys: List[str] = [crepo, cbranch, cversion]
 
-db_entries: Dict[int, str] = {
-    CiExitCodes.INVALID_CLIENT_VS_SERVER: "imcompatible",
-    pytest.ExitCode.OK: "pass",
-    pytest.ExitCode.TESTS_FAILED: "fail",
-}
-
-
 def extract_val(toml_entry: List[str], key: str) -> str:
     entries: List[str] = [elm for elm in toml_entry if key in elm]
     if not len(entries) == 1:
@@ -61,8 +54,6 @@ def main(exit_code: int) -> None:
             f"Received unexpected pytest exitcode {exit_code}. See https://docs.pytest.org/en/7.1.x/reference/exit-codes.html",
             CiScriptFailure,
         )
-    return_msg: str = db_entries[exit_code]
-
     artifact_dir: Path = (
         Path(__file__).parent.parent.parent.parent / "artifacts" / "e2e"
     )
@@ -90,7 +81,7 @@ def main(exit_code: int) -> None:
     client_ref: str = branch + version
     result_file: Path = artifact_dir / (client_ref + ".json")
     new_df: pd.DataFrame = pd.DataFrame(
-        columns=[client_ref], index=[urlparse(url).netloc], data=[return_msg]
+        columns=[client_ref], index=[urlparse(url).netloc], data=[exit_code]
     )
     result_df: pd.DataFrame
     if result_file.is_file():
