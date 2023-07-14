@@ -40,14 +40,18 @@ def main(pytest_exit_code: int) -> None:
     --------
         None
     """
-    artifact_dir: Path = Path(__file__).parent.parent.parent.parent / "artifacts" / "e2e"
+    artifact_dir: Path = (
+        Path(__file__).parent.parent.parent.parent / "artifacts" / "e2e"
+    )
     cfg_file: Path = Path(__file__).parent.parent / "pyproject.toml"
     artifact_dir.mkdir(parents=True, exist_ok=True)
     assert cfg_file.is_file(), f"cfg_file={cfg_file}"
 
     # extract values
     pytest_cfg: Dict = toml.load(cfg_file)["tool"]["pytest"]["ini_options"]
-    client_cfg: Dict[str,str] = json.loads(toml.load(cfg_file)["client"]["install_cmd"])
+    client_cfg: Dict[str, str] = json.loads(
+        toml.load(cfg_file)["client"]["install_cmd"]
+    )
     assert isinstance(client_cfg, dict)
     branch: str = client_cfg[cbranch]
     version: str = client_cfg[cversion]

@@ -78,7 +78,7 @@ def main(client_config: str, server_config: str) -> bool:
         osparc_url.netloc in comp_df.index
     ), f"invalid server_url: {osparc_url.netloc}\nValid ones are: {list(comp_df.index)}"
 
-    is_compatible:bool = comp_df[client_ref][osparc_url.netloc]
+    is_compatible: bool = comp_df[client_ref][osparc_url.netloc]
     raise typer.Exit(code=0 if is_compatible else 1)
 
 
