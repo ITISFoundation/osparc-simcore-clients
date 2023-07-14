@@ -1,6 +1,6 @@
 from pathlib import Path
 import typer
-from clients.python.test.e2e.ci._utils import E2eExitCodes
+from _utils import E2eExitCodes
 import pandas as pd
 import pytest
 
