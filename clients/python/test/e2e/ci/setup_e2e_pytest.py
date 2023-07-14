@@ -69,14 +69,17 @@ def main(client_config: str, server_config: str) -> bool:
         )
         raise typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
     # sanity checks
-    if ccfg[cversion] != "" and ccfg[cversion] != "latest":
-        _ = version.parse(ccfg[cversion])
-    if ccfg[cbranch] != "":
+    client_ref: str
+    if ccfg[cversion] != "":
+        client_ref = "production"
+    else:
         if ccfg[crepo] == "":
             warnings.warn(
                 f"{cbranch}={ccfg[cbranch]}, {crepo}={ccfg[crepo]}", CiScriptFailure
             )
             raise typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
+        else:
+            client_ref = ccfg[cbranch]
 
     # set environment variables
     envs: List[str] = []
@@ -95,7 +98,6 @@ def main(client_config: str, server_config: str) -> bool:
         toml.dump(config, f)
 
     # check client vs server compatibility
-    client_ref = ccfg[cbranch] + ccfg[cversion]
     if not client_ref in comp_df.keys():
         warnings.warn(
             f"invalid client_ref: {client_ref}.\nValid ones are: {comp_df.keys()}",
