@@ -33,13 +33,14 @@ def main(pytest_exit_code: int) -> None:
 
     arguments:
     ----------
-        pytest_exit_code : integer exit code from running pytests
+        pytest_exit_code : integer exit code from running pytests or -1 which indicates the client and server are incompatible.
+                           N.B. -1 doesn't clash with pytest exitcodes: https://docs.pytest.org/en/7.1.x/reference/exit-codes.html
 
     returns:
     --------
         None
     """
-    artifact_dir: Path = Path(__file__).parent.parent.parent / "artifacts" / "e2e"
+    artifact_dir: Path = Path(__file__).parent.parent.parent.parent / "artifacts" / "e2e"
     cfg_file: Path = Path(__file__).parent.parent / "pyproject.toml"
     artifact_dir.mkdir(parents=True, exist_ok=True)
     assert cfg_file.is_file(), f"cfg_file={cfg_file}"
