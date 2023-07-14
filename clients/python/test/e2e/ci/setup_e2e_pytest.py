@@ -6,6 +6,8 @@ from typing import List, Dict, Any, Union
 import typer
 from packaging import version
 import json
+from ._warnings_and_exit_codes import CiScriptFailure, CiExitCodes
+import warnings
 
 # keys to be found in input dicts
 surl: str = "OSPARC_API_HOST"
@@ -23,6 +25,10 @@ def main(client_config: str, server_config: str) -> bool:
     """
     Generates a toml configuration file pytest e2e tests
 
+    exceptions:
+    -----------
+        A typer.Exit(code=100) is raised if a failure is encountered
+
     returns:
     --------
         A bool indicating whether or not the (client, server) pair are compatible
@@ -30,11 +36,24 @@ def main(client_config: str, server_config: str) -> bool:
     # read in data
     ccfg = json.loads(client_config)
     scfg = json.loads(server_config)
-    assert isinstance(ccfg, dict)
-    assert isinstance(scfg, dict)
-    assert all(
-        key in skeys for key in scfg.keys()
-    ), f"the following server inputs are required: {skeys}. Received: {set(scfg.keys())}"
+    if not isinstance(ccfg, dict):
+        warnings.warn(
+            f"The client configuration received in {__file__} was invalid",
+            CiScriptFailure,
+        )
+        typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
+    if not isinstance(scfg, dict):
+        warnings.warn(
+            f"The server configuration received in {__file__} was invalid",
+            CiScriptFailure,
+        )
+        typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
+    if not all(key in skeys for key in scfg.keys()):
+        warnings.warn(
+            f"The following server inputs are required: {skeys}. Received: {set(scfg.keys())}",
+            CiScriptFailure,
+        )
+        typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
 
     osparc_url: ParseResult = urlparse(scfg[surl])
     ini_file: Path = Path(__file__).parent.parent / "pyproject.toml"
@@ -44,14 +63,20 @@ def main(client_config: str, server_config: str) -> bool:
     )
 
     # sanity check client inputs
-    assert (
-        ccfg[cbranch] == "" or ccfg[cversion] == ""
-    ), f"{cbranch}={ccfg[cbranch]}, {cversion}={ccfg[cversion]}"
+    if not (ccfg[cbranch] == "" or ccfg[cversion] == ""):
+        warnings.warn(
+            f"{cbranch}={ccfg[cbranch]}, {cversion}={ccfg[cversion]}", CiScriptFailure
+        )
+        raise typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
     # sanity checks
-    if ccfg[cversion] != "":
+    if ccfg[cversion] != "" and ccfg[cversion] != "latest":
         _ = version.parse(ccfg[cversion])
     if ccfg[cbranch] != "":
-        assert ccfg[crepo] != "", f"{cbranch}={ccfg[cbranch]}, {crepo}={ccfg[crepo]}"
+        if ccfg[crepo] == "":
+            warnings.warn(
+                f"{cbranch}={ccfg[cbranch]}, {crepo}={ccfg[crepo]}", CiScriptFailure
+            )
+            raise typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
 
     # set environment variables
     envs: List[str] = []
@@ -71,15 +96,21 @@ def main(client_config: str, server_config: str) -> bool:
 
     # check client vs server compatibility
     client_ref = ccfg[cbranch] + ccfg[cversion]
-    assert (
-        client_ref in comp_df.keys()
-    ), f"invalid client_ref: {client_ref}.\nValid ones are: {comp_df.keys()}"
-    assert (
-        osparc_url.netloc in comp_df.index
-    ), f"invalid server_url: {osparc_url.netloc}\nValid ones are: {list(comp_df.index)}"
+    if not client_ref in comp_df.keys():
+        warnings.warn(
+            f"invalid client_ref: {client_ref}.\nValid ones are: {comp_df.keys()}",
+            CiScriptFailure,
+        )
+    if not osparc_url.netloc in comp_df.index:
+        warnings.warn(
+            f"invalid server_url: {osparc_url.netloc}\nValid ones are: {list(comp_df.index)}",
+            CiScriptFailure,
+        )
 
     is_compatible: bool = comp_df[client_ref][osparc_url.netloc]
-    raise typer.Exit(code=0 if is_compatible else 1)
+    raise typer.Exit(
+        code=CiExitCodes.OK if is_compatible else CiExitCodes.INVALID_CLIENT_VS_SERVER
+    )
 
 
 if __name__ == "__main__":

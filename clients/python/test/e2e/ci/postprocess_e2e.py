@@ -6,6 +6,9 @@ import pandas as pd
 from urllib.parse import urlparse
 import shutil
 import json
+from ._warnings_and_exit_codes import CiExitCodes, CiScriptFailure
+import pytest
+import warnings
 
 # pyproject.toml keys
 surl: str = "OSPARC_API_HOST"
@@ -18,14 +21,22 @@ cbranch: str = "OSPARC_CLIENT_BRANCH"
 cversion: str = "OSPARC_CLIENT_VERSION"
 ckeys: List[str] = [crepo, cbranch, cversion]
 
+db_entries: Dict[int, str] = {
+    CiExitCodes.INVALID_CLIENT_VS_SERVER: "imcompatible",
+    pytest.ExitCode.OK: "pass",
+    pytest.ExitCode.TESTS_FAILED: "fail",
+}
+
 
 def extract_val(toml_entry: List[str], key: str) -> str:
     entries: List[str] = [elm for elm in toml_entry if key in elm]
-    assert len(entries) == 1, f"toml_entry={toml_entry}"
+    if not len(entries) == 1:
+        warnings.warn(f"toml_entry={toml_entry}", CiScriptFailure)
+        raise typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
     return entries[0].replace(key, "").strip(" =")
 
 
-def main(pytest_exit_code: int) -> None:
+def main(exit_code: int) -> None:
     """
     Postprocess results from e2e pytests
     This scripts appends the pytest exit code to clients/python/artifacts/e2e/<client_ref>.json for it to be parsed later
@@ -33,42 +44,46 @@ def main(pytest_exit_code: int) -> None:
 
     arguments:
     ----------
-        pytest_exit_code : Integer exit code from running pytests or -1 which indicates the client and server are incompatible.
-                           N.B. -1 doesn't clash with pytest exitcodes: https://docs.pytest.org/en/7.1.x/reference/exit-codes.html
+        exit_code : Integer exit code from running pytests or a custom exitcode (see ExitCodes).
 
     returns:
     --------
         None
     """
-    expected_exitcodes: Set = {-1, 0, -1}
-    assert (
-        pytest_exit_code in expected_exitcodes
-    ), f"Received unexpected pytest exitcode {pytest_exit_code}. See https://docs.pytest.org/en/7.1.x/reference/exit-codes.html"
-    return_msg: str
-    if pytest_exit_code == -1:
-        return_msg = "incompatible"
-    elif pytest_exit_code == 0:
-        return_msg = "pass"
-    else:
-        return_msg = "fail"
+    expected_exitcodes: Set = {
+        CiExitCodes.OK,
+        CiExitCodes.INVALID_CLIENT_VS_SERVER,
+        pytest.ExitCode.OK,
+        pytest.ExitCode.TESTS_FAILED,
+    }
+    if not exit_code in expected_exitcodes:
+        warnings.warn(
+            f"Received unexpected pytest exitcode {exit_code}. See https://docs.pytest.org/en/7.1.x/reference/exit-codes.html",
+            CiScriptFailure,
+        )
+    return_msg: str = db_entries[exit_code]
 
     artifact_dir: Path = (
         Path(__file__).parent.parent.parent.parent / "artifacts" / "e2e"
     )
     cfg_file: Path = Path(__file__).parent.parent / "pyproject.toml"
     artifact_dir.mkdir(parents=True, exist_ok=True)
-    assert cfg_file.is_file(), f"cfg_file={cfg_file}"
+    if not cfg_file.is_file():
+        warnings.warn(f"cfg_file={cfg_file}", CiScriptFailure)
+        raise typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
 
     # extract values
     pytest_cfg: Dict = toml.load(cfg_file)["tool"]["pytest"]["ini_options"]
     client_cfg: Dict[str, str] = json.loads(
         toml.load(cfg_file)["client"]["install_cmd"]
     )
-    assert isinstance(client_cfg, dict)
+    if not isinstance(client_cfg, dict):
+        raise typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
     branch: str = client_cfg[cbranch]
     version: str = client_cfg[cversion]
     envs: List[str] = pytest_cfg["env"]
-    assert isinstance(envs, list)
+    if not isinstance(envs, list):
+        raise typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
     url: str = extract_val(envs, surl)
 
     # add result to json
@@ -90,6 +105,7 @@ def main(pytest_exit_code: int) -> None:
     toml_dir: Path = artifact_dir / (client_ref + "+" + urlparse(url).netloc)
     toml_dir.mkdir(exist_ok=False)
     shutil.move(cfg_file, toml_dir / cfg_file.name)
+    raise typer.Exit(code=CiExitCodes.OK)
 
 
 if __name__ == "__main__":

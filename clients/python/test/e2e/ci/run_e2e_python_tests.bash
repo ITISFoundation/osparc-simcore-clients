@@ -48,9 +48,6 @@ if [[ "$(echo "${OSPARC_SERVER_CONFIGS}" | jq 'type == "array"')" != "true" ]]; 
   echo -e "The server configuration (-s) must a an array of json objects. Received: ${OSPARC_SERVER_CONFIGS}"; exit 1
 fi
 
-if ! OSPARC_CLIENT_CONFIG=$(bash "${CI_DIR}"/setup_client_config.bash "${OSPARC_CLIENT_CONFIG}"); then
-  echo "Could not determine client configuration"; exit 1
-fi
 if ! bash "${CI_DIR}"/install_osparc_python_client.bash "${OSPARC_CLIENT_CONFIG}"; then
   echo "Could not instal client"; exit 1
 fi
@@ -59,13 +56,19 @@ NSCONFIG=$(echo "${OSPARC_SERVER_CONFIGS}" | jq length)
 for (( ii=0; ii<NSCONFIG; ii++ ))
 do
     SCONFIG=$(echo "${OSPARC_SERVER_CONFIGS}" | jq .[${ii}] )
-    if ! python "${CI_DIR}"/setup_e2e_pytest.py "${OSPARC_CLIENT_CONFIG}" "${SCONFIG}"; then
-      python "${CI_DIR}"/postprocess_e2e.py -- -1 # pass -1 to indicate incompatible server vs client
+    python "${CI_DIR}"/setup_e2e_pytest.py "${OSPARC_CLIENT_CONFIG}" "${SCONFIG}"
+    RC=$?
+    if [[ ${RC} -eq 101 ]]; then
+      if ! python "${CI_DIR}"/postprocess_e2e.py -- ${RC}; then # pass 101 to indicate incompatible server vs client
+        exit 1
+      fi
       continue
     fi
     (
       # run in subshell to ensure env doesnt survive
       pytest "${E2E_DIR}" -p env
-      python "${CI_DIR}"/postprocess_e2e.py $?
+      if ! python "${CI_DIR}"/postprocess_e2e.py $?; then
+        exit 1
+      fi
     )
 done
