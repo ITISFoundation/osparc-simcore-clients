@@ -18,13 +18,13 @@ def exitcode_to_text(exitcode: int) -> str:
      raise typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
 
 
-def make_pretty(exitcode):
+def make_pretty(entry:str):
   color:str
-  if exitcode == CiExitCodes.INVALID_CLIENT_VS_SERVER:
+  if entry == "incompatible":
     color = "grey"
-  elif exitcode == pytest.ExitCode.OK:
+  elif entry == "pass":
     color = "green"
-  elif exitcode == pytest.ExitCode.TESTS_FAILED:
+  elif entry == "fail":
     color = "red"
   else:
      raise typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
@@ -47,6 +47,9 @@ def main(e2e_artifacts_dir:str) -> None:
   df: pd.DataFrame = pd.DataFrame()
   for file in artifacts.glob("*.json"):
       df = pd.concat([df, pd.read_json(file)], axis=1)
+
+  df = df.applymap(exitcode_to_text)
+  print(df)
 
   s = df.style.applymap(make_pretty)
   s.set_caption("OSPARC e2e python client vs server tests")
