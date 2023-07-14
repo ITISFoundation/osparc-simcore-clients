@@ -49,8 +49,6 @@ def main(e2e_artifacts_dir:str) -> None:
       df = pd.concat([df, pd.read_json(file)], axis=1)
 
   df = df.applymap(exitcode_to_text)
-  print(df)
-
   s = df.style.applymap(make_pretty)
   s.set_caption("OSPARC e2e python client vs server tests")
   s.to_html(artifacts / 'test_results.html')
