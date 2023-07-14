@@ -10,3 +10,4 @@ packaging
 toml
 typer
 pytest-env
+matplotlib
