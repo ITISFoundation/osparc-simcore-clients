@@ -5,7 +5,6 @@ set -o pipefail # don't hide errors within pipes
 
 CI_DIR=$(realpath "$(dirname "$0")")
 E2E_DIR=$(realpath "${CI_DIR}/..")
-PYTHON_DIR=$(realpath "${E2E_DIR}/../..")
 
 doc="Run e2e osparc python client tests\n"
 doc+="Input:\n"
@@ -43,13 +42,8 @@ while getopts ":c:s:" arg; do
   esac
 done
 
-rm -rf "${PYTHON_DIR}"/artifacts || true
 if [[ "$(echo "${OSPARC_SERVER_CONFIGS}" | jq 'type == "array"')" != "true" ]]; then
   echo -e "The server configuration (-s) must a an array of json objects. Received: ${OSPARC_SERVER_CONFIGS}"; exit 1
-fi
-
-if ! bash "${CI_DIR}"/install_osparc_python_client.bash "${OSPARC_CLIENT_CONFIG}"; then
-  echo "Could not instal client"; exit 1
 fi
 
 NSCONFIG=$(echo "${OSPARC_SERVER_CONFIGS}" | jq length)
