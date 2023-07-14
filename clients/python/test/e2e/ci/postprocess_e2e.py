@@ -21,6 +21,7 @@ cbranch: str = "OSPARC_CLIENT_BRANCH"
 cversion: str = "OSPARC_CLIENT_VERSION"
 ckeys: List[str] = [crepo, cbranch, cversion]
 
+
 def extract_val(toml_entry: List[str], key: str) -> str:
     entries: List[str] = [elm for elm in toml_entry if key in elm]
     if not len(entries) == 1:
