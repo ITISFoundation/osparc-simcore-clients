@@ -40,7 +40,7 @@ def main(pytest_exit_code: int) -> None:
     --------
         None
     """
-    expected_exitcodes: Set = {-1, 0 - 1}
+    expected_exitcodes: Set = {-1, 0, -1}
     assert (
         pytest_exit_code in expected_exitcodes
     ), f"Received unexpected pytest exitcode {pytest_exit_code}. See https://docs.pytest.org/en/7.1.x/reference/exit-codes.html"
