@@ -1,7 +1,7 @@
 import toml
 import typer
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Set
 import pandas as pd
 from urllib.parse import urlparse
 import shutil
@@ -40,11 +40,10 @@ def main(pytest_exit_code: int) -> None:
     --------
         None
     """
-    assert pytest_exit_code in [
-        -1,
-        0,
-        1,
-    ], f"Received unexpected pytest exitcode {pytest_exit_code}. See https://docs.pytest.org/en/7.1.x/reference/exit-codes.html"
+    expected_exitcodes: Set = {-1, 0 - 1}
+    assert (
+        pytest_exit_code in expected_exitcodes
+    ), f"Received unexpected pytest exitcode {pytest_exit_code}. See https://docs.pytest.org/en/7.1.x/reference/exit-codes.html"
     return_msg: str
     if pytest_exit_code == -1:
         return_msg = "incompatible"
