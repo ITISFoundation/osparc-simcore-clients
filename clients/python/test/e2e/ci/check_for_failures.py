@@ -14,9 +14,7 @@ def main(e2e_artifacts_dir:str):
     df = pd.read_json(pth)
     df = df == pytest.ExitCode.TESTS_FAILED
     if df.to_numpy().flatten().any():
-      typer.Exit(code=pytest.ExitCode.TESTS_FAILED)
-    else:
-      typer.Exit(code=CiExitCodes.OK)
+      raise typer.Exit(code=pytest.ExitCode.TESTS_FAILED)
 
 
 
