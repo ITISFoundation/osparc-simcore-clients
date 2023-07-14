@@ -6,7 +6,7 @@ from typing import List, Dict, Any, Union
 import typer
 from packaging import version
 import json
-from _warnings_and_exit_codes import CiScriptFailure, CiExitCodes
+from _utils import E2eScriptFailure, E2eExitCodes
 import warnings
 
 # keys to be found in input dicts
@@ -39,21 +39,21 @@ def main(client_config: str, server_config: str) -> bool:
     if not isinstance(ccfg, dict):
         warnings.warn(
             f"The client configuration received in {__file__} was invalid",
-            CiScriptFailure,
+            E2eScriptFailure,
         )
-        typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
+        typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
     if not isinstance(scfg, dict):
         warnings.warn(
             f"The server configuration received in {__file__} was invalid",
-            CiScriptFailure,
+            E2eScriptFailure,
         )
-        typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
+        typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
     if not all(key in skeys for key in scfg.keys()):
         warnings.warn(
             f"The following server inputs are required: {skeys}. Received: {set(scfg.keys())}",
-            CiScriptFailure,
+            E2eScriptFailure,
         )
-        typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
+        typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
 
     osparc_url: ParseResult = urlparse(scfg[surl])
     ini_file: Path = Path(__file__).parent.parent / "pyproject.toml"
@@ -65,9 +65,9 @@ def main(client_config: str, server_config: str) -> bool:
     # sanity check client inputs
     if not (ccfg[cbranch] == "" or ccfg[cversion] == ""):
         warnings.warn(
-            f"{cbranch}={ccfg[cbranch]}, {cversion}={ccfg[cversion]}", CiScriptFailure
+            f"{cbranch}={ccfg[cbranch]}, {cversion}={ccfg[cversion]}", E2eScriptFailure
         )
-        raise typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
+        raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
     # sanity checks
     client_ref: str
     if ccfg[cversion] != "":
@@ -75,9 +75,9 @@ def main(client_config: str, server_config: str) -> bool:
     else:
         if ccfg[crepo] == "":
             warnings.warn(
-                f"{cbranch}={ccfg[cbranch]}, {crepo}={ccfg[crepo]}", CiScriptFailure
+                f"{cbranch}={ccfg[cbranch]}, {crepo}={ccfg[crepo]}", E2eScriptFailure
             )
-            raise typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
+            raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
         else:
             client_ref = ccfg[cbranch]
 
@@ -101,19 +101,19 @@ def main(client_config: str, server_config: str) -> bool:
     if not client_ref in comp_df.keys():
         warnings.warn(
             f"invalid client_ref: {client_ref}.\nValid ones are: {comp_df.keys()}",
-            CiScriptFailure,
+            E2eScriptFailure,
         )
-        raise typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
+        raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
     if not osparc_url.netloc in comp_df.index:
         warnings.warn(
             f"invalid server_url: {osparc_url.netloc}\nValid ones are: {list(comp_df.index)}",
-            CiScriptFailure,
+            E2eScriptFailure,
         )
-        raise typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
+        raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
 
     is_compatible: bool = comp_df[client_ref][osparc_url.netloc]
     raise typer.Exit(
-        code=CiExitCodes.OK if is_compatible else CiExitCodes.INVALID_CLIENT_VS_SERVER
+        code=E2eExitCodes.OK if is_compatible else E2eExitCodes.INVALID_CLIENT_VS_SERVER
     )
 
 

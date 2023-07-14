@@ -1,5 +1,5 @@
 import pytest
-from _warnings_and_exit_codes import CiExitCodes
+from _utils import E2eExitCodes
 from pathlib import Path
 import typer
 import pandas as pd
@@ -9,7 +9,7 @@ def main(e2e_artifacts_dir:str):
   """
   artifacts = Path(e2e_artifacts_dir)
   if not artifacts.is_dir():
-    typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
+    typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
   for pth in Path(artifacts).glob("*.json"):
     df = pd.read_json(pth)
     df = df == pytest.ExitCode.TESTS_FAILED

@@ -1,21 +1,20 @@
 from pathlib import Path
 import typer
-from _warnings_and_exit_codes import CiExitCodes
+from clients.python.test.e2e.ci._utils import E2eExitCodes
 import pandas as pd
 import pytest
-from typing import Union
 
 def exitcode_to_text(exitcode: int) -> str:
   """ Turn exitcodes to string
   """
-  if exitcode == CiExitCodes.INVALID_CLIENT_VS_SERVER:
+  if exitcode == E2eExitCodes.INVALID_CLIENT_VS_SERVER:
     return "incompatible"
   elif exitcode == pytest.ExitCode.OK:
     return "pass"
   elif exitcode == pytest.ExitCode.TESTS_FAILED:
      return "fail"
   else:
-     raise typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
+     raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
 
 
 def make_pretty(entry:str):
@@ -27,7 +26,7 @@ def make_pretty(entry:str):
   elif entry == "fail":
     color = "#FF9999"
   else:
-     raise typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
+     raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
   return 'background-color: %s' % color
 
 def main(e2e_artifacts_dir:str) -> None:
@@ -35,7 +34,7 @@ def main(e2e_artifacts_dir:str) -> None:
   """
   artifacts: Path = Path(e2e_artifacts_dir)
   if not artifacts.is_dir():
-      raise typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
+      raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
 
   df: pd.DataFrame = pd.DataFrame()
   for file in artifacts.glob("*.json"):

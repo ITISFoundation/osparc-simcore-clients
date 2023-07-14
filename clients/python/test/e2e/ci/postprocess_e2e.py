@@ -6,7 +6,7 @@ import pandas as pd
 from urllib.parse import urlparse
 import shutil
 import json
-from _warnings_and_exit_codes import CiExitCodes, CiScriptFailure
+from _utils import E2eExitCodes, E2eScriptFailure
 import pytest
 import warnings
 
@@ -24,8 +24,8 @@ ckeys: List[str] = [crepo, cbranch, cversion]
 def extract_val(toml_entry: List[str], key: str) -> str:
     entries: List[str] = [elm for elm in toml_entry if key in elm]
     if not len(entries) == 1:
-        warnings.warn(f"toml_entry={toml_entry}", CiScriptFailure)
-        raise typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
+        warnings.warn(f"toml_entry={toml_entry}", E2eScriptFailure)
+        raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
     return entries[0].replace(key, "").strip(" =")
 
 
@@ -44,15 +44,15 @@ def main(exit_code: int) -> None:
         None
     """
     expected_exitcodes: Set = {
-        CiExitCodes.OK,
-        CiExitCodes.INVALID_CLIENT_VS_SERVER,
+        E2eExitCodes.OK,
+        E2eExitCodes.INVALID_CLIENT_VS_SERVER,
         pytest.ExitCode.OK,
         pytest.ExitCode.TESTS_FAILED,
     }
     if not exit_code in expected_exitcodes:
         warnings.warn(
             f"Received unexpected pytest exitcode {exit_code}. See https://docs.pytest.org/en/7.1.x/reference/exit-codes.html",
-            CiScriptFailure,
+            E2eScriptFailure,
         )
     artifact_dir: Path = (
         Path(__file__).parent.parent.parent.parent / "artifacts" / "e2e"
@@ -60,8 +60,8 @@ def main(exit_code: int) -> None:
     cfg_file: Path = Path(__file__).parent.parent / "pyproject.toml"
     artifact_dir.mkdir(parents=True, exist_ok=True)
     if not cfg_file.is_file():
-        warnings.warn(f"cfg_file={cfg_file}", CiScriptFailure)
-        raise typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
+        warnings.warn(f"cfg_file={cfg_file}", E2eScriptFailure)
+        raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
 
     # extract values
     pytest_cfg: Dict = toml.load(cfg_file)["tool"]["pytest"]["ini_options"]
@@ -69,12 +69,12 @@ def main(exit_code: int) -> None:
         toml.load(cfg_file)["client"]["install_cmd"]
     )
     if not isinstance(client_cfg, dict):
-        raise typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
+        raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
     branch: str = client_cfg[cbranch]
     version: str = client_cfg[cversion]
     envs: List[str] = pytest_cfg["env"]
     if not isinstance(envs, list):
-        raise typer.Exit(code=CiExitCodes.CI_SCRIPT_FAILURE)
+        raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
     url: str = extract_val(envs, surl)
 
     # add result to json
@@ -96,7 +96,7 @@ def main(exit_code: int) -> None:
     toml_dir: Path = artifact_dir / (client_ref + "+" + urlparse(url).netloc)
     toml_dir.mkdir(exist_ok=False)
     shutil.move(cfg_file, toml_dir / cfg_file.name)
-    raise typer.Exit(code=CiExitCodes.OK)
+    raise typer.Exit(code=E2eExitCodes.OK)
 
 
 if __name__ == "__main__":
