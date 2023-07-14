@@ -6,7 +6,7 @@ from typing import List, Dict, Any, Union
 import typer
 from packaging import version
 import json
-from ._warnings_and_exit_codes import CiScriptFailure, CiExitCodes
+from _warnings_and_exit_codes import CiScriptFailure, CiExitCodes
 import warnings
 
 # keys to be found in input dicts

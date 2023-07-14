@@ -6,7 +6,7 @@ import pandas as pd
 from urllib.parse import urlparse
 import shutil
 import json
-from ._warnings_and_exit_codes import CiExitCodes, CiScriptFailure
+from _warnings_and_exit_codes import CiExitCodes, CiScriptFailure
 import pytest
 import warnings
 
