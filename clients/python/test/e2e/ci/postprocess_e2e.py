@@ -6,28 +6,10 @@ import pandas as pd
 from urllib.parse import urlparse
 import shutil
 import json
-from _utils import E2eExitCodes, E2eScriptFailure
+from _utils import E2eExitCodes, E2eScriptFailure, _ARTIFACTS_DIR, _PYPROJECT_TOML, ClientConfig, ServerConfig
 import pytest
 import warnings
-
-# pyproject.toml keys
-surl: str = "OSPARC_API_HOST"
-skey: str = "OSPARC_API_KEY"
-ssecret: str = "OSPARC_API_SECRET"
-skeys: List[str] = [surl, skey, ssecret]
-
-crepo: str = "OSPARC_CLIENT_REPO"
-cbranch: str = "OSPARC_CLIENT_BRANCH"
-cversion: str = "OSPARC_CLIENT_VERSION"
-ckeys: List[str] = [crepo, cbranch, cversion]
-
-
-def extract_val(toml_entry: List[str], key: str) -> str:
-    entries: List[str] = [elm for elm in toml_entry if key in elm]
-    if not len(entries) == 1:
-        warnings.warn(f"toml_entry={toml_entry}", E2eScriptFailure)
-        raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
-    return entries[0].replace(key, "").strip(" =")
+from pydantic import ValidationError
 
 
 def main(exit_code: int) -> None:
@@ -54,34 +36,26 @@ def main(exit_code: int) -> None:
             f"Received unexpected exitcode {exit_code}. See https://docs.pytest.org/en/7.1.x/reference/exit-codes.html",
             E2eScriptFailure,
         )
-    artifact_dir: Path = (
-        Path(__file__).parent.parent.parent.parent / "artifacts" / "e2e"
-    )
-    cfg_file: Path = Path(__file__).parent.parent / "pyproject.toml"
-    artifact_dir.mkdir(parents=True, exist_ok=True)
-    if not cfg_file.is_file():
-        warnings.warn(f"cfg_file={cfg_file}", E2eScriptFailure)
+        typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
+
+    _ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
+    if not _PYPROJECT_TOML.is_file():
+        warnings.warn(f"cfg_file={_PYPROJECT_TOML}", E2eScriptFailure)
         raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
 
     # extract values
-    pytest_cfg: Dict = toml.load(cfg_file)["tool"]["pytest"]["ini_options"]
-    client_cfg: Dict[str, str] = json.loads(
-        toml.load(cfg_file)["client"]["install_cmd"]
-    )
-    if not isinstance(client_cfg, dict):
-        raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
-    branch: str = client_cfg[cbranch]
-    version: str = client_cfg[cversion]
-    envs: List[str] = pytest_cfg["env"]
-    if not isinstance(envs, list):
-        raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
-    url: str = extract_val(envs, surl)
+    try:
+        server_cfg: ServerConfig = ServerConfig(**toml.load(_PYPROJECT_TOML)["server"])
+        client_cfg: ClientConfig = ClientConfig(**toml.load(_PYPROJECT_TOML)["client"])
+    except (ValueError, ValidationError) as e:
+        print(toml.load(_PYPROJECT_TOML)["server"])
+        print(print(toml.load(_PYPROJECT_TOML)["client"]))
+        raise typer.Exit(code=E2eExitCodes.INVALID_JSON_DATA)
 
     # add result to json
-    client_ref: str = branch + version
-    result_file: Path = artifact_dir / (client_ref + ".json")
+    result_file: Path = _ARTIFACTS_DIR / (client_cfg.client_ref + ".json")
     new_df: pd.DataFrame = pd.DataFrame(
-        columns=[client_ref], index=[urlparse(url).netloc], data=[exit_code]
+        columns=[client_cfg.client_ref], index=[server_cfg.url.netloc], data=[exit_code]
     )
     result_df: pd.DataFrame
     if result_file.is_file():
@@ -93,9 +67,9 @@ def main(exit_code: int) -> None:
     result_file.write_text(result_df.to_json())
 
     # copy toml to artifacts dir
-    toml_dir: Path = artifact_dir / (client_ref + "+" + urlparse(url).netloc)
+    toml_dir: Path = _ARTIFACTS_DIR / (client_cfg.client_ref + "+" + server_cfg.url.netloc)
     toml_dir.mkdir(exist_ok=False)
-    shutil.move(cfg_file, toml_dir / cfg_file.name)
+    shutil.move(_PYPROJECT_TOML, toml_dir / _PYPROJECT_TOML.name)
     raise typer.Exit(code=pytest.ExitCode.OK)
 
 
