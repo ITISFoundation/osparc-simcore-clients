@@ -129,8 +129,7 @@ USERID := $(shell id -u)
 GROUPID := $(shell id -g)
 
 .PHONY: e2e-shell
-e2e-shell: ## shell for running e2e tests
-	@$(if $(GH_TOKEN),,$(error The GH_TOKEN environment variable must be set. Consider defining it in the file '$(HOME)/.gh-token'))
+e2e-shell: guard-GH_TOKEN ## shell for running e2e tests
 	@docker run \
 		--user $(USERID):$(GROUPID) \
 		--env GH_TOKEN=$(GH_TOKEN) \
