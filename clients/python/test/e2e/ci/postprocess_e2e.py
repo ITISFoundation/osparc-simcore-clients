@@ -1,7 +1,7 @@
 import toml
 import typer
 from pathlib import Path
-from typing import Dict, List, Set
+from typing import List, Set
 import pandas as pd
 from urllib.parse import urlparse
 import shutil

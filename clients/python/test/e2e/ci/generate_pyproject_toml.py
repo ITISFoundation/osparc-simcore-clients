@@ -1,5 +1,5 @@
 import toml
-from typing import List, Dict, Any
+from typing import List, Any
 import typer
 import json
 from pydantic import ValidationError
@@ -38,10 +38,10 @@ def main(client_config: str, server_config: str) -> None:
     envs.append(f"OSPARC_API_KEY = {server_cfg.key}")
     envs.append(f"OSPARC_API_SECRET = {server_cfg.secret}")
 
-    pytest_settings: Dict[str, Any] = {}
+    pytest_settings: dict[str, Any] = {}
     pytest_settings["env"] = envs
 
-    config: Dict[str, Any] = {}
+    config: dict[str, Any] = {}
     config["tool"] = {"pytest": {"ini_options": pytest_settings}}
     config["client"] = client_cfg.model_dump()
     config["server"] = server_cfg.model_dump()

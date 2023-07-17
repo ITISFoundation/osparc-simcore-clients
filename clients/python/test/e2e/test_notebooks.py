@@ -3,7 +3,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 import shutil
 import pytest
-from typing import List, Dict, Any
+from typing import List, Any
 import sys
 import osparc
 
@@ -28,7 +28,7 @@ def test_notebook_config(tmp_path: Path):
 
 
 @pytest.mark.parametrize("notebook", all_notebooks)
-def test_run_notebooks(tmp_path: Path, notebook: Path, params: Dict[str, Any] = {}):
+def test_run_notebooks(tmp_path: Path, notebook: Path, params: dict[str, Any] = {}):
     """Run all notebooks in the documentation"""
     print(f"Running {notebook.name} with parameters {params}")
     assert (
