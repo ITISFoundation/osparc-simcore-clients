@@ -54,8 +54,9 @@ do
       exit 1
     fi
     cat "${E2E_DIR}/pyproject.toml"
-    EC=$(python "${CI_DIR}"/compatible_client_server.py)
-    if ! ${EC}; then
+    python "${CI_DIR}"/compatible_client_server.py
+    EC=$?
+    if [[ "${EC}" -ne 0 ]]; then
       if ! python "${CI_DIR}"/postprocess_e2e.py "${EC}"; then
         exit 1
       fi
