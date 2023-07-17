@@ -1,9 +1,9 @@
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict
 
 
-def openapi() -> dict[str, Any]:
+def openapi() -> Dict[str, Any]:
     """
     Get openapi specification of automatically-generated part of this client
     """
