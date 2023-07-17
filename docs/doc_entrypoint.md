@@ -1,10 +1,3 @@
-# Clients for osparc-simcore public web API
+<h1 align="center">Osparc-Simcore</h1>
 
-- API version: 0.4.0
-- Package version: 0.5.0
-
-## Clients
-
-Currently there is only a single client:
-
-- [Python](../clients/python/docs/README.md)
+[o²S²PARC](https://sparc.science/resources/4LkLiH5s4FV0LVJd3htsvH) is an open, cloud-based platform for the development, execution and sharing of computational models, simulations, and data analysis pipelines, and the presentation of results. This site documents clients for interacting with o²S²PARC programatically. Choose your favorite programming language in the top-right navigation bar and get started.
