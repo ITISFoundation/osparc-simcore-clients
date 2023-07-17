@@ -15,23 +15,24 @@ print_doc() { echo -e "$doc"; }
 OSPARC_CLIENT_CONFIG=$1
 
 
-OSPARC_CLIENT_VERSION=$(echo "${OSPARC_CLIENT_CONFIG}" | jq -r .OSPARC_CLIENT_VERSION)
 
 
-if [[ -z ${OSPARC_CLIENT_VERSION} ]]; then
-  OSPARC_CLIENT_REPO=$(echo "${OSPARC_CLIENT_CONFIG}" | jq -r .OSPARC_CLIENT_REPO)
-  OSPARC_CLIENT_RUNID=$(echo "${OSPARC_CLIENT_CONFIG}" | jq -r .OSPARC_CLIENT_RUNID)
-  TMPDIR=$(mktemp -d)
-  pushd "${TMPDIR}"
-  gh run download "${OSPARC_CLIENT_RUNID}" --repo="${OSPARC_CLIENT_REPO}"
-  popd
-  OSPARC_WHEEL=$(ls "${TMPDIR}"/osparc_python_wheels/osparc-*.whl)
-  python -m pip install "${OSPARC_WHEEL}" --find-links="${TMPDIR}"/osparc_python_wheels --force-reinstall
-  rm -rf "${TMPDIR}"
-else
+if [[ $(echo "$OSPARC_CLIENT_CONFIG" | jq 'has("OSPARC_CLIENT_VERSION")') == "true" ]]; then
+  OSPARC_CLIENT_VERSION=$(echo "${OSPARC_CLIENT_CONFIG}" | jq -r .OSPARC_CLIENT_VERSION)
   V_STRING=""
   if [[ "${OSPARC_CLIENT_VERSION}" != "latest" ]]; then
     V_STRING="==${OSPARC_CLIENT_VERSION}"
   fi
   python -m pip install osparc"${V_STRING}" --force-reinstall
+else
+  OSPARC_CLIENT_REPO=$(echo "${OSPARC_CLIENT_CONFIG}" | jq -r .OSPARC_CLIENT_REPO)
+  OSPARC_CLIENT_RUNID=$(echo "${OSPARC_CLIENT_CONFIG}" | jq -r .OSPARC_CLIENT_RUNID)
+  TMPDIR=$(mktemp -d)
+  pushd "${TMPDIR}"
+  echo "gh run download ${OSPARC_CLIENT_RUNID} --repo=${OSPARC_CLIENT_REPO}"
+  gh run download "${OSPARC_CLIENT_RUNID}" --repo="${OSPARC_CLIENT_REPO}"
+  popd
+  OSPARC_WHEEL=$(ls "${TMPDIR}"/osparc_python_wheels/osparc-*.whl)
+  python -m pip install "${OSPARC_WHEEL}" --find-links="${TMPDIR}"/osparc_python_wheels --force-reinstall
+  rm -rf "${TMPDIR}"
 fi
