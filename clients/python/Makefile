@@ -131,7 +131,15 @@ GROUPID := $(shell id -g)
 .PHONY: e2e-shell
 e2e-shell: ## shell for running e2e tests
 	@$(if $(GH_TOKEN),,$(error The GH_TOKEN environment variable must be set. Consider defining it in the file '$(HOME)/.gh-token'))
-	@docker run --user $(USERID):$(GROUPID) --env GH_TOKEN=$(GH_TOKEN) --volume $(REPO_ROOT):$(E2E_SHELL_DIR) --workdir $(E2E_SHELL_DIR)/clients/python -it itisfoundation/osparc_python_tutorial_testing:v1
+	@docker run \
+		--user $(USERID):$(GROUPID) \
+		--env GH_TOKEN=$(GH_TOKEN) \
+		--volume $(REPO_ROOT):$(E2E_SHELL_DIR) \
+		--workdir $(E2E_SHELL_DIR) \
+		--entrypoint /bin/bash \
+		-it \
+		itisfoundation/osparc_python_tutorial_testing:v1 \
+		-c "python -m venv /tmp/venv && source /tmp/venv/bin/activate && cd clients/python && make install-test && exec /bin/bash"
 
 ## DOCKER -------------------------------------------------------------------------------
 
