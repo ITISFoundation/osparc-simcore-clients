@@ -51,12 +51,13 @@ for (( ii=0; ii<NSCONFIG; ii++ ))
 do
     SCONFIG=$(echo "${OSPARC_SERVER_CONFIGS}" | jq .[${ii}] )
     if ! python "${CI_DIR}"/generate_pyproject_toml.py "${OSPARC_CLIENT_CONFIG}" "${SCONFIG}"; then
-      exit $?
+      exit 1
     fi
     cat "${E2E_DIR}/pyproject.toml"
-    if ! python python "${CI_DIR}"/compatible_client_server.py; then
-      if ! python "${CI_DIR}"/postprocess_e2e.py -- $?; then
-        exit $?
+    EC=$(python python "${CI_DIR}"/compatible_client_server.py)
+    if ! ${EC}; then
+      if ! python "${CI_DIR}"/postprocess_e2e.py "${EC}"; then
+        exit 1
       fi
       continue
     fi
@@ -64,7 +65,7 @@ do
       # run in subshell to ensure env doesnt survive
       pytest "${E2E_DIR}" -p env --quiet
       if ! python "${CI_DIR}"/postprocess_e2e.py $?; then
-        exit $?
+        exit 1
       fi
     )
 done
