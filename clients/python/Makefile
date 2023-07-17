@@ -87,7 +87,7 @@ install-test: _check_venv_active install-dev ## install packages for testing cli
 	pip install -r $(PYTHON_DIR)/requirements/test.txt
 
 .PHONY: install-doc
-install-test: _check_venv_active install-dev ## install packages for generating documentation
+install-doc: _check_venv_active install-dev ## install packages for generating documentation
 	pip install -r $(PYTHON_DIR)/requirements/doc.txt
 
 .PHONY: pylint
