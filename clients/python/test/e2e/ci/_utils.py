@@ -107,6 +107,6 @@ class ClientConfig(BaseModel):
 _E2E_DIR:Path = Path(__file__).parent.parent.resolve()
 _PYPROJECT_TOML: Path = (_E2E_DIR / 'pyproject.toml').resolve()
 _ARTIFACTS_DIR: Path = (_E2E_DIR / '..' / '..' / 'artifacts' / 'e2e').resolve()
-_COMPATIBILITY_DATAFRAME: Path = (_E2E_DIR / 'data' / 'server_client_compatibility.json').resolve()
+_COMPATIBILITY_JSON: Path = (_E2E_DIR / 'data' / 'server_client_compatibility.json').resolve()
 
-assert _COMPATIBILITY_DATAFRAME.is_file()
+assert _COMPATIBILITY_JSON.is_file()

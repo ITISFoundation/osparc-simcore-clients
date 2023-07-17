@@ -1,19 +1,13 @@
 import toml
-from pathlib import Path
-import pandas as pd
-from urllib.parse import urlparse, ParseResult
-from typing import List, Dict, Any, Union
+from typing import List, Dict, Any
 import typer
-from packaging import version
 import json
 from pydantic import ValidationError
-import warnings
 import pytest
-from _utils import (E2eScriptFailure,
-                     E2eExitCodes,
-                     ClientConfig,
-                     ServerConfig,
-                     _PYPROJECT_TOML)
+from _utils import (E2eExitCodes,
+                    ClientConfig,
+                    ServerConfig,
+                    _PYPROJECT_TOML)
 
 
 def main(client_config: str, server_config: str) -> None:
@@ -34,14 +28,13 @@ def main(client_config: str, server_config: str) -> None:
         server_cfg = ServerConfig(**json.loads(server_config))
     except (ValidationError, ValueError) as e:
         print('\n\n'.join([client_config, server_config, str(e)]))
-        typer.Exit(code=E2eExitCodes.INVALID_JSON_DATA)
-        return
+        raise typer.Exit(code=E2eExitCodes.INVALID_JSON_DATA)
 
     _PYPROJECT_TOML.unlink(missing_ok=True)
 
     # set environment variables
     envs: List[str] = []
-    envs.append(f"OSPARC_API_HOST = {server_cfg.url}")
+    envs.append(f"OSPARC_API_HOST = {server_cfg.url.geturl()}")
     envs.append(f"OSPARC_API_KEY = {server_cfg.key}")
     envs.append(f"OSPARC_API_SECRET = {server_cfg.secret}")
 
@@ -50,7 +43,7 @@ def main(client_config: str, server_config: str) -> None:
 
     config: Dict[str, Any] = {}
     config["tool"] = {"pytest": {"ini_options": pytest_settings}}
-    config["client"] = {"install_cmd": client_cfg.model_dump_json()}
+    config["client"] = client_cfg.model_dump()
 
     # generate toml file
     with open(str(_PYPROJECT_TOML), "w") as f:
