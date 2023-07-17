@@ -44,6 +44,7 @@ def main(client_config: str, server_config: str) -> None:
     config: Dict[str, Any] = {}
     config["tool"] = {"pytest": {"ini_options": pytest_settings}}
     config["client"] = client_cfg.model_dump()
+    print(client_cfg.model_dump())
 
     # generate toml file
     with open(str(_PYPROJECT_TOML), "w") as f:

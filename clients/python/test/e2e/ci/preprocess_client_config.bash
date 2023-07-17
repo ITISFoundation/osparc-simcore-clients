@@ -36,6 +36,8 @@ else
     echo "${OSPARC_CLIENT_CONFIG} was invalid"
     exit 1
   fi
+  OSPARC_CLIENT_REPO=$(echo "$OSPARC_CLIENT_CONFIG" | jq -r '.OSPARC_CLIENT_REPO')
+  OSPARC_CLIENT_BRANCH=$(echo "$OSPARC_CLIENT_CONFIG" | jq -r '.OSPARC_CLIENT_BRANCH')
   OSPARC_CLIENT_RUNID=$(gh run list --repo="${OSPARC_CLIENT_REPO}" --branch="${OSPARC_CLIENT_BRANCH}" --workflow="${OSPARC_CLIENT_WORKFLOW}" --limit=100 --json=databaseId,status --jq='map(select(.status=="completed")) | .[0].databaseId')
   OSPARC_CLIENT_CONFIG=$(echo "${OSPARC_CLIENT_CONFIG}" | jq --arg cwfw "${OSPARC_CLIENT_WORKFLOW}" '. += {"OSPARC_CLIENT_WORKFLOW": $cwfw}')
   OSPARC_CLIENT_CONFIG=$(echo "${OSPARC_CLIENT_CONFIG}" | jq --arg crid "${OSPARC_CLIENT_RUNID}" '. += {"OSPARC_CLIENT_RUNID": $crid}')

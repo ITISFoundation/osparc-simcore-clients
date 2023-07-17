@@ -58,6 +58,8 @@ class ClientConfig(BaseModel):
     OSPARC_CLIENT_VERSION: Optional[str] = None
     OSPARC_CLIENT_REPO: Optional[str] = None
     OSPARC_CLIENT_BRANCH: Optional[str] = None
+    OSPARC_CLIENT_WORKFLOW: Optional[str] = None
+    OSPARC_CLIENT_RUNID: Optional[str] = None
 
     @field_validator('OSPARC_CLIENT_VERSION')
     def validate_client(cls, v):
@@ -79,7 +81,7 @@ class ClientConfig(BaseModel):
         if is_empty(self.OSPARC_CLIENT_VERSION) and (is_empty(self.OSPARC_CLIENT_REPO) and is_empty(self.OSPARC_CLIENT_BRANCH)):
             raise ValueError(msg)
         if is_empty(self.OSPARC_CLIENT_VERSION):
-            if is_empty(self.OSPARC_CLIENT_REPO) or is_empty(self.OSPARC_CLIENT_BRANCH):
+            if is_empty(self.OSPARC_CLIENT_REPO) or is_empty(self.OSPARC_CLIENT_BRANCH) or is_empty(self.OSPARC_CLIENT_WORKFLOW) or is_empty(self.OSPARC_CLIENT_RUNID):
                 raise ValueError(msg)
         return self
 
@@ -92,6 +94,12 @@ class ClientConfig(BaseModel):
     @property
     def branch(self) -> Optional[str]:
         return self.OSPARC_CLIENT_BRANCH
+    @property
+    def workflow(self) -> Optional[str]:
+        return self.OSPARC_CLIENT_WORKFLOW
+    @property
+    def runid(self) -> Optional[str]:
+        return self.OSPARC_CLIENT_RUNID
     @property
     def client_ref(self) -> str:
         """ Returns the reference for this client in the compatibility table
