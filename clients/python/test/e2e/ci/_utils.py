@@ -101,7 +101,7 @@ class ClientConfig(BaseModel):
     def runid(self) -> Optional[str]:
         return self.OSPARC_CLIENT_RUNID
     @property
-    def client_ref(self) -> str:
+    def compatibility_ref(self) -> str:
         """ Returns the reference for this client in the compatibility table
         """
         if not is_empty(self.version):
@@ -109,6 +109,17 @@ class ClientConfig(BaseModel):
         else:
             assert isinstance(self.branch, str)
             return self.branch
+    @property
+    def client_ref(self) -> str:
+        """ Returns a short hand reference for this client
+        """
+        if not is_empty(self.version):
+            assert isinstance(self.version,str)
+            return self.version
+        else:
+            assert isinstance(self.branch, str)
+            return self.branch
+
 
 # Paths ---------------------------------------------------------------------------------------------
 

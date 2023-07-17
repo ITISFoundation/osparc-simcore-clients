@@ -19,13 +19,13 @@ def main() -> None:
 
   compatibility_df: pd.DataFrame = pd.read_json(_COMPATIBILITY_JSON)
 
-  if not client_cfg.client_ref in compatibility_df.columns:
-    print(f"The client ref '{client_cfg.client_ref}' could not be found in {_COMPATIBILITY_JSON}")
+  if not client_cfg.compatibility_ref in compatibility_df.columns:
+    print(f"The client ref '{client_cfg.compatibility_ref}' could not be found in {_COMPATIBILITY_JSON}")
     raise typer.Exit(code=E2eExitCodes.INVALID_CLIENT_VS_SERVER)
   if not server_cfg.url.netloc in compatibility_df.index:
     print(f"The server netloc '{server_cfg.url.netloc}' could not be found in {_COMPATIBILITY_JSON}")
 
-  if not compatibility_df[client_cfg.client_ref][server_cfg.url.netloc]:
+  if not compatibility_df[client_cfg.compatibility_ref][server_cfg.url.netloc]:
     raise typer.Exit(code=E2eExitCodes.INVALID_CLIENT_VS_SERVER)
   else:
     raise typer.Exit(code=pytest.ExitCode.OK)
