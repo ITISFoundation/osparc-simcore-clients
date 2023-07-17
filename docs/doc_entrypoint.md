@@ -1,3 +1,3 @@
 <h1 align="center">Osparc-Simcore</h1>
 
-[Osparc](https://osparc.io/) is a platform for developing, running and sharing life sience simulations. This site documents clients for interacting with osparc programatically. Choose your favorite programming language in the top-right navigation bar and get started.
+[o²S²PARC](https://sparc.science/resources/4LkLiH5s4FV0LVJd3htsvH) is an open, cloud-based platform for the development, execution and sharing of computational models, simulations, and data analysis pipelines, and the presentation of results. This site documents clients for interacting with o²S²PARC programatically. Choose your favorite programming language in the top-right navigation bar and get started.
