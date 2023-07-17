@@ -50,7 +50,7 @@ NSCONFIG=$(echo "${OSPARC_SERVER_CONFIGS}" | jq length)
 for (( ii=0; ii<NSCONFIG; ii++ ))
 do
     SCONFIG=$(echo "${OSPARC_SERVER_CONFIGS}" | jq .[${ii}] )
-    python "${CI_DIR}"/setup_e2e_pytest.py "${OSPARC_CLIENT_CONFIG}" "${SCONFIG}"
+    python "${CI_DIR}"/generate_pyproject_toml.py "${OSPARC_CLIENT_CONFIG}" "${SCONFIG}"
     RC=$?
     if [[ ! ${RC} -eq 0 ]]; then
       if ! python "${CI_DIR}"/postprocess_e2e.py -- ${RC}; then # pass 101 to indicate incompatible server vs client

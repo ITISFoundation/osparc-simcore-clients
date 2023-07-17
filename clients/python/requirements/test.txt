@@ -11,3 +11,4 @@ toml
 typer
 pytest-env
 matplotlib
+pydantic

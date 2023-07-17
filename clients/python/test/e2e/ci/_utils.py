@@ -1,9 +1,13 @@
 from enum import IntEnum
+import pytest
+from pydantic import BaseModel, field_validator, model_validator
+from urllib.parse import urlparse, ParseResult
+from packaging.version import Version
+from typing import Optional
 
-
+# classed for handling errors -------------------------------------------------------------------------
 class E2eScriptFailure(UserWarning):
     """Simply used to indicate a CI script failure"""
-
     pass
 
 
@@ -11,7 +15,70 @@ class E2eExitCodes(IntEnum):
     """Exitcodes
     Note these should not clash with pytest exitcodes: https://docs.pytest.org/en/7.1.x/reference/exit-codes.html
     """
-
     CI_SCRIPT_FAILURE = 100
     INVALID_CLIENT_VS_SERVER = 101
-    OK = 0
+
+
+assert (set(e.value for e in E2eExitCodes).intersection(set(e.value for e in pytest.ExitCode)) == set())
+
+# -----------------------------------------------------------------------------------------------------
+
+# Data classes ----------------------------------------------------------------------------------------
+
+class ServerConfig(BaseModel):
+    """ Holds data about server configuration
+    """
+    OSPARC_API_HOST: str
+    OSPARC_API_KEY: str
+    OSPARC_API_SECRET: str
+
+    @field_validator('OSPARC_API_HOST')
+    def check_url(cls, v):
+        try:
+            _ = urlparse(v)
+        except:
+            raise ValueError("Could not parse 'OSPARC_API_HOST'. Received {v}.")
+        return v
+
+    @property
+    def url(self) -> ParseResult:
+        return urlparse(self.OSPARC_API_HOST)
+    @property
+    def key(self) -> str:
+        return self.OSPARC_API_KEY
+    @property
+    def secret(self) -> str:
+        return self.OSPARC_API_SECRET
+
+class ClientConfig(BaseModel):
+    """ Holds data about client configuration.
+        This data should uniquely determine how to install client
+    """
+    OSPARC_CLIENT_VERSION: Optional[str]
+    OSPARC_CLIENT_REPO: Optional[str]
+    OSPARC_CLIENT_BRANCH: Optional[str]
+
+    @field_validator('OSPARC_CLIENT_VERSION')
+    def validate_client(cls, v):
+        if not v == 'latest' or v == '':
+            try:
+                _ = Version(v)
+            except:
+                raise ValueError(f"Did not receive valid version: {v}")
+        return v
+
+    @model_validator(mode='after')
+    def check_consistency(self) -> 'ClientConfig':
+        is_empty = lambda v: v is None or v == ""
+        msg: str = (f"Recieved OSPARC_CLIENT_VERSION={self.OSPARC_CLIENT_VERSION}, OSPARC_CLIENT_REPO={self.OSPARC_CLIENT_REPO}"
+                    "and OSPARC_CLIENT_BRANCH={self.OSPARC_CLIENT_BRANCH}. Either a version or a repo, branch pair must be specified. Not both.")
+        # check at least one is empty
+        if not (is_empty(self.OSPARC_CLIENT_VERSION) or (is_empty(self.OSPARC_CLIENT_REPO) and is_empty(self.OSPARC_CLIENT_BRANCH))):
+            raise ValueError(msg)
+        # check not both empty
+        if is_empty(self.OSPARC_CLIENT_VERSION) and (is_empty(self.OSPARC_CLIENT_REPO) and is_empty(self.OSPARC_CLIENT_BRANCH)):
+            raise ValueError(msg)
+        if is_empty(self.OSPARC_CLIENT_VERSION):
+            if is_empty(self.OSPARC_CLIENT_REPO) or is_empty(self.OSPARC_CLIENT_BRANCH):
+                raise ValueError(msg)
+        return self

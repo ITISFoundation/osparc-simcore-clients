@@ -45,14 +45,13 @@ def main(exit_code: int) -> None:
         None
     """
     expected_exitcodes: Set = {
-        E2eExitCodes.OK,
         E2eExitCodes.INVALID_CLIENT_VS_SERVER,
         pytest.ExitCode.OK,
         pytest.ExitCode.TESTS_FAILED,
     }
     if not exit_code in expected_exitcodes:
         warnings.warn(
-            f"Received unexpected pytest exitcode {exit_code}. See https://docs.pytest.org/en/7.1.x/reference/exit-codes.html",
+            f"Received unexpected exitcode {exit_code}. See https://docs.pytest.org/en/7.1.x/reference/exit-codes.html",
             E2eScriptFailure,
         )
     artifact_dir: Path = (
@@ -97,7 +96,7 @@ def main(exit_code: int) -> None:
     toml_dir: Path = artifact_dir / (client_ref + "+" + urlparse(url).netloc)
     toml_dir.mkdir(exist_ok=False)
     shutil.move(cfg_file, toml_dir / cfg_file.name)
-    raise typer.Exit(code=E2eExitCodes.OK)
+    raise typer.Exit(code=pytest.ExitCode.OK)
 
 
 if __name__ == "__main__":
