@@ -53,8 +53,19 @@ define _bumpversion
 endef
 
 ## DOCUMENTATION ------------------------------------------------------------------------
-.PHONY: http-doc
-http-doc: ## serves doc
+.PHONY: http-doc docs
+docs: ## generate docs
+	# generate documentation
+	$(eval CLIENTS := $(shell ls clients))
+	@for client in $(CLIENTS); do \
+		echo "generating $${client} doc"; \
+		pushd clients/$${client}; \
+		make install-doc; \
+		make docs; \
+		popd; \
+	done
+
+http-doc: docs ## generates and serves doc
 	# starting doc website
 	@echo "Check site on http://127.0.0.1:50001/"
 	python3 -m http.server 50001 --bind 127.0.0.1

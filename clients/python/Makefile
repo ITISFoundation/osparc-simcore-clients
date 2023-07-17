@@ -55,22 +55,22 @@ generator-help: ## help on client-api generator
 
 ## Tools for "postprocessing" generated documentation --------------------------------------------
 
-.PHONY: postprocess-generated-docs
-postprocess-generated-docs:  ## converts selected markdowns into notebooks and adds them to the documentation
-	@-mkdir artifacts/client/docs/code_samples
-	$(eval markdowns := $(shell ls artifacts/client/docs/*Api.md))
-	$(eval outputs := $(subst artifacts/client/docs/,artifacts/client/docs/code_samples/,$(markdowns:.md=.ipynb)))
-	$(MAKE) $(outputs)
-
-artifacts/client/docs/code_samples/%.ipynb:artifacts/client/docs/%.md
-	# Removing link in markdown
-	@sed -i "/\b$(notdir $@)\b/d" $<
-	notedown $< >$@
-	# Appending link to markdown
-	@echo "[Download as $(notdir $@)]($(subst artifacts/,clients/python/artifacts/,$@) \":ignore title\")" >> $<
+ARTIFACTS_DOCS := artifacts/docs
 
 .PHONY: docs
-docs: python-client postprocess-generated-docs ## generate the python client documentation
+docs: artifacts_dir ## generate the python client documentation
+	@-rm -rf $(ARTIFACTS_DOCS)
+	@-mkdir $(ARTIFACTS_DOCS)
+	$(eval notebooks := $(shell ls docs/*.ipynb))
+	$(eval markdowns := $(subst docs/, $(ARTIFACTS_DOCS)/, $(notebooks:.ipynb=.md)))
+	$(MAKE) $(markdowns)
+
+artifacts/docs/%.md: docs/%.ipynb
+	python -m nbconvert $< --to markdown --output-dir $(ARTIFACTS_DOCS)
+	# Appending link to markdown
+	@echo "[Download as $(notdir $<)]($(subst docs/,clients/python/docs/,$<) \":ignore title\")" >> $@
+
+
 
 ## PYTHON DEVELOPMENT  ------------------------------------------------------------------
 
@@ -85,6 +85,10 @@ install-dev: _check_venv_active ## install packages for development
 .PHONY: install-test
 install-test: _check_venv_active install-dev ## install packages for testing client
 	pip install -r $(PYTHON_DIR)/requirements/test.txt
+
+.PHONY: install-doc
+install-doc: _check_venv_active install-dev ## install packages for generating documentation
+	pip install -r $(PYTHON_DIR)/requirements/doc.txt
 
 .PHONY: pylint
 pylint: _check_venv_active ## runs linter (only to check errors. SEE .pylintrc enabled)
