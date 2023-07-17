@@ -63,7 +63,7 @@ class ClientConfig(BaseModel):
 
     @field_validator('OSPARC_CLIENT_VERSION')
     def validate_client(cls, v):
-        if not is_empty(v) or not v == 'latest':
+        if (not is_empty(v)) and (not v == 'latest'):
             try:
                 _ = Version(v)
             except:
