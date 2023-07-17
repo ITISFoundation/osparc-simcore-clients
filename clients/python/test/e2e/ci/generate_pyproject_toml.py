@@ -37,8 +37,6 @@ def main(client_config: str, server_config: str) -> None:
         typer.Exit(code=E2eExitCodes.INVALID_JSON_DATA)
         return
 
-    print('here')
-
     _PYPROJECT_TOML.unlink(missing_ok=True)
 
     # set environment variables
@@ -57,20 +55,6 @@ def main(client_config: str, server_config: str) -> None:
     # generate toml file
     with open(str(_PYPROJECT_TOML), "w") as f:
         toml.dump(config, f)
-
-    # check client vs server compatibility
-    if not client_ref in comp_df.keys():
-        warnings.warn(
-            f"invalid client_ref: {client_ref}.\nValid ones are: {comp_df.keys()}",
-            E2eScriptFailure,
-        )
-        raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
-    if not osparc_url.netloc in comp_df.index:
-        warnings.warn(
-            f"invalid server_url: {osparc_url.netloc}\nValid ones are: {list(comp_df.index)}",
-            E2eScriptFailure,
-        )
-        raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
 
     raise typer.Exit(code=pytest.ExitCode.OK)
 
