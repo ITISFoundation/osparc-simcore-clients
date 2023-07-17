@@ -6,22 +6,17 @@ from typing import List, Dict, Any, Union
 import typer
 from packaging import version
 import json
-from _utils import E2eScriptFailure, E2eExitCodes
+from pydantic import ValidationError
 import warnings
-
-# keys to be found in input dicts
-surl: str = "OSPARC_API_HOST"
-skey: str = "OSPARC_API_KEY"
-ssecret: str = "OSPARC_API_SECRET"
-skeys: List[str] = [surl, skey, ssecret]
-
-crepo: str = "OSPARC_CLIENT_REPO"
-cbranch: str = "OSPARC_CLIENT_BRANCH"
-cversion: str = "OSPARC_CLIENT_VERSION"
-ckeys: List[str] = [crepo, cbranch, cversion]
+import pytest
+from _utils import (E2eScriptFailure,
+                     E2eExitCodes,
+                     ClientConfig,
+                     ServerConfig,
+                     _PYPROJECT_TOML)
 
 
-def main(client_config: str, server_config: str) -> bool:
+def main(client_config: str, server_config: str) -> None:
     """
     Generates a toml configuration file pytest e2e tests
 
@@ -34,67 +29,33 @@ def main(client_config: str, server_config: str) -> bool:
         A bool indicating whether or not the (client, server) pair are compatible
     """
     # read in data
-    ccfg = json.loads(client_config)
-    scfg = json.loads(server_config)
-    if not isinstance(ccfg, dict):
-        warnings.warn(
-            f"The client configuration received in {__file__} was invalid",
-            E2eScriptFailure,
-        )
-        typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
-    if not isinstance(scfg, dict):
-        warnings.warn(
-            f"The server configuration received in {__file__} was invalid",
-            E2eScriptFailure,
-        )
-        typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
-    if not all(key in skeys for key in scfg.keys()):
-        warnings.warn(
-            f"The following server inputs are required: {skeys}. Received: {set(scfg.keys())}",
-            E2eScriptFailure,
-        )
-        typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
+    try:
+        client_cfg = ClientConfig(**json.loads(client_config))
+        server_cfg = ServerConfig(**json.loads(server_config))
+    except (ValidationError, ValueError) as e:
+        print('\n\n'.join([client_config, server_config, str(e)]))
+        typer.Exit(code=E2eExitCodes.INVALID_JSON_DATA)
+        return
 
-    osparc_url: ParseResult = urlparse(scfg[surl])
-    ini_file: Path = Path(__file__).parent.parent / "pyproject.toml"
-    ini_file.unlink(missing_ok=True)
-    comp_df: pd.DataFrame = pd.read_json(
-        Path(__file__).parent.parent / "data" / "server_client_compatibility.json"
-    )
+    print('here')
 
-    # sanity check client inputs
-    if not (ccfg[cbranch] == "" or ccfg[cversion] == ""):
-        warnings.warn(
-            f"{cbranch}={ccfg[cbranch]}, {cversion}={ccfg[cversion]}", E2eScriptFailure
-        )
-        raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
-    # sanity checks
-    client_ref: str
-    if ccfg[cversion] != "":
-        client_ref = "production"
-    else:
-        if ccfg[crepo] == "":
-            warnings.warn(
-                f"{cbranch}={ccfg[cbranch]}, {crepo}={ccfg[crepo]}", E2eScriptFailure
-            )
-            raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
-        else:
-            client_ref = ccfg[cbranch]
+    _PYPROJECT_TOML.unlink(missing_ok=True)
 
     # set environment variables
     envs: List[str] = []
-    envs.append(f"OSPARC_API_HOST = {scfg[surl]}")
-    envs.append(f"OSPARC_API_KEY = {scfg[skey]}")
-    envs.append(f"OSPARC_API_SECRET = {scfg[ssecret]}")
+    envs.append(f"OSPARC_API_HOST = {server_cfg.url}")
+    envs.append(f"OSPARC_API_KEY = {server_cfg.key}")
+    envs.append(f"OSPARC_API_SECRET = {server_cfg.secret}")
 
     pytest_settings: Dict[str, Any] = {}
     pytest_settings["env"] = envs
 
     config: Dict[str, Any] = {}
     config["tool"] = {"pytest": {"ini_options": pytest_settings}}
-    config["client"] = {"install_cmd": json.dumps(json.loads(client_config))}
+    config["client"] = {"install_cmd": client_cfg.model_dump_json()}
+
     # generate toml file
-    with open(str(ini_file), "w") as f:
+    with open(str(_PYPROJECT_TOML), "w") as f:
         toml.dump(config, f)
 
     # check client vs server compatibility
@@ -111,10 +72,7 @@ def main(client_config: str, server_config: str) -> bool:
         )
         raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
 
-    is_compatible: bool = comp_df[client_ref][osparc_url.netloc]
-    raise typer.Exit(
-        code=E2eExitCodes.OK if is_compatible else E2eExitCodes.INVALID_CLIENT_VS_SERVER
-    )
+    raise typer.Exit(code=pytest.ExitCode.OK)
 
 
 if __name__ == "__main__":

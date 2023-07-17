@@ -4,6 +4,7 @@ from pydantic import BaseModel, field_validator, model_validator
 from urllib.parse import urlparse, ParseResult
 from packaging.version import Version
 from typing import Optional
+from pathlib import Path
 
 # classed for handling errors -------------------------------------------------------------------------
 class E2eScriptFailure(UserWarning):
@@ -17,11 +18,10 @@ class E2eExitCodes(IntEnum):
     """
     CI_SCRIPT_FAILURE = 100
     INVALID_CLIENT_VS_SERVER = 101
+    INVALID_JSON_DATA = 102
 
 
 assert (set(e.value for e in E2eExitCodes).intersection(set(e.value for e in pytest.ExitCode)) == set())
-
-# -----------------------------------------------------------------------------------------------------
 
 # Data classes ----------------------------------------------------------------------------------------
 
@@ -50,17 +50,18 @@ class ServerConfig(BaseModel):
     def secret(self) -> str:
         return self.OSPARC_API_SECRET
 
+is_empty = lambda v: v is None or v == ""
 class ClientConfig(BaseModel):
     """ Holds data about client configuration.
         This data should uniquely determine how to install client
     """
-    OSPARC_CLIENT_VERSION: Optional[str]
-    OSPARC_CLIENT_REPO: Optional[str]
-    OSPARC_CLIENT_BRANCH: Optional[str]
+    OSPARC_CLIENT_VERSION: Optional[str] = None
+    OSPARC_CLIENT_REPO: Optional[str] = None
+    OSPARC_CLIENT_BRANCH: Optional[str] = None
 
     @field_validator('OSPARC_CLIENT_VERSION')
     def validate_client(cls, v):
-        if not v == 'latest' or v == '':
+        if not is_empty(v) or not v == 'latest':
             try:
                 _ = Version(v)
             except:
@@ -69,7 +70,6 @@ class ClientConfig(BaseModel):
 
     @model_validator(mode='after')
     def check_consistency(self) -> 'ClientConfig':
-        is_empty = lambda v: v is None or v == ""
         msg: str = (f"Recieved OSPARC_CLIENT_VERSION={self.OSPARC_CLIENT_VERSION}, OSPARC_CLIENT_REPO={self.OSPARC_CLIENT_REPO}"
                     "and OSPARC_CLIENT_BRANCH={self.OSPARC_CLIENT_BRANCH}. Either a version or a repo, branch pair must be specified. Not both.")
         # check at least one is empty
@@ -82,3 +82,31 @@ class ClientConfig(BaseModel):
             if is_empty(self.OSPARC_CLIENT_REPO) or is_empty(self.OSPARC_CLIENT_BRANCH):
                 raise ValueError(msg)
         return self
+
+    @property
+    def version(self) -> Optional[str]:
+        return self.OSPARC_CLIENT_VERSION
+    @property
+    def repo(self) -> Optional[str]:
+        return self.OSPARC_CLIENT_REPO
+    @property
+    def branch(self) -> Optional[str]:
+        return self.OSPARC_CLIENT_BRANCH
+    @property
+    def client_ref(self) -> str:
+        """ Returns the reference for this client in the compatibility table
+        """
+        if not is_empty(self.version):
+            return "production"
+        else:
+            assert isinstance(self.branch, str)
+            return self.branch
+
+# Paths ---------------------------------------------------------------------------------------------
+
+_E2E_DIR:Path = Path(__file__).parent.parent.resolve()
+_PYPROJECT_TOML: Path = (_E2E_DIR / 'pyproject.toml').resolve()
+_ARTIFACTS_DIR: Path = (_E2E_DIR / '..' / '..' / 'artifacts' / 'e2e').resolve()
+_COMPATIBILITY_DATAFRAME: Path = (_E2E_DIR / 'data' / 'server_client_compatibility.json').resolve()
+
+assert _COMPATIBILITY_DATAFRAME.is_file()
