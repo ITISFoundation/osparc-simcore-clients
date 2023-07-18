@@ -1,14 +1,14 @@
 -r ../../../requirements.txt
-nox
+
 black
-pytest
-papermill
-ipython
 ipykernel
-pandas
+ipython
+matplotlib
 packaging
+pandas
+papermill
+pydantic
+pytest
+pytest-env
 toml
 typer
-pytest-env
-matplotlib
-pydantic
