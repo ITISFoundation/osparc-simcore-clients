@@ -3,6 +3,7 @@
 black
 ipykernel
 ipython
+jinja2
 matplotlib
 packaging
 pandas
