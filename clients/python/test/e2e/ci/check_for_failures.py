@@ -1,8 +1,9 @@
-import pytest
-from _utils import E2eExitCodes
 from pathlib import Path
-import typer
+
 import pandas as pd
+import pytest
+import typer
+from _utils import E2eExitCodes
 
 
 def main(e2e_artifacts_dir: str):

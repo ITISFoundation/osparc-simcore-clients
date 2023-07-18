@@ -1,7 +1,8 @@
-from setuptools import setup, find_packages  # noqa: H301
-from pathlib import Path
 import json
+from pathlib import Path
 from typing import Any, Dict
+
+from setuptools import find_packages, setup  # noqa: H301
 
 repo_root: Path = (Path(__file__) / "../../../..").resolve()
 

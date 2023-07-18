@@ -12,12 +12,12 @@
 
 from __future__ import absolute_import
 
-import unittest
 import datetime
+import unittest
 
 import osparc
 from osparc import Profile  # noqa: E501
-from osparc import ApiException, UsersGroup, Groups
+from osparc import ApiException, Groups, UsersGroup
 
 
 class TestProfile(unittest.TestCase):

@@ -1,14 +1,22 @@
-import toml
-import typer
+import json
+import shutil
+import warnings
 from pathlib import Path
 from typing import List, Set
-import pandas as pd
 from urllib.parse import urlparse
-import shutil
-import json
-from _utils import E2eExitCodes, E2eScriptFailure, _ARTIFACTS_DIR, _PYPROJECT_TOML, ClientConfig, ServerConfig
+
+import pandas as pd
 import pytest
-import warnings
+import toml
+import typer
+from _utils import (
+    _ARTIFACTS_DIR,
+    _PYPROJECT_TOML,
+    ClientConfig,
+    E2eExitCodes,
+    E2eScriptFailure,
+    ServerConfig,
+)
 from pydantic import ValidationError
 
 
@@ -67,7 +75,9 @@ def main(exit_code: int) -> None:
     result_file.write_text(result_df.to_json())
 
     # copy toml to artifacts dir
-    toml_dir: Path = _ARTIFACTS_DIR / (client_cfg.client_ref + "+" + server_cfg.url.netloc)
+    toml_dir: Path = _ARTIFACTS_DIR / (
+        client_cfg.client_ref + "+" + server_cfg.url.netloc
+    )
     toml_dir.mkdir(exist_ok=False)
     shutil.move(_PYPROJECT_TOML, toml_dir / _PYPROJECT_TOML.name)
     raise typer.Exit(code=pytest.ExitCode.OK)

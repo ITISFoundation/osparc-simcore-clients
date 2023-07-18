@@ -1,13 +1,11 @@
-import toml
-from typing import List, Any
-import typer
 import json
-from pydantic import ValidationError
+from typing import Any, List
+
 import pytest
-from _utils import (E2eExitCodes,
-                    ClientConfig,
-                    ServerConfig,
-                    _PYPROJECT_TOML)
+import toml
+import typer
+from _utils import _PYPROJECT_TOML, ClientConfig, E2eExitCodes, ServerConfig
+from pydantic import ValidationError
 
 
 def main(client_config: str, server_config: str) -> None:
@@ -27,7 +25,7 @@ def main(client_config: str, server_config: str) -> None:
         client_cfg = ClientConfig(**json.loads(client_config))
         server_cfg = ServerConfig(**json.loads(server_config))
     except (ValidationError, ValueError) as e:
-        print('\n\n'.join([client_config, server_config, str(e)]))
+        print("\n\n".join([client_config, server_config, str(e)]))
         raise typer.Exit(code=E2eExitCodes.INVALID_JSON_DATA)
 
     _PYPROJECT_TOML.unlink(missing_ok=True)

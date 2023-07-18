@@ -1,8 +1,9 @@
 from pathlib import Path
-import typer
-from _utils import E2eExitCodes
+
 import pandas as pd
 import pytest
+import typer
+from _utils import E2eExitCodes
 
 
 def exitcode_to_text(exitcode: int) -> str:

@@ -12,8 +12,8 @@
 
 from __future__ import absolute_import
 
-import unittest
 import datetime
+import unittest
 
 import osparc
 from osparc import Solver  # noqa: E501

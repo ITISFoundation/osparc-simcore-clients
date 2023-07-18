@@ -1,6 +1,7 @@
 import warnings
-from ._warnings_and_errors import VisibleDeprecationWarning
 from typing import Final
+
+from ._warnings_and_errors import VisibleDeprecationWarning
 
 warning_msg: Final[str] = (
     "osparc.api has been deprecated. Instead functionality within this module should be imported directly from osparc. "
@@ -9,6 +10,5 @@ warning_msg: Final[str] = (
 warnings.warn(warning_msg, VisibleDeprecationWarning)
 
 from osparc_client.api import FilesApi, MetaApi, SolversApi, UsersApi
-
 
 __all__ = ["FilesApi", "MetaApi", "SolversApi", "UsersApi"]

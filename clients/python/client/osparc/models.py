@@ -1,6 +1,7 @@
 import warnings
-from ._warnings_and_errors import VisibleDeprecationWarning
 from typing import Final
+
+from ._warnings_and_errors import VisibleDeprecationWarning
 
 warning_msg: Final[str] = (
     "osparc.models has been deprecated. Instead functionality within this module should be imported directly from osparc. "
