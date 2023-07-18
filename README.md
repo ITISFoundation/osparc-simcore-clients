@@ -1,7 +1,7 @@
 <h1 align="center">Osparc-Simcore-Clients</h1>
 
 To get started using the tools developed in this repository, take a look at the the following links:
-- [Basic tutorial](https://itisfoundation.github.io/osparc-simcore-clients/#/md/tutorials/BasicTutorial?id=basic-tutorial)
+- [Basic tutorial](https://itisfoundation.github.io/osparc-simcore-clients/#/clients/python/artifacts/docs/BasicTutorial)
 - [Documentation](https://itisfoundation.github.io/osparc-simcore-clients)
 
 For more in depth knowledge concerning the development of the repository, take a look at
