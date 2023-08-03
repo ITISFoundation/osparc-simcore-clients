@@ -9,7 +9,7 @@ import papermill as pm
 import pytest
 
 docs_dir: Path = Path(__file__).parent.parent.parent / "docs"
-all_notebooks: List[Path] = list(docs_dir.glob("*.ipynb"))
+all_notebooks: List[Path] = list(docs_dir.rglob("*.ipynb"))
 
 
 def test_notebook_config(tmp_path: Path):

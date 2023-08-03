@@ -41,6 +41,6 @@ def _pagination_to_iterator(
         for item in page.items:
             item_count += 1
             yield item
-        offset += limit
+        offset += len(page.items)
         if item_count >= page.total:
             break

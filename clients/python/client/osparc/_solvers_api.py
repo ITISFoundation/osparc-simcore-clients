@@ -17,9 +17,11 @@ class SolversApi(_SolversApi):
         """
         super().__init__(api_client)
 
-    def get_jobs_page(
-        self, solver_key: str, version: str, limit: int = 20
-    ) -> Iterator[Job]:
+    def get_jobs_page(self, solver_key: str, version: str) -> None:
+        """Method only for internal use"""
+        raise NotImplementedError("This method is only for internal use")
+
+    def get_jobs(self, solver_key: str, version: str, limit: int = 20) -> Iterator[Job]:
         """Returns an iterator through which one can iterate over all Jobs submitted to the solver
 
         Args:
