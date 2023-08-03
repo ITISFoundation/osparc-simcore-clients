@@ -1,5 +1,5 @@
 """
-0.5.0 osparc client
+0.6.0 osparc client
 """
 from typing import Tuple
 
@@ -39,7 +39,6 @@ from osparc_client import RunningState as TaskStates
 from osparc_client import (  # APIs; API client; models
     Solver,
     SolverPort,
-    SolversApi,
     StudiesApi,
     Study,
     StudyPort,
@@ -51,6 +50,7 @@ from osparc_client import (  # APIs; API client; models
 )
 
 from ._info import openapi
+from ._solvers_api import SolversApi
 
 __all__: Tuple[str, ...] = (
     # imports from osparc_client
