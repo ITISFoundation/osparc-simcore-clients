@@ -65,7 +65,7 @@ target/
 .ipynb_checkpoints
 
 # vscode config
-.vscode/settings.json
+.vscode/*
 
 # docs output
 site

@@ -1,5 +1,6 @@
-from typing import Any, Iterator, List
+from typing import Any, Iterator, List, Tuple
 
+from osparc_client import LimitOffsetPageJob
 from osparc_client import SolversApi as _SolversApi
 
 from . import ApiClient, Job
@@ -21,17 +22,28 @@ class SolversApi(_SolversApi):
         """Method only for internal use"""
         raise NotImplementedError("This method is only for internal use")
 
-    def get_jobs(self, solver_key: str, version: str, limit: int = 20) -> Iterator[Job]:
+    def get_jobs(
+        self, solver_key: str, version: str, limit: int = 20, offset: int = 0
+    ) -> Tuple[Iterator[Job], int]:
         """Returns an iterator through which one can iterate over all Jobs submitted to the solver
 
         Args:
             solver_key (str): The solver key
             version (str): The solver version
+            limit (int, optional): the limit of a single page
+            offset (int, optional): the offset of the first element to return
 
-        Yields:
-            Iterator[Job]: An iterator whose elements are the Jobs submitted to the solver
+        Returns:
+            Tuple[Iterator[Job], int]: An iterator whose elements are the Jobs submitted to the solver and the total number of jobs the iterator can yield
         """
         pagination_method = lambda limit, offset: super(SolversApi, self).get_jobs_page(
             solver_key=solver_key, version=version, limit=limit, offset=offset
         )
-        return _pagination_to_iterator(pagination_method=pagination_method, limit=limit)
+        page: LimitOffsetPageJob = pagination_method(limit, 0)
+        assert isinstance(page.total, int)
+        return (
+            _pagination_to_iterator(
+                pagination_method=pagination_method, limit=limit, offset=offset
+            ),
+            page.total,
+        )
