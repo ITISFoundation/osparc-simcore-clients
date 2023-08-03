@@ -48,12 +48,13 @@ def test_get_jobs(configuration: osparc.Configuration):
             )
             created_job_ids.append(job.id)
 
-        job_iter, job_count = solvers_api.get_jobs(
+        job_iter, job_iter_len = solvers_api.get_jobs(
             sleeper.id, sleeper.version, limit=3, offset=init_job_count
         )
-        assert job_count > 0, "No jobs were available"
+        _, total_job_count = solvers_api.get_jobs(sleeper.id, sleeper.version, limit=3)
+        assert job_iter_len > 0, "No jobs were available"
         assert (
-            init_job_count + n_jobs == job_count
+            init_job_count + n_jobs == total_job_count
         ), "An incorrect number of jobs was recorded"
 
         for job in job_iter:

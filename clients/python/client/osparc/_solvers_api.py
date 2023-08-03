@@ -34,16 +34,17 @@ class SolversApi(_SolversApi):
             offset (int, optional): the offset of the first element to return
 
         Returns:
-            Tuple[Iterator[Job], int]: An iterator whose elements are the Jobs submitted to the solver and the total number of jobs the iterator can yield
+            Tuple[Iterator[Job], int]: An iterator whose elements are the Jobs submitted to the solver and the total number of jobs the iterator can yield (its "length")
         """
         pagination_method = lambda limit, offset: super(SolversApi, self).get_jobs_page(
             solver_key=solver_key, version=version, limit=limit, offset=offset
         )
         page: LimitOffsetPageJob = pagination_method(limit, 0)
+        assert offset >= 0, "The offset must be a non-negative integer"
         assert isinstance(page.total, int)
         return (
             _pagination_to_iterator(
                 pagination_method=pagination_method, limit=limit, offset=offset
             ),
-            page.total,
+            page.total - offset,
         )
