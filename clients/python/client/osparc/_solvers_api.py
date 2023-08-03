@@ -1,4 +1,4 @@
-from typing import Any, Iterator, List, Tuple
+from typing import Any, Iterator, List, Optional, Tuple
 
 from osparc_client import LimitOffsetPageJob
 from osparc_client import SolversApi as _SolversApi
@@ -10,11 +10,11 @@ from ._utils import _pagination_to_iterator
 class SolversApi(_SolversApi):
     """Class for interacting with solvers"""
 
-    def __init__(self, api_client: ApiClient):
+    def __init__(self, api_client: Optional[ApiClient] = None):
         """Construct object
 
         Args:
-            api_client (ApiClient): osparc.ApiClient object
+            api_client (ApiClient, optinal): osparc.ApiClient object
         """
         super().__init__(api_client)
 
