@@ -6,10 +6,8 @@ from . import ApiClient, Job
 from ._utils import _pagination_to_iterator
 
 
-class SolversApi:
+class SolversApi(_SolversApi):
     """Class for interacting with solvers"""
-
-    _wrapped_methods: List[str] = ["get_jobs"]
 
     def __init__(self, api_client: ApiClient):
         """Construct object
@@ -17,10 +15,11 @@ class SolversApi:
         Args:
             api_client (ApiClient): osparc.ApiClient object
         """
-        self._api_client: ApiClient = api_client
-        self._solvers_api: _SolversApi = _SolversApi(api_client)
+        super().__init__(api_client)
 
-    def get_jobs(self, solver_key: str, version: str, **kwargs) -> Iterator[Job]:
+    def get_jobs_page(
+        self, solver_key: str, version: str, limit: int = 20
+    ) -> Iterator[Job]:
         """Returns an iterator through which one can iterate over all Jobs submitted to the solver
 
         Args:
@@ -30,13 +29,7 @@ class SolversApi:
         Yields:
             Iterator[Job]: An iterator whose elements are the Jobs submitted to the solver
         """
-        pagination_method = lambda limit, offset: self._solvers_api.get_jobs_page(
+        pagination_method = lambda limit, offset: super(SolversApi, self).get_jobs_page(
             solver_key=solver_key, version=version, limit=limit, offset=offset
         )
-        return _pagination_to_iterator(pagination_method=pagination_method)
-
-    def __getattr__(self, name: str) -> Any:
-        if name in self._wrapped_methods:
-            return getattr(self, name)
-        else:
-            return getattr(self._solvers_api, name)
+        return _pagination_to_iterator(pagination_method=pagination_method, limit=limit)

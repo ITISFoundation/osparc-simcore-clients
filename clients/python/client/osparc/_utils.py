@@ -38,9 +38,11 @@ def _pagination_to_iterator(
         page: Page = pagination_method(limit, offset)
         assert page.items is not None
         assert isinstance(page.total, int)
+        print(f"page.total = {page.total}")
+        print(f"page = {page}")
         for item in page.items:
             item_count += 1
             yield item
         offset += limit
         if item_count >= page.total:
-            raise StopIteration
+            break
