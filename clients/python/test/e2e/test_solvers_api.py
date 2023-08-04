@@ -37,8 +37,10 @@ def test_get_jobs(configuration: osparc.Configuration):
         solvers_api: osparc.SolversApi = osparc.SolversApi(api_client)
         sleeper: osparc.Solver = solvers_api.get_solver_release(solver, version)
 
-        # delete old jobs
-        _, init_job_count = solvers_api.get_jobs(sleeper.id, sleeper.version, limit=3)
+        # initial iterator
+        init_iter = solvers_api.get_jobs(sleeper.id, sleeper.version, limit=3)
+        n_init_iter: int = len(init_iter)
+        assert n_init_iter >= 0
 
         # create n_jobs jobs
         created_job_ids = []
@@ -48,17 +50,18 @@ def test_get_jobs(configuration: osparc.Configuration):
             )
             created_job_ids.append(job.id)
 
-        job_iter, job_iter_len = solvers_api.get_jobs(
-            sleeper.id, sleeper.version, limit=3, offset=init_job_count
+        tmp_iter = solvers_api.get_jobs(
+            sleeper.id, sleeper.version, limit=3, offset=n_init_iter
         )
-        _, total_job_count = solvers_api.get_jobs(sleeper.id, sleeper.version, limit=3)
-        assert job_iter_len > 0, "No jobs were available"
-        assert (
-            init_job_count + n_jobs == total_job_count
+
+        final_iter = solvers_api.get_jobs(sleeper.id, sleeper.version, limit=3)
+        assert len(final_iter) > 0, "No jobs were available"
+        assert n_init_iter + n_jobs == len(
+            final_iter
         ), "An incorrect number of jobs was recorded"
 
-        for job in job_iter:
-            assert isinstance(job, osparc.Job)
+        for elm in tmp_iter:
+            assert isinstance(elm, osparc.Job)
 
         # cleanup
         for elm in created_job_ids:

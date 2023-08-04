@@ -4,7 +4,7 @@ from osparc_client import LimitOffsetPageJob
 from osparc_client import SolversApi as _SolversApi
 
 from . import ApiClient, Job
-from ._utils import _pagination_to_iterator
+from ._utils import PaginationIterator
 
 
 class SolversApi(_SolversApi):
@@ -24,7 +24,7 @@ class SolversApi(_SolversApi):
 
     def get_jobs(
         self, solver_key: str, version: str, limit: int = 20, offset: int = 0
-    ) -> Tuple[Iterator[Job], int]:
+    ) -> PaginationIterator:
         """Returns an iterator through which one can iterate over all Jobs submitted to the solver
 
         Args:
@@ -34,17 +34,9 @@ class SolversApi(_SolversApi):
             offset (int, optional): the offset of the first element to return
 
         Returns:
-            Tuple[Iterator[Job], int]: An iterator whose elements are the Jobs submitted to the solver and the total number of jobs the iterator can yield (its "length")
+            PaginationIterator: An iterator whose elements are the Jobs submitted to the solver and the total number of jobs the iterator can yield (its "length")
         """
         pagination_method = lambda limit, offset: super(SolversApi, self).get_jobs_page(
             solver_key=solver_key, version=version, limit=limit, offset=offset
         )
-        page: LimitOffsetPageJob = pagination_method(limit, 0)
-        assert offset >= 0, "The offset must be a non-negative integer"
-        assert isinstance(page.total, int)
-        return (
-            _pagination_to_iterator(
-                pagination_method=pagination_method, limit=limit, offset=offset
-            ),
-            page.total - offset,
-        )
+        return PaginationIterator(pagination_method, limit, offset)
