@@ -3,7 +3,7 @@ from typing import Optional
 from osparc_client import SolversApi as _SolversApi
 
 from . import ApiClient
-from ._utils import PaginationIterator
+from ._utils import PaginationGenerator
 
 
 class SolversApi(_SolversApi):
@@ -23,7 +23,7 @@ class SolversApi(_SolversApi):
 
     def get_jobs(
         self, solver_key: str, version: str, limit: int = 20, offset: int = 0
-    ) -> PaginationIterator:
+    ) -> PaginationGenerator:
         """Returns an iterator through which one can iterate over
         all Jobs submitted to the solver
 
@@ -34,7 +34,7 @@ class SolversApi(_SolversApi):
             offset (int, optional): the offset of the first element to return
 
         Returns:
-            PaginationIterator: An iterator whose elements are the Jobs submitted
+            PaginationGenerator: A generator whose elements are the Jobs submitted
             to the solver and the total number of jobs the iterator can yield
             (its "length")
         """
@@ -44,4 +44,4 @@ class SolversApi(_SolversApi):
                 solver_key=solver_key, version=version, limit=limit, offset=offset
             )
 
-        return PaginationIterator(pagination_method, limit, offset)
+        return PaginationGenerator(pagination_method, limit, offset)

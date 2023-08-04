@@ -1,4 +1,4 @@
-from typing import Callable, Iterator, TypeVar, Union
+from typing import Callable, Generator, TypeVar, Union
 
 from osparc_client import (
     File,
@@ -17,7 +17,7 @@ Page = Union[
 T = TypeVar("T", Job, File, Solver, Study)
 
 
-class PaginationIterator:
+class PaginationGenerator:
     """Class for wrapping paginated http methods as iterators"""
 
     def __init__(
@@ -43,11 +43,11 @@ class PaginationIterator:
         ), f"page.total={page.total} must be a nonnegative interger"
         return max(page.total - self._offset, 0)
 
-    def __iter__(self) -> Iterator[T]:
-        """Returns the iterator
+    def __iter__(self) -> Generator[T, None, None]:
+        """Returns the generator
 
         Yields:
-            Iterator[T]: The returned iterator
+            Generator[T,None,None]: The returned generator
         """
         if len(self) == 0:
             return
