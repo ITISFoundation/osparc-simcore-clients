@@ -1,7 +1,6 @@
 import shutil
 import sys
 from pathlib import Path
-from tempfile import TemporaryDirectory
 from typing import Any, List
 
 import osparc

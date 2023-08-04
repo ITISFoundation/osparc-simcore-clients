@@ -8,7 +8,7 @@ from packaging.version import Version
 from pydantic import BaseModel, field_validator, model_validator
 
 
-# classed for handling errors -------------------------------------------------------------------------
+# classed for handling errors ----------------------------------
 class E2eScriptFailure(UserWarning):
     """Simply used to indicate a CI script failure"""
 
@@ -17,7 +17,8 @@ class E2eScriptFailure(UserWarning):
 
 class E2eExitCodes(IntEnum):
     """Exitcodes
-    Note these should not clash with pytest exitcodes: https://docs.pytest.org/en/7.1.x/reference/exit-codes.html
+    Note these should not clash with pytest exitcodes:
+    https://docs.pytest.org/en/7.1.x/reference/exit-codes.html
     """
 
     CI_SCRIPT_FAILURE = 100
@@ -32,7 +33,7 @@ assert (
     == set()
 )
 
-# Data classes ----------------------------------------------------------------------------------------
+# Data classes ----------------------------------------------
 
 
 class ServerConfig(BaseModel):
@@ -46,7 +47,7 @@ class ServerConfig(BaseModel):
     def check_url(cls, v):
         try:
             _ = urlparse(v)
-        except:
+        except Exception:
             raise ValueError("Could not parse 'OSPARC_API_HOST'. Received {v}.")
         return v
 
@@ -63,7 +64,8 @@ class ServerConfig(BaseModel):
         return self.OSPARC_API_SECRET
 
 
-is_empty = lambda v: v is None or v == ""
+def is_empty(v):
+    return v is None or v == ""
 
 
 class ClientConfig(BaseModel):
@@ -82,15 +84,17 @@ class ClientConfig(BaseModel):
         if (not is_empty(v)) and (not v == "latest"):
             try:
                 _ = Version(v)
-            except:
+            except Exception:
                 raise ValueError(f"Did not receive valid version: {v}")
         return v
 
     @model_validator(mode="after")
     def check_consistency(self) -> "ClientConfig":
         msg: str = (
-            f"Recieved OSPARC_CLIENT_VERSION={self.OSPARC_CLIENT_VERSION}, OSPARC_CLIENT_REPO={self.OSPARC_CLIENT_REPO}"
-            "and OSPARC_CLIENT_BRANCH={self.OSPARC_CLIENT_BRANCH}. Either a version or a repo, branch pair must be specified. Not both."
+            f"Recieved OSPARC_CLIENT_VERSION={self.OSPARC_CLIENT_VERSION}, "
+            f"OSPARC_CLIENT_REPO={self.OSPARC_CLIENT_REPO}"
+            "and OSPARC_CLIENT_BRANCH={self.OSPARC_CLIENT_BRANCH}. "
+            "Either a version or a repo, branch pair must be specified. Not both."
         )
         # check at least one is empty
         if not (
@@ -156,7 +160,7 @@ class ClientConfig(BaseModel):
             return self.branch
 
 
-# Paths ---------------------------------------------------------------------------------------------
+# Paths -------------------------------------------------------
 
 _E2E_DIR: Path = Path(__file__).parent.parent.resolve()
 _CI_DIR: Path = (_E2E_DIR / "ci").resolve()

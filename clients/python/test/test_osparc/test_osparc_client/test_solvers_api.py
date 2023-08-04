@@ -14,9 +14,7 @@ from __future__ import absolute_import
 
 import unittest
 
-import osparc
 from osparc import SolversApi  # noqa: E501
-from osparc import ApiException
 
 
 class TestSolversApi(unittest.TestCase):

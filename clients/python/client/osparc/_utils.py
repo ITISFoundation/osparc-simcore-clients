@@ -1,4 +1,4 @@
-from typing import Any, Callable, Iterator, TypeVar, Union
+from typing import Callable, Iterator, TypeVar, Union
 
 from osparc_client import (
     File,

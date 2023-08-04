@@ -13,7 +13,12 @@ from pydantic import ValidationError
 
 
 def main() -> None:
-    """Checks if the client x server configuration in the pyproject.toml is compatible"""
+    """Checks if the client x server configuration in the pyproject.toml
+    is compatible
+
+    Raises:
+        typer.Exit: When exit code is returned
+    """
     try:
         pytest_envs = toml.load(_PYPROJECT_TOML)["tool"]["pytest"]["ini_options"]["env"]
         client_cfg: ClientConfig = ClientConfig(**toml.load(_PYPROJECT_TOML)["client"])
@@ -26,14 +31,16 @@ def main() -> None:
 
     compatibility_df: pd.DataFrame = pd.read_json(_COMPATIBILITY_JSON)
 
-    if not client_cfg.compatibility_ref in compatibility_df.columns:
+    if client_cfg.compatibility_ref not in compatibility_df.columns:
         print(
-            f"The client ref '{client_cfg.compatibility_ref}' could not be found in {_COMPATIBILITY_JSON}"
+            f"The client ref '{client_cfg.compatibility_ref}' could not "
+            f"be found in {_COMPATIBILITY_JSON}"
         )
         raise typer.Exit(code=E2eExitCodes.INVALID_CLIENT_VS_SERVER)
-    if not server_cfg.url.netloc in compatibility_df.index:
+    if server_cfg.url.netloc not in compatibility_df.index:
         print(
-            f"The server netloc '{server_cfg.url.netloc}' could not be found in {_COMPATIBILITY_JSON}"
+            f"The server netloc '{server_cfg.url.netloc}' could not "
+            f"be found in {_COMPATIBILITY_JSON}"
         )
 
     if not compatibility_df[client_cfg.compatibility_ref][server_cfg.url.netloc]:

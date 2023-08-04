@@ -1,9 +1,7 @@
-import json
 import shutil
 import warnings
 from pathlib import Path
-from typing import List, Set
-from urllib.parse import urlparse
+from typing import Set
 
 import pandas as pd
 import pytest
@@ -23,12 +21,15 @@ from pydantic import ValidationError
 def main(exit_code: int) -> None:
     """
     Postprocess results from e2e pytests
-    This scripts appends the pytest exit code to clients/python/artifacts/e2e/<client_ref>.json for it to be parsed later
-    It also moves the pyproject.toml to clients/python/artifacts/e2e in order to be able to reproduce tests later
+    This scripts appends the pytest exit code to
+    clients/python/artifacts/e2e/<client_ref>.json for it to be parsed later.
+    It also moves the pyproject.toml to clients/python/artifacts/e2e in order
+    to be able to reproduce tests later
 
     arguments:
     ----------
-        exit_code : Integer exit code from running pytests or a custom exitcode (see ExitCodes).
+        exit_code : Integer exit code from running pytests or a
+        custom exitcode (see ExitCodes).
 
     returns:
     --------
@@ -39,7 +40,7 @@ def main(exit_code: int) -> None:
         pytest.ExitCode.OK,
         pytest.ExitCode.TESTS_FAILED,
     }
-    if not exit_code in expected_exitcodes:
+    if exit_code not in expected_exitcodes:
         warnings.warn(
             f"Received unexpected exitcode {exit_code}. See https://docs.pytest.org/en/7.1.x/reference/exit-codes.html",
             E2eScriptFailure,
@@ -55,7 +56,7 @@ def main(exit_code: int) -> None:
     try:
         server_cfg: ServerConfig = ServerConfig(**toml.load(_PYPROJECT_TOML)["server"])
         client_cfg: ClientConfig = ClientConfig(**toml.load(_PYPROJECT_TOML)["client"])
-    except (ValueError, ValidationError) as e:
+    except (ValueError, ValidationError):
         print(toml.load(_PYPROJECT_TOML)["server"])
         print(print(toml.load(_PYPROJECT_TOML)["client"]))
         raise typer.Exit(code=E2eExitCodes.INVALID_JSON_DATA)

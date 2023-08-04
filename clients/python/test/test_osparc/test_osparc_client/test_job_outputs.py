@@ -12,12 +12,9 @@
 
 from __future__ import absolute_import
 
-import datetime
 import unittest
 
-import osparc
 from osparc import JobOutputs  # noqa: E501
-from osparc import ApiException
 
 
 class TestJobOutputs(unittest.TestCase):
@@ -45,8 +42,8 @@ class TestJobOutputs(unittest.TestCase):
 
     def testJobOutputs(self):
         """Test JobOutputs"""
-        inst_req_only = self.make_instance(include_optional=False)
-        inst_req_and_optional = self.make_instance(include_optional=True)
+        self.make_instance(include_optional=False)
+        self.make_instance(include_optional=True)
 
 
 if __name__ == "__main__":

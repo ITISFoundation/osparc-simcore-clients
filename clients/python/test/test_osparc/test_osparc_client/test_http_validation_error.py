@@ -12,12 +12,10 @@
 
 from __future__ import absolute_import
 
-import datetime
 import unittest
 
-import osparc
 from osparc import HTTPValidationError  # noqa: E501
-from osparc import ApiException, ValidationError
+from osparc import ValidationError
 
 
 class TestHTTPValidationError(unittest.TestCase):
@@ -50,8 +48,8 @@ class TestHTTPValidationError(unittest.TestCase):
 
     def testHTTPValidationError(self):
         """Test HTTPValidationError"""
-        inst_req_only = self.make_instance(include_optional=False)
-        inst_req_and_optional = self.make_instance(include_optional=True)
+        self.make_instance(include_optional=False)
+        self.make_instance(include_optional=True)
 
 
 if __name__ == "__main__":

@@ -14,9 +14,7 @@ from __future__ import absolute_import
 
 import unittest
 
-import osparc
 from osparc import FilesApi  # noqa: E501
-from osparc import ApiException
 
 
 class TestFilesApi(unittest.TestCase):

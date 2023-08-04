@@ -25,6 +25,12 @@ repos:
           - "[pin];[donotremove]"
         files: .*[.]ipynb$
         types: ["file"]
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.0.282
+    hooks:
+      - id: ruff
+        args: [ --fix, --exit-non-zero-on-fix ]
   - repo: https://github.com/pycqa/isort
     rev: 5.12.0
     hooks:
@@ -40,8 +46,3 @@ repos:
         # pre-commit's default_language_version, see
         # https://pre-commit.com/#top_level-default_language_version
         # language_version: python3.11
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    # Ruff version.
-    rev: v0.0.282
-    hooks:
-      - id: ruff
