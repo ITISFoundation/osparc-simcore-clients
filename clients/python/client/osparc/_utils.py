@@ -55,8 +55,7 @@ class PaginationIterator:
             page: Page = self._pagination_method(self._limit, self._offset)
             assert page.items is not None
             assert isinstance(page.total, int)
-            for item in page.items:
-                yield item
+            yield from page.items
             self._offset += len(page.items)
             if self._offset >= page.total:
                 break
