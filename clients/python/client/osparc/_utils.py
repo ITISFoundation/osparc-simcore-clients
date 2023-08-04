@@ -18,7 +18,7 @@ T = TypeVar("T", Job, File, Solver, Study)
 
 
 class PaginationGenerator:
-    """Class for wrapping paginated http methods as iterators"""
+    """Class for wrapping paginated http methods as generators"""
 
     def __init__(
         self,
