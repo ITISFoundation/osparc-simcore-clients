@@ -17,7 +17,7 @@ VERSION = f"{config['python']['version']}"
 # prerequisite: setuptools
 # http://pypi.python.org/pypi/setuptools
 
-REQUIRES = [f"osparc_client=={VERSION}"]
+REQUIRES = [f"osparc_client=={VERSION}", "aiohttp", "tqdm"]
 
 setup(
     name=NAME,
