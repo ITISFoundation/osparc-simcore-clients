@@ -3,17 +3,15 @@ from typing import Callable, Generator, TypeVar, Union
 from osparc_client import (
     File,
     Job,
-    LimitOffsetPageFile,
-    LimitOffsetPageJob,
-    LimitOffsetPageSolver,
-    LimitOffsetPageStudy,
+    PageFile,
+    PageJob,
+    PageSolver,
+    PageStudy,
     Solver,
     Study,
 )
 
-Page = Union[
-    LimitOffsetPageJob, LimitOffsetPageFile, LimitOffsetPageSolver, LimitOffsetPageStudy
-]
+Page = Union[PageJob, PageFile, PageSolver, PageStudy]
 T = TypeVar("T", Job, File, Solver, Study)
 
 
