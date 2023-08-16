@@ -166,7 +166,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LimitOffsetPage_File_"
+                  "$ref": "#/components/schemas/Page_File_"
                 }
               }
             }
@@ -226,6 +226,167 @@
                 "schema": {
                   "$ref": "#/components/schemas/File"
                 }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Get Upload Links",
+        "description": "Get upload links for uploading a file to storage\n\nArguments:\n    request -- Request object\n    client_file -- ClientFile object\n    user_id -- User Id\n\nReturns:\n    FileUploadSchema",
+        "operationId": "get_upload_links",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientFile"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileUploadSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
+      }
+    },
+    "/v0/files/{file_id}:complete": {
+      "post": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Complete Multipart Upload",
+        "description": "Complete multipart upload\n\nArguments:\n    request: The Request object\n    file_id: The Storage id\n    file: The File object which is to be completed\n    uploaded_parts: The uploaded parts\n    completion_link: The completion link -- _description_\n    user_id: The user id\n\nReturns:\n    The completed File object",
+        "operationId": "complete_multipart_upload",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "File Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "file_id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_complete_multipart_upload_v0_files__file_id__complete_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/File"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
+      }
+    },
+    "/v0/files/{file_id}:abort": {
+      "post": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Abort Multipart Upload",
+        "description": "Abort a multipart upload\n\nArguments:\n    request: The Request\n    file_id: The StorageFileID\n    upload_links: The FileUploadSchema\n    user_id: The user id",
+        "operationId": "abort_multipart_upload",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "File Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "file_id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_abort_multipart_upload_v0_files__file_id__abort_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
               }
             }
           },
@@ -491,7 +652,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LimitOffsetPage_Solver_"
+                  "$ref": "#/components/schemas/Page_Solver_"
                 }
               }
             }
@@ -578,7 +739,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LimitOffsetPage_Solver_"
+                  "$ref": "#/components/schemas/Page_Solver_"
                 }
               }
             }
@@ -746,7 +907,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LimitOffsetPage_Solver_"
+                  "$ref": "#/components/schemas/Page_Solver_"
                 }
               }
             }
@@ -1071,7 +1232,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LimitOffsetPage_Job_"
+                  "$ref": "#/components/schemas/Page_Job_"
                 }
               }
             }
@@ -1769,12 +1930,13 @@
         ]
       }
     },
-    "/v0/studies/": {
+    "/v0/studies": {
       "get": {
         "tags": [
           "studies"
         ],
         "summary": "List Studies",
+        "description": "New in *version 0.5.0* (only with API_SERVER_DEV_FEATURES_ENABLED=1)",
         "operationId": "list_studies",
         "parameters": [
           {
@@ -1807,7 +1969,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LimitOffsetPage_Study_"
+                  "$ref": "#/components/schemas/Page_Study_"
                 }
               }
             }
@@ -1822,7 +1984,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
       }
     },
     "/v0/studies/{study_id}": {
@@ -1831,6 +1998,7 @@
           "studies"
         ],
         "summary": "Get Study",
+        "description": "New in *version 0.5.0* (only with API_SERVER_DEV_FEATURES_ENABLED=1)",
         "operationId": "get_study",
         "parameters": [
           {
@@ -1855,6 +2023,16 @@
               }
             }
           },
+          "404": {
+            "description": "Study not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -1865,7 +2043,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
       }
     },
     "/v0/studies/{study_id}/ports": {
@@ -1895,6 +2078,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OnePage_StudyPort_"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Study not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
                 }
               }
             }
@@ -1965,7 +2158,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LimitOffsetPage_Job_"
+                  "$ref": "#/components/schemas/Page_Job_"
                 }
               }
             }
@@ -2521,6 +2714,34 @@
   },
   "components": {
     "schemas": {
+      "Body_abort_multipart_upload_v0_files__file_id__abort_post": {
+        "title": "Body_abort_multipart_upload_v0_files__file_id__abort_post",
+        "required": [
+          "client_file"
+        ],
+        "type": "object",
+        "properties": {
+          "client_file": {
+            "$ref": "#/components/schemas/ClientFile"
+          }
+        }
+      },
+      "Body_complete_multipart_upload_v0_files__file_id__complete_post": {
+        "title": "Body_complete_multipart_upload_v0_files__file_id__complete_post",
+        "required": [
+          "client_file",
+          "uploaded_parts"
+        ],
+        "type": "object",
+        "properties": {
+          "client_file": {
+            "$ref": "#/components/schemas/ClientFile"
+          },
+          "uploaded_parts": {
+            "$ref": "#/components/schemas/FileUploadCompletionBody"
+          }
+        }
+      },
       "Body_upload_file_v0_files_content_put": {
         "title": "Body_upload_file_v0_files_content_put",
         "required": [
@@ -2534,6 +2755,27 @@
             "format": "binary"
           }
         }
+      },
+      "ClientFile": {
+        "title": "ClientFile",
+        "required": [
+          "filename",
+          "filesize"
+        ],
+        "type": "object",
+        "properties": {
+          "filename": {
+            "title": "Filename",
+            "type": "string",
+            "description": "File name"
+          },
+          "filesize": {
+            "title": "Filesize",
+            "type": "integer",
+            "description": "File size in bytes"
+          }
+        },
+        "description": "Represents a file stored on the client side"
       },
       "ErrorGet": {
         "title": "ErrorGet",
@@ -2580,6 +2822,74 @@
           }
         },
         "description": "Represents a file stored on the server side i.e. a unique reference to a file in the cloud."
+      },
+      "FileUploadCompletionBody": {
+        "title": "FileUploadCompletionBody",
+        "required": [
+          "parts"
+        ],
+        "type": "object",
+        "properties": {
+          "parts": {
+            "title": "Parts",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UploadedPart"
+            }
+          }
+        }
+      },
+      "FileUploadLinks": {
+        "title": "FileUploadLinks",
+        "required": [
+          "abort_upload",
+          "complete_upload"
+        ],
+        "type": "object",
+        "properties": {
+          "abort_upload": {
+            "title": "Abort Upload",
+            "maxLength": 65536,
+            "minLength": 1,
+            "type": "string",
+            "format": "uri"
+          },
+          "complete_upload": {
+            "title": "Complete Upload",
+            "maxLength": 65536,
+            "minLength": 1,
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
+      "FileUploadSchema": {
+        "title": "FileUploadSchema",
+        "required": [
+          "chunk_size",
+          "urls",
+          "links"
+        ],
+        "type": "object",
+        "properties": {
+          "chunk_size": {
+            "title": "Chunk Size",
+            "type": "integer"
+          },
+          "urls": {
+            "title": "Urls",
+            "type": "array",
+            "items": {
+              "maxLength": 65536,
+              "minLength": 1,
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "links": {
+            "$ref": "#/components/schemas/FileUploadLinks"
+          }
+        }
       },
       "Groups": {
         "title": "Groups",
@@ -2923,150 +3233,6 @@
           "started_at": "2021-04-01 07:16:43.670610"
         }
       },
-      "LimitOffsetPage_File_": {
-        "title": "LimitOffsetPage[File]",
-        "required": [
-          "items",
-          "total",
-          "links"
-        ],
-        "type": "object",
-        "properties": {
-          "items": {
-            "title": "Items",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/File"
-            }
-          },
-          "total": {
-            "title": "Total",
-            "minimum": 0,
-            "type": "integer"
-          },
-          "limit": {
-            "title": "Limit",
-            "minimum": 1,
-            "type": "integer"
-          },
-          "offset": {
-            "title": "Offset",
-            "minimum": 0,
-            "type": "integer"
-          },
-          "links": {
-            "$ref": "#/components/schemas/Links"
-          }
-        }
-      },
-      "LimitOffsetPage_Job_": {
-        "title": "LimitOffsetPage[Job]",
-        "required": [
-          "items",
-          "total",
-          "links"
-        ],
-        "type": "object",
-        "properties": {
-          "items": {
-            "title": "Items",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Job"
-            }
-          },
-          "total": {
-            "title": "Total",
-            "minimum": 0,
-            "type": "integer"
-          },
-          "limit": {
-            "title": "Limit",
-            "minimum": 1,
-            "type": "integer"
-          },
-          "offset": {
-            "title": "Offset",
-            "minimum": 0,
-            "type": "integer"
-          },
-          "links": {
-            "$ref": "#/components/schemas/Links"
-          }
-        }
-      },
-      "LimitOffsetPage_Solver_": {
-        "title": "LimitOffsetPage[Solver]",
-        "required": [
-          "items",
-          "total",
-          "links"
-        ],
-        "type": "object",
-        "properties": {
-          "items": {
-            "title": "Items",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Solver"
-            }
-          },
-          "total": {
-            "title": "Total",
-            "minimum": 0,
-            "type": "integer"
-          },
-          "limit": {
-            "title": "Limit",
-            "minimum": 1,
-            "type": "integer"
-          },
-          "offset": {
-            "title": "Offset",
-            "minimum": 0,
-            "type": "integer"
-          },
-          "links": {
-            "$ref": "#/components/schemas/Links"
-          }
-        }
-      },
-      "LimitOffsetPage_Study_": {
-        "title": "LimitOffsetPage[Study]",
-        "required": [
-          "items",
-          "total",
-          "links"
-        ],
-        "type": "object",
-        "properties": {
-          "items": {
-            "title": "Items",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Study"
-            }
-          },
-          "total": {
-            "title": "Total",
-            "minimum": 0,
-            "type": "integer"
-          },
-          "limit": {
-            "title": "Limit",
-            "minimum": 1,
-            "type": "integer"
-          },
-          "offset": {
-            "title": "Offset",
-            "minimum": 0,
-            "type": "integer"
-          },
-          "links": {
-            "$ref": "#/components/schemas/Links"
-          }
-        }
-      },
       "Links": {
         "title": "Links",
         "type": "object",
@@ -3196,6 +3362,150 @@
         },
         "description": "A single page is used to envelope a small sequence that does not require\npagination\n\nIf total >  MAXIMUM_NUMBER_OF_ITEMS_PER_PAGE, we should consider extending this\nentrypoint to proper pagination"
       },
+      "Page_File_": {
+        "title": "Page[File]",
+        "required": [
+          "items",
+          "total",
+          "links"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "title": "Items",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/File"
+            }
+          },
+          "total": {
+            "title": "Total",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "limit": {
+            "title": "Limit",
+            "minimum": 1,
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        }
+      },
+      "Page_Job_": {
+        "title": "Page[Job]",
+        "required": [
+          "items",
+          "total",
+          "links"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "title": "Items",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Job"
+            }
+          },
+          "total": {
+            "title": "Total",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "limit": {
+            "title": "Limit",
+            "minimum": 1,
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        }
+      },
+      "Page_Solver_": {
+        "title": "Page[Solver]",
+        "required": [
+          "items",
+          "total",
+          "links"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "title": "Items",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Solver"
+            }
+          },
+          "total": {
+            "title": "Total",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "limit": {
+            "title": "Limit",
+            "minimum": 1,
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        }
+      },
+      "Page_Study_": {
+        "title": "Page[Study]",
+        "required": [
+          "items",
+          "total",
+          "links"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "title": "Items",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Study"
+            }
+          },
+          "total": {
+            "title": "Total",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "limit": {
+            "title": "Limit",
+            "minimum": 1,
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        }
+      },
       "Profile": {
         "title": "Profile",
         "required": [
@@ -3276,8 +3586,8 @@
           "PUBLISHED",
           "NOT_STARTED",
           "PENDING",
+          "WAITING_FOR_RESOURCES",
           "STARTED",
-          "RETRY",
           "SUCCESS",
           "FAILED",
           "ABORTED"
@@ -3391,6 +3701,14 @@
             "title": "Uid",
             "type": "string",
             "format": "uuid"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
           }
         }
       },
@@ -3431,6 +3749,26 @@
             "x_unit": "second",
             "minimum": 0,
             "maximum": 5
+          }
+        }
+      },
+      "UploadedPart": {
+        "title": "UploadedPart",
+        "required": [
+          "number",
+          "e_tag"
+        ],
+        "type": "object",
+        "properties": {
+          "number": {
+            "title": "Number",
+            "exclusiveMinimum": true,
+            "type": "integer",
+            "minimum": 0
+          },
+          "e_tag": {
+            "title": "E Tag",
+            "type": "string"
           }
         }
       },
