@@ -19,7 +19,7 @@ from tqdm.asyncio import tqdm_asyncio
 
 from . import ApiClient, File
 from ._http_client import HttpClient
-from ._utils import _fcn_to_coro, _file_chunk_generator
+from ._utils import _file_chunk_generator
 
 
 class FilesApi(_FilesApi):
@@ -78,12 +78,16 @@ class FilesApi(_FilesApi):
                     client_file=client_file,
                     uploaded_parts=FileUploadCompletionBody(parts=uploaded_parts),
                 )
-                server_file: File = await _fcn_to_coro(
-                    self.complete_multipart_upload, complete_payload
-                )
+                async with session.post(
+                    links.complete_upload, data=complete_payload.to_dict()
+                ) as response:
+                    response.raise_for_status()
+                    payload: str = await response.json()
+                    server_file = File(*json.loads(payload))
 
             except Exception as e:
-                session.post(links.abort_upload)
+                async with session.post(links.abort_upload) as response:
+                    response.raise_for_status()
                 raise e
 
         return server_file
