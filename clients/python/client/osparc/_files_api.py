@@ -78,18 +78,9 @@ class FilesApi(_FilesApi):
 
                 uploaded_parts: list[UploadedPart] = await tqdm_asyncio.gather(*tasks)
 
-                complete_payload = BodyCompleteMultipartUploadV0FilesFileIdCompletePost(
-                    client_file=client_file,
-                    uploaded_parts=FileUploadCompletionBody(parts=uploaded_parts),
+                return await self._complete_multipart_upload(
+                    session, links.complete_upload, client_file, uploaded_parts
                 )
-                async with session.post(
-                    links.complete_upload,
-                    json=complete_payload.to_dict(),
-                    auth=self._auth,
-                ) as response:
-                    response.raise_for_status()
-                    payload: dict[str, Any] = await response.json()
-                    server_file = File(**payload)
 
             except Exception as e:
                 async with session.post(
@@ -98,7 +89,25 @@ class FilesApi(_FilesApi):
                     response.raise_for_status()
                 raise e
 
-        return server_file
+    async def _complete_multipart_upload(
+        self,
+        http_client: ClientSession,
+        complete_link: str,
+        client_file: ClientFile,
+        uploaded_parts: list[UploadedPart],
+    ) -> File:
+        complete_payload = BodyCompleteMultipartUploadV0FilesFileIdCompletePost(
+            client_file=client_file,
+            uploaded_parts=FileUploadCompletionBody(parts=uploaded_parts),
+        )
+        async with http_client.post(
+            complete_link,
+            json=complete_payload.to_dict(),
+            auth=self._auth,
+        ) as response:
+            response.raise_for_status()
+            payload: dict[str, Any] = await response.json()
+        return File(**payload)
 
     async def _upload_chunck(
         self,
