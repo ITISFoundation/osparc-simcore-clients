@@ -13,7 +13,6 @@ from osparc_client import (  # APIs; API client; models
     Configuration,
     ErrorGet,
     File,
-    FilesApi,
     Groups,
     HTTPValidationError,
     Job,
@@ -45,6 +44,7 @@ from osparc_client import (  # APIs; API client; models
     __version__,
 )
 
+from ._files_api import FilesApi
 from ._info import openapi
 from ._solvers_api import SolversApi
 
