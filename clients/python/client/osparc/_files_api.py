@@ -50,7 +50,9 @@ class FilesApi(_FilesApi):
         )
         chunk_size: int = client_upload_schema.upload_schema.chunk_size
         links: FileUploadLinks = client_upload_schema.upload_schema.links
-        url_iter: Iterator[str] = iter(client_upload_schema.upload_schema.urls)
+        url_iter: Iterator[tuple[int, str]] = enumerate(
+            iter(client_upload_schema.upload_schema.urls), start=1
+        )
         if len(client_upload_schema.upload_schema.urls) < math.ceil(
             file.stat().st_size / chunk_size
         ):
@@ -59,22 +61,21 @@ class FilesApi(_FilesApi):
             )
 
         tasks: list = []
-        index: int = 1
         async with HttpClient() as session:
             try:
                 async for chunck, size in _file_chunk_generator(file, chunk_size):
                     # following https://docs.python.org/3/library/asyncio-task.html#asyncio.create_task
+                    index, url = next(url_iter)
                     task = asyncio.create_task(
                         self._upload_chunck(
                             http_client=session,
                             chunck=chunck,
                             chunck_size=size,
-                            upload_link=next(url_iter),
+                            upload_link=url,
                             index=index,
                         )
                     )
                     tasks.append(task)
-                    index += 1
 
                 uploaded_parts: list[UploadedPart] = await tqdm_asyncio.gather(*tasks)
 
