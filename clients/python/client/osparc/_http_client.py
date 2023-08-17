@@ -1,3 +1,5 @@
+from typing import Any
+
 from aiohttp import ClientSession
 
 
@@ -10,6 +12,5 @@ class HttpClient:
     async def __aenter__(self) -> ClientSession:
         return self._client
 
-    async def __aexit__(self) -> None:
+    async def __aexit__(self, *exc: Any) -> None:
         await self._client.close()
-        return

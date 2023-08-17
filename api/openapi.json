@@ -269,7 +269,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FileUploadSchema"
+                  "$ref": "#/components/schemas/ClientFileUploadSchema"
                 }
               }
             }
@@ -298,7 +298,7 @@
           "files"
         ],
         "summary": "Complete Multipart Upload",
-        "description": "Complete multipart upload\n\nArguments:\n    request: The Request object\n    file_id: The Storage id\n    file: The File object which is to be completed\n    uploaded_parts: The uploaded parts\n    completion_link: The completion link -- _description_\n    user_id: The user id\n\nReturns:\n    The completed File object",
+        "description": "Complete multipart upload\n\nArguments:\n    request: The Request object\n    file_id: The Storage id\n    file: The File object which is to be completed\n    uploaded_parts: The uploaded parts\n    completion_link: The completion link\n    user_id: The user id\n\nReturns:\n    The completed File object",
         "operationId": "complete_multipart_upload",
         "parameters": [
           {
@@ -2776,6 +2776,31 @@
           }
         },
         "description": "Represents a file stored on the client side"
+      },
+      "ClientFileUploadSchema": {
+        "title": "ClientFileUploadSchema",
+        "required": [
+          "file_id",
+          "upload_schema"
+        ],
+        "type": "object",
+        "properties": {
+          "file_id": {
+            "title": "File Id",
+            "type": "string",
+            "description": "The file id",
+            "format": "uuid"
+          },
+          "upload_schema": {
+            "title": "Upload Schema",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FileUploadSchema"
+              }
+            ],
+            "description": "Schema for uploading file"
+          }
+        }
       },
       "ErrorGet": {
         "title": "ErrorGet",
