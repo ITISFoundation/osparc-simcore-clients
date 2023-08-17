@@ -8,8 +8,8 @@ def test_upload_file(tmp_path: Path, cfg: osparc.Configuration) -> None:
     # create file to upload
     byte_size: int = 10 * 1024 * 1024 * 1024  # 10 gigabyte
     tmp_file = tmp_path / "large_test_file.txt"
-    tmp_file.write_text("large test file")
-    with open(tmp_file) as f:
+    tmp_file.write_bytes(b"large test file")
+    with open(tmp_file, "wb") as f:
         f.truncate(byte_size)
     assert (
         tmp_file.stat().st_size == byte_size
