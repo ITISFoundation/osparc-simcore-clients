@@ -2,7 +2,7 @@ import asyncio
 import json
 import math
 from pathlib import Path
-from typing import Any, Iterator, Optional, Tuple, Union
+from typing import Any, Iterator, List, Optional, Tuple, Union
 
 import aiohttp
 from aiohttp import ClientSession
@@ -82,7 +82,7 @@ class FilesApi(_FilesApi):
                 )
                 tasks.append(task)
 
-            uploaded_parts: list[UploadedPart] = await tqdm_asyncio.gather(*tasks)
+            uploaded_parts: List[UploadedPart] = await tqdm_asyncio.gather(*tasks)
 
             return await self._complete_multipart_upload(
                 session, links.complete_upload, client_file, uploaded_parts
@@ -93,7 +93,7 @@ class FilesApi(_FilesApi):
         http_client: ClientSession,
         complete_link: str,
         client_file: ClientFile,
-        uploaded_parts: list[UploadedPart],
+        uploaded_parts: List[UploadedPart],
     ) -> File:
         complete_payload = BodyCompleteMultipartUploadV0FilesFileIdCompletePost(
             client_file=client_file,
