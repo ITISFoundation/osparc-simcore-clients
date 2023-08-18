@@ -33,7 +33,7 @@ class FilesApi(_FilesApi):
         super().__init__(api_client)
         self._super = super(FilesApi, self)
         user: Optional[str] = self.api_client.configuration.username
-        passwd: Optional[str] = (self.api_client.configuration.password,)
+        passwd: Optional[str] = self.api_client.configuration.password
         self._auth: Optional[aiohttp.BasicAuth] = (
             aiohttp.BasicAuth(login=user, password=passwd)
             if (user is not None and passwd is not None)
