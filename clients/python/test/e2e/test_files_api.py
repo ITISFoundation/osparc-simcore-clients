@@ -3,6 +3,8 @@ import os
 from pathlib import Path
 
 import osparc
+import pytest
+from packaging.version import Version
 
 
 def _hash_file(file: Path) -> str:
@@ -17,6 +19,10 @@ def _hash_file(file: Path) -> str:
         return md5.hexdigest()
 
 
+@pytest.mark.skipif(
+    Version(osparc.__version__) < Version("0.6.0"),
+    reason=f"osparc.__version__={osparc.__version__} is older than 0.6.0",
+)
 def test_upload_file(tmp_path: Path, cfg: osparc.Configuration) -> None:
     """Test that we can upload a file via the multipart upload"""
     # create file to upload
