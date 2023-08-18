@@ -18,6 +18,7 @@ from tqdm.asyncio import tqdm_asyncio
 from . import ApiClient, File
 from ._http_client import HttpClient
 from ._utils import _file_chunk_generator
+from ._warnings_and_errors import aiohttp_error_handler_async
 
 
 class FilesApi(_FilesApi):
@@ -39,6 +40,7 @@ class FilesApi(_FilesApi):
     def upload_file(self, file):
         return asyncio.run(self.upload_file_async(file=file))
 
+    @aiohttp_error_handler_async
     async def upload_file_async(self, file: Path) -> File:
         if not file.is_file():
             raise RuntimeError(f"{file} is not a file")
@@ -61,34 +63,28 @@ class FilesApi(_FilesApi):
             )
 
         tasks: list = []
-        async with HttpClient() as session:
-            try:
-                async for chunck, size in _file_chunk_generator(file, chunk_size):
-                    # following https://docs.python.org/3/library/asyncio-task.html#asyncio.create_task
-                    index, url = next(url_iter)
-                    task = asyncio.create_task(
-                        self._upload_chunck(
-                            http_client=session,
-                            chunck=chunck,
-                            chunck_size=size,
-                            upload_link=url,
-                            index=index,
-                        )
+        async with HttpClient(
+            exc_req_typ="post", exc_url=links.abort_upload, exc_auth=self._auth
+        ) as session:
+            async for chunck, size in _file_chunk_generator(file, chunk_size):
+                # following https://docs.python.org/3/library/asyncio-task.html#asyncio.create_task
+                index, url = next(url_iter)
+                task = asyncio.create_task(
+                    self._upload_chunck(
+                        http_client=session,
+                        chunck=chunck,
+                        chunck_size=size,
+                        upload_link=url,
+                        index=index,
                     )
-                    tasks.append(task)
-
-                uploaded_parts: list[UploadedPart] = await tqdm_asyncio.gather(*tasks)
-
-                return await self._complete_multipart_upload(
-                    session, links.complete_upload, client_file, uploaded_parts
                 )
+                tasks.append(task)
 
-            except Exception as e:
-                async with session.post(
-                    links.abort_upload, auth=self._auth
-                ) as response:
-                    response.raise_for_status()
-                raise e
+            uploaded_parts: list[UploadedPart] = await tqdm_asyncio.gather(*tasks)
+
+            return await self._complete_multipart_upload(
+                session, links.complete_upload, client_file, uploaded_parts
+            )
 
     async def _complete_multipart_upload(
         self,
