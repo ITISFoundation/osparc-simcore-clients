@@ -32,9 +32,12 @@ class FilesApi(_FilesApi):
         """
         super().__init__(api_client)
         self._super = super(FilesApi, self)
-        self._auth: aiohttp.BasicAuth = aiohttp.BasicAuth(
-            login=self.api_client.configuration.username,
-            password=self.api_client.configuration.password,
+        user: Optional[str] = self.api_client.configuration.username
+        passwd: Optional[str] = (self.api_client.configuration.password,)
+        self._auth: Optional[aiohttp.BasicAuth] = (
+            aiohttp.BasicAuth(login=user, password=passwd)
+            if (user is not None and passwd is not None)
+            else None
         )
 
     def upload_file(self, file: Union[str, Path]):
