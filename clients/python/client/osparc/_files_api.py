@@ -2,7 +2,7 @@ import asyncio
 import json
 import math
 from pathlib import Path
-from typing import Any, Iterator, Optional, Union
+from typing import Any, Iterator, Optional, Tuple, Union
 
 import aiohttp
 from aiohttp import ClientSession
@@ -54,7 +54,7 @@ class FilesApi(_FilesApi):
         )
         chunk_size: int = client_upload_schema.upload_schema.chunk_size
         links: FileUploadLinks = client_upload_schema.upload_schema.links
-        url_iter: Iterator[tuple[int, str]] = enumerate(
+        url_iter: Iterator[Tuple[int, str]] = enumerate(
             iter(client_upload_schema.upload_schema.urls), start=1
         )
         if len(client_upload_schema.upload_schema.urls) < math.ceil(

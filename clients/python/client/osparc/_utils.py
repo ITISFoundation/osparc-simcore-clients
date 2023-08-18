@@ -1,6 +1,6 @@
 import asyncio
 from pathlib import Path
-from typing import AsyncGenerator, Callable, Generator, TypeVar, Union
+from typing import AsyncGenerator, Callable, Generator, Tuple, TypeVar, Union
 
 from osparc_client import (
     File,
@@ -83,7 +83,7 @@ class PaginationGenerator:
 
 async def _file_chunk_generator(
     file: Path, chunk_size: int
-) -> AsyncGenerator[tuple[bytes, int], None]:
+) -> AsyncGenerator[Tuple[bytes, int], None]:
     if not file.is_file():
         raise RuntimeError(f"{file} must be a file")
     if chunk_size <= 0:
