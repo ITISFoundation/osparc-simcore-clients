@@ -2,7 +2,7 @@ import asyncio
 import json
 import math
 from pathlib import Path
-from typing import Any, Iterator, Optional
+from typing import Any, Iterator, Optional, Union
 
 import aiohttp
 from aiohttp import ClientSession
@@ -37,11 +37,13 @@ class FilesApi(_FilesApi):
             password=self.api_client.configuration.password,
         )
 
-    def upload_file(self, file):
+    def upload_file(self, file: Union[str, Path]):
         return asyncio.run(self.upload_file_async(file=file))
 
     @aiohttp_error_handler_async
-    async def upload_file_async(self, file: Path) -> File:
+    async def upload_file_async(self, file: Union[str, Path]) -> File:
+        if isinstance(file, str):
+            file = Path(file)
         if not file.is_file():
             raise RuntimeError(f"{file} is not a file")
         client_file: ClientFile = ClientFile(

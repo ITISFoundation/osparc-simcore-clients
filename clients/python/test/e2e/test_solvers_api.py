@@ -1,3 +1,5 @@
+import asyncio
+
 import osparc
 import pytest
 from packaging.version import Version
@@ -36,6 +38,9 @@ def test_get_jobs(cfg: osparc.Configuration):
         tmp_iter = solvers_api.get_jobs(
             sleeper.id, sleeper.version, limit=3, offset=n_init_iter
         )
+        tmp_async_iter = solvers_api.get_jobs(
+            sleeper.id, sleeper.version, limit=3, offset=n_init_iter
+        )
 
         final_iter = solvers_api.get_jobs(sleeper.id, sleeper.version, limit=3)
         assert len(final_iter) > 0, "No jobs were available"
@@ -44,6 +49,17 @@ def test_get_jobs(cfg: osparc.Configuration):
         ), "An incorrect number of jobs was recorded"
 
         for elm in tmp_iter:
+            assert isinstance(elm, osparc.Job)
+
+        async def return_iter_content(
+            i: osparc.PaginationGenerator,
+        ) -> list[osparc.Job]:
+            result = []
+            async for elm in i:
+                result.append(elm)
+            return result
+
+        for elm in asyncio.run(return_iter_content(tmp_async_iter)):
             assert isinstance(elm, osparc.Job)
 
         # cleanup

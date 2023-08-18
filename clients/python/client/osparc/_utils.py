@@ -60,6 +60,26 @@ class PaginationGenerator:
             if self._offset >= page.total:
                 break
 
+    async def __aiter__(self) -> AsyncGenerator[T, None]:
+        """Returns an async generator
+
+        Returns:
+            AsyncGenerator[T, None]: The async generator
+        """
+        if len(self) == 0:
+            return
+        while True:
+            page: Page = await _fcn_to_coro(
+                self._pagination_method, self._limit, self._offset
+            )
+            assert page.items is not None
+            assert isinstance(page.total, int)
+            for item in page.items:
+                yield item
+            self._offset += len(page.items)
+            if self._offset >= page.total:
+                break
+
 
 async def _file_chunk_generator(
     file: Path, chunk_size: int
@@ -88,6 +108,6 @@ S = TypeVar("S")
 
 
 async def _fcn_to_coro(callback: Callable[..., S], *args) -> S:
-    """Get an awaitable from a callback."""
-    result = await asyncio.get_event_loop().run_in_executor(None, callback, args)
+    """Get a coroutine from a callback."""
+    result = await asyncio.get_event_loop().run_in_executor(None, callback, *args)
     return result
