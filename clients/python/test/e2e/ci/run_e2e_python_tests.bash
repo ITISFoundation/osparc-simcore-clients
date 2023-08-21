@@ -50,7 +50,7 @@ cd "${E2E_DIR}" || exit
 NSCONFIG=$(echo "${OSPARC_SERVER_CONFIGS}" | jq length)
 for (( ii=0; ii<NSCONFIG; ii++ ))
 do
-    for _ in {1..120}; do echo -n "*"; done; echo
+    for _ in {1..150}; do echo -n "*"; done; echo
     SCONFIG=$(echo "${OSPARC_SERVER_CONFIGS}" | jq .[${ii}] )
     if ! python "${CI_DIR}"/generate_pytest_ini.py "${OSPARC_CLIENT_CONFIG}" "${SCONFIG}"; then
       exit 1
@@ -71,5 +71,5 @@ do
         exit 1
       fi
     )
-    for _ in {1..120}; do echo -n "*"; done; echo
+    for _ in {1..150}; do echo -n "*"; done; echo
 done
