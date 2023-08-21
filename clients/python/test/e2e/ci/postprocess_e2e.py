@@ -51,6 +51,7 @@ def main(exit_code: int) -> None:
 
     # add result to json
     result_file: Path = artifacts.result_data_frame
+    result_file.parent.mkdir(exist_ok=True)
     new_df: pd.DataFrame = pd.DataFrame(
         columns=[client_cfg.client_ref], index=[server_cfg.url.netloc], data=[exit_code]
     )

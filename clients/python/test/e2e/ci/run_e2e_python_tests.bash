@@ -49,11 +49,12 @@ fi
 NSCONFIG=$(echo "${OSPARC_SERVER_CONFIGS}" | jq length)
 for (( ii=0; ii<NSCONFIG; ii++ ))
 do
+    printf "%0.s." $(seq 1 150)
     SCONFIG=$(echo "${OSPARC_SERVER_CONFIGS}" | jq .[${ii}] )
-    if ! python "${CI_DIR}"/generate_pyproject_toml.py "${OSPARC_CLIENT_CONFIG}" "${SCONFIG}"; then
+    if ! python "${CI_DIR}"/generate_pytest_ini.py "${OSPARC_CLIENT_CONFIG}" "${SCONFIG}"; then
       exit 1
     fi
-    cat "${E2E_DIR}/pyproject.toml"
+    cat "${E2E_DIR}/pytest.ini"
     python "${CI_DIR}"/compatible_client_server.py
     EC=$?
     if [[ "${EC}" -ne 0 ]]; then
@@ -64,9 +65,11 @@ do
     fi
     (
       # run in subshell to ensure env doesnt survive
-      pytest "${E2E_DIR}" -p env --quiet
+      cd "${E2E_DIR}" || exit
+      python -m pytest
       if ! python "${CI_DIR}"/postprocess_e2e.py $?; then
         exit 1
       fi
     )
+    printf "%0.s." $(seq 1 150)
 done

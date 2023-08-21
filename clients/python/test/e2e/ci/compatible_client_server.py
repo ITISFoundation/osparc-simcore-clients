@@ -1,14 +1,8 @@
 import pandas as pd
 import pytest
-import toml
 import typer
-from _utils import (
-    _COMPATIBILITY_JSON,
-    _PYPROJECT_TOML,
-    ClientConfig,
-    E2eExitCodes,
-    ServerConfig,
-)
+from _data_classes import ClientConfig, PytestIniFile, ServerConfig
+from _utils import _COMPATIBILITY_JSON, E2eExitCodes
 from pydantic import ValidationError
 
 
@@ -20,15 +14,14 @@ def main() -> None:
         typer.Exit: When exit code is returned
     """
     try:
-        pytest_envs = toml.load(_PYPROJECT_TOML)["tool"]["pytest"]["ini_options"]["env"]
-        client_cfg: ClientConfig = ClientConfig(**toml.load(_PYPROJECT_TOML)["client"])
-        server_cfg: ServerConfig = ServerConfig(
-            **dict([tuple(s.strip(" ") for s in elm.split("=")) for elm in pytest_envs])
-        )
-    except (Exception, ValidationError) as e:
-        print(e)
+        pytest_ini: PytestIniFile = PytestIniFile.read()
+    except (ValueError, ValidationError):
         raise typer.Exit(code=E2eExitCodes.INVALID_JSON_DATA)
 
+    client_cfg: ClientConfig = pytest_ini.client
+    server_cfg: ServerConfig = pytest_ini.server
+    if not _COMPATIBILITY_JSON.is_file():
+        raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
     compatibility_df: pd.DataFrame = pd.read_json(_COMPATIBILITY_JSON)
 
     if client_cfg.compatibility_ref not in compatibility_df.columns:

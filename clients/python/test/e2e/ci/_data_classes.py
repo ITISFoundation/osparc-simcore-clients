@@ -13,21 +13,21 @@ from pydantic import AnyUrl, BaseModel, field_validator, model_validator
 class ServerConfig(BaseModel):
     """Holds data about server configuration"""
 
-    OSPARC_API_HOST: AnyUrl
-    OSPARC_API_KEY: str
-    OSPARC_API_SECRET: str
+    osparc_api_host: AnyUrl
+    osparc_api_key: str
+    osparc_api_secret: str
 
     @property
     def url(self) -> ParseResult:
-        return urlparse(f"{self.OSPARC_API_HOST}")
+        return urlparse(f"{self.osparc_api_host}")
 
     @property
     def key(self) -> str:
-        return self.OSPARC_API_KEY
+        return self.osparc_api_key
 
     @property
     def secret(self) -> str:
-        return self.OSPARC_API_SECRET
+        return self.osparc_api_secret
 
 
 def is_empty(v):
@@ -39,13 +39,13 @@ class ClientConfig(BaseModel):
     This data should uniquely determine how to install client
     """
 
-    OSPARC_CLIENT_VERSION: Optional[str] = None
-    OSPARC_CLIENT_REPO: Optional[str] = None
-    OSPARC_CLIENT_BRANCH: Optional[str] = None
-    OSPARC_CLIENT_WORKFLOW: Optional[str] = None
-    OSPARC_CLIENT_RUNID: Optional[str] = None
+    osparc_client_version: Optional[str] = None
+    osparc_client_repo: Optional[str] = None
+    osparc_client_branch: Optional[str] = None
+    osparc_client_workflow: Optional[str] = None
+    osparc_client_runid: Optional[str] = None
 
-    @field_validator("OSPARC_CLIENT_VERSION")
+    @field_validator("osparc_client_version")
     def validate_client(cls, v):
         if (not is_empty(v)) and (not v == "latest"):
             try:
@@ -57,54 +57,54 @@ class ClientConfig(BaseModel):
     @model_validator(mode="after")
     def check_consistency(self) -> "ClientConfig":
         msg: str = (
-            f"Recieved OSPARC_CLIENT_VERSION={self.OSPARC_CLIENT_VERSION}, "
-            f"OSPARC_CLIENT_REPO={self.OSPARC_CLIENT_REPO}"
-            "and OSPARC_CLIENT_BRANCH={self.OSPARC_CLIENT_BRANCH}. "
+            f"Recieved osparc_client_version={self.osparc_client_version}, "
+            f"osparc_client_repo={self.osparc_client_repo}"
+            "and osparc_client_branch={self.osparc_client_branch}. "
             "Either a version or a repo, branch pair must be specified. Not both."
         )
         # check at least one is empty
         if not (
-            is_empty(self.OSPARC_CLIENT_VERSION)
+            is_empty(self.osparc_client_version)
             or (
-                is_empty(self.OSPARC_CLIENT_REPO)
-                and is_empty(self.OSPARC_CLIENT_BRANCH)
+                is_empty(self.osparc_client_repo)
+                and is_empty(self.osparc_client_branch)
             )
         ):
             raise ValueError(msg)
         # check not both empty
-        if is_empty(self.OSPARC_CLIENT_VERSION) and (
-            is_empty(self.OSPARC_CLIENT_REPO) and is_empty(self.OSPARC_CLIENT_BRANCH)
+        if is_empty(self.osparc_client_version) and (
+            is_empty(self.osparc_client_repo) and is_empty(self.osparc_client_branch)
         ):
             raise ValueError(msg)
-        if is_empty(self.OSPARC_CLIENT_VERSION):
+        if is_empty(self.osparc_client_version):
             if (
-                is_empty(self.OSPARC_CLIENT_REPO)
-                or is_empty(self.OSPARC_CLIENT_BRANCH)
-                or is_empty(self.OSPARC_CLIENT_WORKFLOW)
-                or is_empty(self.OSPARC_CLIENT_RUNID)
+                is_empty(self.osparc_client_repo)
+                or is_empty(self.osparc_client_branch)
+                or is_empty(self.osparc_client_workflow)
+                or is_empty(self.osparc_client_runid)
             ):
                 raise ValueError(msg)
         return self
 
     @property
     def version(self) -> Optional[str]:
-        return self.OSPARC_CLIENT_VERSION
+        return self.osparc_client_version
 
     @property
     def repo(self) -> Optional[str]:
-        return self.OSPARC_CLIENT_REPO
+        return self.osparc_client_repo
 
     @property
     def branch(self) -> Optional[str]:
-        return self.OSPARC_CLIENT_BRANCH
+        return self.osparc_client_branch
 
     @property
     def workflow(self) -> Optional[str]:
-        return self.OSPARC_CLIENT_WORKFLOW
+        return self.osparc_client_workflow
 
     @property
     def runid(self) -> Optional[str]:
-        return self.OSPARC_CLIENT_RUNID
+        return self.osparc_client_runid
 
     @property
     def compatibility_ref(self) -> str:
@@ -151,16 +151,13 @@ class PytestIniFile(BaseModel):
     artifacts: Artifacts
 
     @classmethod
-    def read(cls) -> "PytestIniFile":
+    def read(cls, pth: Path = _PYTEST_INI) -> "PytestIniFile":
         """Read the pytest.ini file"""
-        if not _PYTEST_INI.is_file():
-            raise ValueError(
-                f"_PYTEST_INI: {_PYTEST_INI} must point to a pytest.ini file"
-            )
-        with open(_PYTEST_INI, "r") as f:
-            obj = configparser.ConfigParser()
-            obj.read(f)
-            config_dict: Dict = {s: dict(obj.items(s)) for s in obj.sections()}
+        if not pth.is_file():
+            raise ValueError(f"pth: {pth} must point to a pytest.ini file")
+        obj = configparser.ConfigParser()
+        obj.read(pth)
+        config_dict: Dict = {s: dict(obj.items(s)) for s in obj.sections()}
         return PytestIniFile(**config_dict)
 
     def generate(self, pth: Path = _PYTEST_INI) -> None:
