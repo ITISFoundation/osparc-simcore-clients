@@ -12,27 +12,27 @@ doc+="\tA single json string. This json string is expected to be the output of s
 print_doc() { echo -e "$doc"; }
 [ $# -eq 0 ] && print_doc && exit 0
 
-OSPARC_CLIENT_CONFIG=$1
+osparc_client_config=$1
 
 
 
 
-if [[ $(echo "$OSPARC_CLIENT_CONFIG" | jq 'has("OSPARC_CLIENT_VERSION")') == "true" ]]; then
-  OSPARC_CLIENT_VERSION=$(echo "${OSPARC_CLIENT_CONFIG}" | jq -r .OSPARC_CLIENT_VERSION)
-  V_STRING=""
-  if [[ "${OSPARC_CLIENT_VERSION}" != "latest" ]]; then
-    V_STRING="==${OSPARC_CLIENT_VERSION}"
+if [[ $(echo "$osparc_client_config" | jq 'has("osparc_client_version")') == "true" ]]; then
+  osparc_client_version=$(echo "${osparc_client_config}" | jq -r .osparc_client_version)
+  v_string=""
+  if [[ "${osparc_client_version}" != "latest" ]]; then
+    v_string="==${osparc_client_version}"
   fi
-  python -m pip install osparc"${V_STRING}" --force-reinstall
+  python -m pip install osparc"${v_string}" --force-reinstall
 else
-  OSPARC_CLIENT_REPO=$(echo "${OSPARC_CLIENT_CONFIG}" | jq -r .OSPARC_CLIENT_REPO)
-  OSPARC_CLIENT_RUNID=$(echo "${OSPARC_CLIENT_CONFIG}" | jq -r .OSPARC_CLIENT_RUNID)
-  TMPDIR=$(mktemp -d)
-  pushd "${TMPDIR}"
-  echo "gh run download ${OSPARC_CLIENT_RUNID} --repo=${OSPARC_CLIENT_REPO}"
-  gh run download "${OSPARC_CLIENT_RUNID}" --repo="${OSPARC_CLIENT_REPO}"
+  osparc_client_repo=$(echo "${osparc_client_config}" | jq -r .osparc_client_repo)
+  osparc_client_runid=$(echo "${osparc_client_config}" | jq -r .osparc_client_runid)
+  tmp_dir=$(mktemp -d)
+  pushd "${tmp_dir}"
+  echo "gh run download ${osparc_client_runid} --repo=${osparc_client_repo}"
+  gh run download "${osparc_client_runid}" --repo="${osparc_client_repo}"
   popd
-  OSPARC_WHEEL=$(ls "${TMPDIR}"/osparc_python_wheels/osparc-*.whl)
-  python -m pip install "${OSPARC_WHEEL}" --find-links="${TMPDIR}"/osparc_python_wheels --force-reinstall
-  rm -rf "${TMPDIR}"
+  osparc_wheel=$(ls "${tmp_dir}"/osparc_python_wheels/osparc-*.whl)
+  python -m pip install "${osparc_wheel}" --find-links="${tmp_dir}"/osparc_python_wheels --force-reinstall
+  rm -rf "${tmp_dir}"
 fi
