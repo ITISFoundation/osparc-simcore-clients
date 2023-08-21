@@ -56,11 +56,12 @@ def main(client_config: str, server_config: str) -> None:
         / (client_cfg.client_ref + "+" + server_cfg.url.netloc)
         / "pytest_log.html"
     ).relative_to(Path("../../").resolve())
+    add_opts: str = f"--tb=no --disable-warnings --no-header \
+        --html={html_log} --self-contained-html"
     pytest_config: PytestConfig = PytestConfig(
         env="\n" + "\n".join(envs),
         required_plugins="pytest-env pytest-html",
-        addopts=f"--tb=no --disable-warnings --no-header\
-            --html={html_log} --self-contained-html",
+        addopts=add_opts,
     )
 
     config: PytestIniFile = PytestIniFile(
