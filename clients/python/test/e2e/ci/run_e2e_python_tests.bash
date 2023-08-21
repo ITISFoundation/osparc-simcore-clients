@@ -46,10 +46,11 @@ if [[ "$(echo "${OSPARC_SERVER_CONFIGS}" | jq 'type == "array"')" != "true" ]]; 
   echo -e "The server configuration (-s) must a an array of json objects. Received: ${OSPARC_SERVER_CONFIGS}"; exit 1
 fi
 
+cd "${E2E_DIR}" || exit
 NSCONFIG=$(echo "${OSPARC_SERVER_CONFIGS}" | jq length)
 for (( ii=0; ii<NSCONFIG; ii++ ))
 do
-    printf "%0.s." $(seq 1 150)
+    for _ in {1..120}; do echo -n "*"; done; echo
     SCONFIG=$(echo "${OSPARC_SERVER_CONFIGS}" | jq .[${ii}] )
     if ! python "${CI_DIR}"/generate_pytest_ini.py "${OSPARC_CLIENT_CONFIG}" "${SCONFIG}"; then
       exit 1
@@ -65,11 +66,10 @@ do
     fi
     (
       # run in subshell to ensure env doesnt survive
-      cd "${E2E_DIR}" || exit
       python -m pytest
       if ! python "${CI_DIR}"/postprocess_e2e.py $?; then
         exit 1
       fi
     )
-    printf "%0.s." $(seq 1 150)
+    for _ in {1..120}; do echo -n "*"; done; echo
 done
