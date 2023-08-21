@@ -40,6 +40,7 @@ def main(e2e_artifacts_dir: str) -> None:
     df: pd.DataFrame = pd.DataFrame()
     for file in artifacts.glob("*.json"):
         df = pd.concat([df, pd.read_json(file)], axis=1)
+    any_failure: bool = bool(df.to_numpy().flatten().any())
 
     style = [
         {
@@ -59,6 +60,9 @@ def main(e2e_artifacts_dir: str) -> None:
     s.set_table_styles(style)
     s.set_caption("OSPARC e2e python client vs server tests")
     s.to_html(artifacts / "test_results.html")
+    raise typer.Exit(
+        code=pytest.ExitCode.TESTS_FAILED if any_failure else pytest.ExitCode.OK
+    )
 
 
 if __name__ == "__main__":
