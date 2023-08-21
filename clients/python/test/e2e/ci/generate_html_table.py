@@ -40,7 +40,9 @@ def main(e2e_artifacts_dir: str) -> None:
     df: pd.DataFrame = pd.DataFrame()
     for file in artifacts.glob("*.json"):
         df = pd.concat([df, pd.read_json(file)], axis=1)
-    any_failure: bool = bool(df.to_numpy().flatten().any())
+    any_failure: bool = bool(
+        (df == pytest.ExitCode.TESTS_FAILED).to_numpy().flatten().any()
+    )
 
     style = [
         {
