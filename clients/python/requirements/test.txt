@@ -11,5 +11,5 @@ papermill
 pydantic
 pytest
 pytest-env
-toml
+pytest-html
 typer
