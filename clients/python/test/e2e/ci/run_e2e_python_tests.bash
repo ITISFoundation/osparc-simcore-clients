@@ -68,7 +68,7 @@ do
     fi
     (
       # run in subshell to ensure env doesnt survive
-      python -m pytest --tb no
+      python -m pytest
       if ! python "${CI_DIR}"/postprocess_e2e.py $?; then
         exit 1
       fi
