@@ -21,6 +21,7 @@ doc+="-------\n"
 doc+="\tTest results are stored in clients/python/artifacts/e2e/<client branch or version>.json and the \"pyproject.toml\" file from which one can completely\n"
 doc+="\treproduce the testrun is stored in clients/python/artifacts/e2e/<branch+server_url>/pyproject.toml\n"
 
+print_line() { for _ in {1..150}; do echo -n "*"; done; echo; }
 print_doc() { echo -e "$doc"; }
 [ $# -eq 0 ] && print_doc && exit 0
 
@@ -50,7 +51,7 @@ cd "${E2E_DIR}" || exit
 NSCONFIG=$(echo "${OSPARC_SERVER_CONFIGS}" | jq length)
 for (( ii=0; ii<NSCONFIG; ii++ ))
 do
-    for _ in {1..150}; do echo -n "*"; done; echo
+    print_line
     SCONFIG=$(echo "${OSPARC_SERVER_CONFIGS}" | jq .[${ii}] )
     if ! python "${CI_DIR}"/generate_pytest_ini.py "${OSPARC_CLIENT_CONFIG}" "${SCONFIG}"; then
       exit 1
@@ -62,6 +63,7 @@ do
       if ! python "${CI_DIR}"/postprocess_e2e.py "${EC}"; then
         exit 1
       fi
+      print_line
       continue
     fi
     (
@@ -71,5 +73,5 @@ do
         exit 1
       fi
     )
-    for _ in {1..150}; do echo -n "*"; done; echo
+    print_line
 done
