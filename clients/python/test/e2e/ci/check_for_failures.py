@@ -16,7 +16,8 @@ def main():
         raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
 
     artifacts: Artifacts = pytest_ini.artifacts
-    artifacts.log_dir.mkdir(exist_ok=True)
+    if not artifacts.log_dir.is_dir():
+        raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
     for pth in Path(artifacts.log_dir).glob("*.json"):
         df = pd.read_json(pth)
         df = df == pytest.ExitCode.TESTS_FAILED
