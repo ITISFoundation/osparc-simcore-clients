@@ -25,11 +25,17 @@ def main() -> None:
     df: pd.DataFrame = pd.read_json(_COMPATIBILITY_JSON).T
 
     try:
-        is_compatible = df[
+        df = df[
             (df["server"] == server_cfg.url.netloc)
             & (df["client"] == client_cfg.compatibility_ref)
-        ]["is_compatible"]
-    except Exception:
+        ]
+        if len(df) != 1:
+            raise RuntimeError(
+                "Could not correctly determine compatibility between client and server."
+            )
+        is_compatible: bool = df["is_compatible"].loc[1]
+    except Exception as err:
+        print(err)
         raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
 
     if not is_compatible:
