@@ -53,8 +53,8 @@ def main(client_config: str, server_config: str) -> None:
 
     html_log: Path = Path("../../") / (
         _ARTIFACTS_DIR
-        / (client_cfg.client_ref + "+" + server_cfg.url.netloc)
-        / f"pytest_{client_cfg.client_ref}+{server_cfg.url.netloc}.html"
+        / (client_cfg.client_ref + "_" + server_cfg.url.netloc)
+        / f"pytest_{client_cfg.client_ref}_{server_cfg.url.netloc}.html"
     ).relative_to(Path("../../").resolve())
     add_opts: str = (
         "--tb=no --disable-warnings --no-header "
