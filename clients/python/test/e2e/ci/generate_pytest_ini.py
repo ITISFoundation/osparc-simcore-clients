@@ -43,7 +43,7 @@ def main(client_config: str, server_config: str) -> None:
         / (client_cfg.client_ref + ".json"),
         log_dir=Path("../../")
         / _ARTIFACTS_DIR.relative_to(Path("../../").resolve())
-        / (client_cfg.client_ref + "+" + server_cfg.url.netloc),
+        / (client_cfg.client_ref + "_" + server_cfg.url.netloc),
     )
 
     envs: List[str] = []
