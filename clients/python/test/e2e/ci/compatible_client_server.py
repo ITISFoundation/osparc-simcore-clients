@@ -29,7 +29,7 @@ def main() -> None:
             (df["server"] == server_cfg.url.netloc)
             & (df["client"] == client_cfg.compatibility_ref)
         ]
-        if len(df) != 1:
+        if df.shape[0] != 1:
             raise RuntimeError(
                 "Could not correctly determine compatibility between client and server."
             )
