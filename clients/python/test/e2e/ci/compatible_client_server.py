@@ -33,7 +33,7 @@ def main() -> None:
             raise RuntimeError(
                 "Could not correctly determine compatibility between client and server."
             )
-        is_compatible: bool = df["is_compatible"].loc[0]
+        is_compatible: bool = df["is_compatible"].loc[df.index[0]]
     except Exception:
         raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
 
