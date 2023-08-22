@@ -57,7 +57,7 @@ def main(client_config: str, server_config: str) -> None:
         / f"pytest_{client_cfg.client_ref}_{server_cfg.url.netloc}.html"
     ).relative_to(Path("../../").resolve())
     add_opts: str = (
-        "-rfs --tb=no --disable-warnings --no-header "
+        "--tb=no --disable-warnings --no-header "
         f"--html={html_log} --self-contained-html"
     )
     pytest_config: PytestConfig = PytestConfig(
