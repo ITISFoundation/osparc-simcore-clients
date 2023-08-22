@@ -56,7 +56,7 @@ do
     if ! python "${CI_DIR}"/generate_pytest_ini.py "${OSPARC_CLIENT_CONFIG}" "${SCONFIG}"; then
       exit 1
     fi
-    cat "${E2E_DIR}/pytest.ini"
+    cat "pytest.ini"
     python "${CI_DIR}"/compatible_client_server.py
     EC=$?
     if [[ "${EC}" -ne 0 ]]; then
