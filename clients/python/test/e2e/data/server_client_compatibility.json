@@ -1,1 +1,14 @@
-{"master":{"api.osparc-master.speag.com":true,"api.osparc-staging.speag.com":false,"api.osparc.speag.com":false,"api.staging.osparc.io":false,"api.osparc.io":false},"production":{"api.osparc-master.speag.com":true,"api.osparc-staging.speag.com":true,"api.osparc.speag.com":true,"api.staging.osparc.io":true,"api.osparc.io":true}}
+{
+  "is_compatible": {
+    "('api.osparc-master.speag.com', 'master')": true,
+    "('api.osparc-master.speag.com', 'production')": true,
+    "('api.osparc-staging.speag.com', 'master')": false,
+    "('api.osparc-staging.speag.com', 'production')": true,
+    "('api.osparc.speag.com', 'master')": false,
+    "('api.osparc.speag.com', 'production')": true,
+    "('api.staging.osparc.io', 'master')": false,
+    "('api.staging.osparc.io', 'production')": true,
+    "('api.osparc.io', 'master')": false,
+    "('api.osparc.io', 'production')": true
+  }
+}
