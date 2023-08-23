@@ -4,7 +4,6 @@ set -o nounset  # abort on unbound variable
 set -o pipefail # don't hide errors within pipes
 
 CI_DIR=$(realpath "$(dirname "$0")")
-E2E_DIR=$(realpath "${CI_DIR}/..")
 
 doc="Run e2e osparc python client tests\n"
 doc+="Input:\n"
