@@ -5,7 +5,7 @@ from urllib.parse import ParseResult, urlparse
 
 from _utils import _PYTEST_INI
 from packaging.version import Version
-from pydantic import AnyUrl, BaseModel, field_validator, model_validator
+from pydantic import BaseModel, field_validator, model_validator
 
 # Holds classes for passing data around between scripts.
 
@@ -13,7 +13,7 @@ from pydantic import AnyUrl, BaseModel, field_validator, model_validator
 class ServerConfig(BaseModel):
     """Holds data about server configuration"""
 
-    osparc_api_host: AnyUrl
+    osparc_api_host: str
     osparc_api_key: str
     osparc_api_secret: str
 
