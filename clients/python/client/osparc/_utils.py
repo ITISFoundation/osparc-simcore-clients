@@ -22,13 +22,11 @@ class PaginationGenerator:
 
     def __init__(
         self,
-        pagination_method: Callable[[int, int], Page],
-        limit: int = 20,
-        offset: int = 0,
+        zeroth_page_url: str,
+        page_url: str,
     ):
-        self._pagination_method: Callable[[int, int], Page] = pagination_method
-        self._limit: int = limit
-        self._offset: int = offset
+        self._zeroth_page_url: str = zeroth_page_url
+        self._page_url: str = page_url
 
     def __len__(self) -> int:
         """Number of elements which the iterator can produce

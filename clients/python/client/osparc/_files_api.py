@@ -4,8 +4,8 @@ import math
 from pathlib import Path
 from typing import Any, Iterator, List, Optional, Tuple, Union
 
-import aiohttp
-from aiohttp import ClientSession
+import httpx
+from httpx import AsyncClient, Response
 from osparc_client import (
     BodyCompleteMultipartUploadV0FilesFileIdCompletePost,
     ClientFile,
@@ -16,7 +16,7 @@ from osparc_client import FileUploadCompletionBody, FileUploadLinks, UploadedPar
 from tqdm.asyncio import tqdm_asyncio
 
 from . import ApiClient, File
-from ._http_client import HttpClient
+from ._http_client import AsyncHttpClient
 from ._utils import _file_chunk_generator
 from ._warnings_and_errors import aiohttp_error_handler_async
 
@@ -34,8 +34,8 @@ class FilesApi(_FilesApi):
         self._super = super(FilesApi, self)
         user: Optional[str] = self.api_client.configuration.username
         passwd: Optional[str] = self.api_client.configuration.password
-        self._auth: Optional[aiohttp.BasicAuth] = (
-            aiohttp.BasicAuth(login=user, password=passwd)
+        self._auth: Optional[httpx.BasicAuth] = (
+            httpx.BasicAuth(username=user, password=passwd)
             if (user is not None and passwd is not None)
             else None
         )
@@ -68,7 +68,7 @@ class FilesApi(_FilesApi):
             )
 
         tasks: list = []
-        async with HttpClient(
+        async with AsyncHttpClient(
             exc_req_typ="post", exc_url=links.abort_upload, exc_auth=self._auth
         ) as session:
             async for chunck, size in _file_chunk_generator(file, chunk_size):
@@ -93,7 +93,7 @@ class FilesApi(_FilesApi):
 
     async def _complete_multipart_upload(
         self,
-        http_client: ClientSession,
+        http_client: AsyncClient,
         complete_link: str,
         client_file: ClientFile,
         uploaded_parts: List[UploadedPart],
@@ -102,28 +102,28 @@ class FilesApi(_FilesApi):
             client_file=client_file,
             uploaded_parts=FileUploadCompletionBody(parts=uploaded_parts),
         )
-        async with http_client.post(
+        response: Response = await http_client.post(
             complete_link,
             json=complete_payload.to_dict(),
             auth=self._auth,
-        ) as response:
-            response.raise_for_status()
-            payload: dict[str, Any] = await response.json()
+        )
+        response.raise_for_status()
+        payload: dict[str, Any] = response.json()
         return File(**payload)
 
     async def _upload_chunck(
         self,
-        http_client: ClientSession,
+        http_client: AsyncClient,
         chunck: bytes,
         chunck_size: int,
         upload_link: str,
         index: int,
     ) -> UploadedPart:
-        async with http_client.put(
-            upload_link, data=chunck, headers={"Content-Length": f"{chunck_size}"}
-        ) as response:
-            response.raise_for_status()
-            assert response.headers  # nosec
-            assert "Etag" in response.headers  # nosec
-            etag: str = json.loads(response.headers["Etag"])
-            return UploadedPart(number=index, e_tag=etag)
+        response: Response = await http_client.put(
+            upload_link, content=chunck, headers={"Content-Length": f"{chunck_size}"}
+        )
+        response.raise_for_status()
+        assert response.headers  # nosec
+        assert "Etag" in response.headers  # nosec
+        etag: str = json.loads(response.headers["Etag"])
+        return UploadedPart(number=index, e_tag=etag)
