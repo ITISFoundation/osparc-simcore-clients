@@ -18,7 +18,6 @@ from tqdm.asyncio import tqdm_asyncio
 from . import ApiClient, File
 from ._http_client import AsyncHttpClient
 from ._utils import _file_chunk_generator
-from ._warnings_and_errors import aiohttp_error_handler_async
 
 
 class FilesApi(_FilesApi):
@@ -43,7 +42,6 @@ class FilesApi(_FilesApi):
     def upload_file(self, file: Union[str, Path]):
         return asyncio.run(self.upload_file_async(file=file))
 
-    @aiohttp_error_handler_async
     async def upload_file_async(self, file: Union[str, Path]) -> File:
         if isinstance(file, str):
             file = Path(file)
