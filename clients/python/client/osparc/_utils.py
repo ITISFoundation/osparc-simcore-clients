@@ -22,12 +22,14 @@ class PaginationGenerator:
     """Class for wrapping paginated http methods as generators"""
 
     def __init__(
-        self, first_page_callback: Callable[[], Page], auth: Optional[httpx.BasicAuth]
+        self,
+        first_page_callback: Callable[[], Page],
+        base_url: str,
+        auth: Optional[httpx.BasicAuth],
     ):
         self._first_page_callback: Callable[[], Page] = first_page_callback
         self._next_page_url: Optional[str] = None
-        self._client: httpx.Client = httpx.Client()
-        self._auth: Optional[httpx.BasicAuth] = auth
+        self._client: httpx.Client = httpx.Client(auth=auth, base_url=base_url)
 
     def __del__(self):
         self._client.close()
@@ -55,10 +57,10 @@ class PaginationGenerator:
             assert page.items is not None
             assert isinstance(page.total, int)
             yield from page.items
-            response: httpx.Response = self._client.get(
-                page.links.last, auth=self._auth
-            )
-            print(response)
+            if page.links.last is None:
+                break
+            response: httpx.Response = self._client.get(page.links.next)
+            page = type(page)(**response.json())
 
 
 async def _file_chunk_generator(

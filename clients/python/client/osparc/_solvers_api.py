@@ -50,4 +50,8 @@ class SolversApi(_SolversApi):
                 solver_key=solver_key, version=version, limit=20, offset=0
             )
 
-        return PaginationGenerator(pagination_method, self._auth)
+        return PaginationGenerator(
+            pagination_method,
+            base_url=self.api_client.configuration.host,
+            auth=self._auth,
+        )
