@@ -1,5 +1,6 @@
 from typing import Optional
 
+import httpx
 from osparc_client import SolversApi as _SolversApi
 
 from . import ApiClient
@@ -16,14 +17,19 @@ class SolversApi(_SolversApi):
             api_client (ApiClient, optinal): osparc.ApiClient object
         """
         super().__init__(api_client)
+        user: Optional[str] = self.api_client.configuration.username
+        passwd: Optional[str] = self.api_client.configuration.password
+        self._auth: Optional[httpx.BasicAuth] = (
+            httpx.BasicAuth(username=user, password=passwd)
+            if (user is not None and passwd is not None)
+            else None
+        )
 
     def get_jobs_page(self, solver_key: str, version: str) -> None:
         """Method only for internal use"""
         raise NotImplementedError("This method is only for internal use")
 
-    def get_jobs(
-        self, solver_key: str, version: str, limit: int = 20, offset: int = 0
-    ) -> PaginationGenerator:
+    def get_jobs(self, solver_key: str, version: str) -> PaginationGenerator:
         """Returns an iterator through which one can iterate over
         all Jobs submitted to the solver
 
@@ -39,9 +45,9 @@ class SolversApi(_SolversApi):
             (its "length")
         """
 
-        def pagination_method(limit, offset):
+        def pagination_method():
             return super(SolversApi, self).get_jobs_page(
-                solver_key=solver_key, version=version, limit=limit, offset=offset
+                solver_key=solver_key, version=version, limit=20, offset=0
             )
 
-        return PaginationGenerator(pagination_method, limit, offset)
+        return PaginationGenerator(pagination_method, self._auth)

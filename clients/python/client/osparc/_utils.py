@@ -1,7 +1,8 @@
 import asyncio
 from pathlib import Path
-from typing import AsyncGenerator, Callable, Generator, Tuple, TypeVar, Union
+from typing import AsyncGenerator, Callable, Generator, Optional, Tuple, TypeVar, Union
 
+import httpx
 from osparc_client import (
     File,
     Job,
@@ -21,12 +22,15 @@ class PaginationGenerator:
     """Class for wrapping paginated http methods as generators"""
 
     def __init__(
-        self,
-        zeroth_page_url: str,
-        page_url: str,
+        self, first_page_callback: Callable[[], Page], auth: Optional[httpx.BasicAuth]
     ):
-        self._zeroth_page_url: str = zeroth_page_url
-        self._page_url: str = page_url
+        self._first_page_callback: Callable[[], Page] = first_page_callback
+        self._next_page_url: Optional[str] = None
+        self._client: httpx.Client = httpx.Client()
+        self._auth: Optional[httpx.BasicAuth] = auth
+
+    def __del__(self):
+        self._client.close()
 
     def __len__(self) -> int:
         """Number of elements which the iterator can produce
@@ -34,12 +38,9 @@ class PaginationGenerator:
         Returns:
             int: The number of elements the iterator can produce
         """
-        page: Page = self._pagination_method(self._limit, 0)
+        page: Page = self._first_page_callback()
         assert isinstance(page.total, int)
-        assert (
-            page.total >= 0
-        ), f"page.total={page.total} must be a nonnegative interger"
-        return max(page.total - self._offset, 0)
+        return page.total
 
     def __iter__(self) -> Generator[T, None, None]:
         """Returns the generator
@@ -49,34 +50,15 @@ class PaginationGenerator:
         """
         if len(self) == 0:
             return
+        page: Page = self._first_page_callback()
         while True:
-            page: Page = self._pagination_method(self._limit, self._offset)
             assert page.items is not None
             assert isinstance(page.total, int)
             yield from page.items
-            self._offset += len(page.items)
-            if self._offset >= page.total:
-                break
-
-    async def __aiter__(self) -> AsyncGenerator[T, None]:
-        """Returns an async generator
-
-        Returns:
-            AsyncGenerator[T, None]: The async generator
-        """
-        if len(self) == 0:
-            return
-        while True:
-            page: Page = await _fcn_to_coro(
-                self._pagination_method, self._limit, self._offset
+            response: httpx.Response = self._client.get(
+                page.links.last, auth=self._auth
             )
-            assert page.items is not None
-            assert isinstance(page.total, int)
-            for item in page.items:
-                yield item
-            self._offset += len(page.items)
-            if self._offset >= page.total:
-                break
+            print(response)
 
 
 async def _file_chunk_generator(

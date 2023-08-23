@@ -23,7 +23,7 @@ def test_get_jobs(cfg: osparc.Configuration):
         sleeper: osparc.Solver = solvers_api.get_solver_release(solver, version)
 
         # initial iterator
-        init_iter = solvers_api.get_jobs(sleeper.id, sleeper.version, limit=3)
+        init_iter = solvers_api.get_jobs(sleeper.id, sleeper.version)
         n_init_iter: int = len(init_iter)
         assert n_init_iter >= 0
 
@@ -35,14 +35,10 @@ def test_get_jobs(cfg: osparc.Configuration):
             )
             created_job_ids.append(job.id)
 
-        tmp_iter = solvers_api.get_jobs(
-            sleeper.id, sleeper.version, limit=3, offset=n_init_iter
-        )
-        tmp_async_iter = solvers_api.get_jobs(
-            sleeper.id, sleeper.version, limit=3, offset=n_init_iter
-        )
+        tmp_iter = solvers_api.get_jobs(sleeper.id, sleeper.version)
+        tmp_async_iter = solvers_api.get_jobs(sleeper.id, sleeper.version)
 
-        final_iter = solvers_api.get_jobs(sleeper.id, sleeper.version, limit=3)
+        final_iter = solvers_api.get_jobs(sleeper.id, sleeper.version)
         assert len(final_iter) > 0, "No jobs were available"
         assert n_init_iter + n_jobs == len(
             final_iter
