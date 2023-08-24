@@ -17,6 +17,11 @@ _COMPATIBILITY_JSON: Path = (
 assert _COMPATIBILITY_JSON.is_file()
 
 
+def print_line():
+    """Print a line in log"""
+    print(150 * "=")
+
+
 # classed for handling errors ----------------------------------
 class E2eScriptFailure(UserWarning):
     """Simply used to indicate a CI script failure"""

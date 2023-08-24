@@ -6,8 +6,19 @@ import pandas as pd
 import pytest
 import typer
 from _data_classes import Artifacts, ClientConfig, PytestIniFile, ServerConfig
-from _utils import E2eExitCodes, E2eScriptFailure
+from _utils import E2eExitCodes, E2eScriptFailure, print_line
 from pydantic import ValidationError
+
+
+def log(exit_code: int):
+    """Log exit status"""
+    if exit_code in {e.value for e in E2eExitCodes}:
+        print(f"exit code: {E2eExitCodes(exit_code).name}")
+    elif exit_code in {e.value for e in pytest.ExitCode}:
+        print(f"exit code: {pytest.ExitCode(exit_code).name}")
+    else:
+        print(f"exit code: {E2eExitCodes.CI_SCRIPT_FAILURE.name}")
+    print_line()
 
 
 def main(exit_code: int) -> None:
@@ -27,6 +38,7 @@ def main(exit_code: int) -> None:
     --------
         None
     """
+    log(exit_code)
     expected_exitcodes: Set = {
         E2eExitCodes.INVALID_CLIENT_VS_SERVER,
         pytest.ExitCode.OK,

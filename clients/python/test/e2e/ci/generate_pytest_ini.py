@@ -11,8 +11,17 @@ from _data_classes import (
     PytestIniFile,
     ServerConfig,
 )
-from _utils import _ARTIFACTS_DIR, E2eExitCodes
+from _utils import _ARTIFACTS_DIR, E2eExitCodes, print_line
 from pydantic import ValidationError
+
+
+def log(client_cfg: ClientConfig, server_cfg: ServerConfig):
+    """Log configuration"""
+    print_line()
+    print("Configuration")
+    print("-------------")
+    print(f"\tclient: {client_cfg.client_ref}")
+    print(f"\tserver: {server_cfg.url.geturl()}")
 
 
 def main(client_config: str, server_config: str) -> None:
@@ -70,6 +79,7 @@ def main(client_config: str, server_config: str) -> None:
         pytest=pytest_config, client=client_cfg, server=server_cfg, artifacts=artifacts
     )
     config.generate()
+    log(client_cfg, server_cfg)
     raise typer.Exit(code=pytest.ExitCode.OK)
 
 
