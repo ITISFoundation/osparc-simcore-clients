@@ -65,10 +65,7 @@ def main(client_config: str, server_config: str) -> None:
         / (client_cfg.client_ref + "_" + server_cfg.url.netloc)
         / f"pytest_{client_cfg.client_ref}_{server_cfg.url.netloc}.html"
     ).relative_to(Path("../../").resolve())
-    add_opts: str = (
-        "--quiet --disable-warnings --no-header "
-        f"--html={html_log} --self-contained-html"
-    )
+    add_opts: str = f"--html={html_log} --self-contained-html"
     pytest_config: PytestConfig = PytestConfig(
         env="\n" + "\n".join(envs),
         required_plugins="pytest-env pytest-html",
