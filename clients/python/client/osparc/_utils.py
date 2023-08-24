@@ -57,7 +57,7 @@ class PaginationGenerator:
             assert page.items is not None
             assert isinstance(page.total, int)
             yield from page.items
-            if page.links.last is None:
+            if page.links.next is None:
                 break
             response: httpx.Response = self._client.get(page.links.next)
             page = type(page)(**response.json())
