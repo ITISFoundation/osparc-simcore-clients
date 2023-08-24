@@ -12,7 +12,7 @@ from pydantic import ValidationError
 
 def log(exit_code: int):
     """Log exit status"""
-    print("Return status")
+    print("Exit status")
     print("-------------")
     if exit_code in {e.value for e in E2eExitCodes}:
         print(f"\t{E2eExitCodes(exit_code).name}")
