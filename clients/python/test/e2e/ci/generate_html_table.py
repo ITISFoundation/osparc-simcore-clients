@@ -8,7 +8,7 @@ from _utils import E2eExitCodes
 
 def exitcode_to_text(exitcode: int) -> str:
     """Turn exitcodes to string"""
-    if exitcode == E2eExitCodes.INVALID_CLIENT_VS_SERVER:
+    if exitcode == E2eExitCodes.INCOMPATIBLE_CLIENT_SERVER:
         return "incompatible"
     elif exitcode == pytest.ExitCode.OK:
         return "pass"

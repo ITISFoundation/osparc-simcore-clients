@@ -38,7 +38,7 @@ def main() -> None:
         raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
 
     if not is_compatible:
-        raise typer.Exit(code=E2eExitCodes.INVALID_CLIENT_VS_SERVER)
+        raise typer.Exit(code=E2eExitCodes.INCOMPATIBLE_CLIENT_SERVER)
     else:
         raise typer.Exit(code=pytest.ExitCode.OK)
 
