@@ -42,7 +42,7 @@ def main(exit_code: int) -> None:
     """
     log(exit_code)
     expected_exitcodes: Set = {
-        E2eExitCodes.INVALID_CLIENT_VS_SERVER,
+        E2eExitCodes.INCOMPATIBLE_CLIENT_SERVER,
         pytest.ExitCode.OK,
         pytest.ExitCode.TESTS_FAILED,
     }
