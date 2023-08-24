@@ -65,7 +65,12 @@ def main(client_config: str, server_config: str) -> None:
         / (client_cfg.client_ref + "_" + server_cfg.url.netloc)
         / f"pytest_{client_cfg.client_ref}_{server_cfg.url.netloc}.html"
     ).relative_to(Path("../../").resolve())
-    add_opts: str = f"--html={html_log} --self-contained-html"
+    junit_xml: Path = Path("../../") / (
+        _ARTIFACTS_DIR
+        / (client_cfg.client_ref + "_" + server_cfg.url.netloc)
+        / f"junit_{client_cfg.client_ref}_{server_cfg.url.netloc}.xml"
+    ).relative_to(Path("../../").resolve())
+    add_opts: str = f"--html={html_log} --self-contained-html --junitxml={junit_xml}"
     pytest_config: PytestConfig = PytestConfig(
         env="\n" + "\n".join(envs),
         required_plugins="pytest-env pytest-html",
