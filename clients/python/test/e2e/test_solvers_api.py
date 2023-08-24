@@ -7,8 +7,8 @@ from packaging.version import Version
     Version(osparc.__version__) < Version("0.6.0"),
     reason=f"osparc.__version__={osparc.__version__} is older than 0.6.0",
 )
-def test_get_jobs(cfg: osparc.Configuration):
-    """Test the get_jobs method
+def test_list_jobs(cfg: osparc.Configuration):
+    """Test the list_jobs method
 
     Args:
         configuration (osparc.Configuration): The Configuration
@@ -21,7 +21,7 @@ def test_get_jobs(cfg: osparc.Configuration):
         sleeper: osparc.Solver = solvers_api.get_solver_release(solver, version)
 
         # initial iterator
-        init_iter = solvers_api.get_jobs(sleeper.id, sleeper.version)
+        init_iter = solvers_api.list_jobs(sleeper.id, sleeper.version)
         n_init_iter: int = len(init_iter)
         assert n_init_iter >= 0
 
@@ -33,10 +33,10 @@ def test_get_jobs(cfg: osparc.Configuration):
             )
             created_job_ids.append(job.id)
 
-        tmp_iter = solvers_api.get_jobs(sleeper.id, sleeper.version)
-        solvers_api.get_jobs(sleeper.id, sleeper.version)
+        tmp_iter = solvers_api.list_jobs(sleeper.id, sleeper.version)
+        solvers_api.list_jobs(sleeper.id, sleeper.version)
 
-        final_iter = solvers_api.get_jobs(sleeper.id, sleeper.version)
+        final_iter = solvers_api.list_jobs(sleeper.id, sleeper.version)
         assert len(final_iter) > 0, "No jobs were available"
         assert n_init_iter + n_jobs == len(
             final_iter

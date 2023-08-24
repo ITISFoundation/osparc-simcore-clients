@@ -9,14 +9,18 @@ class AsyncHttpClient:
 
     def __init__(
         self,
-        exc_req_typ: Optional[str] = None,
-        exc_url: Optional[str] = None,
-        exc_auth: Optional[httpx.BasicAuth] = None,
+        exception_request_type: Optional[str] = None,
+        exception_url: Optional[str] = None,
+        exception_auth: Optional[httpx.BasicAuth] = None,
     ):
         self._client = httpx.AsyncClient()
-        self._exc_callback = getattr(self._client, exc_req_typ) if exc_req_typ else None
-        self._exc_url = exc_url
-        self._exc_auth = exc_auth
+        self._exc_callback = (
+            getattr(self._client, exception_request_type)
+            if exception_request_type
+            else None
+        )
+        self._exc_url = exception_url
+        self._exc_auth = exception_auth
 
     async def __aenter__(self) -> httpx.AsyncClient:
         return self._client

@@ -29,7 +29,7 @@ class SolversApi(_SolversApi):
         """Method only for internal use"""
         raise NotImplementedError("This method is only for internal use")
 
-    def get_jobs(self, solver_key: str, version: str) -> PaginationGenerator:
+    def list_jobs(self, solver_key: str, version: str) -> PaginationGenerator:
         """Returns an iterator through which one can iterate over
         all Jobs submitted to the solver
 

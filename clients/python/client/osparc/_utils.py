@@ -35,21 +35,13 @@ class PaginationGenerator:
         self._client.close()
 
     def __len__(self) -> int:
-        """Number of elements which the iterator can produce
-
-        Returns:
-            int: The number of elements the iterator can produce
-        """
+        """Number of elements which the iterator can produce"""
         page: Page = self._first_page_callback()
         assert isinstance(page.total, int)
         return page.total
 
     def __iter__(self) -> Generator[T, None, None]:
-        """Returns the generator
-
-        Yields:
-            Generator[T,None,None]: The returned generator
-        """
+        """Returns the generator"""
         if len(self) == 0:
             return
         page: Page = self._first_page_callback()
