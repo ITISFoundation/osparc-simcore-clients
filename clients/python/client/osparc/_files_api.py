@@ -1,6 +1,9 @@
 import asyncio
 import json
 import math
+import random
+import shutil
+import string
 from pathlib import Path
 from typing import Any, Iterator, List, Optional, Tuple, Union
 
@@ -38,6 +41,27 @@ class FilesApi(_FilesApi):
             if (user is not None and passwd is not None)
             else None
         )
+
+    def download_file(
+        self, file_id: str, *, destination_folder: Optional[Path] = None
+    ) -> str:
+        if destination_folder is not None and not destination_folder.is_dir():
+            raise RuntimeError(
+                f"destination_folder: {destination_folder} must be a directory"
+            )
+        downloaded_file: Path = Path(super().download_file(file_id))
+        if destination_folder is not None:
+            dest_file: Path = destination_folder / downloaded_file.name
+            while dest_file.is_file():
+                new_name = (
+                    downloaded_file.stem
+                    + "".join(random.choices(string.ascii_letters, k=8))
+                    + downloaded_file.suffix
+                )
+                dest_file = destination_folder / new_name
+            shutil.move(downloaded_file, dest_file)
+            downloaded_file = dest_file
+        return str(downloaded_file.resolve())
 
     def upload_file(self, file: Union[str, Path]):
         return asyncio.run(self.upload_file_async(file=file))
