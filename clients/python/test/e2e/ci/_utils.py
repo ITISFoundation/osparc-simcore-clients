@@ -9,7 +9,7 @@ _E2E_DIR: Path = Path(__file__).parent.parent.resolve()
 _PYTHON_DIR: Path = _E2E_DIR.parent.parent
 _CI_DIR: Path = (_E2E_DIR / "ci").resolve()
 _PYTEST_INI: Path = (_E2E_DIR / "pytest.ini").resolve()
-_ARTIFACTS_DIR: Path = (_E2E_DIR / ".." / ".." / "artifacts" / "e2e").resolve()
+_ARTIFACTS_DIR: Path = (_E2E_DIR.parent.parent / "artifacts" / "e2e").resolve()
 _COMPATIBILITY_JSON: Path = (
     _E2E_DIR / "data" / "server_client_compatibility.json"
 ).resolve()

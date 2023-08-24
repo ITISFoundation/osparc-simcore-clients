@@ -157,8 +157,8 @@ class PytestIniFile(BaseModel):
             raise ValueError(f"pth: {pth} must point to a pytest.ini file")
         obj = configparser.ConfigParser()
         obj.read(pth)
-        config_dict: Dict = {s: dict(obj.items(s)) for s in obj.sections()}
-        return PytestIniFile(**config_dict)
+        config: Dict = {s: dict(obj.items(s)) for s in obj.sections()}
+        return PytestIniFile(**config)
 
     def generate(self, pth: Path = _PYTEST_INI) -> None:
         """Generate the pytest.ini file"""
