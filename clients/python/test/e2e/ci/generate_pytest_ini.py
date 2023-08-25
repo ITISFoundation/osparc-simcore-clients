@@ -72,7 +72,7 @@ def main(client_config: str, server_config: str) -> None:
     ).relative_to(Path("../../").resolve())
     junit_prefix: str = f"{client_cfg.client_ref}_{server_cfg.url.netloc}_"
     add_opts: str = (
-        f"--html={html_log} --self-contained-html"
+        f"--html={html_log} --self-contained-html "
         f"--junitxml={junit_xml} --junit-prefix={junit_prefix}"
     )
     pytest_config: PytestConfig = PytestConfig(
