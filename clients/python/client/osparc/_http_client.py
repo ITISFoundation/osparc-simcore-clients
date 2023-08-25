@@ -8,9 +8,13 @@ class AsyncHttpClient:
     """Async http client context manager"""
 
     def __init__(
-        self, *, request_type: Optional[str] = None, url: Optional[str] = None, **kwargs
+        self,
+        *,
+        request_type: Optional[str] = None,
+        url: Optional[str] = None,
+        **httpx_async_client_kwargs
     ):
-        self._client = httpx.AsyncClient(**kwargs)
+        self._client = httpx.AsyncClient(**httpx_async_client_kwargs)
         self._callback = getattr(self._client, request_type) if request_type else None
         self._url = url
 

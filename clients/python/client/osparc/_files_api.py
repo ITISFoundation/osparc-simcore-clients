@@ -16,7 +16,7 @@ from osparc_client import (
 )
 from osparc_client import FilesApi as _FilesApi
 from osparc_client import FileUploadCompletionBody, FileUploadLinks, UploadedPart
-from tqdm.asyncio import tqdm_asyncio
+from tqdm.asyncio import tqdm
 
 from . import ApiClient, File
 from ._http_client import AsyncHttpClient
@@ -82,25 +82,21 @@ class FilesApi(_FilesApi):
         url_iter: Iterator[Tuple[int, str]] = enumerate(
             iter(client_upload_schema.upload_schema.urls), start=1
         )
-        if len(client_upload_schema.upload_schema.urls) < math.ceil(
-            file.stat().st_size / chunk_size
-        ):
+        n_urls: int = len(client_upload_schema.upload_schema.urls)
+        if n_urls < math.ceil(file.stat().st_size / chunk_size):
             raise RuntimeError(
                 "Did not receive sufficient number of upload URLs from the server."
             )
 
-        tasks: list = []
-        async with AsyncHttpClient(
-            request_type="post",
-            url=links.abort_upload,
-            auth=self._auth,
-            follow_redirects=True,
-        ) as session:
-            async for chunck, size in _file_chunk_generator(file, chunk_size):
-                # following https://docs.python.org/3/library/asyncio-task.html#asyncio.create_task
+        uploaded_parts: list[UploadedPart] = []
+        print("- uploading chunks...")
+        async with AsyncHttpClient() as session:
+            async for chunck, size in tqdm(
+                _file_chunk_generator(file, chunk_size), total=n_urls
+            ):
                 index, url = next(url_iter)
-                task = asyncio.create_task(
-                    self._upload_chunck(
+                uploaded_parts.append(
+                    await self._upload_chunck(
                         http_client=session,
                         chunck=chunck,
                         chunck_size=size,
@@ -108,13 +104,20 @@ class FilesApi(_FilesApi):
                         index=index,
                     )
                 )
-                tasks.append(task)
 
-            uploaded_parts: List[UploadedPart] = await tqdm_asyncio.gather(*tasks)
-
-            return await self._complete_multipart_upload(
-                session, links.complete_upload, client_file, uploaded_parts
-            )
+            async with AsyncHttpClient(
+                request_type="post",
+                url=links.abort_upload,
+                base_url=self.api_client.configuration.host,
+                follow_redirects=True,
+                auth=self._auth,
+            ) as session:
+                print("- completing upload (this might take a couple of minutes)...")
+                file: File = await self._complete_multipart_upload(
+                    session, links.complete_upload, client_file, uploaded_parts
+                )
+                print("- file upload complete")
+                return file
 
     async def _complete_multipart_upload(
         self,
@@ -130,7 +133,6 @@ class FilesApi(_FilesApi):
         response: Response = await http_client.post(
             complete_link,
             json=complete_payload.to_dict(),
-            auth=self._auth,
         )
         response.raise_for_status()
         payload: dict[str, Any] = response.json()
