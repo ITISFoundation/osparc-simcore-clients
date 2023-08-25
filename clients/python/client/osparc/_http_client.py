@@ -10,10 +10,10 @@ class AsyncHttpClient:
     def __init__(
         self,
         *,
+        base_url: httpx.URL,
         request_type: Optional[str] = None,
         url: Optional[str] = None,
         auth: Optional[httpx.BasicAuth] = None,
-        base_url: Optional[str] = None
     ):
         self._client = httpx.AsyncClient(
             base_url=base_url, auth=auth, follow_redirects=True

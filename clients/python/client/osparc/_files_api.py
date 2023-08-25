@@ -91,6 +91,7 @@ class FilesApi(_FilesApi):
 
         tasks: list = []
         async with AsyncHttpClient(
+            base_url=httpx.URL(self.api_client.configuration.host),
             request_type="post",
             url=links.abort_upload,
             auth=self._auth,
