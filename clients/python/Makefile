@@ -151,7 +151,8 @@ e2e-shell: guard-GH_TOKEN ## shell for running e2e tests
 		--entrypoint /bin/bash \
 		-it \
 		itisfoundation/osparc_python_tutorial_testing:v1 \
-		-c "python -m venv /tmp/venv && source /tmp/venv/bin/activate && cd clients/python && make install-test && exec /bin/bash"
+		-c "python -m venv /tmp/venv && source /tmp/venv/bin/activate && cd clients/python \
+		&& make install-test && cd test/e2e && python ci/install_osparc_python_client.py && exec /bin/bash"
 
 ## DOCKER -------------------------------------------------------------------------------
 
