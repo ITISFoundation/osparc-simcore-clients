@@ -22,7 +22,7 @@ def _hash_file(file: Path) -> str:
         return md5.hexdigest()
 
 
-# @pytest.mark.skip(reason="Skipped until files_api.delete_file() is implemented")
+@pytest.mark.skip(reason="Skipped until files_api.delete_file() is implemented")
 @pytest.mark.skipif(
     Version(osparc.__version__) < Version("0.6.0"),
     reason=f"osparc.__version__={osparc.__version__} is older than 0.6.0",
