@@ -70,12 +70,15 @@ def main(client_config: str, server_config: str) -> None:
         / (client_cfg.client_ref + "_" + server_cfg.url.netloc)
         / f"junit_{client_cfg.client_ref}_{server_cfg.url.netloc}.xml"
     ).relative_to(Path("../../").resolve())
-    add_opts: str = f"--html={html_log} --self-contained-html --junitxml={junit_xml}"
+    junit_prefix: str = f"{client_cfg.client_ref}_{server_cfg.url.netloc}_"
+    add_opts: str = (
+        f"--html={html_log} --self-contained-html"
+        f"--junitxml={junit_xml} --junit-prefix={junit_prefix}"
+    )
     pytest_config: PytestConfig = PytestConfig(
         env="\n" + "\n".join(envs),
         required_plugins="pytest-env pytest-html",
         addopts=add_opts,
-        junit_suite_name=f"{client_cfg.client_ref}_{server_cfg.url.netloc}",
     )
 
     config: PytestIniFile = PytestIniFile(
