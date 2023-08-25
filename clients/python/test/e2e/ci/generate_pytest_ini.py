@@ -70,7 +70,7 @@ def main(client_config: str, server_config: str) -> None:
         / (client_cfg.client_ref + "_" + server_cfg.url.netloc)
         / f"junit_{client_cfg.client_ref}_{server_cfg.url.netloc}.xml"
     ).relative_to(Path("../../").resolve())
-    junit_prefix: str = f"{client_cfg.client_ref}_{server_cfg.url.netloc}_"
+    junit_prefix: str = f"{client_cfg.client_ref}+{server_cfg.url.netloc}"
     add_opts: str = (
         f"--html={html_log} --self-contained-html "
         f"--junitxml={junit_xml} --junit-prefix={junit_prefix}"
