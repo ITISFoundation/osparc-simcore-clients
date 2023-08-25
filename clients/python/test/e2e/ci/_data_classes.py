@@ -134,6 +134,7 @@ class PytestConfig(BaseModel):
     env: str
     required_plugins: str
     addopts: str
+    junit_suite_name: str
 
 
 class Artifacts(BaseModel):

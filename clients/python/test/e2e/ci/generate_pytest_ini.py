@@ -75,6 +75,7 @@ def main(client_config: str, server_config: str) -> None:
         env="\n" + "\n".join(envs),
         required_plugins="pytest-env pytest-html",
         addopts=add_opts,
+        junit_suite_name=f"{client_cfg.client_ref}_{server_cfg.url.netloc}",
     )
 
     config: PytestIniFile = PytestIniFile(
