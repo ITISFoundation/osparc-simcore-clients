@@ -9,18 +9,17 @@ class AsyncHttpClient:
 
     def __init__(
         self,
-        exception_request_type: Optional[str] = None,
-        exception_url: Optional[str] = None,
-        exception_auth: Optional[httpx.BasicAuth] = None,
+        *,
+        request_type: Optional[str] = None,
+        url: Optional[str] = None,
+        auth: Optional[httpx.BasicAuth] = None,
+        base_url: Optional[str] = None
     ):
-        self._client = httpx.AsyncClient()
-        self._exc_callback = (
-            getattr(self._client, exception_request_type)
-            if exception_request_type
-            else None
+        self._client = httpx.AsyncClient(
+            base_url=base_url, auth=auth, follow_redirects=True
         )
-        self._exc_url = exception_url
-        self._exc_auth = exception_auth
+        self._callback = getattr(self._client, request_type) if request_type else None
+        self._url = url
 
     async def __aenter__(self) -> httpx.AsyncClient:
         return self._client
@@ -29,7 +28,7 @@ class AsyncHttpClient:
         if exc_value is None:
             await self._client.aclose()
         else:  # exception raised: need to handle
-            if self._exc_callback is not None:
+            if self._callback is not None:
                 try:
                     async for attempt in tenacity.AsyncRetrying(
                         reraise=True,
@@ -38,9 +37,7 @@ class AsyncHttpClient:
                         retry=tenacity.retry_if_exception_type(httpx.RequestError),
                     ):
                         with attempt:
-                            response = await self._exc_callback(
-                                self._exc_url, auth=self._exc_auth
-                            )
+                            response = await self._callback(self._url)
                             response.raise_for_status()
                 except Exception as err:
                     await self._client.aclose()

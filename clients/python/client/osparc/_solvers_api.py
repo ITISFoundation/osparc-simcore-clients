@@ -51,7 +51,8 @@ class SolversApi(_SolversApi):
             )
 
         return PaginationGenerator(
-            pagination_method,
+            first_page_callback=pagination_method,
+            api_client=self.api_client,
             base_url=self.api_client.configuration.host,
             auth=self._auth,
         )

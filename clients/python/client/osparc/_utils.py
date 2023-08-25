@@ -4,6 +4,7 @@ from typing import AsyncGenerator, Callable, Generator, Optional, Tuple, TypeVar
 
 import httpx
 from osparc_client import (
+    ApiClient,
     File,
     Job,
     PageFile,
@@ -24,12 +25,16 @@ class PaginationGenerator:
     def __init__(
         self,
         first_page_callback: Callable[[], Page],
+        api_client: ApiClient,
         base_url: str,
         auth: Optional[httpx.BasicAuth],
     ):
         self._first_page_callback: Callable[[], Page] = first_page_callback
+        self._api_client: ApiClient = api_client
         self._next_page_url: Optional[str] = None
-        self._client: httpx.Client = httpx.Client(auth=auth, base_url=base_url)
+        self._client: httpx.Client = httpx.Client(
+            auth=auth, base_url=base_url, follow_redirects=True
+        )
 
     def __del__(self):
         self._client.close()
@@ -52,7 +57,7 @@ class PaginationGenerator:
             if page.links.next is None:
                 break
             response: httpx.Response = self._client.get(page.links.next)
-            page = type(page)(**response.json())
+            page = self._api_client._ApiClient__deserialize(response.json(), type(page))
 
 
 async def _file_chunk_generator(

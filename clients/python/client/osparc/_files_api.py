@@ -91,9 +91,9 @@ class FilesApi(_FilesApi):
 
         tasks: list = []
         async with AsyncHttpClient(
-            exception_request_type="post",
-            exception_url=links.abort_upload,
-            exception_auth=self._auth,
+            request_type="post",
+            url=links.abort_upload,
+            auth=self._auth,
         ) as session:
             async for chunck, size in _file_chunk_generator(file, chunk_size):
                 # following https://docs.python.org/3/library/asyncio-task.html#asyncio.create_task
