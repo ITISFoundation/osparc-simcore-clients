@@ -1,0 +1,9 @@
+{
+  "__comment": "This document describes which tutorial notebooks are compatible with which version of the osparc python package",
+  "versions":
+  {
+    "0.5.0": ["BasicTutorial.ipynb"],
+    "0.6.0": ["BasicTutorial.ipynb",
+              "StudyTutorial.ipynb"]
+  }
+}

@@ -251,7 +251,7 @@
           "files"
         ],
         "summary": "Get Upload Links",
-        "description": "Get upload links for uploading a file to storage\n\nArguments:\n    request -- Request object\n    client_file -- ClientFile object\n    user_id -- User Id\n\nReturns:\n    FileUploadSchema",
+        "description": "Get upload links for uploading a file to storage",
         "operationId": "get_upload_links",
         "requestBody": {
           "content": {
@@ -271,122 +271,6 @@
                 "schema": {
                   "$ref": "#/components/schemas/ClientFileUploadSchema"
                 }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "HTTPBasic": []
-          }
-        ]
-      }
-    },
-    "/v0/files/{file_id}:complete": {
-      "post": {
-        "tags": [
-          "files"
-        ],
-        "summary": "Complete Multipart Upload",
-        "description": "Complete multipart upload\n\nArguments:\n    request: The Request object\n    file_id: The Storage id\n    file: The File object which is to be completed\n    uploaded_parts: The uploaded parts\n    completion_link: The completion link\n    user_id: The user id\n\nReturns:\n    The completed File object",
-        "operationId": "complete_multipart_upload",
-        "parameters": [
-          {
-            "required": true,
-            "schema": {
-              "title": "File Id",
-              "type": "string",
-              "format": "uuid"
-            },
-            "name": "file_id",
-            "in": "path"
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Body_complete_multipart_upload_v0_files__file_id__complete_post"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/File"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "HTTPBasic": []
-          }
-        ]
-      }
-    },
-    "/v0/files/{file_id}:abort": {
-      "post": {
-        "tags": [
-          "files"
-        ],
-        "summary": "Abort Multipart Upload",
-        "description": "Abort a multipart upload\n\nArguments:\n    request: The Request\n    file_id: The StorageFileID\n    upload_links: The FileUploadSchema\n    user_id: The user id",
-        "operationId": "abort_multipart_upload",
-        "parameters": [
-          {
-            "required": true,
-            "schema": {
-              "title": "File Id",
-              "type": "string",
-              "format": "uuid"
-            },
-            "name": "file_id",
-            "in": "path"
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Body_abort_multipart_upload_v0_files__file_id__abort_post"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
               }
             }
           },
@@ -494,6 +378,120 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
+      }
+    },
+    "/v0/files/{file_id}:abort": {
+      "post": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Abort Multipart Upload",
+        "operationId": "abort_multipart_upload",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "File Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "file_id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_abort_multipart_upload_v0_files__file_id__abort_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
+      }
+    },
+    "/v0/files/{file_id}:complete": {
+      "post": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Complete Multipart Upload",
+        "operationId": "complete_multipart_upload",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "File Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "file_id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_complete_multipart_upload_v0_files__file_id__complete_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/File"
                 }
               }
             }
@@ -1145,7 +1143,7 @@
           "required": true
         },
         "responses": {
-          "200": {
+          "201": {
             "description": "Successful Response",
             "content": {
               "application/json": {
@@ -1179,7 +1177,7 @@
           "solvers"
         ],
         "summary": "Get Jobs Page",
-        "description": "List of jobs on a specific released solver (includes pagination)\n\n\nBreaking change in *version 0.5*: response model changed from list[Job] to pagination Page[Job].",
+        "description": "List of jobs on a specific released solver (includes pagination)",
         "operationId": "get_jobs_page",
         "parameters": [
           {
@@ -2051,6 +2049,64 @@
         ]
       }
     },
+    "/v0/studies/{study_id}:clone": {
+      "post": {
+        "tags": [
+          "studies"
+        ],
+        "summary": "Clone Study",
+        "operationId": "clone_study",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Study Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "study_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Study"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Study not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
+      }
+    },
     "/v0/studies/{study_id}/ports": {
       "get": {
         "tags": [
@@ -2194,7 +2250,7 @@
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "Successful Response",
             "content": {
               "application/json": {
@@ -2788,7 +2844,7 @@
           "file_id": {
             "title": "File Id",
             "type": "string",
-            "description": "The file id",
+            "description": "The file resource id",
             "format": "uuid"
           },
           "upload_schema": {
