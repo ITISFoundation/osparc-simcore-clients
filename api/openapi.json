@@ -251,7 +251,7 @@
           "files"
         ],
         "summary": "Get Upload Links",
-        "description": "Get upload links for uploading a file to storage\n\nArguments:\n    request -- Request object\n    client_file -- ClientFile object\n    user_id -- User Id\n\nReturns:\n    FileUploadSchema",
+        "description": "Get upload links for uploading a file to storage",
         "operationId": "get_upload_links",
         "requestBody": {
           "content": {
@@ -269,124 +269,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ClientFileUploadSchema"
+                  "$ref": "#/components/schemas/ClientFileUploadData"
                 }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "HTTPBasic": []
-          }
-        ]
-      }
-    },
-    "/v0/files/{file_id}:complete": {
-      "post": {
-        "tags": [
-          "files"
-        ],
-        "summary": "Complete Multipart Upload",
-        "description": "Complete multipart upload\n\nArguments:\n    request: The Request object\n    file_id: The Storage id\n    file: The File object which is to be completed\n    uploaded_parts: The uploaded parts\n    completion_link: The completion link\n    user_id: The user id\n\nReturns:\n    The completed File object",
-        "operationId": "complete_multipart_upload",
-        "parameters": [
-          {
-            "required": true,
-            "schema": {
-              "title": "File Id",
-              "type": "string",
-              "format": "uuid"
-            },
-            "name": "file_id",
-            "in": "path"
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Body_complete_multipart_upload_v0_files__file_id__complete_post"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/File"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "HTTPBasic": []
-          }
-        ]
-      }
-    },
-    "/v0/files/{file_id}:abort": {
-      "post": {
-        "tags": [
-          "files"
-        ],
-        "summary": "Abort Multipart Upload",
-        "description": "Abort a multipart upload\n\nArguments:\n    request: The Request\n    file_id: The StorageFileID\n    upload_links: The FileUploadSchema\n    user_id: The user id",
-        "operationId": "abort_multipart_upload",
-        "parameters": [
-          {
-            "required": true,
-            "schema": {
-              "title": "File Id",
-              "type": "string",
-              "format": "uuid"
-            },
-            "name": "file_id",
-            "in": "path"
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Body_abort_multipart_upload_v0_files__file_id__abort_post"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
               }
             }
           },
@@ -485,8 +369,95 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "Successful Response"
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
+      }
+    },
+    "/v0/files:search": {
+      "get": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Search Files Page",
+        "description": "Search files",
+        "operationId": "search_files_page",
+        "parameters": [
+          {
+            "required": false,
+            "schema": {
+              "title": "Sha256 Checksum",
+              "pattern": "^[a-fA-F0-9]{64}$",
+              "type": "string"
+            },
+            "name": "sha256_checksum",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "File Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "file_id",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "Limit",
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "default": 50
+            },
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "Offset",
+              "minimum": 0,
+              "type": "integer",
+              "default": 0
+            },
+            "name": "offset",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_File_"
+                }
+              }
+            }
           },
           "404": {
             "description": "File not found",
@@ -494,6 +465,120 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
+      }
+    },
+    "/v0/files/{file_id}:abort": {
+      "post": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Abort Multipart Upload",
+        "operationId": "abort_multipart_upload",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "File Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "file_id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_abort_multipart_upload_v0_files__file_id__abort_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
+      }
+    },
+    "/v0/files/{file_id}:complete": {
+      "post": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Complete Multipart Upload",
+        "operationId": "complete_multipart_upload",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "File Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "file_id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_complete_multipart_upload_v0_files__file_id__complete_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/File"
                 }
               }
             }
@@ -1145,7 +1230,7 @@
           "required": true
         },
         "responses": {
-          "200": {
+          "201": {
             "description": "Successful Response",
             "content": {
               "application/json": {
@@ -1179,7 +1264,7 @@
           "solvers"
         ],
         "summary": "Get Jobs Page",
-        "description": "List of jobs on a specific released solver (includes pagination)\n\n\nBreaking change in *version 0.5*: response model changed from list[Job] to pagination Page[Job].",
+        "description": "List of jobs on a specific released solver (includes pagination)",
         "operationId": "get_jobs_page",
         "parameters": [
           {
@@ -2051,6 +2136,64 @@
         ]
       }
     },
+    "/v0/studies/{study_id}:clone": {
+      "post": {
+        "tags": [
+          "studies"
+        ],
+        "summary": "Clone Study",
+        "operationId": "clone_study",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Study Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "study_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Study"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Study not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
+      }
+    },
     "/v0/studies/{study_id}/ports": {
       "get": {
         "tags": [
@@ -2194,7 +2337,7 @@
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "Successful Response",
             "content": {
               "application/json": {
@@ -2773,12 +2916,18 @@
             "title": "Filesize",
             "type": "integer",
             "description": "File size in bytes"
+          },
+          "sha256_checksum": {
+            "title": "Sha256 Checksum",
+            "pattern": "^[a-fA-F0-9]{64}$",
+            "type": "string",
+            "description": "SHA256 checksum"
           }
         },
         "description": "Represents a file stored on the client side"
       },
-      "ClientFileUploadSchema": {
-        "title": "ClientFileUploadSchema",
+      "ClientFileUploadData": {
+        "title": "ClientFileUploadData",
         "required": [
           "file_id",
           "upload_schema"
@@ -2788,14 +2937,14 @@
           "file_id": {
             "title": "File Id",
             "type": "string",
-            "description": "The file id",
+            "description": "The file resource id",
             "format": "uuid"
           },
           "upload_schema": {
             "title": "Upload Schema",
             "allOf": [
               {
-                "$ref": "#/components/schemas/FileUploadSchema"
+                "$ref": "#/components/schemas/FileUploadData"
               }
             ],
             "description": "Schema for uploading file"
@@ -2842,8 +2991,14 @@
           },
           "checksum": {
             "title": "Checksum",
+            "pattern": "^[a-fA-F0-9]{64}$",
             "type": "string",
-            "description": "MD5 hash of the file's content [EXPERIMENTAL]"
+            "description": "SHA256 hash of the file's content"
+          },
+          "e_tag": {
+            "title": "E Tag",
+            "type": "string",
+            "description": "S3 entity tag"
           }
         },
         "description": "Represents a file stored on the server side i.e. a unique reference to a file in the cloud."
@@ -2864,32 +3019,8 @@
           }
         }
       },
-      "FileUploadLinks": {
-        "title": "FileUploadLinks",
-        "required": [
-          "abort_upload",
-          "complete_upload"
-        ],
-        "type": "object",
-        "properties": {
-          "abort_upload": {
-            "title": "Abort Upload",
-            "maxLength": 65536,
-            "minLength": 1,
-            "type": "string",
-            "format": "uri"
-          },
-          "complete_upload": {
-            "title": "Complete Upload",
-            "maxLength": 65536,
-            "minLength": 1,
-            "type": "string",
-            "format": "uri"
-          }
-        }
-      },
-      "FileUploadSchema": {
-        "title": "FileUploadSchema",
+      "FileUploadData": {
+        "title": "FileUploadData",
         "required": [
           "chunk_size",
           "urls",
@@ -2912,7 +3043,7 @@
             }
           },
           "links": {
-            "$ref": "#/components/schemas/FileUploadLinks"
+            "$ref": "#/components/schemas/UploadLinks"
           }
         }
       },
@@ -3615,7 +3746,8 @@
           "STARTED",
           "SUCCESS",
           "FAILED",
-          "ABORTED"
+          "ABORTED",
+          "WAITING_FOR_CLUSTER"
         ],
         "type": "string",
         "description": "State of execution of a project's computational workflow\n\nSEE StateType for task state"
@@ -3777,6 +3909,24 @@
           }
         }
       },
+      "UploadLinks": {
+        "title": "UploadLinks",
+        "required": [
+          "abort_upload",
+          "complete_upload"
+        ],
+        "type": "object",
+        "properties": {
+          "abort_upload": {
+            "title": "Abort Upload",
+            "type": "string"
+          },
+          "complete_upload": {
+            "title": "Complete Upload",
+            "type": "string"
+          }
+        }
+      },
       "UploadedPart": {
         "title": "UploadedPart",
         "required": [
@@ -3804,6 +3954,7 @@
           "GUEST",
           "USER",
           "TESTER",
+          "PRODUCT_OWNER",
           "ADMIN"
         ],
         "type": "string",
