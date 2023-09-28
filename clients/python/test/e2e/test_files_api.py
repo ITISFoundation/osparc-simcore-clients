@@ -59,13 +59,16 @@ def test_search_files(
         try:
             results = files_api._search_files(sha256_checksum=checksum)
             assert len(results) == 0, "Found file which shouldn't be there"
+
             uploaded_file: osparc.File = files_api.upload_file(tmp_file)
             assert checksum == uploaded_file.checksum
+
             results = files_api._search_files(
                 file_id=uploaded_file.id if use_id else None,
                 sha256_checksum=uploaded_file.checksum if use_checksum else None,
             )
             assert len(results) == 1, "Could not find file after it had been uploaded"
+
             files_api.delete_file(uploaded_file.id)
             results = files_api._search_files(
                 file_id=uploaded_file.id if use_id else None,
@@ -74,6 +77,7 @@ def test_search_files(
             assert (
                 len(results) == 0
             ), "Could find file on server after it had been deleted"
+
         except Exception:
             # clean up in case of failure
             results = files_api._search_files(sha256_checksum=checksum)
