@@ -1,3 +1,4 @@
+import logging
 import os
 from pathlib import Path
 
@@ -27,10 +28,12 @@ def cfg() -> osparc.Configuration:
 
 
 @pytest.fixture
-def tmp_file(tmp_path: Path) -> Path:
+def tmp_file(tmp_path: Path, caplog) -> Path:
+    caplog.set_level(logging.INFO)
     byte_size: ByteSize = 1 * _GB
     tmp_file = tmp_path / "large_test_file.txt"
     ss: random.SeedSequence = random.SeedSequence()
+    logging.info("Entropy used to generate random file: %s", f"{ss.entropy}")
     rng: random.Generator = random.default_rng(ss)
     tmp_file.write_bytes(rng.bytes(1000))
     with open(tmp_file, "wb") as f:
