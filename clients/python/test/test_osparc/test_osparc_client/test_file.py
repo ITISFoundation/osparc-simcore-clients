@@ -33,7 +33,12 @@ class TestFile(unittest.TestCase):
         optional params are included"""
         # model = osparc.models.file.File()  # noqa: E501
         if include_optional:
-            return File(id="0", filename="0", content_type="0", checksum="0")
+            return File(
+                id="0",
+                filename="0",
+                content_type="0",
+                checksum="333daca44bef79b1af3126bb4925bca5c86e7de27f69679913104b9f6d1a40fb",
+            )
         else:
             return File(
                 id="0",
