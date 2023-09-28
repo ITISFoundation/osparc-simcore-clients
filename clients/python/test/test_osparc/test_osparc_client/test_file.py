@@ -38,6 +38,7 @@ class TestFile(unittest.TestCase):
             return File(
                 id="0",
                 filename="0",
+                checksum="333daca44bef79b1af3126bb4925bca5c86e7de27f69679913104b9f6d1a40fb",
             )
 
     def testFile(self):
