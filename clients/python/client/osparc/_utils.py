@@ -65,7 +65,7 @@ class PaginationGenerator:
             page = self._api_client._ApiClient__deserialize(response.json(), type(page))
 
 
-async def _file_chunk_generator(
+async def file_chunk_generator(
     file: Path, chunk_size: int
 ) -> AsyncGenerator[Tuple[bytes, int], None]:
     if not file.is_file():
@@ -97,7 +97,7 @@ async def _fcn_to_coro(callback: Callable[..., S], *args) -> S:
     return result
 
 
-def _sha256(file: Path) -> str:
+def compute_sha256(file: Path) -> str:
     assert file.is_file()
     sha256 = hashlib.sha256()
     with open(file, "rb") as f:

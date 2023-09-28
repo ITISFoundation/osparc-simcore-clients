@@ -20,7 +20,7 @@ from tqdm.asyncio import tqdm
 
 from . import ApiClient, File
 from ._http_client import AsyncHttpClient
-from ._utils import PaginationGenerator, _file_chunk_generator, _sha256
+from ._utils import PaginationGenerator, compute_sha256, file_chunk_generator
 
 
 class FilesApi(_FilesApi):
@@ -71,7 +71,7 @@ class FilesApi(_FilesApi):
             file = Path(file)
         if not file.is_file():
             raise RuntimeError(f"{file} is not a file")
-        checksum: str = _sha256(file)
+        checksum: str = compute_sha256(file)
         for file_result in self._search_files(sha256_checksum=checksum):
             if file_result.filename == file.name:
                 # if a file has the same sha256 checksum
@@ -100,7 +100,7 @@ class FilesApi(_FilesApi):
         print("- uploading chunks...")
         async with AsyncHttpClient() as session:
             async for chunck, size in tqdm(
-                _file_chunk_generator(file, chunk_size), total=n_urls
+                file_chunk_generator(file, chunk_size), total=n_urls
             ):
                 index, url = next(url_iter)
                 uploaded_parts.append(

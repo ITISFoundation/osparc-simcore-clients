@@ -4,7 +4,7 @@ from pathlib import Path
 import osparc
 import pytest
 from conftest import _KB
-from osparc._utils import _sha256
+from osparc._utils import compute_sha256
 from packaging.version import Version
 
 
@@ -51,7 +51,7 @@ def test_upload_file(tmp_file: Path, cfg: osparc.Configuration) -> None:
 def test_search_files(
     tmp_file: Path, cfg: osparc.Configuration, use_checksum: bool, use_id: bool
 ) -> None:
-    checksum: str = _sha256(tmp_file)
+    checksum: str = compute_sha256(tmp_file)
     assert checksum == _hash_file(tmp_file), "Could not compute correct checksum"
     results: osparc.PaginationGenerator
     with osparc.ApiClient(configuration=cfg) as api_client:
