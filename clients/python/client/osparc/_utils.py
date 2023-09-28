@@ -1,4 +1,5 @@
 import asyncio
+import hashlib
 from pathlib import Path
 from typing import AsyncGenerator, Callable, Generator, Optional, Tuple, TypeVar, Union
 
@@ -14,6 +15,10 @@ from osparc_client import (
     Solver,
     Study,
 )
+
+_KB = 1024  # in bytes
+_MB = _KB * 1024  # in bytes
+_GB = _MB * 1024  # in bytes
 
 Page = Union[PageJob, PageFile, PageSolver, PageStudy]
 T = TypeVar("T", Job, File, Solver, Study)
@@ -90,3 +95,15 @@ async def _fcn_to_coro(callback: Callable[..., S], *args) -> S:
     """Get a coroutine from a callback."""
     result = await asyncio.get_event_loop().run_in_executor(None, callback, *args)
     return result
+
+
+def _sha256(file: Path) -> str:
+    assert file.is_file()
+    sha256 = hashlib.sha256()
+    with open(file, "rb") as f:
+        while True:
+            data = f.read(100 * _KB)
+            if not data:
+                break
+            sha256.update(data)
+        return sha256.hexdigest()

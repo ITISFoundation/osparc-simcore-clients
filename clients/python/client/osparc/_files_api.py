@@ -12,15 +12,15 @@ from httpx import AsyncClient, Response
 from osparc_client import (
     BodyCompleteMultipartUploadV0FilesFileIdCompletePost,
     ClientFile,
-    ClientFileUploadSchema,
+    ClientFileUploadData,
 )
 from osparc_client import FilesApi as _FilesApi
-from osparc_client import FileUploadCompletionBody, FileUploadLinks, UploadedPart
+from osparc_client import FileUploadCompletionBody, FileUploadData, UploadedPart
 from tqdm.asyncio import tqdm
 
 from . import ApiClient, File
 from ._http_client import AsyncHttpClient
-from ._utils import _file_chunk_generator
+from ._utils import _file_chunk_generator, _sha256
 
 
 class FilesApi(_FilesApi):
@@ -72,13 +72,15 @@ class FilesApi(_FilesApi):
         if not file.is_file():
             raise RuntimeError(f"{file} is not a file")
         client_file: ClientFile = ClientFile(
-            filename=file.name, filesize=file.stat().st_size
+            filename=file.name,
+            filesize=file.stat().st_size,
+            sha256_checksum=_sha256(file),
         )
-        client_upload_schema: ClientFileUploadSchema = self._super.get_upload_links(
+        client_upload_schema: ClientFileUploadData = self._super.get_upload_links(
             client_file=client_file
         )
         chunk_size: int = client_upload_schema.upload_schema.chunk_size
-        links: FileUploadLinks = client_upload_schema.upload_schema.links
+        links: FileUploadData = client_upload_schema.upload_schema.links
         url_iter: Iterator[Tuple[int, str]] = enumerate(
             iter(client_upload_schema.upload_schema.urls), start=1
         )
