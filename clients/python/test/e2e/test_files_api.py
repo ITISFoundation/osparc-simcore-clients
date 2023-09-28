@@ -3,47 +3,79 @@ from pathlib import Path
 
 import osparc
 import pytest
+from conftest import _KB
+from osparc._utils import _sha256
 from packaging.version import Version
-
-_KB = 1024  # in bytes
-_MB = _KB * 1024  # in bytes
-_GB = _MB * 1024  # in bytes
 
 
 def _hash_file(file: Path) -> str:
     assert file.is_file()
-    md5 = hashlib.md5()
+    sha256 = hashlib.sha256()
     with open(file, "rb") as f:
         while True:
             data = f.read(100 * _KB)
             if not data:
                 break
-            md5.update(data)
-        return md5.hexdigest()
+            sha256.update(data)
+        return sha256.hexdigest()
 
 
 @pytest.mark.skipif(
     Version(osparc.__version__) < Version("0.6.0"),
     reason=f"osparc.__version__={osparc.__version__} is older than 0.6.0",
 )
-def test_upload_file(tmp_path: Path, cfg: osparc.Configuration) -> None:
+def test_upload_file(tmp_file: Path, cfg: osparc.Configuration) -> None:
     """Test that we can upload a file via the multipart upload"""
-    # create file to upload
-    byte_size: int = 1 * _GB
-    tmp_file = tmp_path / "large_test_file.txt"
-    tmp_file.write_bytes(b"large test file")
-    with open(tmp_file, "wb") as f:
-        f.truncate(byte_size)
-    assert (
-        tmp_file.stat().st_size == byte_size
-    ), f"Could not create file of size: {byte_size}"
-
+    tmp_path: Path = tmp_file.parent
     with osparc.ApiClient(cfg) as api_client:
         files_api: osparc.FilesApi = osparc.FilesApi(api_client=api_client)
-        uploaded_file: osparc.File = files_api.upload_file(tmp_file)
+        uploaded_file1: osparc.File = files_api.upload_file(tmp_file)
+        uploaded_file2: osparc.File = files_api.upload_file(tmp_file)
+        assert (
+            uploaded_file1.id == uploaded_file2.id
+        ), "could not detect that file was already on server"
         downloaded_file = files_api.download_file(
-            uploaded_file.id, destination_folder=tmp_path
+            uploaded_file1.id, destination_folder=tmp_path
         )
         assert Path(downloaded_file).parent == tmp_path
         assert _hash_file(Path(downloaded_file)) == _hash_file(tmp_file)
-        files_api.delete_file(uploaded_file.id)
+        files_api.delete_file(uploaded_file1.id)
+
+
+@pytest.mark.skipif(
+    Version(osparc.__version__) < Version("0.6.0"),
+    reason=f"osparc.__version__={osparc.__version__} is older than 0.6.0",
+)
+@pytest.mark.parametrize("use_checksum", [True, False])
+@pytest.mark.parametrize("use_id", [True, False])
+def test_search_files(
+    tmp_file: Path, cfg: osparc.Configuration, use_checksum: bool, use_id: bool
+) -> None:
+    checksum: str = _sha256(tmp_file)
+    assert checksum == _hash_file(tmp_file), "Could not compute correct checksum"
+    results: osparc.PaginationGenerator
+    with osparc.ApiClient(configuration=cfg) as api_client:
+        files_api: osparc.FilesApi = osparc.FilesApi(api_client=api_client)
+        try:
+            results = files_api._search_files(sha256_checksum=checksum)
+            assert len(results) == 0, "Found file which shouldn't be there"
+            uploaded_file: osparc.File = files_api.upload_file(tmp_file)
+            assert checksum == uploaded_file.checksum
+            results = files_api._search_files(
+                file_id=uploaded_file.id if use_id else None,
+                sha256_checksum=uploaded_file.checksum if use_checksum else None,
+            )
+            assert len(results) == 1, "Could not find file after it had been uploaded"
+            files_api.delete_file(uploaded_file.id)
+            results = files_api._search_files(
+                file_id=uploaded_file.id if use_id else None,
+                sha256_checksum=uploaded_file.checksum if use_checksum else None,
+            )
+            assert (
+                len(results) == 0
+            ), "Could find file on server after it had been deleted"
+        except Exception:
+            # clean up in case of failure
+            results = files_api._search_files(sha256_checksum=checksum)
+            for file in results:
+                files_api.delete_file(file.id)

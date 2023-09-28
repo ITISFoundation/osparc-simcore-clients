@@ -20,7 +20,7 @@ from tqdm.asyncio import tqdm
 
 from . import ApiClient, File
 from ._http_client import AsyncHttpClient
-from ._utils import _file_chunk_generator, _sha256
+from ._utils import PaginationGenerator, _file_chunk_generator, _sha256
 
 
 class FilesApi(_FilesApi):
@@ -71,10 +71,16 @@ class FilesApi(_FilesApi):
             file = Path(file)
         if not file.is_file():
             raise RuntimeError(f"{file} is not a file")
+        checksum: str = _sha256(file)
+        for file_result in self._search_files(sha256_checksum=checksum):
+            if file_result.filename == file.name:
+                # if a file has the same sha256 checksum
+                # and name they are considered equal
+                return file_result
         client_file: ClientFile = ClientFile(
             filename=file.name,
             filesize=file.stat().st_size,
-            sha256_checksum=_sha256(file),
+            sha256_checksum=checksum,
         )
         client_upload_schema: ClientFileUploadData = self._super.get_upload_links(
             client_file=client_file
@@ -156,3 +162,18 @@ class FilesApi(_FilesApi):
         assert "Etag" in response.headers  # nosec
         etag: str = json.loads(response.headers["Etag"])
         return UploadedPart(number=index, e_tag=etag)
+
+    def _search_files(
+        self, file_id: Optional[str] = None, sha256_checksum: Optional[str] = None
+    ) -> PaginationGenerator:
+        def pagination_method():
+            return super(FilesApi, self).search_files_page(
+                file_id=file_id, sha256_checksum=sha256_checksum
+            )
+
+        return PaginationGenerator(
+            first_page_callback=pagination_method,
+            api_client=self.api_client,
+            base_url=self.api_client.configuration.host,
+            auth=self._auth,
+        )
