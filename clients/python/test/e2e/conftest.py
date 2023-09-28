@@ -3,6 +3,7 @@ from pathlib import Path
 
 import osparc
 import pytest
+from numpy import random
 from pydantic import ByteSize
 
 _KB: ByteSize = ByteSize(1024)  # in bytes
@@ -29,7 +30,9 @@ def cfg() -> osparc.Configuration:
 def tmp_file(tmp_path: Path) -> Path:
     byte_size: ByteSize = 1 * _GB
     tmp_file = tmp_path / "large_test_file.txt"
-    tmp_file.write_bytes(b"large test file")
+    ss: random.SeedSequence = random.SeedSequence()
+    rng: random.Generator = random.default_rng(ss)
+    tmp_file.write_bytes(rng.bytes(1000))
     with open(tmp_file, "wb") as f:
         f.truncate(byte_size)
     assert (
