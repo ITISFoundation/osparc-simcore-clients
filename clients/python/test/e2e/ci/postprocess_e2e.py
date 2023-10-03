@@ -1,6 +1,5 @@
 import warnings
 from pathlib import Path
-from typing import Set
 
 import pandas as pd
 import pytest
@@ -23,6 +22,16 @@ def log(exit_code: int):
     print_line()
 
 
+def exit_code_valid(exit_code: int) -> bool:
+    if exit_code not in set(pytest.ExitCode).union(E2eExitCodes):
+        warnings.warn(
+            f"Received unexpected exitcode {exit_code}. See https://docs.pytest.org/en/7.1.x/reference/exit-codes.html",
+            E2eScriptFailure,
+        )
+        return False
+    return True
+
+
 def main(exit_code: int) -> None:
     """
     Postprocess results from e2e pytests
@@ -41,17 +50,8 @@ def main(exit_code: int) -> None:
         None
     """
     log(exit_code)
-    expected_exitcodes: Set = {
-        E2eExitCodes.INCOMPATIBLE_CLIENT_SERVER,
-        pytest.ExitCode.OK,
-        pytest.ExitCode.TESTS_FAILED,
-    }
-    if exit_code not in expected_exitcodes:
-        warnings.warn(
-            f"Received unexpected exitcode {exit_code}. See https://docs.pytest.org/en/7.1.x/reference/exit-codes.html",
-            E2eScriptFailure,
-        )
-        typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
+    if not exit_code_valid(exit_code):
+        raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
 
     # get config
     try:

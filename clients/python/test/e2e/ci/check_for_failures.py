@@ -23,7 +23,9 @@ def main():
         raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
     for pth in result_jsons:
         df = pd.read_json(pth)
-        df = df == pytest.ExitCode.TESTS_FAILED
+        df = (df != pytest.ExitCode.OK) & (
+            df != E2eExitCodes.INCOMPATIBLE_CLIENT_SERVER
+        )
         if df.to_numpy().flatten().any():
             raise typer.Exit(code=pytest.ExitCode.TESTS_FAILED)
 

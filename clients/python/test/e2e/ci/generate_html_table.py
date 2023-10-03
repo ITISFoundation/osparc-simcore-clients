@@ -4,30 +4,29 @@ import pandas as pd
 import pytest
 import typer
 from _utils import E2eExitCodes
+from postprocess_e2e import exit_code_valid
 
 
 def exitcode_to_text(exitcode: int) -> str:
     """Turn exitcodes to string"""
-    if exitcode == E2eExitCodes.INCOMPATIBLE_CLIENT_SERVER:
-        return "incompatible"
-    elif exitcode == pytest.ExitCode.OK:
-        return "pass"
-    elif exitcode == pytest.ExitCode.TESTS_FAILED:
-        return "fail"
+    if exitcode in set(E2eExitCodes):
+        return E2eExitCodes(exitcode).name
+    elif exitcode in set(pytest.ExitCode):
+        return pytest.ExitCode(exitcode).name
     else:
         raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
 
 
 def make_pretty(entry: str):
     color: str
-    if entry == "incompatible":
+    if entry == E2eExitCodes.INCOMPATIBLE_CLIENT_SERVER.name:
         color = "#999999"
-    elif entry == "pass":
+    elif entry == pytest.ExitCode.OK.name:
         color = "#99FF99"
-    elif entry == "fail":
+    elif entry == pytest.ExitCode.TESTS_FAILED.name:
         color = "#FF9999"
     else:
-        raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
+        color = "#8A2BE2"
     return "background-color: %s" % color
 
 
@@ -40,9 +39,10 @@ def main(e2e_artifacts_dir: str) -> None:
     df: pd.DataFrame = pd.DataFrame()
     for file in artifacts.glob("*.json"):
         df = pd.concat([df, pd.read_json(file)], axis=1)
-    any_failure: bool = bool(
-        (df == pytest.ExitCode.TESTS_FAILED).to_numpy().flatten().any()
-    )
+
+    for exit_code in df.to_numpy().flatten():
+        if not exit_code_valid(exit_code):
+            raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
 
     style = [
         {
@@ -62,9 +62,6 @@ def main(e2e_artifacts_dir: str) -> None:
     s.set_table_styles(style)
     s.set_caption("OSPARC e2e python client vs server tests")
     s.to_html(artifacts / "test_results.html")
-    raise typer.Exit(
-        code=pytest.ExitCode.TESTS_FAILED if any_failure else pytest.ExitCode.OK
-    )
 
 
 if __name__ == "__main__":
