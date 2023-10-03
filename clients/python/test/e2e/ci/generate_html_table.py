@@ -26,7 +26,7 @@ def make_pretty(entry: str):
     elif entry == pytest.ExitCode.TESTS_FAILED.name:
         color = "#FF9999"
     else:
-        color = "#8A2BE2"
+        color = "#FF00FF"
     return "background-color: %s" % color
 
 
