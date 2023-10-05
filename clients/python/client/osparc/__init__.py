@@ -32,7 +32,6 @@ from osparc_client import RunningState as TaskStates
 from osparc_client import (  # APIs; API client; models
     Solver,
     SolverPort,
-    SolversApi,
     UserRoleEnum,
     UsersApi,
     UsersGroup,
@@ -41,6 +40,7 @@ from osparc_client import (  # APIs; API client; models
 )
 
 from ._info import openapi
+from ._solvers_api import SolversApi
 
 nest_asyncio.apply()  # allow to run coroutines via asyncio.run(coro)
 
