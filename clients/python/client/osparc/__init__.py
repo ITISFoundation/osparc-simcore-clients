@@ -14,16 +14,19 @@ from osparc_client import (  # APIs; API client; models
     Configuration,
     ErrorGet,
     File,
-    FilesApi,
     Groups,
     HTTPValidationError,
     Job,
     JobInputs,
+    JobMetadata,
+    JobMetadataUpdate,
     JobOutputs,
     JobStatus,
+    Links,
     Meta,
     MetaApi,
     OnePageSolverPort,
+    OnePageStudyPort,
     OpenApiException,
     Profile,
     ProfileUpdate,
@@ -32,6 +35,9 @@ from osparc_client import RunningState as TaskStates
 from osparc_client import (  # APIs; API client; models
     Solver,
     SolverPort,
+    StudiesApi,
+    Study,
+    StudyPort,
     UserRoleEnum,
     UsersApi,
     UsersGroup,
@@ -39,8 +45,10 @@ from osparc_client import (  # APIs; API client; models
     __version__,
 )
 
+from ._files_api import FilesApi
 from ._info import openapi
 from ._solvers_api import SolversApi
+from ._utils import PaginationGenerator
 
 nest_asyncio.apply()  # allow to run coroutines via asyncio.run(coro)
 
@@ -48,6 +56,7 @@ __all__: Tuple[str, ...] = (
     # imports from osparc_client
     "__version__",
     "FilesApi",
+    "PaginationGenerator",
     "MetaApi",
     "SolversApi",
     "UsersApi",
@@ -74,9 +83,16 @@ __all__: Tuple[str, ...] = (
     "ApiValueError",
     "ApiKeyError",
     "ApiException",
+    "StudiesApi",
     "OnePageSolverPort",
+    "StudyPort",
+    "Study",
+    "JobMetadataUpdate",
+    "Links",
     "SolverPort",
+    "JobMetadata",
     "ErrorGet",
+    "OnePageStudyPort",
     # imports from osparc
     "openapi",
 )
