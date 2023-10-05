@@ -20,8 +20,8 @@ def _hash_file(file: Path) -> str:
 
 
 @pytest.mark.skipif(
-    Version(osparc.__version__) < Version("0.6.0"),
-    reason=f"osparc.__version__={osparc.__version__} is older than 0.6.0",
+    Version(osparc.__version__) < Version("0.7.0"),
+    reason=f"osparc.__version__={osparc.__version__} is older than 0.7.0",
 )
 def test_upload_file(tmp_file: Path, cfg: osparc.Configuration) -> None:
     """Test that we can upload a file via the multipart upload"""
@@ -42,8 +42,8 @@ def test_upload_file(tmp_file: Path, cfg: osparc.Configuration) -> None:
 
 
 @pytest.mark.skipif(
-    Version(osparc.__version__) < Version("0.6.0"),
-    reason=f"osparc.__version__={osparc.__version__} is older than 0.6.0",
+    Version(osparc.__version__) < Version("0.7.0"),
+    reason=f"osparc.__version__={osparc.__version__} is older than 0.7.0",
 )
 @pytest.mark.parametrize("use_checksum", [True, False])
 @pytest.mark.parametrize("use_id", [True, False])

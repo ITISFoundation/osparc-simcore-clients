@@ -4,8 +4,8 @@ from packaging.version import Version
 
 
 @pytest.mark.skipif(
-    Version(osparc.__version__) < Version("0.6.0"),
-    reason=f"osparc.__version__={osparc.__version__} is older than 0.6.0",
+    Version(osparc.__version__) < Version("0.7.0"),
+    reason=f"osparc.__version__={osparc.__version__} is older than 0.7.0",
 )
 def test_jobs(cfg: osparc.Configuration):
     """Test the jobs method

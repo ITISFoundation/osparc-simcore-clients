@@ -6,45 +6,70 @@
   },
   "1": {
     "server": "api.osparc-master.speag.com",
-    "client": "production",
+    "client": "staging",
     "is_compatible": true
   },
   "2": {
-    "server": "api.osparc-staging.speag.com",
-    "client": "master",
-    "is_compatible": false
-  },
-  "3": {
-    "server": "api.osparc-staging.speag.com",
+    "server": "api.osparc-master.speag.com",
     "client": "production",
     "is_compatible": true
   },
-  "4": {
-    "server": "api.osparc.speag.com",
+  "3": {
+    "server": "api.osparc-staging.speag.com",
     "client": "master",
     "is_compatible": false
   },
+  "4": {
+    "server": "api.osparc-staging.speag.com",
+    "client": "staging",
+    "is_compatible": true
+  },
   "5": {
-    "server": "api.osparc.speag.com",
+    "server": "api.osparc-staging.speag.com",
     "client": "production",
     "is_compatible": true
   },
   "6": {
-    "server": "api.staging.osparc.io",
+    "server": "api.osparc.speag.com",
     "client": "master",
     "is_compatible": false
   },
   "7": {
+    "server": "api.osparc.speag.com",
+    "client": "staging",
+    "is_compatible": false
+  },
+  "8": {
+    "server": "api.osparc.speag.com",
+    "client": "production",
+    "is_compatible": true
+  },
+  "9": {
+    "server": "api.staging.osparc.io",
+    "client": "master",
+    "is_compatible": false
+  },
+  "10": {
+    "server": "api.staging.osparc.io",
+    "client": "staging",
+    "is_compatible": true
+  },
+  "11": {
     "server": "api.staging.osparc.io",
     "client": "production",
     "is_compatible": true
   },
-  "8": {
+  "12": {
     "server": "api.osparc.io",
     "client": "master",
     "is_compatible": false
   },
-  "9": {
+  "13": {
+    "server": "api.osparc.io",
+    "client": "staging",
+    "is_compatible": false
+  },
+  "14": {
     "server": "api.osparc.io",
     "client": "production",
     "is_compatible": true
