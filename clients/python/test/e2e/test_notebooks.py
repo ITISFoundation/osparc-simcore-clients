@@ -49,7 +49,7 @@ def test_run_notebooks(tmp_path: Path, notebook: Path, params: dict[str, Any] = 
         if Version(osparc.__version__) < min_version:
             pytest.skip(
                 f"Skipping {notebook.name} because "
-                f"{osparc.__version__=} < {min_version}"
+                f"{osparc.__version__=} < {min_version=}"
             )
     tmp_nb = tmp_path / notebook.name
     shutil.copy(notebook, tmp_nb)
