@@ -33,27 +33,24 @@ def test_notebook_config(tmp_path: Path):
     max_keys: set = set(max_notebook_versions.keys())
     notebook_names: set = set(pth.name for pth in all_notebooks)
     msg: str = (
-        "Must specify max version ",
-        f"for: {notebook_names-max_keys}.",
-        " The following keys can be ",
-        f"deleted: {max_keys - notebook_names}",
+        f"Must specify max version for: {notebook_names-max_keys}."
+        f" The following keys can be deleted: {max_keys - notebook_names}"
     )
     assert max_keys == notebook_names, msg
 
 
-@pytest.mark.parametrize("notebook", all_notebooks)
+@pytest.mark.parametrize("notebook", all_notebooks, ids=lambda nb: nb.name)
 def test_run_notebooks(tmp_path: Path, notebook: Path, params: dict[str, Any] = {}):
     """Run all notebooks in the documentation"""
-    print(f"Running {notebook.name} with parameters {params}")
     assert (
         notebook.is_file()
     ), f"{notebook.name} is not a file (full path: {notebook.resolve()})"
-    if Version(osparc.__version__) > Version(max_notebook_versions[notebook.name]):
-        msg: str = (
-            f"Skipping {notebook.name} because "
-            f"{osparc.__version__=} > {max_notebook_versions[notebook.name]}"
-        )
-        pytest.skip(msg)
+    if max_version := max_notebook_versions.get(notebook.name):
+        if Version(osparc.__version__) > max_version:
+            pytest.skip(
+                f"Skipping {notebook.name} because "
+                f"{osparc.__version__=} > {max_notebook_versions[notebook.name]}"
+            )
     tmp_nb = tmp_path / notebook.name
     shutil.copy(notebook, tmp_nb)
     assert tmp_nb.is_file(), "Did not succeed in copying notebook"
