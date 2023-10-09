@@ -121,8 +121,9 @@ class ClientConfig(BaseModel):
             return self.version
         else:
             assert isinstance(self.branch, str)
-            w: str = "with" if self.client_dev_features else "without"
-            return f"{self.branch} {w} dev features"
+            if self.client_dev_features:
+                return f"{self.branch}+dev_features"
+            return f"{self.branch}-dev_features"
 
 
 class PytestConfig(BaseModel):
