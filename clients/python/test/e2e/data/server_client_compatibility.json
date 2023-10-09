@@ -1,12 +1,12 @@
 {
   "0": {
     "server": "api.osparc-master.speag.com",
-    "client": "master",
+    "client": "master+dev_features",
     "is_compatible": true
   },
   "1": {
     "server": "api.osparc-master.speag.com",
-    "client": "staging",
+    "client": "master-dev_features",
     "is_compatible": true
   },
   "2": {
@@ -16,12 +16,12 @@
   },
   "3": {
     "server": "api.osparc-staging.speag.com",
-    "client": "master",
+    "client": "master+dev_features",
     "is_compatible": false
   },
   "4": {
     "server": "api.osparc-staging.speag.com",
-    "client": "staging",
+    "client": "master-dev_features",
     "is_compatible": true
   },
   "5": {
@@ -31,12 +31,12 @@
   },
   "6": {
     "server": "api.osparc.speag.com",
-    "client": "master",
+    "client": "master+dev_features",
     "is_compatible": false
   },
   "7": {
     "server": "api.osparc.speag.com",
-    "client": "staging",
+    "client": "master-dev_features",
     "is_compatible": false
   },
   "8": {
@@ -46,12 +46,12 @@
   },
   "9": {
     "server": "api.staging.osparc.io",
-    "client": "master",
+    "client": "master+dev_features",
     "is_compatible": false
   },
   "10": {
     "server": "api.staging.osparc.io",
-    "client": "staging",
+    "client": "master-dev_features",
     "is_compatible": true
   },
   "11": {
@@ -61,12 +61,12 @@
   },
   "12": {
     "server": "api.osparc.io",
-    "client": "master",
+    "client": "master+dev_features",
     "is_compatible": false
   },
   "13": {
     "server": "api.osparc.io",
-    "client": "staging",
+    "client": "master-dev_features",
     "is_compatible": false
   },
   "14": {

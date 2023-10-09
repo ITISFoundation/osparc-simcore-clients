@@ -111,7 +111,10 @@ class ClientConfig(BaseModel):
             return "production"
         else:
             assert isinstance(self.branch, str)
-            return self.branch
+            if self.client_dev_features:
+                return f"{self.branch}+dev_features"
+            else:
+                return f"{self.branch}-dev_features"
 
     @property
     def client_ref(self) -> str:
