@@ -13,21 +13,21 @@ from pydantic import BaseModel, field_validator, model_validator
 class ServerConfig(BaseModel):
     """Holds data about server configuration"""
 
-    osparc_api_host: str
-    osparc_api_key: str
-    osparc_api_secret: str
+    api_host: str
+    api_key: str
+    api_secret: str
 
     @property
     def url(self) -> ParseResult:
-        return urlparse(f"{self.osparc_api_host}")
+        return urlparse(f"{self.api_host}")
 
     @property
     def key(self) -> str:
-        return self.osparc_api_key
+        return self.api_key
 
     @property
     def secret(self) -> str:
-        return self.osparc_api_secret
+        return self.api_secret
 
 
 def is_empty(v):
@@ -39,14 +39,14 @@ class ClientConfig(BaseModel):
     This data should uniquely determine how to install client
     """
 
-    osparc_client_version: Optional[str] = None
-    osparc_client_repo: Optional[str] = None
-    osparc_client_branch: Optional[str] = None
-    osparc_client_dev_features: bool = False
-    osparc_client_workflow: Optional[str] = None
-    osparc_client_runid: Optional[str] = None
+    client_version: Optional[str] = None
+    client_repo: Optional[str] = None
+    client_branch: Optional[str] = None
+    client_dev_features: bool = False
+    client_workflow: Optional[str] = None
+    client_runid: Optional[str] = None
 
-    @field_validator("osparc_client_version")
+    @field_validator("client_version")
     def validate_client(cls, v):
         if (not is_empty(v)) and (not v == "latest"):
             try:
@@ -58,54 +58,51 @@ class ClientConfig(BaseModel):
     @model_validator(mode="after")
     def check_consistency(self) -> "ClientConfig":
         msg: str = (
-            f"Recieved osparc_client_version={self.osparc_client_version}, "
-            f"osparc_client_repo={self.osparc_client_repo}"
-            "and osparc_client_branch={self.osparc_client_branch}. "
+            f"Recieved client_version={self.client_version}, "
+            f"client_repo={self.client_repo}"
+            "and client_branch={self.client_branch}. "
             "Either a version or a repo, branch pair must be specified. Not both."
         )
         # check at least one is empty
         if not (
-            is_empty(self.osparc_client_version)
-            or (
-                is_empty(self.osparc_client_repo)
-                and is_empty(self.osparc_client_branch)
-            )
+            is_empty(self.client_version)
+            or (is_empty(self.client_repo) and is_empty(self.client_branch))
         ):
             raise ValueError(msg)
         # check not both empty
-        if is_empty(self.osparc_client_version) and (
-            is_empty(self.osparc_client_repo) and is_empty(self.osparc_client_branch)
+        if is_empty(self.client_version) and (
+            is_empty(self.client_repo) and is_empty(self.client_branch)
         ):
             raise ValueError(msg)
-        if is_empty(self.osparc_client_version):
+        if is_empty(self.client_version):
             if (
-                is_empty(self.osparc_client_repo)
-                or is_empty(self.osparc_client_branch)
-                or is_empty(self.osparc_client_workflow)
-                or is_empty(self.osparc_client_runid)
+                is_empty(self.client_repo)
+                or is_empty(self.client_branch)
+                or is_empty(self.client_workflow)
+                or is_empty(self.client_runid)
             ):
                 raise ValueError(msg)
         return self
 
     @property
     def version(self) -> Optional[str]:
-        return self.osparc_client_version
+        return self.client_version
 
     @property
     def repo(self) -> Optional[str]:
-        return self.osparc_client_repo
+        return self.client_repo
 
     @property
     def branch(self) -> Optional[str]:
-        return self.osparc_client_branch
+        return self.client_branch
 
     @property
     def workflow(self) -> Optional[str]:
-        return self.osparc_client_workflow
+        return self.client_workflow
 
     @property
     def runid(self) -> Optional[str]:
-        return self.osparc_client_runid
+        return self.client_runid
 
     @property
     def compatibility_ref(self) -> str:
