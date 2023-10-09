@@ -40,7 +40,7 @@ else
   client_branch=$(echo "$client_config" | jq -r '.client_branch')
   client_runid=$(gh run list --repo="${client_repo}" --branch="${client_branch}" --workflow="${client_workflow}" --limit=100 --json=databaseId,status --jq='map(select(.status=="completed")) | .[0].databaseId')
   client_config=$(echo "${client_config}" | jq --arg cwfw "${client_workflow}" '. += {"client_workflow": $cwfw}')
-  client_config=$(echo "${client_config}" | jq --arg crid "${client_runid}" '. += {"osparc_client_runid": $crid}')
+  client_config=$(echo "${client_config}" | jq --arg crid "${client_runid}" '. += {"client_runid": $crid}')
 fi
 
 echo "${client_config}"
