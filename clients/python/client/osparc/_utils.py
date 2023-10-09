@@ -111,4 +111,4 @@ def compute_sha256(file: Path) -> str:
 
 
 def dev_features_enabled() -> bool:
-    return os.environ.get("DEV_FEATURES_ENABLED") == "1"
+    return os.environ.get("OSPARC_DEV_FEATURES_ENABLED") == "1"

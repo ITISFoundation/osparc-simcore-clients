@@ -3,8 +3,8 @@ from pathlib import Path
 
 import osparc
 import pytest
+from _utils import requires_dev_features
 from conftest import _KB
-from packaging.version import Version
 
 
 def _hash_file(file: Path) -> str:
@@ -19,10 +19,7 @@ def _hash_file(file: Path) -> str:
         return sha256.hexdigest()
 
 
-@pytest.mark.skipif(
-    Version(osparc.__version__) < Version("0.7.0"),
-    reason=f"osparc.__version__={osparc.__version__} is older than 0.7.0",
-)
+@requires_dev_features
 def test_upload_file(tmp_file: Path, cfg: osparc.Configuration) -> None:
     """Test that we can upload a file via the multipart upload"""
     tmp_path: Path = tmp_file.parent
@@ -41,10 +38,7 @@ def test_upload_file(tmp_file: Path, cfg: osparc.Configuration) -> None:
         files_api.delete_file(uploaded_file1.id)
 
 
-@pytest.mark.skipif(
-    Version(osparc.__version__) < Version("0.7.0"),
-    reason=f"osparc.__version__={osparc.__version__} is older than 0.7.0",
-)
+@requires_dev_features
 @pytest.mark.parametrize("use_checksum", [True, False])
 @pytest.mark.parametrize("use_id", [True, False])
 def test_search_files(

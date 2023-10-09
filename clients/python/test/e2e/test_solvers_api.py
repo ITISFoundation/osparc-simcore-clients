@@ -1,12 +1,8 @@
 import osparc
-import pytest
-from packaging.version import Version
+from _utils import requires_dev_features
 
 
-@pytest.mark.skipif(
-    Version(osparc.__version__) < Version("0.7.0"),
-    reason=f"osparc.__version__={osparc.__version__} is older than 0.7.0",
-)
+@requires_dev_features
 def test_jobs(cfg: osparc.Configuration):
     """Test the jobs method
 
