@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import List, Tuple
 
 import nest_asyncio
 from osparc_client import (  # APIs; API client; models
@@ -42,7 +42,7 @@ from ._utils import dev_features_enabled
 
 nest_asyncio.apply()  # allow to run coroutines via asyncio.run(coro)
 
-dev_features: list[str] = []
+dev_features: List[str] = []
 if dev_features_enabled():
     dev_features = [
         "PaginationGenerator",
