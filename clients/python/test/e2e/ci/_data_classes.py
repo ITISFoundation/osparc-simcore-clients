@@ -42,7 +42,7 @@ class ClientConfig(BaseModel):
     osparc_client_version: Optional[str] = None
     osparc_client_repo: Optional[str] = None
     osparc_client_branch: Optional[str] = None
-    osparc_dev_features: bool = False
+    osparc_client_dev_features: bool = False
     osparc_client_workflow: Optional[str] = None
     osparc_client_runid: Optional[str] = None
 
