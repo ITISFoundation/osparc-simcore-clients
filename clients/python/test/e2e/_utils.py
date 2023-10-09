@@ -21,8 +21,7 @@ def requires_dev_features(test):
     @pytest.mark.skipif(
         Version(osparc.__version__) < repo_version or not osparc_dev_features_enabled(),
         reason=(
-            f"{osparc.__version__=} is older than "
-            f"{repo_version=} or {osparc_dev_features_enabled()=}"
+            f"{osparc.__version__=}<{repo_version=} or {osparc_dev_features_enabled()=}"
         ),
     )
     def wrapper(test, *args, **kwargs):
