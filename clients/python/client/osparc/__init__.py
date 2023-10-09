@@ -1,6 +1,3 @@
-"""
-0.6.0 osparc client
-"""
 from typing import Tuple
 
 import nest_asyncio
@@ -18,15 +15,11 @@ from osparc_client import (  # APIs; API client; models
     HTTPValidationError,
     Job,
     JobInputs,
-    JobMetadata,
-    JobMetadataUpdate,
     JobOutputs,
     JobStatus,
-    Links,
     Meta,
     MetaApi,
     OnePageSolverPort,
-    OnePageStudyPort,
     OpenApiException,
     Profile,
     ProfileUpdate,
@@ -35,9 +28,6 @@ from osparc_client import RunningState as TaskStates
 from osparc_client import (  # APIs; API client; models
     Solver,
     SolverPort,
-    StudiesApi,
-    Study,
-    StudyPort,
     UserRoleEnum,
     UsersApi,
     UsersGroup,
@@ -48,15 +38,26 @@ from osparc_client import (  # APIs; API client; models
 from ._files_api import FilesApi
 from ._info import openapi
 from ._solvers_api import SolversApi
-from ._utils import PaginationGenerator
+from ._utils import dev_features_enabled
 
 nest_asyncio.apply()  # allow to run coroutines via asyncio.run(coro)
 
-__all__: Tuple[str, ...] = (
-    # imports from osparc_client
+dev_features: list[str] = []
+if dev_features_enabled():
+    dev_features = [
+        "PaginationGenerator",
+        "StudiesApi",
+        "StudyPort",
+        "Study",
+        "JobMetadataUpdate",
+        "Links",
+        "JobMetadata",
+        "OnePageStudyPort",
+    ]
+
+__all__: Tuple[str, ...] = tuple(dev_features) + (
     "__version__",
     "FilesApi",
-    "PaginationGenerator",
     "MetaApi",
     "SolversApi",
     "UsersApi",
@@ -83,16 +84,8 @@ __all__: Tuple[str, ...] = (
     "ApiValueError",
     "ApiKeyError",
     "ApiException",
-    "StudiesApi",
     "OnePageSolverPort",
-    "StudyPort",
-    "Study",
-    "JobMetadataUpdate",
-    "Links",
     "SolverPort",
-    "JobMetadata",
     "ErrorGet",
-    "OnePageStudyPort",
-    # imports from osparc
     "openapi",
-)
+)  # type: ignore

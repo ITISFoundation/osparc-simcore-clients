@@ -1,5 +1,6 @@
 import asyncio
 import hashlib
+import os
 from pathlib import Path
 from typing import AsyncGenerator, Callable, Generator, Optional, Tuple, TypeVar, Union
 
@@ -107,3 +108,7 @@ def compute_sha256(file: Path) -> str:
                 break
             sha256.update(data)
         return sha256.hexdigest()
+
+
+def dev_features_enabled() -> bool:
+    return os.environ.get("DEV_FEATURES_ENABLED") == "1"
