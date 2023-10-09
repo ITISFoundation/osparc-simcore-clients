@@ -59,6 +59,9 @@ def main(client_config: str, server_config: str) -> None:
     envs.append(f"OSPARC_API_HOST={server_cfg.url.geturl()}")
     envs.append(f"OSPARC_API_KEY={server_cfg.key}")
     envs.append(f"OSPARC_API_SECRET={server_cfg.secret}")
+    envs.append(
+        f"OSPARC_DEV_FEATURES_ENABLED={1 if client_cfg.osparc_dev_features else 0}"
+    )
 
     html_log: Path = Path("../../") / (
         _ARTIFACTS_DIR
