@@ -37,3 +37,12 @@ e.g.
 ## How to test
 
 <!-- Give REVIEWERS some hits or code snippets on how could this be tested -->
+
+## For internal developers
+
+<!--
+Make sure to:
+- Add the PR to the relevant milestone
+- Assign the PR to the relevant person (probably yourself)
+- Attach the appropriate label(s) to the PR, like 'documentation', 'bug', etc.
+-->
