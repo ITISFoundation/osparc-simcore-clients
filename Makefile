@@ -68,7 +68,7 @@ docs: ## generate docs
 http-doc: docs ## generates and serves doc
 	# starting doc website
 	@echo "Check site on http://127.0.0.1:50001/"
-	python3 -m http.server 50001
+	python3 -m http.server 50001 --bind 127.0.0.1
 
 ## CLEAN -------------------------------------------------------------------------------
 
