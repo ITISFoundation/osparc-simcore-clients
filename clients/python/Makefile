@@ -9,6 +9,15 @@ UID                  := $(shell id -u)
 artifacts_dir:
 	-mkdir $(ARTIFACTS_DIR)
 
+.PHONY: postprocess-build
+postprocess-build:
+	black $(PYTHON_DIR)/artifacts/client/*.py
+	@-rm -f $(PYTHON_DIR)/artifacts/client/README.md
+	@echo "Please visit our [website](https://itisfoundation.github.io/osparc-simcore-clients/#/) for documentation" > $(PYTHON_DIR)/artifacts/client/README.md
+	@-rm -rf $(PYTHON_DIR)/client/osparc/data/
+	@-mkdir $(PYTHON_DIR)/client/osparc/data/
+	@cp $(REPO_ROOT)/api/openapi.json $(PYTHON_DIR)/client/osparc/data/
+
 # Generation of Python client
 .PHONY: python-client
 python-client: validate-api-specification artifacts_dir ## generate python client
@@ -25,9 +34,7 @@ python-client: validate-api-specification artifacts_dir ## generate python clien
 			--additional-properties=$(subst $(space),$(comma),$(strip $(ADDITIONAL_PROPS))) \
 			--package-name=osparc_client \
 			--release-note="Updated to $(APP_VERSION)"
-	black $(PYTHON_DIR)/artifacts/client/*.py
-	@-mkdir $(PYTHON_DIR)/client/osparc/data/
-	@cp $(REPO_ROOT)/api/openapi.json $(PYTHON_DIR)/client/osparc/data/
+	$(MAKE) postprocess-build
 
 .PHONY: python-client-from-templates
 python-client-from-templates: validate-api-specification artifacts_dir ## generate python client using templates in a specified directory (usage: 'make python-client-from-templates -e TEMPLATE_DIR=path/to/templates')
@@ -48,9 +55,7 @@ python-client-from-templates: validate-api-specification artifacts_dir ## genera
 			--package-name=osparc_client \
 			--release-note="Updated to $(APP_VERSION)" \
 			--template-dir=/tmp/python_templates
-	black $(PYTHON_DIR)/artifacts/client/*.py
-	@-mkdir $(PYTHON_DIR)/client/osparc/data/
-	@cp $(REPO_ROOT)/api/openapi.json $(PYTHON_DIR)/client/osparc/data/
+	$(MAKE) postprocess-build
 
 .PHONY: generator-help
 generator-help: ## help on client-api generator
