@@ -3,13 +3,6 @@ on:
   workflow_dispatch:
   push:
   pull_request:
-    types:
-      - opened
-      - reopened
-      - ready_for_review
-      - review_requested
-      - edited
-      - synchronize
 jobs:
   build-n-publish:
     runs-on: ubuntu-latest

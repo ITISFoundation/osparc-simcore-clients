@@ -1,8 +1,7 @@
-<h1 align="center">Osparc-Simcore-Clients</h1>
+<h1 align="center">oSPARC-Simcore-Clients</h1>
 
-To get started using the tools developed in this repository, take a look at the the following links:
-- [Basic tutorial](https://itisfoundation.github.io/osparc-simcore-clients/#/clients/python/artifacts/docs/BasicTutorial)
-- [Documentation](https://itisfoundation.github.io/osparc-simcore-clients)
+To get started using the tools developed in this repository have a look at the
+[Documentation](https://itisfoundation.github.io/osparc-simcore-clients).
 
 For more in depth knowledge concerning the development of the repository, take a look at
 - [Release Notes](https://github.com/ITISFoundation/osparc-simcore-clients/releases)
@@ -14,7 +13,10 @@ For reporting an issue, use our [issue tracker](https://github.com/ITISFoundatio
 
 These notes are intended for people who want to contribute to the development of this repository.
 
-The different clients for the osparc public API are generated using the [openapi-generator](https://github.com/ITISFoundation/openapi-generator)-tool. *The generated files should not be changed manually!* Instead proposed changes should be implemented directly on the [openapi-generator](https://github.com/ITISFoundation/openapi-generator)-repository. See also [templates](https://openapi-generator.tech/docs/templating) and [customization](https://openapi-generator.tech/docs/customization).
+The different clients for the oSPARC public API are generated using the [openapi-generator](https://github.com/ITISFoundation/openapi-generator)-tool.
+*The generated files should not be changed manually!*
+Instead proposed changes should be implemented directly on the [openapi-generator](https://github.com/ITISFoundation/openapi-generator)-repository.
+See also [templates](https://openapi-generator.tech/docs/templating) and [customization](https://openapi-generator.tech/docs/customization).
 
 ## Workflow
 

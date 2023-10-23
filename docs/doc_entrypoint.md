@@ -1,3 +1,16 @@
-<h1 align="center">Osparc-Simcore</h1>
+<h1 align="center">oSPARC-Simcore clients</h1>
 
-[o²S²PARC](https://sparc.science/resources/4LkLiH5s4FV0LVJd3htsvH) is an open, cloud-based platform for the development, execution and sharing of computational models, simulations, and data analysis pipelines, and the presentation of results. This site documents clients for interacting with o²S²PARC programatically. Choose your favorite programming language in the top-right navigation bar and get started.
+[o²S²PARC](https://sparc.science/resources/4LkLiH5s4FV0LVJd3htsvH) is
+an open, cloud-based platform for the development, execution and sharing of
+computational models, simulations, and data analysis pipelines, and the
+presentation of results.
+
+This site documents clients for interacting with o²S²PARC programmatically.
+
+Please first choose the version of the client you are using:
+  * Python API:
+    * [v0.5.0](clients/python/docs/v0.5.0/README.md)
+    * [v0.6.0](clients/python/docs/v0.6.0/README.md)
+
+We're committed to continually expanding and refining our platform.
+Stay tuned for future updates and additional API client offerings.
