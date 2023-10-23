@@ -33,8 +33,7 @@ setup(
         ]
     },
     long_description=(
-        "Please visit our "
-        "[website](https://itisfoundation.github.io/osparc-simcore-clients/#/) "
+        "Please visit our [website](https://itisfoundation.github.io/osparc-simcore-clients/#/)"
         "for documentation."
     ),
     long_description_content_type="text/markdown",

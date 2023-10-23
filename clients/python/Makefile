@@ -47,7 +47,7 @@ python-client: client/VERSION validate-api-specification artifacts_dir ## genera
 			--output=/local/clients/python/artifacts/client \
 			--additional-properties=packageVersion=$(VERSION),$(subst $(space),$(comma),$(strip $(ADDITIONAL_PROPS))) \
 			--package-name=osparc_client \
-			--release-note="Updated to $(VERSION)"
+			--release-note="Updated to $(APP_VERSION)"
 	$(MAKE) postprocess-build
 
 .PHONY: python-client-from-templates
