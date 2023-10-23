@@ -14,16 +14,7 @@ VERSION = VERSION_FILE.read_text()
 # prerequisite: setuptools
 # http://pypi.python.org/pypi/setuptools
 
-REQUIRES = [
-    f"osparc_client=={VERSION}",
-    "httpx",
-    "tqdm>=4.48.0",
-    "nest_asyncio",
-    "tenacity",
-    "pydantic>=2.0.0",
-    "pydantic-settings",
-    "packaging",
-]
+REQUIRES = [f"osparc_client=={VERSION}", "httpx", "tqdm", "nest_asyncio", "tenacity"]
 
 setup(
     name=NAME,
