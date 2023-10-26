@@ -1,6 +1,5 @@
 import json
 import subprocess
-import sys
 from pathlib import Path
 from typing import Any, Dict, List, Set
 
@@ -35,8 +34,6 @@ def test_dependencies(tmp_path: Path):
 
     # generate requirements file based on installed osparc
     cmd: list[str] = [
-        sys.executable,
-        "-m",
         "pipdeptree",
         "-p",
         "osparc",
