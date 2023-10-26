@@ -47,4 +47,10 @@ def test_dependencies(tmp_path: Path):
     install_dependencies: Set(str) = {
         dep["package_name"].replace("-", "_") for dep in dep_tree[0]["dependencies"]
     }
-    assert import_dependencies == install_dependencies
+    msg: str = (
+        "imported dependencies not specified "
+        f"in setup.py: {import_dependencies - install_dependencies}\n"
+        "setup.py dependencies which are "
+        f"not imported: {install_dependencies - import_dependencies}"
+    )
+    assert import_dependencies == install_dependencies, msg
