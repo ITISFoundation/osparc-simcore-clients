@@ -28,7 +28,9 @@ def test_dependencies(tmp_path: Path):
         "--mode",
         "no-pin",
     ]
-    output = subprocess.run(cmd, capture_output=True, text=True, cwd=source_package)
+    output = subprocess.run(
+        cmd, cwd=source_package, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    )
     assert output.returncode == 0
     import_dependencies: Set[str] = set(import_file.read_text().splitlines())
 
@@ -39,7 +41,7 @@ def test_dependencies(tmp_path: Path):
         "osparc",
         "--json",
     ]
-    output = subprocess.run(cmd, capture_output=True, text=True)
+    output = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     assert output.returncode == 0
     dep_tree: List[Dict[str, Any]] = json.loads(output.stdout)
     dep_tree = [elm for elm in dep_tree if elm["package"]["key"] == "osparc"]
