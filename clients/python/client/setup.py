@@ -1,15 +1,12 @@
-import json
 from pathlib import Path
-from typing import Any, Dict
 
 from setuptools import find_packages, setup  # noqa: H301
 
-repo_root: Path = (Path(__file__) / "../../../..").resolve()
-
-config: Dict[str, Any] = json.loads((repo_root / "api/config.json").read_text())
+VERSION_FILE: Path = Path(__file__).parent / "VERSION"
+assert VERSION_FILE.is_file()
 
 NAME = "osparc"
-VERSION = f"{config['python']['version']}"
+VERSION = VERSION_FILE.read_text()
 # To install the library, run the following
 #
 # python setup.py install
