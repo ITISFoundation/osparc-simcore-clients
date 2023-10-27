@@ -5,6 +5,12 @@ CONTAINER_API_JSON   := /local/$(REL_API_JSON_PATH)
 GENERATOR            := python
 UID                  := $(shell id -u)
 
+
+VERSION_FILE := $(wildcard $(PYTHON_DIR)/client/VERSION)
+.PHONY: generate_version
+client/VERSION:
+	$(shell bash $(SCRIPTS_DIR)/increment_version.bash > $(PYTHON_DIR)/client/VERSION)
+
 .PHONY: artifacts_dir
 artifacts_dir:
 	-mkdir $(ARTIFACTS_DIR)
