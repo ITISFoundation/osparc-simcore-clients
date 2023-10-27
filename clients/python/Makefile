@@ -9,7 +9,7 @@ UID                  := $(shell id -u)
 VERSION_FILE := $(wildcard $(PYTHON_DIR)/client/VERSION)
 .PHONY: generate_version
 client/VERSION:
-	$(shell bash $(SCRIPTS_DIR)/increment_version.bash > $(PYTHON_DIR)/client/VERSION)
+	@bash $(SCRIPTS_DIR)/increment_version.bash > $(PYTHON_DIR)/client/VERSION
 
 .PHONY: artifacts_dir
 artifacts_dir:
@@ -26,7 +26,7 @@ postprocess-build:
 
 # Generation of Python client
 .PHONY: python-client
-python-client: validate-api-specification artifacts_dir ## generate python client
+python-client: client/VERSION validate-api-specification artifacts_dir ## generate python client
 	-rm -r $(ARTIFACTS_DIR)/client
 	docker run --rm --user $(UID):$(UID)\
 			--volume "$(REPO_ROOT):/local" \
@@ -43,7 +43,7 @@ python-client: validate-api-specification artifacts_dir ## generate python clien
 	$(MAKE) postprocess-build
 
 .PHONY: python-client-from-templates
-python-client-from-templates: validate-api-specification artifacts_dir ## generate python client using templates in a specified directory (usage: 'make python-client-from-templates -e TEMPLATE_DIR=path/to/templates')
+python-client-from-templates: client/VERSION validate-api-specification artifacts_dir ## generate python client using templates in a specified directory (usage: 'make python-client-from-templates -e TEMPLATE_DIR=path/to/templates')
 	$(if $(TEMPLATE_DIR),,$(error The TEMPLATE_DIR environment variable must be set))
 	@echo "Using template-dir: $(TEMPLATE_DIR)"
 	-rm -r $(ARTIFACTS_DIR)/client
