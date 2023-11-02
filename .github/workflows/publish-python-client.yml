@@ -22,7 +22,7 @@ jobs:
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
         run: |
           tag_version=$(echo ${{ github.ref }} | grep -oP '(?<=refs/tags/v)\d+\.\d+\.\d+'))
-          echo -n ${tag_version} > clients/python/client/VERSION
+          bash scripts/validate_semantic_version.bash > clients/python/client/VERSION
       - name: Generate client
         run: |
           git status
