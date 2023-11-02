@@ -121,6 +121,9 @@ jobs:
 
   publish-osparc_client:
     name: Publish osparc_client wheel
+    if: |
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags')) ||
+      (github.ref == 'refs/heads/master' && github.event_name == 'push')
     runs-on: ubuntu-latest
     needs: [build-n-publish, test-20-04, test-latest]
     environment:
@@ -154,7 +157,9 @@ jobs:
     name: Publish osparc wheel
     runs-on: ubuntu-latest
     needs: [build-n-publish, test-20-04, test-latest]
-    if:
+    if: |
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags')) ||
+      (github.ref == 'refs/heads/master' && github.event_name == 'push')
     environment:
       name: pypi
       url: https://pypi.org/p/osparc
