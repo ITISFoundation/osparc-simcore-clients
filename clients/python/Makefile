@@ -12,11 +12,11 @@ ADDITIONAL_PROPS := \
 	packageUrl=$(shell bash $(SCRIPTS_DIR)/jq.bash -r .homepage $(REPO_ROOT)/api/config.json)\
 	projectName=osparc_client
 ADDITIONAL_PROPS := $(foreach prop,$(ADDITIONAL_PROPS),$(strip $(prop)))
+VERSION_FILE := $(PYTHON_DIR)/client/VERSION
 
-VERSION_FILE := $(wildcard $(PYTHON_DIR)/client/VERSION)
 .PHONY: generate_version
 client/VERSION:
-	@bash $(SCRIPTS_DIR)/increment_version.bash > $(PYTHON_DIR)/client/VERSION
+	@bash $(SCRIPTS_DIR)/increment_version.bash > $(VERSION_FILE)
 
 .PHONY: artifacts_dir
 artifacts_dir:
