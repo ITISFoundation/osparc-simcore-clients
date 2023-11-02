@@ -31,7 +31,6 @@ jobs:
           cd clients/python
           make install-dev
           make dist-ci
-          cat client/VERSION
       - name: Determine wheel artifact
         id: find-wheel
         run: |
