@@ -24,7 +24,7 @@ jobs:
           echo -n ${tag_version} > clients/python/client/VERSION
       - name: Generate client
         run: |
-          git fetch origin master:master
+          git remote
           git status
           make devenv
           source .venv/bin/activate
