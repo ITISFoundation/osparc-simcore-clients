@@ -25,7 +25,7 @@ jobs:
       - name: Generate client
         run: |
           git status
-          make install-dev
+          make devenv
           source .venv/bin/activate
           cd clients/python
           make install-dev
