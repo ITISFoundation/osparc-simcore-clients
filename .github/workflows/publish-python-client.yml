@@ -17,10 +17,15 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
+      - name: Generate version from tag
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+        run: |
+          tag_version=$(echo ${{ github.ref }} | grep -oP '(?<=refs/tags/v)\d+\.\d+\.\d+'))
+          echo -n ${tag_version} > clients/python/client/VERSION
       - name: Generate client
         run: |
           git status
-          make devenv
+          make install-dev
           source .venv/bin/activate
           cd clients/python
           make install-dev
@@ -113,9 +118,8 @@ jobs:
           make install-test
           pytest -v --ignore=/artifacts/client --ignore=test/e2e
 
-  publish-osparc_client-to-pypi:
+  publish-osparc_client:
     name: Publish osparc_client wheel
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
     runs-on: ubuntu-latest
     needs: [build-n-publish, test-20-04, test-latest]
     environment:
@@ -132,22 +136,24 @@ jobs:
       - name: Remove osparc wheel
         run: rm -f dist/${{needs.build-n-publish.outputs.osparc}}
       - name: Publish osparc_client to Test PyPI
+        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
           verbose: true
           packages-dir: dist/
       - name: Publish osparc_client to PyPI
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           verbose: true
           packages-dir: dist/
 
-  publish-osparc-to-pypi:
+  publish-osparc:
     name: Publish osparc wheel
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
     runs-on: ubuntu-latest
     needs: [build-n-publish, test-20-04, test-latest]
+    if:
     environment:
       name: pypi
       url: https://pypi.org/p/osparc
@@ -162,12 +168,14 @@ jobs:
       - name: Remove osparc_client wheel
         run: rm -f dist/${{needs.build-n-publish.outputs.osparc_client}}
       - name: Publish osparc to Test PyPI
+        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
           verbose: true
           packages-dir: dist/
       - name: Publish osparc to PyPI
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           verbose: true
