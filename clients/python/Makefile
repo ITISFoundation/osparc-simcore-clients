@@ -16,7 +16,7 @@ VERSION_FILE := $(PYTHON_DIR)/client/VERSION
 
 .PHONY: generate_version
 client/VERSION:
-	@bash -x $(SCRIPTS_DIR)/generate_version.bash > $(VERSION_FILE)
+	@bash $(SCRIPTS_DIR)/generate_version.bash > $(VERSION_FILE)
 
 .PHONY: artifacts_dir
 artifacts_dir:
