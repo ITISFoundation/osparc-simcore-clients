@@ -23,7 +23,6 @@ jobs:
         run: |
           tag_version=$(echo ${{ github.ref }} | grep -oP '(?<=refs/tags/v)\d+\.\d+\.\d+'))
           echo -n ${tag_version} > clients/python/client/VERSION
-          cat clients/python/client/VERSION
       - name: Generate client
         run: |
           git status
@@ -32,6 +31,7 @@ jobs:
           cd clients/python
           make install-dev
           make dist-ci
+          cat client/VERSION
       - name: Determine wheel artifact
         id: find-wheel
         run: |
