@@ -19,7 +19,7 @@ jobs:
       id-token: write
     steps:
       - name: Download wheels
-        run: gh run download ${{ github.event.workflow_run.id }} --repo=${{github.event.repository.name}}
+        run: gh run download ${{ github.event.workflow_run.id }} --repo=${{github.event.workflow_run.repository.name}}
         env:
           GH_TOKEN: ${{ github.token }}
       - name: Remove osparc wheel
@@ -51,7 +51,7 @@ jobs:
       id-token: write
     steps:
       - name: Download wheels
-        run: gh run download ${{ github.event.workflow_run.id }} --repo=${{github.event.repository.name}}
+        run: gh run download ${{ github.event.workflow_run.id }} --repo=${{github.event.workflow_run.repository.name}}
         env:
           GH_TOKEN: ${{ github.token }}
       - name: Remove osparc_client wheel
