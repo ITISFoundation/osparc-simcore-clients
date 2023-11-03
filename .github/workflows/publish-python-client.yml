@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Download wheels
         run: |
-          repo=${{github.event.workflow_run.repository.owner}}/${{github.event.workflow_run.repository.name}}
+          repo=${{github.repository_owner}}/${{github.event.workflow_run.repository.name}}
           gh run download ${{ github.event.workflow_run.id }} --repo=${repo}
         env:
           GH_TOKEN: ${{ github.token }}
@@ -54,7 +54,7 @@ jobs:
     steps:
       - name: Download wheels
         run: |
-          repo=${{github.event.workflow_run.repository.owner}}/${{github.event.workflow_run.repository.name}}
+          repo=${{github.repository_owner}}/${{github.event.workflow_run.repository.name}}
           gh run download ${{ github.event.workflow_run.id }} --repo=${repo}
         env:
           GH_TOKEN: ${{ github.token }}
