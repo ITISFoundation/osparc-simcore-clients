@@ -63,6 +63,7 @@ jobs:
       - name: Remove osparc wheel
         run: rm -f dist/${{needs.build-n-publish.outputs.osparc}}
       - name: Publish osparc_client to Test PyPI
+        if: github.event_name == 'push' || github.event_name == 'pull_request'
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
@@ -94,6 +95,7 @@ jobs:
       - name: Remove osparc_client wheel
         run: rm -f dist/${{needs.build-n-publish.outputs.osparc_client}}
       - name: Publish osparc to Test PyPI
+        if: github.event_name == 'push' || github.event_name == 'pull_request'
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
