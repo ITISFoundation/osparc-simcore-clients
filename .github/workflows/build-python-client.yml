@@ -26,10 +26,8 @@ jobs:
       - name: Process tag
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
         run: |
-          source .venv/bin/activate
-          version=$(echo ${{ github.ref }} | grep -oP '(?<=refs/tags/v)\d+\.\d+\.\d+')
-          python scripts/is_semantic_version.py "${version}"
-          echo "${version}" > clients/python/client/VERSION
+          tag_version=$(echo ${{ github.ref }} | grep -oP '(?<=refs/tags/v)\d+\.\d+\.\d+')
+          bash scripts/validate_semantic_version.bash "${tag_version}" > clients/python/client/VERSION
       - name: Generate client
         run: |
           source .venv/bin/activate
