@@ -10,7 +10,7 @@ permissions: read-all
 jobs:
   publish-osparc_client:
     name: Publish osparc_client wheel
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event.event_name == 'push'
     runs-on: ubuntu-latest
     environment:
       name: pypi
@@ -29,14 +29,13 @@ jobs:
           osparc_wheel=$(ls osparc_python_wheels/osparc-*)
           rm -f ${osparc_wheel}
       - name: Publish osparc_client to Test PyPI
-        if: github.event_name == 'push' || github.event_name == 'pull_request'
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
           verbose: true
           packages-dir: osparc_python_wheels/
       - name: Publish osparc_client to PyPI
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+        if: startsWith(github.ref, 'refs/tags')
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           verbose: true
@@ -44,7 +43,7 @@ jobs:
 
   publish-osparc:
     name: Publish osparc wheel
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event.event_name == 'push'
     runs-on: ubuntu-latest
     environment:
       name: pypi
@@ -63,14 +62,14 @@ jobs:
           osparc_client_wheel=$(ls osparc_python_wheels/osparc_client*)
           rm -f ${osparc_client_wheel}
       - name: Publish osparc to Test PyPI
-        if: github.event_name == 'push' || github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request'
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
           verbose: true
           packages-dir: osparc_python_wheels/
       - name: Publish osparc to PyPI
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+        if: startsWith(github.ref, 'refs/tags')
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           verbose: true
