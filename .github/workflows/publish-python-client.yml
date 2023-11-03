@@ -29,7 +29,7 @@ jobs:
           osparc_wheel=$(ls osparc_python_wheels/osparc-*)
           rm -f ${osparc_wheel}
       - name: Publish osparc_client to Test PyPI
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' || github.event_name == 'pull_request'
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
@@ -63,7 +63,7 @@ jobs:
           osparc_client_wheel=$(ls osparc_python_wheels/osparc_client*)
           rm -f ${osparc_client_wheel}
       - name: Publish osparc to Test PyPI
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' || github.event_name == 'pull_request'
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
