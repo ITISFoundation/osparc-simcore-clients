@@ -18,7 +18,7 @@ doc+="\tA json string which, when passed to install_osparc_python_client.bash in
 print_doc() { echo -e "$doc"; }
 [ $# -eq 0 ] && print_doc && exit 0
 
-client_workflow=publish-and-test-python-client
+client_workflow=build-and-test-python-client
 client_config=$1
 
 # extract keys from input json
