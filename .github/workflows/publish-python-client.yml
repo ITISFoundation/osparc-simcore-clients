@@ -9,41 +9,15 @@ permissions: read-all
 
 jobs:
 
-  publish:
-    name: Publish
+  debug:
+    name: debug
     runs-on: ubuntu-latest
-    environment:
-      name: pypi
-      url: https://pypi.org/p/osparc_client
-    permissions:
-      id-token: write
     steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{ github.ref }}
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.10.14
-      - name: Set up Python environment
+      - name: debug messages
         run: |
-          make devenv
-      - name: Download wheels
-        uses: actions/download-artifact@v3
-        with:
-          name: osparc_python_wheels
-          path: osparc_python_wheels/
-      - name: Check release
-        id: release
-        run: |
-          source .venv/bin/activate
-          python -m pip install pytest
-          python -m pip install clients/python/artifacts/dist/${{needs.build-n-publish.outputs.osparc}} --find-links=clients/python/artifacts/dist
-          cd clients/python
-          make install-test
-          pytest -v --ignore=/artifacts/client --ignore=test/e2e
+          echo "github.event.workflow_run.event.event_name=${{github.event.workflow_run.event.event_name}}"
 
-  publish-osparc_client-to-pypi:
+  publish-osparc_client:
     name: Publish osparc_client wheel
     if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event.event_name == 'push'
     runs-on: ubuntu-latest
