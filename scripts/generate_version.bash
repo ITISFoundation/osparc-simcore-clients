@@ -14,4 +14,4 @@ current_commit=$(git rev-parse HEAD)
 
 merge_base=$(git merge-base "${release_commit}" "${current_commit}")
 n_commits_to_merge_base=$(git rev-list --count "${merge_base}".."${current_commit}")
-echo -n "${release_version}.dev${n_commits_to_merge_base}"
+echo -n "${release_version}.post${n_commits_to_merge_base}"
