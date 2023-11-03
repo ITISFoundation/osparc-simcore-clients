@@ -5,6 +5,7 @@ on:
     branches: [master]
     types:
       - completed
+permissions: read-all
 
 jobs:
   publish-osparc_client:
