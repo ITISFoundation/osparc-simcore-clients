@@ -8,6 +8,14 @@ permissions: read-all
 
 jobs:
 
+  debug:
+    name: debug
+    runs-on: ubuntu-latest
+    steps:
+      - name: print debug messages
+        run: |
+          echo "github.ref=${{github.ref}}"
+
   publish-osparc_client:
     name: Publish osparc_client wheel
     if: |
