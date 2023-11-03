@@ -8,6 +8,15 @@ on:
 permissions: read-all
 
 jobs:
+
+  debug:
+    name: debug
+    runs-on: ubuntu-latest
+    steps:
+      - name: debug messages
+        run: |
+          echo "github.event.workflow_run.event.event_name=${{github.event.workflow_run.event.event_name}}"
+
   publish-osparc_client:
     name: Publish osparc_client wheel
     if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event.event_name == 'push'
