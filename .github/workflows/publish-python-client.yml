@@ -9,6 +9,7 @@ on:
 jobs:
   publish-osparc_client:
     name: Publish osparc_client wheel
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     environment:
       name: pypi
@@ -17,28 +18,28 @@ jobs:
       id-token: write
     steps:
       - name: Download wheels
-        uses: actions/download-artifact@v3
-        with:
-          name: osparc_python_wheels
-          path: dist/
+        run: gh run download ${{ github.event.workflow_run.id }}
       - name: Remove osparc wheel
-        run: rm -f dist/${{needs.build-n-publish.outputs.osparc}}
+        run: |
+          osparc_wheel=$(ls osparc_python_wheels/osparc-*)
+          rm -f ${osparc_wheel}
       - name: Publish osparc_client to Test PyPI
         if: github.event_name == 'push'
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
           verbose: true
-          packages-dir: dist/
+          packages-dir: osparc_python_wheels/
       - name: Publish osparc_client to PyPI
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           verbose: true
-          packages-dir: dist/
+          packages-dir: osparc_python_wheels/
 
   publish-osparc:
     name: Publish osparc wheel
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     environment:
       name: pypi
@@ -47,22 +48,21 @@ jobs:
       id-token: write
     steps:
       - name: Download wheels
-        uses: actions/download-artifact@v3
-        with:
-          name: osparc_python_wheels
-          path: dist/
+        run: gh run download ${{ github.event.workflow_run.id }}
       - name: Remove osparc_client wheel
-        run: rm -f dist/${{needs.build-n-publish.outputs.osparc_client}}
+        run: |
+          osparc_client_wheel=$(ls osparc_python_wheels/osparc_client*)
+          rm -f ${osparc_client_wheel}
       - name: Publish osparc to Test PyPI
         if: github.event_name == 'push'
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
           verbose: true
-          packages-dir: dist/
+          packages-dir: osparc_python_wheels/
       - name: Publish osparc to PyPI
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           verbose: true
-          packages-dir: dist/
+          packages-dir: osparc_python_wheels/
