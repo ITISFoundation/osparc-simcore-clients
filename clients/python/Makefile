@@ -4,6 +4,19 @@ ARTIFACTS_DIR        := $(PYTHON_DIR)/artifacts
 CONTAINER_API_JSON   := /local/$(REL_API_JSON_PATH)
 GENERATOR            := python
 UID                  := $(shell id -u)
+ADDITIONAL_PROPS := \
+	generateSourceCodeOnly=false\
+	hideGenerationTimestamp=true\
+	library=urllib3\
+	packageName=osparc\
+	packageUrl=$(shell bash $(SCRIPTS_DIR)/jq.bash -r .homepage $(REPO_ROOT)/api/config.json)\
+	projectName=osparc_client
+ADDITIONAL_PROPS := $(foreach prop,$(ADDITIONAL_PROPS),$(strip $(prop)))
+VERSION_FILE := $(PYTHON_DIR)/client/VERSION
+
+.PHONY: generate_version
+client/VERSION:
+	@bash $(SCRIPTS_DIR)/generate_version.bash > $(VERSION_FILE)
 
 .PHONY: artifacts_dir
 artifacts_dir:
@@ -20,7 +33,8 @@ postprocess-build:
 
 # Generation of Python client
 .PHONY: python-client
-python-client: validate-api-specification artifacts_dir ## generate python client
+python-client: client/VERSION validate-api-specification artifacts_dir ## generate python client
+	$(eval VERSION := $(shell cat $(VERSION_FILE)))
 	-rm -r $(ARTIFACTS_DIR)/client
 	docker run --rm --user $(UID):$(UID)\
 			--volume "$(REPO_ROOT):/local" \
@@ -28,18 +42,19 @@ python-client: validate-api-specification artifacts_dir ## generate python clien
 			--generator-name=$(GENERATOR) \
 			--git-user-id=$(GIT_USER_ID) \
 			--git-repo-id=$(GIT_CLIENT_REPO_ID) \
-			--http-user-agent="osparc-api/$(APP_VERSION)/python" \
+			--http-user-agent="osparc-api/$(VERSION)/python" \
 			--input-spec=$(CONTAINER_API_JSON) \
 			--output=/local/clients/python/artifacts/client \
-			--additional-properties=$(subst $(space),$(comma),$(strip $(ADDITIONAL_PROPS))) \
+			--additional-properties=packageVersion=$(VERSION),$(subst $(space),$(comma),$(strip $(ADDITIONAL_PROPS))) \
 			--package-name=osparc_client \
-			--release-note="Updated to $(APP_VERSION)"
+			--release-note="Updated to $(VERSION)"
 	$(MAKE) postprocess-build
 
 .PHONY: python-client-from-templates
-python-client-from-templates: validate-api-specification artifacts_dir ## generate python client using templates in a specified directory (usage: 'make python-client-from-templates -e TEMPLATE_DIR=path/to/templates')
+python-client-from-templates: client/VERSION validate-api-specification artifacts_dir ## generate python client using templates in a specified directory (usage: 'make python-client-from-templates -e TEMPLATE_DIR=path/to/templates')
 	$(if $(TEMPLATE_DIR),,$(error The TEMPLATE_DIR environment variable must be set))
 	@echo "Using template-dir: $(TEMPLATE_DIR)"
+	$(eval VERSION := $(shell cat $(VERSION_FILE)))
 	-rm -r $(ARTIFACTS_DIR)/client
 	@docker run --rm --user $(UID):$(UID)\
 			--volume "$(REPO_ROOT):/local" \
@@ -48,12 +63,12 @@ python-client-from-templates: validate-api-specification artifacts_dir ## genera
 			--generator-name=$(GENERATOR) \
 			--git-user-id=$(GIT_USER_ID) \
 			--git-repo-id=$(GIT_CLIENT_REPO_ID) \
-			--http-user-agent="osparc-api/$(APP_VERSION)/python" \
+			--http-user-agent="osparc-api/$(VERSION)/python" \
 			--input-spec=$(CONTAINER_API_JSON) \
 			--output=/local/clients/python/artifacts/client \
-			--additional-properties=$(subst $(space),$(comma),$(strip $(ADDITIONAL_PROPS))) \
+			--additional-properties=packageVersion=$(VERSION),$(subst $(space),$(comma),$(strip $(ADDITIONAL_PROPS))) \
 			--package-name=osparc_client \
-			--release-note="Updated to $(APP_VERSION)" \
+			--release-note="Updated to $(VERSION)" \
 			--template-dir=/tmp/python_templates
 	$(MAKE) postprocess-build
 
@@ -167,48 +182,9 @@ e2e-shell: guard-GH_TOKEN ## shell for running e2e tests
 	@echo "WARNING ##### $@ does not exist, cloning $< as $@ ############"; cp $< $@)
 
 .PHONY: image
-image: ## builds image $(APP_NAME):$(APP_VERSION)
-	docker build -f Dockerfile -t $(APP_NAME):$(APP_VERSION) $(CURDIR)
+image: client/VERSION ## builds image $(APP_NAME):version
+	docker build -f Dockerfile -t $(APP_NAME):$(shell cat $(VERSION_FILE)) $(CURDIR)
 
 .PHONY: shell
-shell: ## runs container and opens bash shell
-	docker run -it $(APP_NAME):$(APP_VERSION) /bin/bash
-
-
-
-# RELEASE -------------------------------------------------------------------------------
-
-prod_prefix := v
-_git_get_current_branch = $(shell git rev-parse --abbrev-ref HEAD)
-
-# NOTE: be careful that GNU Make replaces newlines with space which is why this command cannot work using a Make function
-_url_encoded_title = $(APP_VERSION)
-_url_encoded_tag = $(prod_prefix)$(APP_VERSION)
-_url_encoded_target = $(if $(git_sha),$(git_sha),master)
-_prettify_logs = $$(git log \
-		$$(git describe --match="$(prod_prefix)*" --abbrev=0 --tags)..$(if $(git_sha),$(git_sha),HEAD) \
-		--pretty=format:"- %s")
-define _url_encoded_logs
-$(shell \
-	scripts/url-encoder.bash \
-	"$(_prettify_logs)"\
-)
-endef
-_git_get_repo_orga_name = $(shell git config --get remote.origin.url | \
-							grep --perl-regexp --only-matching "((?<=git@github\.com:)|(?<=https:\/\/github\.com\/))(.*?)(?=.git)")
-
-.PHONY: .check-master-branch
-.check-master-branch:
-	@if [ "$(_git_get_current_branch)" != "master" ]; then\
-		echo -e "\e[91mcurrent branch is not master branch."; exit 1;\
-	fi
-
-.PHONY: release
-release pre-release: .check-master-branch ## Creates github release link. Usage: make release-prod git_sha=optional
-	# ensure tags are up-to-date
-	@git pull --tags
-	@echo -e "\e[33mOpen the following link to create a release:";
-	@echo -e "\e[32mhttps://github.com/$(_git_get_repo_orga_name)/releases/new?prerelease=$(if $(findstring pre-, $@),1,0)&target=$(_url_encoded_target)&tag=$(_url_encoded_tag)&title=$(_url_encoded_title)&body=$(_url_encoded_logs)";
-	@echo -e "\e[33mOr open the following link to create a release and paste the logs:";
-	@echo -e "\e[32mhttps://github.com/$(_git_get_repo_orga_name)/releases/new?prerelease=$(if $(findstring pre-, $@),1,0)&target=$(_url_encoded_target)&tag=$(_url_encoded_tag)&title=$(_url_encoded_title)";
-	@echo -e "\e[34m$(_prettify_logs)"
+shell: client/VERSION ## runs container and opens bash shell
+	docker run -it $(APP_NAME):$(shell cat $(VERSION_FILE)) /bin/bash

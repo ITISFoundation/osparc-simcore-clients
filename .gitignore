@@ -79,3 +79,4 @@ tmp*
 /clients/python/client/build/*
 /clients/python/client/osparc/data/openapi.json
 /clients/python/test/e2e/pytest.ini
+/clients/python/client/VERSION
