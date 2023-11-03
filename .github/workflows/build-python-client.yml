@@ -78,7 +78,7 @@ jobs:
           python -m venv .venv
           source .venv/bin/activate
           python -m pip install pytest
-          python -m pip install clients/python/artifacts/dist/${{needs.build-n-publish.outputs.osparc}} --find-links=clients/python/artifacts/dist
+          python -m pip install clients/python/artifacts/dist/${{needs.build.outputs.osparc}} --find-links=clients/python/artifacts/dist
           cd clients/python
           make install-test
           pytest -v --ignore=/artifacts/client --ignore=test/e2e
@@ -114,7 +114,7 @@ jobs:
           python -m venv .venv
           source .venv/bin/activate
           python -m pip install pytest
-          python -m pip install clients/python/artifacts/dist/${{needs.build-n-publish.outputs.osparc}} --find-links=clients/python/artifacts/dist
+          python -m pip install clients/python/artifacts/dist/${{needs.build.outputs.osparc}} --find-links=clients/python/artifacts/dist
           cd clients/python
           make install-test
           pytest -v --ignore=/artifacts/client --ignore=test/e2e
