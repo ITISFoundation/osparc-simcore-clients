@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: debug messages
         run: |
-          echo "github.event.workflow_run.event.event_name=${{github.event.workflow_run.event.event_name}}"
+          echo "github.event.workflow_run.event=${{github.event.workflow_run.event}}"
 
   publish-osparc_client:
     name: Publish osparc_client wheel
