@@ -51,10 +51,9 @@ jobs:
       id-token: write
     steps:
       - name: Download wheels
-        uses: actions/download-artifact@v3
-        with:
-          name: osparc_python_wheels
-          path: dist/
+        run: gh run download ${{ github.event.workflow_run.id }}
+        env:
+          GH_TOKEN: ${{ github.token }}
       - name: Remove osparc wheel
         run: rm -f dist/${{needs.build-n-publish.outputs.osparc}}
       - name: Publish osparc_client to Test PyPI
@@ -81,10 +80,9 @@ jobs:
       id-token: write
     steps:
       - name: Download wheels
-        uses: actions/download-artifact@v3
-        with:
-          name: osparc_python_wheels
-          path: dist/
+        run: gh run download ${{ github.event.workflow_run.id }}
+        env:
+          GH_TOKEN: ${{ github.token }}
       - name: Remove osparc_client wheel
         run: rm -f dist/${{needs.build-n-publish.outputs.osparc_client}}
       - name: Publish osparc to Test PyPI
