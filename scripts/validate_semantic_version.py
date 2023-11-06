@@ -1,7 +1,9 @@
 import re
+from typing import Literal
 
 import typer
 
+BoolResult = Literal["0", "1"]
 # Regex pattern for determining whether a string is a
 # valid semantic version (found here: https://semver.org/)
 _SemVerPattern: str = (
@@ -13,11 +15,11 @@ _SemVerPattern: str = (
 
 
 def main(string: str, raise_failure: bool = True):
-    result: str = "0"
+    result: BoolResult = "0"
     if re.match(_SemVerPattern, string):
         result = "1"
     print(result)
-    if raise_failure:
+    if raise_failure and (result == "0"):
         raise typer.Exit(code=1)
 
 
