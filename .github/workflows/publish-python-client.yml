@@ -27,15 +27,17 @@ jobs:
     permissions:
       id-token: write
     steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.client_payload.ref }}
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
       - name: Set up Python environment
         run: |
-          python -m venv .venv
+          make devenv
           source .venv/bin/activate
-          python -m pip install semver
       - name: Download wheels
         id: download
         run: |
@@ -76,15 +78,17 @@ jobs:
     permissions:
       id-token: write
     steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.client_payload.ref }}
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
       - name: Set up Python environment
         run: |
-          python -m venv .venv
+          make devenv
           source .venv/bin/activate
-          python -m pip install semver
       - name: Download wheels
         id: download
         run: |
