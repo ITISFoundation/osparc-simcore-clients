@@ -50,6 +50,7 @@ jobs:
         run: |
           osparc_wheel=$(ls osparc_python_wheels/osparc-*)
           rm -f ${osparc_wheel}
+          rm -f osparc_python_wheels/VERSION
       - name: Publish osparc_client to Test PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
@@ -96,6 +97,7 @@ jobs:
         run: |
           osparc_client_wheel=$(ls osparc_python_wheels/osparc_client*)
           rm -f ${osparc_client_wheel}
+          rm -f osparc_python_wheels/VERSION
       - name: Publish osparc to Test PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
