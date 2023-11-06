@@ -9,7 +9,6 @@ jobs:
     outputs:
       osparc: ${{ steps.variables.outputs.osparc-wheel }}
       osparc_client: ${{ steps.variables.outputs.osparc_client-wheel }}
-      is_release: ${{ steps.variables.outputs.is-release }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -38,8 +37,6 @@ jobs:
       - name: Set variables
         id: variables
         run: |
-          version=$(cat clients/python/client/VERSION)
-          echo "is-release=$(python -c "import semver; print('1' if semver.Version.is_valid(${version}) else '0')")" >> $GITHUB_OUTPUT
           cd clients/python/artifacts/dist
           osparc_wheel=$(ls osparc-*.whl)
           osparc_client_wheel=$(ls osparc_client*.whl)
