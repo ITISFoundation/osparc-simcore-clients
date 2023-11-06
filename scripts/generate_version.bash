@@ -3,7 +3,7 @@
 # Generate version <semantic version of last tag(=release)>+<number of commits from last tagged commit>
 # This is done by inspecting the tags on the git repo https://github.com/ITISFoundation/osparc-simcore-clients
 
-#set -o errexit  # abort on nonzero exitstatus
+set -o errexit  # abort on nonzero exitstatus
 set -o nounset  # abort on unbound variable
 set -o pipefail # don't hide errors within pipes
 
