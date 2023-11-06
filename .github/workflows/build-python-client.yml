@@ -28,7 +28,7 @@ jobs:
         run: |
           source .venv/bin/activate
           version=$(echo ${{ github.ref }} | grep -oP '(?<=refs/tags/v)\d+\.\d+\.\d+')
-          python -m semver check "${version}"
+          python scripts/is_semantic_version.py "${version}"
           echo "${version}" > clients/python/client/VERSION
       - name: Generate client
         run: |
