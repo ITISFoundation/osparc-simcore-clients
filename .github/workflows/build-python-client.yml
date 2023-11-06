@@ -45,6 +45,7 @@ jobs:
           echo "osparc-wheel=${osparc_wheel}" >> $GITHUB_OUTPUT
           echo "osparc_client-wheel=${osparc_client_wheel}" >> $GITHUB_OUTPUT
           echo "github.ref: ${{github.ref}}"
+          echo "github.event_name: ${{github.event_name}}"
       - name: Upload wheels
         uses: actions/upload-artifact@v3
         with:
