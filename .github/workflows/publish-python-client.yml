@@ -32,7 +32,7 @@ jobs:
         id: download
         run: |
           source .venv/bin/activate
-          repo=${{github.repository_owner}}/${{github.repository.name}}
+          repo=${{github.repository}}
           gh run download ${{ inputs.run_id }} --repo=${repo}
           version=$(cat osparc_python_wheels/VERSION)
           is_release=$(python scripts/is_semantic_version.py "${version}" --no-raise-result)
@@ -80,7 +80,7 @@ jobs:
         id: download
         run: |
           source .venv/bin/activate
-          repo=${{github.repository_owner}}/${{github.repository.name}}
+          repo=${{github.repository}}
           gh run download ${{ inputs.run_id }} --repo=${repo}
           version=$(cat osparc_python_wheels/VERSION)
           is_release=$(python scripts/is_semantic_version.py "${version}" --no-raise-result)
