@@ -43,7 +43,9 @@ jobs:
           repo=${{github.repository_owner}}/${{github.event.workflow_run.repository.name}}
           gh run download ${{ github.event.workflow_run.id }} --repo=${repo}
           version=$(cat osparc_python_wheels/VERSION)
-          echo "is-release=$(python scripts/is_semantic_version.py "${version}" --no-raise-result)" >> $GITHUB_OUTPUT
+          is_release=$(python scripts/is_semantic_version.py "${version}" --no-raise-result)
+          echo "is-release=${is_release}" >> $GITHUB_OUTPUT
+          echo "is-release=${is_release}"
         env:
           GH_TOKEN: ${{ github.token }}
       - name: Remove osparc wheel
@@ -58,7 +60,7 @@ jobs:
           verbose: true
           packages-dir: osparc_python_wheels/
       - name: Publish osparc_client to PyPI
-        if: ${{steps.download.outputs.is-release}} == 'True'
+        if: ${{steps.download.outputs.is-release}} == ${{'True'}}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           verbose: true
@@ -90,7 +92,9 @@ jobs:
           repo=${{github.repository_owner}}/${{github.event.workflow_run.repository.name}}
           gh run download ${{ github.event.workflow_run.id }} --repo=${repo}
           version=$(cat osparc_python_wheels/VERSION)
-          echo "is-release=$(python scripts/is_semantic_version.py "${version}" --no-raise-result)" >> $GITHUB_OUTPUT
+          is_release=$(python scripts/is_semantic_version.py "${version}" --no-raise-result)
+          echo "is-release=${is_release}" >> $GITHUB_OUTPUT
+          echo "is-release=${is_release}"
         env:
           GH_TOKEN: ${{ github.token }}
       - name: Remove osparc_client wheel
@@ -105,7 +109,7 @@ jobs:
           verbose: true
           packages-dir: osparc_python_wheels/
       - name: Publish osparc to PyPI
-        if: ${{steps.download.outputs.is-release}} == 'True'
+        if: ${{steps.download.outputs.is-release}} == ${{'True'}}
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           verbose: true
