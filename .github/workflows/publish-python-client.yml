@@ -39,6 +39,7 @@ jobs:
       - name: Download wheels
         id: download
         run: |
+          source .venv/bin/activate
           repo=${{github.repository_owner}}/${{github.event.workflow_run.repository.name}}
           gh run download ${{ github.event.workflow_run.id }} --repo=${repo}
           version=$(cat osparc_python_wheels/VERSION)
@@ -83,6 +84,7 @@ jobs:
       - name: Download wheels
         id: download
         run: |
+          source .venv/bin/activate
           repo=${{github.repository_owner}}/${{github.event.workflow_run.repository.name}}
           gh run download ${{ github.event.workflow_run.id }} --repo=${repo}
           version=$(cat osparc_python_wheels/VERSION)
