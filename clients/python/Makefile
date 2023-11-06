@@ -141,6 +141,7 @@ dist: artifacts_dir ## builds distribution wheel
 	@mkdir $(ARTIFACTS_DIR)/dist
 	@cp $$(ls artifacts/client/dist/*.whl) $(ARTIFACTS_DIR)/dist
 	@cp $$(ls client/dist/*.whl) $(ARTIFACTS_DIR)/dist
+	@cp client/VERSION $(ARTIFACTS_DIR)/dist
 
 
 .PHONY: dist-ci
