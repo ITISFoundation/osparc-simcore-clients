@@ -47,6 +47,7 @@ jobs:
           osparc_wheel=$(ls osparc_python_wheels/osparc-*)
           rm -f ${osparc_wheel}
           rm -f osparc_python_wheels/VERSION
+          echo "${{ steps.download.outputs.is-release }}"
       - name: Publish osparc_client to Test PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
@@ -54,7 +55,7 @@ jobs:
           verbose: true
           packages-dir: dist/
       - name: Publish osparc_client to PyPI
-        if: ${{steps.download.outputs.is-release}} == ${{'True'}}
+        if: steps.download.outputs.is-release == 'True'
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           verbose: true
@@ -105,7 +106,7 @@ jobs:
           verbose: true
           packages-dir: osparc_python_wheels/
       - name: Publish osparc to PyPI
-        if: ${{steps.download.outputs.is-release}} == ${{'True'}}
+        if: steps.download.outputs.is-release == 'True'
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           verbose: true
