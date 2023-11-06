@@ -38,7 +38,6 @@ jobs:
           version=$(cat osparc_python_wheels/VERSION)
           is_release=$(python scripts/is_semantic_version.py "${version}" --no-raise-result)
           echo "is-release=${is_release}" >> $GITHUB_OUTPUT
-          echo "is-release=${is_release}"
         env:
           GH_TOKEN: ${{ github.token }}
       - name: Remove osparc wheel
@@ -46,7 +45,6 @@ jobs:
           osparc_wheel=$(ls osparc_python_wheels/osparc-*)
           rm -f ${osparc_wheel}
           rm -f osparc_python_wheels/VERSION
-          echo "${{ steps.download.outputs.is-release }}"
       - name: Publish osparc_client to Test PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
@@ -89,7 +87,6 @@ jobs:
           version=$(cat osparc_python_wheels/VERSION)
           is_release=$(python scripts/is_semantic_version.py "${version}" --no-raise-result)
           echo "is-release=${is_release}" >> $GITHUB_OUTPUT
-          echo "is-release=${is_release}"
         env:
           GH_TOKEN: ${{ github.token }}
       - name: Remove osparc_client wheel
