@@ -1,26 +1,33 @@
-import json
 import os
+import subprocess
 from pathlib import Path
 
 import osparc
 import pytest
 from packaging.version import Version
 
-_config: Path = (
-    Path(__file__).parent.parent.parent.parent.parent / "api" / "config.json"
-)
-assert _config.is_file()
+_python_dir: Path = Path(__file__).parent.parent.parent
+assert _python_dir.is_dir()
 
 
 def osparc_dev_features_enabled() -> bool:
     return os.environ.get("OSPARC_DEV_FEATURES_ENABLED") == "1"
 
 
+def repo_version() -> Version:
+    subprocess.run(
+        "make client/VERSION", cwd=_python_dir.resolve(), shell=True
+    ).check_returncode()
+    version_file: Path = Path(_python_dir / "client" / "VERSION")
+    assert version_file.is_file()
+    return Version(version_file.read_text())
+
+
 def requires_dev_features(test):
-    repo_version: Version = Version(
-        json.loads(_config.read_text())["python"]["version"]
-    )
-    if Version(osparc.__version__) < repo_version or not osparc_dev_features_enabled():
+    if (
+        Version(osparc.__version__) < repo_version()
+        or not osparc_dev_features_enabled()
+    ):
         return pytest.mark.skip(
             (
                 f"{osparc.__version__=}<{str(repo_version)} "
