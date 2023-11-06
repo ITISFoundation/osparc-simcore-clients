@@ -24,11 +24,12 @@ jobs:
           git status
           make devenv
           source .venv/bin/activate
-      - name: Generate version from tag
+      - name: Process tag
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
         run: |
-          tag_version=$(echo ${{ github.ref }} | grep -oP '(?<=refs/tags/v)\d+\.\d+\.\d+')
-          python scripts/validate_semantic_version.py "${tag_version}" > clients/python/client/VERSION
+          version=$(echo ${{ github.ref }} | grep -oP '(?<=refs/tags/v)\d+\.\d+\.\d+')
+          python -m semver check "${version}"
+          echo "${version}" > clients/python/client/VERSION
       - name: Generate client
         run: |
           cd clients/python
@@ -38,7 +39,7 @@ jobs:
         id: variables
         run: |
           version=$(cat clients/python/client/VERSION)
-          echo "is-release=$(python scripts/validate_semantic_version.py ${version} --no-raise-failure)" >> $GITHUB_OUTPUT
+          echo "is-release=$(python -c "import semver; print('1' if semver.Version.is_valid(${version}) else '0')")" >> $GITHUB_OUTPUT
           cd clients/python/artifacts/dist
           osparc_wheel=$(ls osparc-*.whl)
           osparc_client_wheel=$(ls osparc_client*.whl)
