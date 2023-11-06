@@ -2,6 +2,7 @@ name: publish-python-client
 on:
   workflow_run:
     workflows: [build-and-test-python-client]
+    branches: [master]
     types:
       - completed
 permissions: read-all
