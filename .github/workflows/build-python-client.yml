@@ -31,6 +31,7 @@ jobs:
           echo "${version}" > clients/python/client/VERSION
       - name: Generate client
         run: |
+          source .venv/bin/activate
           cd clients/python
           make install-dev
           make dist-ci
