@@ -128,9 +128,7 @@ jobs:
 
   publish:
     name: Publish clients
-    if: |
-      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags')) ||
-      (github.event_name == 'push' && github.ref == 'refs/heads/master')
+    if: ${{ (github.event_name == 'push' && ( startsWith(github.ref, 'refs/tags')) || github.ref == 'refs/heads/master') }}
     needs: [test-20-04, test-latest]
     uses: ./.github/workflows/publish-python-client.yml
     with:
