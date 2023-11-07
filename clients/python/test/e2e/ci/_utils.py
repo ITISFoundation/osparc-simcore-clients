@@ -10,11 +10,11 @@ _PYTHON_DIR: Path = _E2E_DIR.parent.parent
 _CI_DIR: Path = (_E2E_DIR / "ci").resolve()
 _PYTEST_INI: Path = (_E2E_DIR / "pytest.ini").resolve()
 _ARTIFACTS_DIR: Path = (_E2E_DIR.parent.parent / "artifacts" / "e2e").resolve()
-_COMPATIBILITY_JSON: Path = (
-    _E2E_DIR / "data" / "server_client_compatibility.json"
+_COMPATIBILITY_CSV: Path = (
+    _E2E_DIR / "data" / "server_client_compatibility.csv"
 ).resolve()
 
-assert _COMPATIBILITY_JSON.is_file()
+assert _COMPATIBILITY_CSV.is_file()
 
 
 def print_line():
