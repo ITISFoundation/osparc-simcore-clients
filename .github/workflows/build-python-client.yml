@@ -46,6 +46,8 @@ jobs:
           echo "osparc_client-wheel=${osparc_client_wheel}" >> $GITHUB_OUTPUT
           echo "github.ref: ${{github.ref}}"
           echo "github.event_name: ${{github.event_name}}"
+          echo "github.workflow.id: ${{github.workflow.id}}"
+          echo "github.run_id: ${{github.run_id}}"
       - name: Upload wheels
         uses: actions/upload-artifact@v3
         with:
@@ -132,4 +134,4 @@ jobs:
     needs: [test-20-04, test-latest]
     uses: ./.github/workflows/publish-python-client.yml
     with:
-      run_id: ${{github.workflow.id}}
+      run_id: ${{github.run_id}}
