@@ -1,10 +1,6 @@
 name: publish-python-client
 on:
   workflow_call:
-    inputs:
-      run_id:
-        required: true
-        type: string
 permissions: read-all
 
 jobs:
@@ -29,16 +25,16 @@ jobs:
         run: |
           make devenv
       - name: Download wheels
-        id: download
+        uses: actions/download-artifact@v3
+        with:
+          name: osparc_python_wheels
+          path: osparc_python_wheels/
+      - name: Check release
+        id: release
         run: |
-          source .venv/bin/activate
-          repo=${{github.repository}}
-          gh run download ${{ inputs.run_id }} --repo=${repo}
           version=$(cat osparc_python_wheels/VERSION)
           is_release=$(python scripts/is_semantic_version.py "${version}" --no-raise-result)
           echo "is-release=${is_release}" >> $GITHUB_OUTPUT
-        env:
-          GH_TOKEN: ${{ github.token }}
       - name: Remove osparc wheel
         run: |
           osparc_wheel=$(ls osparc_python_wheels/osparc-*)
@@ -51,7 +47,7 @@ jobs:
           verbose: true
           packages-dir: osparc_python_wheels/
       - name: Publish osparc_client to PyPI
-        if: steps.download.outputs.is-release == 'True'
+        if: steps.release.outputs.is-release == 'True'
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           verbose: true
@@ -77,16 +73,16 @@ jobs:
         run: |
           make devenv
       - name: Download wheels
-        id: download
+        uses: actions/download-artifact@v3
+        with:
+          name: osparc_python_wheels
+          path: osparc_python_wheels/
+      - name: Check release
+        id: release
         run: |
-          source .venv/bin/activate
-          repo=${{github.repository}}
-          gh run download ${{ inputs.run_id }} --repo=${repo}
           version=$(cat osparc_python_wheels/VERSION)
           is_release=$(python scripts/is_semantic_version.py "${version}" --no-raise-result)
           echo "is-release=${is_release}" >> $GITHUB_OUTPUT
-        env:
-          GH_TOKEN: ${{ github.token }}
       - name: Remove osparc_client wheel
         run: |
           osparc_client_wheel=$(ls osparc_python_wheels/osparc_client*)
@@ -99,7 +95,7 @@ jobs:
           verbose: true
           packages-dir: osparc_python_wheels/
       - name: Publish osparc to PyPI
-        if: steps.download.outputs.is-release == 'True'
+        if: steps.release.outputs.is-release == 'True'
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           verbose: true
