@@ -36,18 +36,14 @@ jobs:
           version=$(cat osparc_python_wheels/VERSION)
           is_release=$(python scripts/is_semantic_version.py "${version}" --no-raise-result)
           echo "is-release=${is_release}" >> $GITHUB_OUTPUT
-      - name: Remove osparc wheel
-        run: |
-          osparc_wheel=$(ls osparc_python_wheels/osparc-*)
-          osparc_client_wheel=$(ls osparc_python_wheels/osparc_client*)
           rm osparc_python_wheels/VERSION
-      - name: Publish osparc_client to Test PyPI
+      - name: Publish to TestPyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
           verbose: true
           packages-dir: osparc_python_wheels/
-      - name: Publish osparc_client to PyPI
+      - name: Publish to PyPI
         if: steps.release.outputs.is-release == 'True'
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
