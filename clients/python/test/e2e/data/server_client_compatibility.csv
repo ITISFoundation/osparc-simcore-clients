@@ -15,5 +15,5 @@ api.osparc.io,master+dev_features,False
 api.osparc.io,master-dev_features,False
 api.osparc.io,production,True
 api.sim4life.io,master+dev_features,False
-api.sim4life.io,master-dev_features,False
+api.sim4life.io,master-dev_features,True
 api.sim4life.io,production,True
