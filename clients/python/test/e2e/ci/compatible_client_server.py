@@ -2,7 +2,7 @@ import pandas as pd
 import pytest
 import typer
 from _data_classes import ClientConfig, PytestIniFile, ServerConfig
-from _utils import _COMPATIBILITY_JSON, E2eExitCodes
+from _utils import _COMPATIBILITY_CSV, E2eExitCodes
 from pydantic import ValidationError
 
 
@@ -20,9 +20,9 @@ def main() -> None:
 
     client_cfg: ClientConfig = pytest_ini.client
     server_cfg: ServerConfig = pytest_ini.server
-    if not _COMPATIBILITY_JSON.is_file():
+    if not _COMPATIBILITY_CSV.is_file():
         raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
-    df: pd.DataFrame = pd.read_json(_COMPATIBILITY_JSON).T
+    df: pd.DataFrame = pd.read_csv(_COMPATIBILITY_CSV)
 
     try:
         df = df[
