@@ -3,7 +3,7 @@
   "info": {
     "title": "osparc.io web API (dev)",
     "description": "osparc-simcore public API specifications",
-    "version": "0.4.5-dev"
+    "version": "0.5.0-dev"
   },
   "paths": {
     "/v0/meta": {
@@ -1075,7 +1075,7 @@
           "solvers"
         ],
         "summary": "List Solver Ports",
-        "description": "Lists inputs and outputs of a given solver\n\nNew in *version 0.5.0* (only with API_SERVER_DEV_FEATURES_ENABLED=1)",
+        "description": "Lists inputs and outputs of a given solver\n\nNew in *version 0.5.0*",
         "operationId": "list_solver_ports",
         "parameters": [
           {
@@ -1106,6 +1106,64 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OnePage_SolverPort_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
+      }
+    },
+    "/v0/solvers/{solver_key}/releases/{version}/pricing_plan": {
+      "get": {
+        "tags": [
+          "solvers"
+        ],
+        "summary": "Get Solver Pricing Plan",
+        "operationId": "get_solver_pricing_plan",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Solver Key",
+              "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
+              "type": "string"
+            },
+            "name": "solver_key",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Version",
+              "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
+              "type": "string"
+            },
+            "name": "version",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServicePricingPlanGet"
                 }
               }
             }
@@ -1236,88 +1294,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Job"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "HTTPBasic": []
-          }
-        ]
-      }
-    },
-    "/v0/solvers/{solver_key}/releases/{version}/jobs/page": {
-      "get": {
-        "tags": [
-          "solvers"
-        ],
-        "summary": "Get Jobs Page",
-        "description": "List of jobs on a specific released solver (includes pagination)",
-        "operationId": "get_jobs_page",
-        "parameters": [
-          {
-            "required": true,
-            "schema": {
-              "title": "Solver Key",
-              "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
-              "type": "string"
-            },
-            "name": "solver_key",
-            "in": "path"
-          },
-          {
-            "required": true,
-            "schema": {
-              "title": "Version",
-              "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
-              "type": "string"
-            },
-            "name": "version",
-            "in": "path"
-          },
-          {
-            "required": false,
-            "schema": {
-              "title": "Limit",
-              "maximum": 100,
-              "minimum": 1,
-              "type": "integer",
-              "default": 50
-            },
-            "name": "limit",
-            "in": "query"
-          },
-          {
-            "required": false,
-            "schema": {
-              "title": "Offset",
-              "minimum": 0,
-              "type": "integer",
-              "default": 0
-            },
-            "name": "offset",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Page_Job_"
                 }
               }
             }
@@ -1694,6 +1670,254 @@
         ]
       }
     },
+    "/v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}/metadata": {
+      "get": {
+        "tags": [
+          "solvers"
+        ],
+        "summary": "Get Job Custom Metadata",
+        "description": "Gets custom metadata from a job\n\nNew in *version 0.5*",
+        "operationId": "get_job_custom_metadata",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Solver Key",
+              "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
+              "type": "string"
+            },
+            "name": "solver_key",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Version",
+              "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
+              "type": "string"
+            },
+            "name": "version",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Job Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "job_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobMetadata"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Job not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "solvers"
+        ],
+        "summary": "Replace Job Custom Metadata",
+        "description": "Updates custom metadata from a job\n\nNew in *version 0.5*",
+        "operationId": "replace_job_custom_metadata",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Solver Key",
+              "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
+              "type": "string"
+            },
+            "name": "solver_key",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Version",
+              "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
+              "type": "string"
+            },
+            "name": "version",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Job Id",
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "job_id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobMetadataUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobMetadata"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Job not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
+      }
+    },
+    "/v0/solvers/{solver_key}/releases/{version}/jobs/page": {
+      "get": {
+        "tags": [
+          "solvers"
+        ],
+        "summary": "Get Jobs Page",
+        "description": "List of jobs on a specific released solver (includes pagination)",
+        "operationId": "get_jobs_page",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Solver Key",
+              "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
+              "type": "string"
+            },
+            "name": "solver_key",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Version",
+              "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
+              "type": "string"
+            },
+            "name": "version",
+            "in": "path"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "Limit",
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "default": 50
+            },
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "Offset",
+              "minimum": 0,
+              "type": "integer",
+              "default": 0
+            },
+            "name": "offset",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_Job_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
+      }
+    },
     "/v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}/outputs": {
       "get": {
         "tags": [
@@ -1849,14 +2073,13 @@
         ]
       }
     },
-    "/v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}/metadata": {
+    "/v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}/wallet": {
       "get": {
         "tags": [
           "solvers"
         ],
-        "summary": "Get Job Custom Metadata",
-        "description": "Gets custom metadata from a job\n\nNew in *version 0.5*",
-        "operationId": "get_job_custom_metadata",
+        "summary": "Get Job Wallet",
+        "operationId": "get_job_wallet",
         "parameters": [
           {
             "required": true,
@@ -1895,7 +2118,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/JobMetadata"
+                  "$ref": "#/components/schemas/WalletGetWithAvailableCredits"
                 }
               }
             }
@@ -1926,14 +2149,15 @@
             "HTTPBasic": []
           }
         ]
-      },
-      "patch": {
+      }
+    },
+    "/v0/solvers/{solver_key}/releases/{version}/jobs/{job_id}/pricing_unit": {
+      "get": {
         "tags": [
           "solvers"
         ],
-        "summary": "Replace Job Custom Metadata",
-        "description": "Updates custom metadata from a job\n\nNew in *version 0.5*",
-        "operationId": "replace_job_custom_metadata",
+        "summary": "Get Job Pricing Unit",
+        "operationId": "get_job_pricing_unit",
         "parameters": [
           {
             "required": true,
@@ -1966,23 +2190,13 @@
             "in": "path"
           }
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/JobMetadataUpdate"
-              }
-            }
-          },
-          "required": true
-        },
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/JobMetadata"
+                  "$ref": "#/components/schemas/PricingUnitGet"
                 }
               }
             }
@@ -2853,6 +3067,79 @@
           }
         }
       }
+    },
+    "/v0/wallets/default": {
+      "get": {
+        "tags": [
+          "wallets"
+        ],
+        "summary": "Get Default Wallet",
+        "operationId": "get_default_wallet",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WalletGetWithAvailableCredits"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
+      }
+    },
+    "/v0/wallets/{wallet_id}": {
+      "get": {
+        "tags": [
+          "wallets"
+        ],
+        "summary": "Get Wallet",
+        "operationId": "get_wallet",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Wallet Id",
+              "type": "integer"
+            },
+            "name": "wallet_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WalletGetWithAvailableCredits"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -2903,7 +3190,8 @@
         "title": "ClientFile",
         "required": [
           "filename",
-          "filesize"
+          "filesize",
+          "sha256_checksum"
         ],
         "type": "object",
         "properties": {
@@ -3662,9 +3950,53 @@
           }
         }
       },
+      "PricingPlanClassification": {
+        "title": "PricingPlanClassification",
+        "enum": [
+          "TIER"
+        ],
+        "type": "string",
+        "description": "An enumeration."
+      },
+      "PricingUnitGet": {
+        "title": "PricingUnitGet",
+        "required": [
+          "pricingUnitId",
+          "unitName",
+          "unitExtraInfo",
+          "currentCostPerUnit",
+          "default"
+        ],
+        "type": "object",
+        "properties": {
+          "pricingUnitId": {
+            "title": "Pricingunitid",
+            "exclusiveMinimum": true,
+            "type": "integer",
+            "minimum": 0
+          },
+          "unitName": {
+            "title": "Unitname",
+            "type": "string"
+          },
+          "unitExtraInfo": {
+            "title": "Unitextrainfo",
+            "type": "object"
+          },
+          "currentCostPerUnit": {
+            "title": "Currentcostperunit",
+            "type": "number"
+          },
+          "default": {
+            "title": "Default",
+            "type": "boolean"
+          }
+        }
+      },
       "Profile": {
         "title": "Profile",
         "required": [
+          "id",
           "login",
           "role"
         ],
@@ -3679,6 +4011,12 @@
             "title": "Last Name",
             "type": "string",
             "example": "Maxwell"
+          },
+          "id": {
+            "title": "Id",
+            "exclusiveMinimum": true,
+            "type": "integer",
+            "minimum": 0
           },
           "login": {
             "title": "Login",
@@ -3699,6 +4037,7 @@
           }
         },
         "example": {
+          "id": "20",
           "first_name": "James",
           "last_name": "Maxwell",
           "login": "james-maxwell@itis.swiss",
@@ -3751,6 +4090,54 @@
         ],
         "type": "string",
         "description": "State of execution of a project's computational workflow\n\nSEE StateType for task state"
+      },
+      "ServicePricingPlanGet": {
+        "title": "ServicePricingPlanGet",
+        "required": [
+          "pricingPlanId",
+          "displayName",
+          "description",
+          "classification",
+          "createdAt",
+          "pricingPlanKey",
+          "pricingUnits"
+        ],
+        "type": "object",
+        "properties": {
+          "pricingPlanId": {
+            "title": "Pricingplanid",
+            "exclusiveMinimum": true,
+            "type": "integer",
+            "minimum": 0
+          },
+          "displayName": {
+            "title": "Displayname",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "classification": {
+            "$ref": "#/components/schemas/PricingPlanClassification"
+          },
+          "createdAt": {
+            "title": "Createdat",
+            "type": "string",
+            "format": "date-time"
+          },
+          "pricingPlanKey": {
+            "title": "Pricingplankey",
+            "type": "string"
+          },
+          "pricingUnits": {
+            "title": "Pricingunits",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PricingUnitGet"
+            }
+          }
+        }
       },
       "Solver": {
         "title": "Solver",
@@ -4014,6 +4401,71 @@
             "type": "string"
           }
         }
+      },
+      "WalletGetWithAvailableCredits": {
+        "title": "WalletGetWithAvailableCredits",
+        "required": [
+          "walletId",
+          "name",
+          "owner",
+          "status",
+          "created",
+          "modified",
+          "availableCredits"
+        ],
+        "type": "object",
+        "properties": {
+          "walletId": {
+            "title": "Walletid",
+            "exclusiveMinimum": true,
+            "type": "integer",
+            "minimum": 0
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "owner": {
+            "title": "Owner",
+            "exclusiveMinimum": true,
+            "type": "integer",
+            "minimum": 0
+          },
+          "thumbnail": {
+            "title": "Thumbnail",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/WalletStatus"
+          },
+          "created": {
+            "title": "Created",
+            "type": "string",
+            "format": "date-time"
+          },
+          "modified": {
+            "title": "Modified",
+            "type": "string",
+            "format": "date-time"
+          },
+          "availableCredits": {
+            "title": "Availablecredits",
+            "type": "number"
+          }
+        }
+      },
+      "WalletStatus": {
+        "title": "WalletStatus",
+        "enum": [
+          "ACTIVE",
+          "INACTIVE"
+        ],
+        "type": "string",
+        "description": "An enumeration."
       }
     },
     "securitySchemes": {

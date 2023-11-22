@@ -37,6 +37,7 @@ class TestProfile(unittest.TestCase):
             return Profile(
                 first_name="James",
                 last_name="Maxwell",
+                id=4,
                 login="0",
                 role="ANONYMOUS",
                 groups=Groups(
@@ -61,10 +62,7 @@ class TestProfile(unittest.TestCase):
                 gravatar_id="0",
             )
         else:
-            return Profile(
-                login="0",
-                role="ANONYMOUS",
-            )
+            return Profile(login="0", role="ANONYMOUS", id=4)
 
     def testProfile(self):
         """Test Profile"""
