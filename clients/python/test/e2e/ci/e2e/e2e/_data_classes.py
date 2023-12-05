@@ -57,9 +57,9 @@ class ClientConfig(BaseModel):
         """Returns the reference for this client in the compatibility table"""
         if self.version == "master":
             if self.dev_features:
-                return f"{osparc.__version__}+dev_features"
+                return "master+dev_features"
             else:
-                return f"{osparc.__version__}-dev_features"
+                return "master-dev_features"
         else:
             return "production"
 
