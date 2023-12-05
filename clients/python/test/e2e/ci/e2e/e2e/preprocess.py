@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 from typing import List
+from urllib.parse import urlparse
 
 import pandas as pd
 import pytest
@@ -14,22 +15,16 @@ from ._data_classes import (
     PytestIniFile,
     ServerConfig,
 )
-from ._utils import _ARTIFACTS_DIR, _COMPATIBILITY_CSV, E2eExitCodes, print_line
+from ._utils import _COMPATIBILITY_CSV, E2eExitCodes, handle_validation_error
 
 cli = typer.Typer()
 
 
-def log(client_cfg: ClientConfig, server_cfg: ServerConfig):
-    """Log configuration"""
-    print_line()
-    print("Configuration")
-    print("-------------")
-    print(f"\tclient: {client_cfg.client_ref}")
-    print(f"\tserver: {server_cfg.url.geturl()}")
-
-
 @cli.command()
-def generate_ini(client_config: str, server_config: str) -> None:
+@handle_validation_error
+def generate_ini(
+    artifacts_dir: Path, test_dir: Path, client_config: str, server_config: str
+) -> None:
     """
     Generates an ini configuration file for pytest e2e tests
 
@@ -42,43 +37,36 @@ def generate_ini(client_config: str, server_config: str) -> None:
         A bool indicating whether or not the (client, server) pair are compatible
     """
     # read in data
-    try:
-        client_cfg = ClientConfig(**json.loads(client_config))
-        server_cfg = ServerConfig(**json.loads(server_config))
-    except (ValidationError, ValueError) as e:
-        print("\n\n".join([client_config, server_config, str(e)]))
-        raise typer.Exit(code=E2eExitCodes.INVALID_JSON_DATA)
+    client_cfg = ClientConfig(**json.loads(client_config))
+    server_cfg = ServerConfig(**json.loads(server_config))
 
+    artifacts_dir_rel_tests = artifacts_dir.relative_to(test_dir)
+    host_netloc = urlparse(server_cfg.host).netloc
     artifacts: Artifacts = Artifacts(
-        artifact_dir=Path("../../")
-        / _ARTIFACTS_DIR.relative_to(Path("../../").resolve()),
-        result_data_frame=Path("../../")
-        / _ARTIFACTS_DIR.relative_to(Path("../../").resolve())
-        / (client_cfg.client_ref + ".json"),
-        log_dir=Path("../../")
-        / _ARTIFACTS_DIR.relative_to(Path("../../").resolve())
-        / (client_cfg.client_ref + "_" + server_cfg.url.netloc),
+        artifact_dir=artifacts_dir_rel_tests,
+        result_data_frame=artifacts_dir_rel_tests / (client_cfg.client_ref + ".json"),
+        log_dir=artifacts_dir_rel_tests / (client_cfg.client_ref + "_" + host_netloc),
     )
 
     envs: List[str] = []
-    envs.append(f"OSPARC_API_HOST={server_cfg.url.geturl()}")
+    envs.append(f"OSPARC_API_HOST={urlparse(server_cfg.host).geturl()}")
     envs.append(f"OSPARC_API_KEY={server_cfg.key}")
     envs.append(f"OSPARC_API_SECRET={server_cfg.secret}")
     envs.append(
         f"OSPARC_DEV_FEATURES_ENABLED=" f"{1 if client_cfg.client_dev_features else 0}"
     )
 
-    html_log: Path = Path("../../") / (
-        _ARTIFACTS_DIR
-        / (client_cfg.client_ref + "_" + server_cfg.url.netloc)
-        / f"pytest_{client_cfg.client_ref}_{server_cfg.url.netloc}.html"
-    ).relative_to(Path("../../").resolve())
-    junit_xml: Path = Path("../../") / (
-        _ARTIFACTS_DIR
-        / (client_cfg.client_ref + "_" + server_cfg.url.netloc)
-        / f"junit_{client_cfg.client_ref}_{server_cfg.url.netloc}.xml"
-    ).relative_to(Path("../../").resolve())
-    junit_prefix: str = f"{client_cfg.client_ref}+{server_cfg.url.netloc}"
+    html_log = (
+        artifacts_dir_rel_tests
+        / (client_cfg.client_ref + "_" + host_netloc)
+        / f"pytest_{client_cfg.client_ref}_{host_netloc}.html"
+    )
+    junit_xml = (
+        artifacts_dir_rel_tests
+        / (client_cfg.client_ref + "_" + host_netloc)
+        / f"junit_{client_cfg.client_ref}_{host_netloc}.xml"
+    )
+    junit_prefix: str = f"{client_cfg.client_ref}+{host_netloc}"
     add_opts: str = (
         f"--html={html_log} --self-contained-html "
         f"--junitxml={junit_xml} --junit-prefix={junit_prefix}"
@@ -92,12 +80,12 @@ def generate_ini(client_config: str, server_config: str) -> None:
     config: PytestIniFile = PytestIniFile(
         pytest=pytest_config, client=client_cfg, server=server_cfg, artifacts=artifacts
     )
-    config.generate()
-    log(client_cfg, server_cfg)
+    config.write(pth=test_dir / "pytest.ini")
     raise typer.Exit(code=pytest.ExitCode.OK)
 
 
 @cli.command()
+@handle_validation_error
 def check_compatibility() -> None:
     """Checks if the client x server configuration in the pyproject.toml
     is compatible

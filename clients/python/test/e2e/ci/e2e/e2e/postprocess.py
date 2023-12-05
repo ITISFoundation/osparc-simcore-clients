@@ -1,5 +1,6 @@
 import warnings
 from pathlib import Path
+from urllib.parse import urlparse
 
 import pandas as pd
 import pytest
@@ -7,7 +8,7 @@ import typer
 from pydantic import ValidationError
 
 from ._data_classes import Artifacts, ClientConfig, PytestIniFile, ServerConfig
-from ._utils import E2eExitCodes, E2eScriptFailure, print_line
+from ._utils import E2eExitCodes, E2eScriptFailure, handle_validation_error, print_line
 
 cli = typer.Typer()
 
@@ -36,6 +37,7 @@ def _exit_code_valid(exit_code: int) -> bool:
 
 
 @cli.command()
+@handle_validation_error
 def single_testrun(exit_code: int) -> None:
     """
     Postprocess results from e2e pytests
@@ -58,11 +60,7 @@ def single_testrun(exit_code: int) -> None:
         raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
 
     # get config
-    try:
-        pytest_ini: PytestIniFile = PytestIniFile.read()
-    except (ValueError, ValidationError):
-        raise typer.Exit(code=E2eExitCodes.INVALID_JSON_DATA)
-
+    pytest_ini: PytestIniFile = PytestIniFile.read()
     client_cfg: ClientConfig = pytest_ini.client
     server_cfg: ServerConfig = pytest_ini.server
     artifacts: Artifacts = pytest_ini.artifacts
@@ -71,7 +69,9 @@ def single_testrun(exit_code: int) -> None:
     result_file: Path = artifacts.result_data_frame
     result_file.parent.mkdir(exist_ok=True, parents=True)
     new_df: pd.DataFrame = pd.DataFrame(
-        columns=[client_cfg.client_ref], index=[server_cfg.url.netloc], data=[exit_code]
+        columns=[client_cfg.client_ref],
+        index=[urlparse(server_cfg.host).netloc],
+        data=[exit_code],
     )
     result_df: pd.DataFrame
     if result_file.is_file():
@@ -84,7 +84,7 @@ def single_testrun(exit_code: int) -> None:
 
     # copy ini to artifacts dir
     artifacts.log_dir.mkdir(exist_ok=True)
-    pytest_ini.generate(artifacts.log_dir / "pytest.ini")
+    pytest_ini.write(artifacts.log_dir / "pytest.ini")
     raise typer.Exit(code=pytest.ExitCode.OK)
 
 

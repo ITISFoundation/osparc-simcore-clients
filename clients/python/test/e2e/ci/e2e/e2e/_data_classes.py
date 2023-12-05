@@ -1,34 +1,22 @@
 import configparser
 from pathlib import Path
 from typing import Dict, Optional
-from urllib.parse import ParseResult, urlparse
 
 from packaging.version import Version
 from pydantic import BaseModel, field_validator, model_validator
-
-from ._utils import _PYTEST_INI
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Holds classes for passing data around between scripts.
 
 
-class ServerConfig(BaseModel):
+class ServerConfig(BaseSettings):
     """Holds data about server configuration"""
 
-    api_host: str
-    api_key: str
-    api_secret: str
+    host: str
+    key: str
+    secret: str
 
-    @property
-    def url(self) -> ParseResult:
-        return urlparse(f"{self.api_host}")
-
-    @property
-    def key(self) -> str:
-        return self.api_key
-
-    @property
-    def secret(self) -> str:
-        return self.api_secret
+    model_config = SettingsConfigDict(env_prefix="osparc_api_")
 
 
 def is_empty(v):
@@ -155,7 +143,7 @@ class PytestIniFile(BaseModel):
     artifacts: Artifacts
 
     @classmethod
-    def read(cls, pth: Path = _PYTEST_INI) -> "PytestIniFile":
+    def read(cls, pth: Path = Path() / "pytest.ini") -> "PytestIniFile":
         """Read the pytest.ini file"""
         if not pth.is_file():
             raise ValueError(f"pth: {pth} must point to a pytest.ini file")
@@ -164,12 +152,12 @@ class PytestIniFile(BaseModel):
         config: Dict = {s: dict(obj.items(s)) for s in obj.sections()}
         return PytestIniFile(**config)
 
-    def generate(self, pth: Path = _PYTEST_INI) -> None:
+    def write(self, pth: Path = Path() / "pytest.ini") -> None:
         """Generate the pytest.ini file"""
         pth.unlink(missing_ok=True)
         pth.parent.mkdir(exist_ok=True)
         config: configparser.ConfigParser = configparser.ConfigParser()
-        for field_name in self.__fields__:
+        for field_name in self.model_fields:
             model: BaseModel = getattr(self, field_name)
             config[field_name] = model.model_dump(exclude_none=True)
         with open(pth, "w") as f:

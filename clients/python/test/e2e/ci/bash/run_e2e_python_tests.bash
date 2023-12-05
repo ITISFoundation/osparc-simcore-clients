@@ -42,7 +42,10 @@ NSCONFIG=$(echo "${OSPARC_SERVER_CONFIGS}" | jq length)
 for (( ii=0; ii<NSCONFIG; ii++ ))
 do
     SCONFIG=$(echo "${OSPARC_SERVER_CONFIGS}" | jq .[${ii}] )
-    if ! e2e preprocess generate-ini "${OSPARC_CLIENT_CONFIG}" "${SCONFIG}"; then
+    echo "${OSPARC_CLIENT_CONFIG}"
+    e2e preprocess generate-ini "${ARTIFACTS_DIR}" "$(pwd)" "${OSPARC_CLIENT_CONFIG}" "${SCONFIG}"
+    EC=$?
+    if [[ "${EC}" -ne 0 ]]; then
       exit 1
     fi
     e2e preprocess check-compatibility

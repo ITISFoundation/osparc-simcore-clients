@@ -1,4 +1,5 @@
 from enum import IntEnum
+from functools import wraps
 from pathlib import Path
 
 import pytest
@@ -8,10 +9,6 @@ from pydantic import ValidationError
 # Paths -------------------------------------------------------
 
 _E2E_DIR: Path = Path(__file__).parent.resolve()
-_PYTHON_DIR: Path = _E2E_DIR.parent.parent
-_CI_DIR: Path = (_E2E_DIR / "ci").resolve()
-_PYTEST_INI: Path = (_E2E_DIR / "pytest.ini").resolve()
-_ARTIFACTS_DIR: Path = (_E2E_DIR.parent.parent / "artifacts" / "e2e").resolve()
 _COMPATIBILITY_CSV: Path = (
     _E2E_DIR / "data" / "server_client_compatibility.csv"
 ).resolve()
@@ -51,11 +48,12 @@ assert (
 
 
 def handle_validation_error(func):
+    @wraps(func)
     def wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
-        except ValidationError as e:
+        except (ValidationError, ValueError) as e:
             typer.echo(f"{e}", err=True)
-            raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
+            raise typer.Exit(code=E2eExitCodes.INVALID_JSON_DATA)
 
     return wrapper
