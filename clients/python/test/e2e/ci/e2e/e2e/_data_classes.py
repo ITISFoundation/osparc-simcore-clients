@@ -34,7 +34,7 @@ class ClientConfig(BaseModel):
 
     @field_validator("version", mode="after")
     def validate_client(cls, v):
-        if v not in {"latest", "master"}:
+        if v not in {"latest_release", "master"}:
             try:
                 version = Version(v)
                 assert version == Version(osparc.__version__)
