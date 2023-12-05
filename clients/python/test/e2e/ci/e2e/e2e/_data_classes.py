@@ -2,8 +2,9 @@ import configparser
 from pathlib import Path
 from typing import Dict, Optional
 
-from packaging.version import Version
-from pydantic import BaseModel, field_validator, model_validator
+import osparc
+from packaging.version import InvalidVersion, Version
+from pydantic import BaseModel, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Holds classes for passing data around between scripts.
@@ -28,94 +29,28 @@ class ClientConfig(BaseModel):
     This data should uniquely determine how to install client
     """
 
-    client_version: Optional[str] = None
-    client_repo: Optional[str] = None
-    client_branch: Optional[str] = None
-    client_dev_features: bool = False
-    client_workflow: Optional[str] = None
-    client_runid: Optional[str] = None
+    version: Optional[str] = None
+    dev_features: bool = False
 
     @field_validator("client_version")
     def validate_client(cls, v):
-        if (not is_empty(v)) and (not v == "latest"):
+        if v not in {"latest", "master"}:
             try:
-                _ = Version(v)
-            except Exception:
-                raise ValueError(f"Did not receive valid version: {v}")
+                version = Version(v)
+                assert version == Version(osparc.__version__)
+            except InvalidVersion:
+                raise ValueError(f"Received invalid semantic version: {v}")
+            except AssertionError:
+                raise ValueError(f"{v=} != {osparc.__version__}")
         return v
 
-    @model_validator(mode="after")
-    def check_consistency(self) -> "ClientConfig":
-        msg: str = (
-            f"Recieved client_version={self.client_version}, "
-            f"client_repo={self.client_repo}"
-            "and client_branch={self.client_branch}. "
-            "Either a version or a repo, branch pair must be specified. Not both."
-        )
-        # check at least one is empty
-        if not (
-            is_empty(self.client_version)
-            or (is_empty(self.client_repo) and is_empty(self.client_branch))
-        ):
-            raise ValueError(msg)
-        # check not both empty
-        if is_empty(self.client_version) and (
-            is_empty(self.client_repo) and is_empty(self.client_branch)
-        ):
-            raise ValueError(msg)
-        if is_empty(self.client_version):
-            if (
-                is_empty(self.client_repo)
-                or is_empty(self.client_branch)
-                or is_empty(self.client_workflow)
-                or is_empty(self.client_runid)
-            ):
-                raise ValueError(msg)
-        return self
-
     @property
-    def version(self) -> Optional[str]:
-        return self.client_version
-
-    @property
-    def repo(self) -> Optional[str]:
-        return self.client_repo
-
-    @property
-    def branch(self) -> Optional[str]:
-        return self.client_branch
-
-    @property
-    def workflow(self) -> Optional[str]:
-        return self.client_workflow
-
-    @property
-    def runid(self) -> Optional[str]:
-        return self.client_runid
-
-    @property
-    def compatibility_ref(self) -> str:
+    def ref(self) -> str:
         """Returns the reference for this client in the compatibility table"""
-        if not is_empty(self.version):
-            return "production"
+        if self.dev_features:
+            return f"{osparc.__version__}+dev_features"
         else:
-            assert isinstance(self.branch, str)
-            if self.client_dev_features:
-                return f"{self.branch}+dev_features"
-            else:
-                return f"{self.branch}-dev_features"
-
-    @property
-    def client_ref(self) -> str:
-        """Returns a short hand reference for this client"""
-        if not is_empty(self.version):
-            assert isinstance(self.version, str)
-            return self.version
-        else:
-            assert isinstance(self.branch, str)
-            if self.client_dev_features:
-                return f"{self.branch}+dev_features"
-            return f"{self.branch}-dev_features"
+            return f"{osparc.__version__}-dev_features"
 
 
 class PytestConfig(BaseModel):
