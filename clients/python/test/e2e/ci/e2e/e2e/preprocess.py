@@ -95,6 +95,7 @@ def check_compatibility() -> None:
     client_cfg: ClientConfig = pytest_ini.client
     server_cfg: ServerConfig = pytest_ini.server
     if not _COMPATIBILITY_CSV.is_file():
+        typer.echo("Invalid compatibility csv")
         raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
     df: pd.DataFrame = pd.read_csv(_COMPATIBILITY_CSV)
 
@@ -108,7 +109,8 @@ def check_compatibility() -> None:
                 "Could not correctly determine compatibility between client and server."
             )
         is_compatible: bool = df["is_compatible"].loc[df.index[0]]
-    except Exception:
+    except Exception as exc:
+        typer.echo(f"{exc}")
         raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
 
     if not is_compatible:
