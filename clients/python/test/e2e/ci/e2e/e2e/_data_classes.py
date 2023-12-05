@@ -3,9 +3,10 @@ from pathlib import Path
 from typing import Dict, Optional
 from urllib.parse import ParseResult, urlparse
 
-from _utils import _PYTEST_INI
 from packaging.version import Version
 from pydantic import BaseModel, field_validator, model_validator
+
+from ._utils import _PYTEST_INI
 
 # Holds classes for passing data around between scripts.
 

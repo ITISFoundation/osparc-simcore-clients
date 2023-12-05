@@ -2,17 +2,21 @@ import json
 from pathlib import Path
 from typing import List
 
+import pandas as pd
 import pytest
 import typer
-from _data_classes import (
+from pydantic import ValidationError
+
+from ._data_classes import (
     Artifacts,
     ClientConfig,
     PytestConfig,
     PytestIniFile,
     ServerConfig,
 )
-from _utils import _ARTIFACTS_DIR, E2eExitCodes, print_line
-from pydantic import ValidationError
+from ._utils import _ARTIFACTS_DIR, _COMPATIBILITY_CSV, E2eExitCodes, print_line
+
+cli = typer.Typer()
 
 
 def log(client_cfg: ClientConfig, server_cfg: ServerConfig):
@@ -24,7 +28,8 @@ def log(client_cfg: ClientConfig, server_cfg: ServerConfig):
     print(f"\tserver: {server_cfg.url.geturl()}")
 
 
-def main(client_config: str, server_config: str) -> None:
+@cli.command()
+def generate_init_file(client_config: str, server_config: str) -> None:
     """
     Generates an ini configuration file for pytest e2e tests
 
@@ -92,5 +97,39 @@ def main(client_config: str, server_config: str) -> None:
     raise typer.Exit(code=pytest.ExitCode.OK)
 
 
-if __name__ == "__main__":
-    typer.run(main)
+@cli.command()
+def check_server_client_compatibility() -> None:
+    """Checks if the client x server configuration in the pyproject.toml
+    is compatible
+
+    Raises:
+        typer.Exit: When exit code is returned
+    """
+    try:
+        pytest_ini: PytestIniFile = PytestIniFile.read()
+    except (ValueError, ValidationError):
+        raise typer.Exit(code=E2eExitCodes.INVALID_JSON_DATA)
+
+    client_cfg: ClientConfig = pytest_ini.client
+    server_cfg: ServerConfig = pytest_ini.server
+    if not _COMPATIBILITY_CSV.is_file():
+        raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
+    df: pd.DataFrame = pd.read_csv(_COMPATIBILITY_CSV)
+
+    try:
+        df = df[
+            (df["server"] == server_cfg.url.netloc)
+            & (df["client"] == client_cfg.compatibility_ref)
+        ]
+        if df.shape[0] != 1:
+            raise RuntimeError(
+                "Could not correctly determine compatibility between client and server."
+            )
+        is_compatible: bool = df["is_compatible"].loc[df.index[0]]
+    except Exception:
+        raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
+
+    if not is_compatible:
+        raise typer.Exit(code=E2eExitCodes.INCOMPATIBLE_CLIENT_SERVER)
+    else:
+        raise typer.Exit(code=pytest.ExitCode.OK)
