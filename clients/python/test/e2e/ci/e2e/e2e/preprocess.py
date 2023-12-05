@@ -6,7 +6,6 @@ from urllib.parse import urlparse
 import pandas as pd
 import pytest
 import typer
-from pydantic import ValidationError
 
 from ._data_classes import (
     Artifacts,
@@ -93,11 +92,7 @@ def check_compatibility() -> None:
     Raises:
         typer.Exit: When exit code is returned
     """
-    try:
-        pytest_ini: PytestIniFile = PytestIniFile.read()
-    except (ValueError, ValidationError):
-        raise typer.Exit(code=E2eExitCodes.INVALID_JSON_DATA)
-
+    pytest_ini: PytestIniFile = PytestIniFile.read()
     client_cfg: ClientConfig = pytest_ini.client
     server_cfg: ServerConfig = pytest_ini.server
     if not _COMPATIBILITY_CSV.is_file():
@@ -106,7 +101,7 @@ def check_compatibility() -> None:
 
     try:
         df = df[
-            (df["server"] == server_cfg.url.netloc)
+            (df["server"] == urlparse(server_cfg.host).netloc)
             & (df["client"] == client_cfg.compatibility_ref)
         ]
         if df.shape[0] != 1:

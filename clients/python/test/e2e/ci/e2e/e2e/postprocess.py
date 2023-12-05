@@ -5,25 +5,33 @@ from urllib.parse import urlparse
 import pandas as pd
 import pytest
 import typer
-from pydantic import ValidationError
 
 from ._data_classes import Artifacts, ClientConfig, PytestIniFile, ServerConfig
-from ._utils import E2eExitCodes, E2eScriptFailure, handle_validation_error, print_line
+from ._utils import E2eExitCodes, E2eScriptFailure, handle_validation_error
 
 cli = typer.Typer()
 
 
 def log(exit_code: int):
     """Log exit status"""
-    print("Exit status")
-    print("-------------")
+    config = PytestIniFile.read()
+    n_dash = 100
+    typer.echo(n_dash * "=")
+    typer.echo("\nServer config")
+    typer.echo("-------------")
+    typer.echo(config.server.model_dump_json(indent=1))
+    typer.echo("\nClient config")
+    typer.echo("-------------")
+    typer.echo(config.client.model_dump_json(indent=1))
+    typer.echo("\nExit status")
+    typer.echo("-------------")
     if exit_code in {e.value for e in E2eExitCodes}:
-        print(f"\t{E2eExitCodes(exit_code).name}")
+        typer.echo(f"\t{E2eExitCodes(exit_code).name}")
     elif exit_code in {e.value for e in pytest.ExitCode}:
-        print(f"\t{pytest.ExitCode(exit_code).name}")
+        typer.echo(f"\t{pytest.ExitCode(exit_code).name}")
     else:
-        print(f"\t{E2eExitCodes.CI_SCRIPT_FAILURE.name}")
-    print_line()
+        typer.echo(f"\t{E2eExitCodes.CI_SCRIPT_FAILURE.name}")
+    typer.echo("\n" + n_dash * "=")
 
 
 def _exit_code_valid(exit_code: int) -> bool:
@@ -89,13 +97,10 @@ def single_testrun(exit_code: int) -> None:
 
 
 @cli.command()
+@handle_validation_error
 def check_for_failure():
     """Loop through all json artifacts and fail in case of testfailure"""
-    try:
-        pytest_ini: PytestIniFile = PytestIniFile.read()
-    except (ValueError, ValidationError):
-        raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
-
+    pytest_ini: PytestIniFile = PytestIniFile.read()
     artifacts: Artifacts = pytest_ini.artifacts
     if not artifacts.log_dir.is_dir():
         raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
