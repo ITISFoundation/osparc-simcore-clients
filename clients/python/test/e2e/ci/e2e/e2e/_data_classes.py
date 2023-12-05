@@ -133,6 +133,11 @@ class Artifacts(BaseModel):
     result_data_frame: Path
     log_dir: Path
 
+    @field_validator("artifact_dir", mode="after")
+    def ensure_directory(cls, v: Path):
+        v.mkdir(parents=True, exist_ok=True)
+        return v
+
 
 class PytestIniFile(BaseModel):
     """Model for validating the .ini file"""
