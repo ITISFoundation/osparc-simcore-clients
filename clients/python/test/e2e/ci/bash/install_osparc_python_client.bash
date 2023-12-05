@@ -22,12 +22,14 @@ fi
 version=$(echo "${client_config}" | jq -r .version)
 if [[ $(echo "$client_config" | jq 'has("dev_features")') != "true" ]]; then
   echo "'dev_features' key was missing"
+  exit 1
 fi
 
 if [[ "${version}" == "master" ]]; then
   python -m pip install osparc --extra-index-url https://test.pypi.org/simple/ --force-reinstall
 else
-  if [[ "${version}" != "latest" ]]; then
+  v_string=""
+  if [[ "${version}" != "latest_release" ]]; then
     v_string="==${version}"
   fi
     python -m pip install osparc"${v_string}" --force-reinstall
