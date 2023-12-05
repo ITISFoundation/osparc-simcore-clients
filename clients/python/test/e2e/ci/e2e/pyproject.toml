@@ -6,13 +6,14 @@ authors = ["Mads Bisgaard <bisgaard@itis.swiss>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-typer = {extras = ["all"], version = "^0.9.0"}
-python = "^3.9"
+osparc = "*"
+packaging = "^23.2"
+pandas = {extras = ["plot", "output-formatting"], version = "^2.1"}
 pydantic = "^2.5"
 pydantic-settings = "^2.1"
-pandas = {extras = ["plot", "output-formatting"], version = "^2.1"}
 pytest = "^7.4"
-packaging = "^23.2"
+python = "^3.9"
+typer = {extras = ["all"], version = "^0.9.0"}
 
 [tool.poetry.scripts]
 e2e = "e2e.cli:cli"
