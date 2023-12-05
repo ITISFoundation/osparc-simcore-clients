@@ -42,8 +42,8 @@ def generate_ini(
     host_netloc = urlparse(server_cfg.host).netloc
     artifacts: Artifacts = Artifacts(
         artifact_dir=artifacts_dir,
-        result_data_frame=artifacts_dir / (client_cfg.client_ref + ".json"),
-        log_dir=artifacts_dir / (client_cfg.client_ref + "_" + host_netloc),
+        result_data_frame=artifacts_dir / (client_cfg.ref + ".json"),
+        log_dir=artifacts_dir / (client_cfg.ref + "_" + host_netloc),
     )
 
     envs: List[str] = []
@@ -51,20 +51,20 @@ def generate_ini(
     envs.append(f"OSPARC_API_KEY={server_cfg.key}")
     envs.append(f"OSPARC_API_SECRET={server_cfg.secret}")
     envs.append(
-        f"OSPARC_DEV_FEATURES_ENABLED=" f"{1 if client_cfg.client_dev_features else 0}"
+        f"OSPARC_DEV_FEATURES_ENABLED=" f"{1 if client_cfg.dev_features else 0}"
     )
 
     html_log = (
         artifacts_dir
-        / (client_cfg.client_ref + "_" + host_netloc)
-        / f"pytest_{client_cfg.client_ref}_{host_netloc}.html"
+        / (client_cfg.ref + "_" + host_netloc)
+        / f"pytest_{client_cfg.ref}_{host_netloc}.html"
     )
     junit_xml = (
         artifacts_dir
-        / (client_cfg.client_ref + "_" + host_netloc)
-        / f"junit_{client_cfg.client_ref}_{host_netloc}.xml"
+        / (client_cfg.ref + "_" + host_netloc)
+        / f"junit_{client_cfg.ref}_{host_netloc}.xml"
     )
-    junit_prefix: str = f"{client_cfg.client_ref}+{host_netloc}"
+    junit_prefix: str = f"{client_cfg.ref}+{host_netloc}"
     add_opts: str = (
         f"--html={html_log} --self-contained-html "
         f"--junitxml={junit_xml} --junit-prefix={junit_prefix}"

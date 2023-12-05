@@ -77,7 +77,7 @@ def single_testrun(exit_code: int) -> None:
     result_file: Path = artifacts.result_data_frame
     result_file.parent.mkdir(exist_ok=True, parents=True)
     new_df: pd.DataFrame = pd.DataFrame(
-        columns=[client_cfg.client_ref],
+        columns=[client_cfg.ref],
         index=[urlparse(server_cfg.host).netloc],
         data=[exit_code],
     )
