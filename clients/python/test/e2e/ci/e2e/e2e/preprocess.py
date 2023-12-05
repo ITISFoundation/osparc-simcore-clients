@@ -39,12 +39,11 @@ def generate_ini(
     client_cfg = ClientConfig(**json.loads(client_config))
     server_cfg = ServerConfig(**json.loads(server_config))
 
-    artifacts_dir_rel_tests = artifacts_dir.relative_to(test_dir)
     host_netloc = urlparse(server_cfg.host).netloc
     artifacts: Artifacts = Artifacts(
-        artifact_dir=artifacts_dir_rel_tests,
-        result_data_frame=artifacts_dir_rel_tests / (client_cfg.client_ref + ".json"),
-        log_dir=artifacts_dir_rel_tests / (client_cfg.client_ref + "_" + host_netloc),
+        artifact_dir=artifacts_dir,
+        result_data_frame=artifacts_dir / (client_cfg.client_ref + ".json"),
+        log_dir=artifacts_dir / (client_cfg.client_ref + "_" + host_netloc),
     )
 
     envs: List[str] = []
@@ -56,12 +55,12 @@ def generate_ini(
     )
 
     html_log = (
-        artifacts_dir_rel_tests
+        artifacts_dir
         / (client_cfg.client_ref + "_" + host_netloc)
         / f"pytest_{client_cfg.client_ref}_{host_netloc}.html"
     )
     junit_xml = (
-        artifacts_dir_rel_tests
+        artifacts_dir
         / (client_cfg.client_ref + "_" + host_netloc)
         / f"junit_{client_cfg.client_ref}_{host_netloc}.xml"
     )
