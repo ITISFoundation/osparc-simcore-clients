@@ -1,6 +1,6 @@
 import configparser
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict
 
 import osparc
 from packaging.version import InvalidVersion, Version
@@ -29,10 +29,10 @@ class ClientConfig(BaseModel):
     This data should uniquely determine how to install client
     """
 
-    version: Optional[str] = None
+    version: str
     dev_features: bool = False
 
-    @field_validator("client_version")
+    @field_validator("version", mode="after")
     def validate_client(cls, v):
         if v not in {"latest", "master"}:
             try:
