@@ -29,7 +29,7 @@ def log(client_cfg: ClientConfig, server_cfg: ServerConfig):
 
 
 @cli.command()
-def generate_init_file(client_config: str, server_config: str) -> None:
+def generate_ini(client_config: str, server_config: str) -> None:
     """
     Generates an ini configuration file for pytest e2e tests
 
@@ -98,7 +98,7 @@ def generate_init_file(client_config: str, server_config: str) -> None:
 
 
 @cli.command()
-def check_server_client_compatibility() -> None:
+def check_compatibility() -> None:
     """Checks if the client x server configuration in the pyproject.toml
     is compatible
 

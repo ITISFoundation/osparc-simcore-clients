@@ -11,6 +11,7 @@ python = "^3.9"
 pydantic = "^2.5"
 pandas = "^2.1"
 pytest = "^7.4"
+packaging = "^23.2"
 
 [tool.poetry.scripts]
 e2e = "e2e.cli:cli"
@@ -18,3 +19,6 @@ e2e = "e2e.cli:cli"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.package]
+include = ["data/*.csv"]
