@@ -41,7 +41,7 @@ class ClientConfig(BaseModel):
             except InvalidVersion:
                 raise ValueError(f"Received invalid semantic version: {v}")
             except AssertionError:
-                raise ValueError(f"{v=} != {osparc.__version__}")
+                raise ValueError(f"{v=} != {osparc.__version__=}")
         return v
 
     @property
