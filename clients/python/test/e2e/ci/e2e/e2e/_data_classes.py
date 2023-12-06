@@ -34,7 +34,7 @@ class ClientConfig(BaseModel):
 
     @field_validator("version", mode="after")
     def validate_client(cls, v):
-        if v not in {"latest_release", "master"}:
+        if v not in {"latest_release", "latest_master"}:
             try:
                 version = Version(v)
                 assert version == Version(osparc.__version__)
@@ -55,7 +55,7 @@ class ClientConfig(BaseModel):
     @property
     def compatibility_ref(self) -> str:
         """Returns the reference for this client in the compatibility table"""
-        if self.version == "master":
+        if self.version == "latest_master":
             if self.dev_features:
                 return "master+dev_features"
             else:
