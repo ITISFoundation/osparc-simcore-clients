@@ -32,5 +32,5 @@ else
   if [[ "${version}" != "latest_release" ]]; then
     v_string="==${version}"
   fi
-    python -m pip install osparc"${v_string}" --force-reinstall
+  python -m pip install osparc"${v_string}" --force-reinstall
 fi
