@@ -9,7 +9,7 @@ doc+="Input:\n"
 doc+="------\n"
 doc+="\tA single json string containing either the field 'dev_features' as well as 'version'\n"
 doc+="\t'version' must either be a semantic version, equal to 'latest_release' or equal to 'latest_master'. 'dev_features' must be either 'true' or 'false''\n"
-doc+="\tExample: bash install_osparc_python_client.bash '{\"dev_features\": \"true\", \"version\":  \"master\"}'\n"
+doc+="\tExample: bash install_osparc_python_client.bash '{\"dev_features\": \"true\", \"version\":  \"latest_master\"}'\n"
 
 print_doc() { echo -e "$doc"; }
 [ $# -eq 0 ] && print_doc && exit 0
