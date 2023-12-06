@@ -25,7 +25,7 @@ if [[ $(echo "$client_config" | jq 'has("dev_features")') != "true" ]]; then
   exit 1
 fi
 
-if [[ "${version}" == "master" ]]; then
+if [[ "${version}" == "latest_master" ]]; then
   python -m pip install osparc --extra-index-url https://test.pypi.org/simple/ --force-reinstall
 else
   v_string=""
