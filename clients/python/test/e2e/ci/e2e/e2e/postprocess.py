@@ -200,8 +200,7 @@ def clean_up_jobs(artifacts_dir: Path):
                 assert isinstance(solver, osparc.Solver)
                 assert (id_ := solver.id) is not None
                 assert (version := solver.version) is not None
-                assert isinstance(jobs := solvers_api.list_jobs(id_, version), list)
-                for job in jobs:
+                for job in solvers_api.jobs(id_, version):
                     assert isinstance(job, osparc.Job)
                     solvers_api.stop_job(id_, version, job.id)
                     solvers_api.delete_job(id_, version, job.id)
