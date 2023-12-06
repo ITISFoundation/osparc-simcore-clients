@@ -39,6 +39,7 @@ def generate_ini(
     client_cfg = ClientConfig(**json.loads(client_config))
     server_cfg = ServerConfig(**json.loads(server_config))
 
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
     host_netloc = urlparse(server_cfg.host).netloc
     artifacts: Artifacts = Artifacts(
         artifact_dir=artifacts_dir,

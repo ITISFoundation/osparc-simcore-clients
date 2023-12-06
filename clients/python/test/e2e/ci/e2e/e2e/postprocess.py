@@ -2,6 +2,7 @@ import warnings
 from pathlib import Path
 from urllib.parse import urlparse
 
+import osparc
 import pandas as pd
 import pytest
 import typer
@@ -172,3 +173,35 @@ def generate_html_table(e2e_artifacts_dir: str) -> None:
     s.set_table_styles(style)
     s.set_caption("OSPARC e2e python client vs server tests")
     s.to_html(artifacts / "test_results.html")
+
+
+@cli.command()
+def clean_up_jobs(artifacts_dir: Path):
+    """Loop through all users defined in pytest.ini files
+    in artifacts_dir and stop+delete all jobs.
+    """
+    if not artifacts_dir.is_dir():
+        typer.echo(f"{artifacts_dir=} is not a directory", err=True)
+        raise typer.Exit(code=E2eExitCodes.INVALID_JSON_DATA)
+    for pytest_ini in artifacts_dir.rglob("*pytest.ini"):
+        server_config = PytestIniFile.read(pytest_ini).server
+        config = osparc.Configuration(
+            host=server_config.host,
+            username=server_config.key,
+            password=server_config.secret,
+        )
+        typer.echo(
+            f"Cleaning up jobs for user:\n{server_config.model_dump_json(indent=1)}"
+        )
+        with osparc.ApiClient(config) as api_client:
+            solvers_api = osparc.SolversApi(api_client)
+            assert isinstance(solvers := solvers_api.list_solvers_releases(), list)
+            for solver in solvers:
+                assert isinstance(solver, osparc.Solver)
+                assert (id_ := solver.id) is not None
+                assert (version := solver.version) is not None
+                assert isinstance(jobs := solvers_api.list_jobs(id_, version), list)
+                for job in jobs:
+                    assert isinstance(job, osparc.Job)
+                    solvers_api.stop_job(id_, version, job.id)
+                    solvers_api.delete_job(id_, version, job.id)
