@@ -15,4 +15,4 @@ pytest-html
 packaging
 pipdeptree
 pipreqs
-test/e2e/ci/e2e
+-e test/e2e/ci/e2e
