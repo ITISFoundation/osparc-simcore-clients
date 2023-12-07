@@ -1,5 +1,6 @@
 import warnings
 from pathlib import Path
+from typing import Optional
 from urllib.parse import urlparse
 
 import osparc
@@ -176,7 +177,7 @@ def generate_html_table(e2e_artifacts_dir: str) -> None:
 
 
 @cli.command()
-def log_dir(pytest_ini: typer.Optional[Path] = None):
+def log_dir(pytest_ini: Optional[Path] = None):
     ini = PytestIniFile.read(pytest_ini) if pytest_ini else PytestIniFile.read()
     typer.echo(ini.artifacts.log_dir)
 
