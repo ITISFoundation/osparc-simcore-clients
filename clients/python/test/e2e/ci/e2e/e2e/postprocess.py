@@ -1,3 +1,4 @@
+import configparser
 import warnings
 from pathlib import Path
 from typing import Optional
@@ -191,7 +192,10 @@ def clean_up_jobs(artifacts_dir: Path):
         typer.echo(f"{artifacts_dir=} is not a directory", err=True)
         raise typer.Exit(code=E2eExitCodes.INVALID_JSON_DATA)
     for pytest_ini in artifacts_dir.rglob("*pytest.ini"):
-        server_config = PytestIniFile.read(pytest_ini).server
+        obj = configparser.ConfigParser()
+        obj.read(pytest_ini)
+        cfg = {s: dict(obj.items(s)) for s in obj.sections()}
+        server_config = ServerConfig.model_validate(cfg.get("server"))
         config = osparc.Configuration(
             host=server_config.host,
             username=server_config.key,
@@ -209,10 +213,4 @@ def clean_up_jobs(artifacts_dir: Path):
                 assert (version := solver.version) is not None
                 for job in solvers_api.jobs(id_, version):
                     assert isinstance(job, osparc.Job)
-                    assert isinstance(
-                        job_status := solvers_api.inspect_job(id_, version, job.id),
-                        osparc.JobStatus,
-                    )
-                    if job_status.stopped_at is None:
-                        solvers_api.stop_job(id_, version, job.id)
                     solvers_api.delete_job(id_, version, job.id)
