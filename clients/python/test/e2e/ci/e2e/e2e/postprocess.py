@@ -176,6 +176,12 @@ def generate_html_table(e2e_artifacts_dir: str) -> None:
 
 
 @cli.command()
+def log_dir(pytest_ini: Path | None = None):
+    ini = PytestIniFile.read(pytest_ini) if pytest_ini else PytestIniFile.read()
+    typer.echo(ini.artifacts.log_dir)
+
+
+@cli.command()
 def clean_up_jobs(artifacts_dir: Path):
     """Loop through all users defined in pytest.ini files
     in artifacts_dir and stop+delete all jobs.
