@@ -45,7 +45,7 @@ do
     if ! e2e preprocess generate-ini "${ARTIFACTS_DIR}" "$(pwd)" "${OSPARC_CLIENT_CONFIG}" "${SCONFIG}"; then
       exit 1
     fi
-    python -m pip freeze > "$(e2e postprocess log-dir)"/pip_freeze.txt
+    python -m pip freeze > "$(e2e postprocess log-dir)/pip_freeze.txt"
     e2e preprocess check-compatibility
     EC=$?
     if [[ "${EC}" -ne 0 ]]; then
