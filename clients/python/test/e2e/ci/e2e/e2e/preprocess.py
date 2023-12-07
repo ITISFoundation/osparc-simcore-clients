@@ -39,13 +39,14 @@ def generate_ini(
     client_cfg = ClientConfig(**json.loads(client_config))
     server_cfg = ServerConfig(**json.loads(server_config))
 
-    artifacts_dir.mkdir(parents=True, exist_ok=True)
     host_netloc = urlparse(server_cfg.host).netloc
     artifacts: Artifacts = Artifacts(
         artifact_dir=artifacts_dir,
         result_data_frame=artifacts_dir / (client_cfg.ref + ".json"),
         log_dir=artifacts_dir / (client_cfg.ref + "_" + host_netloc),
     )
+    artifacts.artifact_dir.mkdir(parents=True, exist_ok=True)
+    artifacts.log_dir.mkdir(parents=True, exist_ok=True)
 
     envs: List[str] = []
     envs.append(f"OSPARC_API_HOST={urlparse(server_cfg.host).geturl()}")
