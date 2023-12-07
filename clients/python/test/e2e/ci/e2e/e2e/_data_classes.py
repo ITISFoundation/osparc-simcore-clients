@@ -19,6 +19,16 @@ class ServerConfig(BaseSettings):
 
     model_config = SettingsConfigDict(env_prefix="osparc_api_")
 
+    def __hash__(self):
+        return hash(self.host + self.key + self.secret)
+
+    def __eq__(self, other):
+        return (
+            self.host == other.host
+            and self.key == other.key
+            and self.secret == other.secret
+        )
+
 
 def is_empty(v):
     return v is None or v == ""

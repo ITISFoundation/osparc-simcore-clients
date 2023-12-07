@@ -191,11 +191,14 @@ def clean_up_jobs(artifacts_dir: Path):
     if not artifacts_dir.is_dir():
         typer.echo(f"{artifacts_dir=} is not a directory", err=True)
         raise typer.Exit(code=E2eExitCodes.INVALID_JSON_DATA)
+    servers: set[ServerConfig] = set()
     for pytest_ini in artifacts_dir.rglob("*pytest.ini"):
         obj = configparser.ConfigParser()
         obj.read(pytest_ini)
         cfg = {s: dict(obj.items(s)) for s in obj.sections()}
         server_config = ServerConfig.model_validate(cfg.get("server"))
+        servers.add(server_config)
+    for server_config in servers:
         config = osparc.Configuration(
             host=server_config.host,
             username=server_config.key,
