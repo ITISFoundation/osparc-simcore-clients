@@ -89,7 +89,7 @@ jobs:
           python -m pip install pytest
           python -m pip install clients/python/artifacts/dist/${{needs.build.outputs.osparc}} --find-links=clients/python/artifacts/dist
           cd clients/python
-          make install-test
+          make install-unit-test
           pytest -v --ignore=/artifacts/client --ignore=test/e2e
 
   test-latest:
@@ -125,7 +125,7 @@ jobs:
           python -m pip install pytest
           python -m pip install clients/python/artifacts/dist/${{needs.build.outputs.osparc}} --find-links=clients/python/artifacts/dist
           cd clients/python
-          make install-test
+          make install-unit-test
           pytest -v --ignore=/artifacts/client --ignore=test/e2e
 
   publish:

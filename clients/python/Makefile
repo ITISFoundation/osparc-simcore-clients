@@ -106,9 +106,13 @@ _check_venv_active:
 install-dev: _check_venv_active ## install packages for development
 	pip install -r requirements/dev.txt
 
-.PHONY: install-test
-install-test: _check_venv_active install-dev ## install packages for testing client
-	pip install -r $(PYTHON_DIR)/requirements/test.txt
+.PHONY: install-unit-test
+install-unit-test: _check_venv_active ## install packages for unit testing client
+	pip install -r $(PYTHON_DIR)/requirements/unit-test.txt
+
+.PHONY: install-e2e-test
+install-e2e-test: _check_venv_active ## install packages for e2e testing client
+	pip install -r $(PYTHON_DIR)/requirements/e2e-test.txt
 
 .PHONY: install-doc
 install-doc: _check_venv_active install-dev ## install packages for generating documentation
