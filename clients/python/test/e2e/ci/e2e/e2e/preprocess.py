@@ -7,7 +7,13 @@ import pandas as pd
 import pytest
 import typer
 
-from ._models import Artifacts, ClientConfig, PytestConfig, PytestIniFile, ServerConfig
+from ._models import (
+    Artifacts,
+    ClientSettings,
+    PytestConfig,
+    PytestIniFile,
+    ServerSettings,
+)
 from ._utils import _COMPATIBILITY_CSV, E2eExitCodes, handle_validation_error
 
 cli = typer.Typer()
@@ -30,8 +36,8 @@ def generate_ini(
         A bool indicating whether or not the (client, server) pair are compatible
     """
     # read in data
-    client_cfg = ClientConfig(**json.loads(client_config))
-    server_cfg = ServerConfig(**json.loads(server_config))
+    client_cfg = ClientSettings(**json.loads(client_config))
+    server_cfg = ServerSettings(**json.loads(server_config))
 
     host_netloc = urlparse(server_cfg.host).netloc
     artifacts: Artifacts = Artifacts(
@@ -88,8 +94,8 @@ def check_compatibility() -> None:
         typer.Exit: When exit code is returned
     """
     pytest_ini: PytestIniFile = PytestIniFile.read()
-    client_cfg: ClientConfig = pytest_ini.client
-    server_cfg: ServerConfig = pytest_ini.server
+    client_cfg: ClientSettings = pytest_ini.client
+    server_cfg: ServerSettings = pytest_ini.server
     if not _COMPATIBILITY_CSV.is_file():
         typer.echo("Invalid compatibility csv")
         raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE, err=True)

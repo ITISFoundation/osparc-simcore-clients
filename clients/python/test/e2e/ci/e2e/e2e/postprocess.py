@@ -9,7 +9,7 @@ import pandas as pd
 import pytest
 import typer
 
-from ._models import Artifacts, ClientConfig, PytestIniFile, ServerConfig
+from ._models import Artifacts, ClientSettings, PytestIniFile, ServerSettings
 from ._utils import E2eExitCodes, E2eScriptFailure, handle_validation_error
 
 cli = typer.Typer()
@@ -72,8 +72,8 @@ def single_testrun(exit_code: int) -> None:
 
     # get config
     pytest_ini: PytestIniFile = PytestIniFile.read()
-    client_cfg: ClientConfig = pytest_ini.client
-    server_cfg: ServerConfig = pytest_ini.server
+    client_cfg: ClientSettings = pytest_ini.client
+    server_cfg: ServerSettings = pytest_ini.server
     artifacts: Artifacts = pytest_ini.artifacts
 
     # add result to json
@@ -191,12 +191,12 @@ def clean_up_jobs(artifacts_dir: Path):
     if not artifacts_dir.is_dir():
         typer.echo(f"{artifacts_dir=} is not a directory", err=True)
         raise typer.Exit(code=E2eExitCodes.INVALID_JSON_DATA)
-    servers: set[ServerConfig] = set()
+    servers: set[ServerSettings] = set()
     for pytest_ini in artifacts_dir.rglob("*pytest.ini"):
         obj = configparser.ConfigParser()
         obj.read(pytest_ini)
         cfg = {s: dict(obj.items(s)) for s in obj.sections()}
-        server_config = ServerConfig.model_validate(cfg.get("server"))
+        server_config = ServerSettings.model_validate(cfg.get("server"))
         servers.add(server_config)
     for server_config in servers:
         config = osparc.Configuration(

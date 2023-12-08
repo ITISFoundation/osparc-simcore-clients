@@ -10,7 +10,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 # Holds classes for passing data around between scripts.
 
 
-class ServerConfig(BaseSettings):
+class ServerSettings(BaseSettings):
     """Holds data about server configuration"""
 
     host: str
@@ -34,7 +34,7 @@ def is_empty(v):
     return v is None or v == ""
 
 
-class ClientConfig(BaseModel):
+class ClientSettings(BaseSettings):
     """Holds data about client configuration.
     This data should uniquely determine how to install client
     """
@@ -94,8 +94,8 @@ class PytestIniFile(BaseModel):
     """Model for validating the .ini file"""
 
     pytest: PytestConfig
-    client: ClientConfig
-    server: ServerConfig
+    client: ClientSettings
+    server: ServerSettings
     artifacts: Artifacts
 
     @classmethod
