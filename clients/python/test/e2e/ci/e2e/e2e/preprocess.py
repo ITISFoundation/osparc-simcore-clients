@@ -7,13 +7,7 @@ import pandas as pd
 import pytest
 import typer
 
-from ._data_classes import (
-    Artifacts,
-    ClientConfig,
-    PytestConfig,
-    PytestIniFile,
-    ServerConfig,
-)
+from ._models import Artifacts, ClientConfig, PytestConfig, PytestIniFile, ServerConfig
 from ._utils import _COMPATIBILITY_CSV, E2eExitCodes, handle_validation_error
 
 cli = typer.Typer()

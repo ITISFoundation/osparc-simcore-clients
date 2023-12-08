@@ -9,7 +9,7 @@ import pandas as pd
 import pytest
 import typer
 
-from ._data_classes import Artifacts, ClientConfig, PytestIniFile, ServerConfig
+from ._models import Artifacts, ClientConfig, PytestIniFile, ServerConfig
 from ._utils import E2eExitCodes, E2eScriptFailure, handle_validation_error
 
 cli = typer.Typer()
