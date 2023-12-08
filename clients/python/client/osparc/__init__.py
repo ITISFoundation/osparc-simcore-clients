@@ -35,11 +35,11 @@ from osparc_client import (  # APIs; API client; models
     __version__,
 )
 
+from ._exceptions import RequestError
 from ._files_api import FilesApi
 from ._info import openapi
 from ._solvers_api import SolversApi
 from ._utils import dev_features_enabled
-from ._warnings_and_errors import RequestError
 
 nest_asyncio.apply()  # allow to run coroutines via asyncio.run(coro)
 

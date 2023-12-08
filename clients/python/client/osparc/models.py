@@ -17,7 +17,7 @@ from osparc_client.models import (
 from osparc_client.models import RunningState as TaskStates
 from osparc_client.models import Solver, UserRoleEnum, UsersGroup, ValidationError
 
-from ._warnings_and_errors import VisibleDeprecationWarning
+from ._exceptions import VisibleDeprecationWarning
 
 warning_msg: Final[str] = (
     "osparc.models has been deprecated. Instead functionality within this module "

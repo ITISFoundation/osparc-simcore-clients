@@ -17,7 +17,7 @@ from osparc_client import (
     Study,
 )
 
-from ._warnings_and_errors import RequestError
+from ._exceptions import RequestError
 
 _KB = 1024  # in bytes
 _MB = _KB * 1024  # in bytes
