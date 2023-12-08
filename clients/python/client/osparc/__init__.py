@@ -35,6 +35,7 @@ from osparc_client import (  # APIs; API client; models
     __version__,
 )
 
+from ._exceptions import RequestError
 from ._files_api import FilesApi
 from ._info import openapi
 from ._solvers_api import SolversApi
@@ -88,4 +89,5 @@ __all__: Tuple[str, ...] = tuple(dev_features) + (
     "SolverPort",
     "ErrorGet",
     "openapi",
+    "RequestError",
 )  # type: ignore

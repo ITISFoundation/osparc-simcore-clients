@@ -12,7 +12,5 @@ pydantic
 pytest
 pytest-env
 pytest-html
-typer
 packaging
-pipdeptree
-pipreqs
+-e test/e2e/ci/e2e

@@ -18,7 +18,7 @@ min_version_reqs: Dict[str, Version] = {
 
 def test_notebook_config(tmp_path: Path):
     """Checks the jupyter environment is configured correctly"""
-    config_test_nb: Path = Path(__file__).parent / "data" / "config_test.ipynb"
+    config_test_nb: Path = Path(__file__).parent / "config_test.ipynb"
     assert config_test_nb.is_file()
     test_run_notebooks(
         tmp_path,

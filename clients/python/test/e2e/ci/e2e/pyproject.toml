@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "e2e"
+version = "0.1.0"
+description = ""
+authors = ["Mads Bisgaard <bisgaard@itis.swiss>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+osparc = "*"
+packaging = "^23.2"
+pandas = {extras = ["plot", "output-formatting"], version = "^2.1"}
+pydantic = "^2.5"
+pydantic-settings = "^2.1"
+pytest = "^7.4"
+python = "^3.9"
+typer = {extras = ["all"], version = "^0.9.0"}
+
+[tool.poetry.scripts]
+e2e = "e2e.cli:cli"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.package]
+include = ["data/*.csv"]

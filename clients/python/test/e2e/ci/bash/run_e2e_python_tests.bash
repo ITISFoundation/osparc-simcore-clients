@@ -3,8 +3,6 @@
 set -o nounset  # abort on unbound variable
 set -o pipefail # don't hide errors within pipes
 
-CI_DIR=$(realpath "$(dirname "$0")")
-
 doc="Run e2e osparc python client tests\n"
 doc+="Input:\n"
 doc+="------\n"
@@ -44,13 +42,14 @@ NSCONFIG=$(echo "${OSPARC_SERVER_CONFIGS}" | jq length)
 for (( ii=0; ii<NSCONFIG; ii++ ))
 do
     SCONFIG=$(echo "${OSPARC_SERVER_CONFIGS}" | jq .[${ii}] )
-    if ! python "${CI_DIR}"/generate_pytest_ini.py "${OSPARC_CLIENT_CONFIG}" "${SCONFIG}"; then
+    if ! e2e preprocess generate-ini "${ARTIFACTS_DIR}" "$(pwd)" "${OSPARC_CLIENT_CONFIG}" "${SCONFIG}"; then
       exit 1
     fi
-    python "${CI_DIR}"/compatible_client_server.py
+    python -m pip freeze > "$(e2e postprocess log-dir)/pip_freeze.txt"
+    e2e preprocess check-compatibility
     EC=$?
     if [[ "${EC}" -ne 0 ]]; then
-      if ! python "${CI_DIR}"/postprocess_e2e.py "${EC}"; then
+      if ! e2e postprocess single-testrun "${EC}"; then
         exit 1
       fi
       continue
@@ -58,7 +57,7 @@ do
     (
       # run in subshell to ensure env doesnt survive
       python -m pytest -c pytest.ini > /dev/null
-      if ! python "${CI_DIR}"/postprocess_e2e.py $?; then
+      if ! e2e postprocess single-testrun $?; then
         exit 1
       fi
     )

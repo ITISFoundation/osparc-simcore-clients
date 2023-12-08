@@ -3,7 +3,7 @@ from typing import Final, Tuple
 
 from osparc_client.api import FilesApi, MetaApi, SolversApi, UsersApi
 
-from ._warnings_and_errors import VisibleDeprecationWarning
+from ._exceptions import VisibleDeprecationWarning
 
 warning_msg: Final[str] = (
     "osparc.api has been deprecated. Instead functionality within this module "

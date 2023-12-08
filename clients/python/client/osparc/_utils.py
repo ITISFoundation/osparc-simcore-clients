@@ -17,6 +17,8 @@ from osparc_client import (
     Study,
 )
 
+from ._exceptions import RequestError
+
 _KB = 1024  # in bytes
 _MB = _KB * 1024  # in bytes
 _GB = _MB * 1024  # in bytes
@@ -61,8 +63,12 @@ class PaginationGenerator:
             assert isinstance(page.total, int)
             yield from page.items
             if page.links.next is None:
-                break
+                return
             response: httpx.Response = self._client.get(page.links.next)
+            try:
+                response.raise_for_status()
+            except httpx.HTTPStatusError as e:
+                raise RequestError() from e
             page = self._api_client._ApiClient__deserialize(response.json(), type(page))
 
 
