@@ -17,7 +17,7 @@ cli = typer.Typer()
 
 def log(exit_code: int):
     """Log exit status"""
-    config = PytestIniFile.read()
+    config = PytestIniFile.create_from_file()
     n_dash = 100
     typer.echo(n_dash * "=")
     typer.echo("\nServer config")
@@ -71,7 +71,7 @@ def single_testrun(exit_code: int) -> None:
         raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
 
     # get config
-    pytest_ini: PytestIniFile = PytestIniFile.read()
+    pytest_ini: PytestIniFile = PytestIniFile.create_from_file()
     client_cfg: ClientSettings = pytest_ini.client
     server_cfg: ServerSettings = pytest_ini.server
     artifacts: Artifacts = pytest_ini.artifacts
@@ -95,7 +95,7 @@ def single_testrun(exit_code: int) -> None:
 
     # copy ini to artifacts dir
     artifacts.log_dir.mkdir(exist_ok=True)
-    pytest_ini.write(artifacts.log_dir / "pytest.ini")
+    pytest_ini.write_to_file(artifacts.log_dir / "pytest.ini")
     raise typer.Exit(code=pytest.ExitCode.OK)
 
 
@@ -103,7 +103,7 @@ def single_testrun(exit_code: int) -> None:
 @handle_validation_error
 def check_for_failure():
     """Loop through all json artifacts and fail in case of testfailure"""
-    pytest_ini: PytestIniFile = PytestIniFile.read()
+    pytest_ini: PytestIniFile = PytestIniFile.create_from_file()
     artifacts: Artifacts = pytest_ini.artifacts
     if not artifacts.log_dir.is_dir():
         raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
@@ -179,7 +179,11 @@ def generate_html_table(e2e_artifacts_dir: str) -> None:
 
 @cli.command()
 def log_dir(pytest_ini: Optional[Path] = None):
-    ini = PytestIniFile.read(pytest_ini) if pytest_ini else PytestIniFile.read()
+    ini = (
+        PytestIniFile.create_from_file(pytest_ini)
+        if pytest_ini
+        else PytestIniFile.create_from_file()
+    )
     typer.echo(ini.artifacts.log_dir)
 
 

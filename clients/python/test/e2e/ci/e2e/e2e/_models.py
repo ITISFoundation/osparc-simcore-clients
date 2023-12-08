@@ -99,7 +99,7 @@ class PytestIniFile(BaseModel):
     artifacts: Artifacts
 
     @classmethod
-    def read(cls, pth: Path = Path() / "pytest.ini") -> "PytestIniFile":
+    def create_from_file(cls, pth: Path = Path() / "pytest.ini") -> "PytestIniFile":
         """Read the pytest.ini file"""
         if not pth.is_file():
             raise ValueError(f"pth: {pth} must point to a pytest.ini file")
@@ -108,7 +108,7 @@ class PytestIniFile(BaseModel):
         config: Dict = {s: dict(obj.items(s)) for s in obj.sections()}
         return PytestIniFile(**config)
 
-    def write(self, pth: Path = Path() / "pytest.ini") -> None:
+    def write_to_file(self, pth: Path = Path() / "pytest.ini") -> None:
         """Generate the pytest.ini file"""
         pth.unlink(missing_ok=True)
         pth.parent.mkdir(exist_ok=True)

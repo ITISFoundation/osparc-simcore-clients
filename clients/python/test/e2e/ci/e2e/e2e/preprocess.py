@@ -80,7 +80,7 @@ def generate_ini(
     config: PytestIniFile = PytestIniFile(
         pytest=pytest_config, client=client_cfg, server=server_cfg, artifacts=artifacts
     )
-    config.write(pth=test_dir / "pytest.ini")
+    config.write_to_file(pth=test_dir / "pytest.ini")
     raise typer.Exit(code=pytest.ExitCode.OK)
 
 
@@ -93,7 +93,7 @@ def check_compatibility() -> None:
     Raises:
         typer.Exit: When exit code is returned
     """
-    pytest_ini: PytestIniFile = PytestIniFile.read()
+    pytest_ini: PytestIniFile = PytestIniFile.create_from_file()
     client_cfg: ClientSettings = pytest_ini.client
     server_cfg: ServerSettings = pytest_ini.server
     if not _COMPATIBILITY_CSV.is_file():
