@@ -14,6 +14,7 @@ pydantic-settings = "^2.1"
 pytest = "^7.4"
 python = "^3.9"
 typer = {extras = ["all"], version = "^0.9.0"}
+tenacity = "^8.2.3"
 
 [tool.poetry.scripts]
 e2e = "e2e.cli:cli"
