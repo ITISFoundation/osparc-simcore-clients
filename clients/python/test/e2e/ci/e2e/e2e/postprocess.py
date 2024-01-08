@@ -223,12 +223,9 @@ def clean_up_jobs(artifacts_dir: Path, retry_minutes: Optional[PositiveInt] = No
                     username=server_config.key,
                     password=server_config.secret,
                 )
-                typer.echo(
-                    (
-                        "Cleaning up jobs for user:",
-                        f"\n{server_config.model_dump_json(indent=1)}",
-                    )
-                )
+                msg = "Cleaning up jobs for user: "
+                msg += f"\n{server_config.model_dump_json(indent=1)}"
+                typer.echo(msg)
                 with osparc.ApiClient(config) as api_client:
                     solvers_api = osparc.SolversApi(api_client)
                     assert isinstance(
