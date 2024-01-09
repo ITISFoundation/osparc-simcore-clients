@@ -212,31 +212,31 @@ def clean_up_jobs(artifacts_dir: Path, retry_minutes: Optional[PositiveInt] = No
         cfg = {s: dict(obj.items(s)) for s in obj.sections()}
         server_config = ServerSettings.model_validate(cfg.get("server"))
         servers.add(server_config)
-        for server_config in servers:
-            for attempt in Retrying(
-                retry=retry_if_exception_type(osparc.ApiException),
-                stop=stop_after_delay(timedelta(minutes=retry_minutes))
-                if retry_minutes
-                else stop_after_attempt(1),
-            ):
-                with attempt:
-                    config = osparc.Configuration(
-                        host=server_config.host,
-                        username=server_config.key,
-                        password=server_config.secret,
+    for server_config in servers:
+        config = osparc.Configuration(
+            host=server_config.host,
+            username=server_config.key,
+            password=server_config.secret,
+        )
+        msg = "Cleaning up jobs for user: "
+        msg += f"\n{server_config.model_dump_json(indent=1)}"
+        typer.echo(msg)
+        for attempt in Retrying(
+            retry=retry_if_exception_type(osparc.ApiException),
+            stop=stop_after_delay(timedelta(minutes=retry_minutes))
+            if retry_minutes
+            else stop_after_attempt(1),
+        ):
+            with attempt:
+                with osparc.ApiClient(config) as api_client:
+                    solvers_api = osparc.SolversApi(api_client)
+                    assert isinstance(
+                        solvers := solvers_api.list_solvers_releases(), list
                     )
-                    msg = "Cleaning up jobs for user: "
-                    msg += f"\n{server_config.model_dump_json(indent=1)}"
-                    typer.echo(msg)
-                    with osparc.ApiClient(config) as api_client:
-                        solvers_api = osparc.SolversApi(api_client)
-                        assert isinstance(
-                            solvers := solvers_api.list_solvers_releases(), list
-                        )
-                        for solver in solvers:
-                            assert isinstance(solver, osparc.Solver)
-                            assert (id_ := solver.id) is not None
-                            assert (version := solver.version) is not None
-                            for job in solvers_api.jobs(id_, version):
-                                assert isinstance(job, osparc.Job)
-                                solvers_api.delete_job(id_, version, job.id)
+                    for solver in solvers:
+                        assert isinstance(solver, osparc.Solver)
+                        assert (id_ := solver.id) is not None
+                        assert (version := solver.version) is not None
+                        for job in solvers_api.jobs(id_, version):
+                            assert isinstance(job, osparc.Job)
+                            solvers_api.delete_job(id_, version, job.id)
