@@ -21,6 +21,7 @@ from tqdm.asyncio import tqdm
 from . import ApiClient, File
 from ._http_client import AsyncHttpClient
 from ._utils import (
+    DEFAULT_TIMEOUT_SECONDS,
     PaginationGenerator,
     compute_sha256,
     dev_features_enabled,
@@ -70,16 +71,24 @@ class FilesApi(_FilesApi):
                 downloaded_file = dest_file
             return str(downloaded_file.resolve())
 
-        def upload_file(self, file: Union[str, Path]):
-            return asyncio.run(self.upload_file_async(file=file))
+        def upload_file(
+            self, file: Union[str, Path], timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS
+        ):
+            return asyncio.run(
+                self.upload_file_async(file=file, timeout_seconds=timeout_seconds)
+            )
 
-        async def upload_file_async(self, file: Union[str, Path]) -> File:
+        async def upload_file_async(
+            self, file: Union[str, Path], timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS
+        ) -> File:
             if isinstance(file, str):
                 file = Path(file)
             if not file.is_file():
                 raise RuntimeError(f"{file} is not a file")
             checksum: str = compute_sha256(file)
-            for file_result in self._search_files(sha256_checksum=checksum):
+            for file_result in self._search_files(
+                sha256_checksum=checksum, timeout_seconds=timeout_seconds
+            ):
                 if file_result.filename == file.name:
                     # if a file has the same sha256 checksum
                     # and name they are considered equal
@@ -90,7 +99,7 @@ class FilesApi(_FilesApi):
                 sha256_checksum=checksum,
             )
             client_upload_schema: ClientFileUploadData = self._super.get_upload_links(
-                client_file=client_file
+                client_file=client_file, _request_timeout=timeout_seconds
             )
             chunk_size: int = client_upload_schema.upload_schema.chunk_size
             links: FileUploadData = client_upload_schema.upload_schema.links
@@ -105,7 +114,7 @@ class FilesApi(_FilesApi):
 
             uploaded_parts: list[UploadedPart] = []
             print("- uploading chunks...")
-            async with AsyncHttpClient() as session:
+            async with AsyncHttpClient(timeout=timeout_seconds) as session:
                 async for chunck, size in tqdm(
                     file_chunk_generator(file, chunk_size), total=n_urls
                 ):
@@ -126,15 +135,16 @@ class FilesApi(_FilesApi):
                     base_url=self.api_client.configuration.host,
                     follow_redirects=True,
                     auth=self._auth,
+                    timeout=timeout_seconds,
                 ) as session:
                     print(
                         "- completing upload (this might take a couple of minutes)..."
                     )
-                    file: File = await self._complete_multipart_upload(
+                    server_file: File = await self._complete_multipart_upload(
                         session, links.complete_upload, client_file, uploaded_parts
                     )
                     print("- file upload complete")
-                    return file
+                    return server_file
 
         async def _complete_multipart_upload(
             self,
@@ -175,11 +185,16 @@ class FilesApi(_FilesApi):
             return UploadedPart(number=index, e_tag=etag)
 
         def _search_files(
-            self, file_id: Optional[str] = None, sha256_checksum: Optional[str] = None
+            self,
+            file_id: Optional[str] = None,
+            sha256_checksum: Optional[str] = None,
+            timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
         ) -> PaginationGenerator:
             def pagination_method():
                 return super(FilesApi, self).search_files_page(
-                    file_id=file_id, sha256_checksum=sha256_checksum
+                    file_id=file_id,
+                    sha256_checksum=sha256_checksum,
+                    _request_timeout=timeout_seconds,
                 )
 
             return PaginationGenerator(

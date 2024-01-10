@@ -23,6 +23,8 @@ _KB = 1024  # in bytes
 _MB = _KB * 1024  # in bytes
 _GB = _MB * 1024  # in bytes
 
+DEFAULT_TIMEOUT_SECONDS: int = 30 * 60
+
 Page = Union[PageJob, PageFile, PageSolver, PageStudy]
 T = TypeVar("T", Job, File, Solver, Study)
 
