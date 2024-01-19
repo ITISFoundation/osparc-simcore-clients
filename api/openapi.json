@@ -3,7 +3,7 @@
   "info": {
     "title": "osparc.io web API (dev)",
     "description": "osparc-simcore public API specifications",
-    "version": "0.5.0-dev"
+    "version": "0.5.1-dev"
   },
   "paths": {
     "/v0/meta": {
@@ -2270,7 +2270,14 @@
         ],
         "responses": {
           "200": {
-            "description": "Successful Response"
+            "description": "Successful Response",
+            "content": {
+              "application/x-ndjson": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "422": {
             "description": "Validation Error",
@@ -4065,11 +4072,13 @@
         "properties": {
           "first_name": {
             "title": "First Name",
+            "maxLength": 255,
             "type": "string",
             "example": "James"
           },
           "last_name": {
             "title": "Last Name",
+            "maxLength": 255,
             "type": "string",
             "example": "Maxwell"
           },
@@ -4125,11 +4134,13 @@
         "properties": {
           "first_name": {
             "title": "First Name",
+            "maxLength": 255,
             "type": "string",
             "example": "James"
           },
           "last_name": {
             "title": "Last Name",
+            "maxLength": 255,
             "type": "string",
             "example": "Maxwell"
           }
