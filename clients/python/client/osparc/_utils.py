@@ -7,6 +7,7 @@ from typing import AsyncGenerator, Callable, Generator, Optional, Tuple, TypeVar
 import httpx
 from osparc_client import (
     ApiClient,
+    ApiException,
     File,
     Job,
     PageFile,
@@ -16,8 +17,6 @@ from osparc_client import (
     Solver,
     Study,
 )
-
-from ._exceptions import RequestError
 
 _KB = 1024  # in bytes
 _MB = _KB * 1024  # in bytes
@@ -70,7 +69,7 @@ class PaginationGenerator:
             try:
                 response.raise_for_status()
             except httpx.HTTPStatusError as e:
-                raise RequestError() from e
+                raise ApiException(f"{e}") from e
             page = self._api_client._ApiClient__deserialize(response.json(), type(page))
 
 
