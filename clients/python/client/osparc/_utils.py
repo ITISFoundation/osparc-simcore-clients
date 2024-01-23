@@ -70,7 +70,7 @@ class PaginationGenerator:
             try:
                 response.raise_for_status()
             except httpx.HTTPStatusError as e:
-                raise RequestError() from e
+                raise RequestError(f"{e}") from e
             page = self._api_client._ApiClient__deserialize(response.json(), type(page))
 
 

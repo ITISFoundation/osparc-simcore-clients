@@ -1,6 +1,7 @@
 from functools import wraps
 
 from httpx import HTTPStatusError
+from osparc_client import ApiException
 
 
 class VisibleDeprecationWarning(UserWarning):
@@ -10,8 +11,8 @@ class VisibleDeprecationWarning(UserWarning):
     """
 
 
-class RequestError(Exception):
-    """For exceptions encountered when performing HTTP requests."""
+class RequestError(ApiException):
+    pass
 
 
 def handle_exceptions(func):
