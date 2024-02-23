@@ -48,7 +48,7 @@ class AsyncHttpClient:
     async def _request(
         self, method: Callable[[Any], Awaitable[httpx.Response]], *args, **kwargs
     ) -> httpx.Response:
-        async for attempt in tenacity.AsyncRetrying(
+        @tenacity.retry(
             reraise=True,
             wait=tenacity.wait_exponential(
                 multiplier=self.configuration.retries.backoff_factor
@@ -59,18 +59,20 @@ class AsyncHttpClient:
                 else 4
             ),
             retry=tenacity.retry_if_exception_type(httpx.HTTPStatusError),
-        ):
-            with attempt:
-                response: httpx.Response = await method(*args, **kwargs)
-                try:
-                    response.raise_for_status()
-                except httpx.HTTPStatusError as exc:
-                    if (
-                        exc.response.status_code
-                        in self.configuration.retries.status_forcelist
-                    ):
-                        raise exc
-                return response
+        )
+        async def _():
+            response: httpx.Response = await method(*args, **kwargs)
+            try:
+                response.raise_for_status()
+            except httpx.HTTPStatusError as exc:
+                if (
+                    exc.response.status_code
+                    in self.configuration.retries.status_forcelist
+                ):
+                    raise exc
+            return response
+
+        return await _()
 
     async def put(self, *args, **kwargs) -> httpx.Response:
         return await self._request(self._client.put, *args, **kwargs)
