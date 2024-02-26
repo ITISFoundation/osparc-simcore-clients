@@ -85,7 +85,8 @@ class AsyncHttpClient:
         assert retry_state.outcome is not None
         response: httpx.Response = retry_state.outcome.exception().response
         if response.status_code in _RETRY_AFTER_STATUS_CODES:
-            if retry_after := response.headers.get("Retry-After"):
+            retry_after = response.headers.get("Retry-After")
+            if retry_after is not None:
                 try:
                     next_try = parsedate_to_datetime(retry_after)
                     return int(
