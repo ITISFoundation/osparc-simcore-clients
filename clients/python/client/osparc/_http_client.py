@@ -1,12 +1,12 @@
 from datetime import datetime
 from email.utils import parsedate_to_datetime
-from typing import Any, Awaitable, Callable, Optional
+from typing import Any, Awaitable, Callable, Optional, Set
 
 import httpx
 import tenacity
 from osparc_client import Configuration
 
-_RETRY_AFTER_STATUS_CODES: set[int] = {429, 503}
+_RETRY_AFTER_STATUS_CODES: Set[int] = {429, 503}
 
 
 class AsyncHttpClient:
