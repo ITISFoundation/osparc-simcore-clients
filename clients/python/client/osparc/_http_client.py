@@ -1,8 +1,12 @@
-from typing import Any, Awaitable, Callable, Optional
+from datetime import datetime
+from email.utils import parsedate_to_datetime
+from typing import Any, Awaitable, Callable, Final, Optional
 
 import httpx
 import tenacity
 from osparc_client import Configuration
+
+_RETRY_AFTER_STATUS_CODES: Final[set[int]] = {429, 503}
 
 
 class AsyncHttpClient:
@@ -14,7 +18,7 @@ class AsyncHttpClient:
         configuration: Configuration,
         request_type: Optional[str] = None,
         url: Optional[str] = None,
-        **httpx_async_client_kwargs
+        **httpx_async_client_kwargs,
     ):
         self.configuration = configuration
         self._client = httpx.AsyncClient(**httpx_async_client_kwargs)
@@ -48,28 +52,19 @@ class AsyncHttpClient:
     async def _request(
         self, method: Callable[[Any], Awaitable[httpx.Response]], *args, **kwargs
     ) -> httpx.Response:
+        n_attempts = self.configuration.retries.total
+        assert isinstance(n_attempts, int)
+
         @tenacity.retry(
             reraise=True,
-            wait=tenacity.wait_exponential(
-                multiplier=self.configuration.retries.backoff_factor
-            ),
-            stop=tenacity.stop_after_attempt(
-                self.configuration.retries.total
-                if isinstance(self.configuration.retries.total, int)
-                else 4
-            ),
+            wait=self._wait_callback,
+            stop=tenacity.stop_after_attempt(n_attempts),
             retry=tenacity.retry_if_exception_type(httpx.HTTPStatusError),
         )
         async def _():
             response: httpx.Response = await method(*args, **kwargs)
-            try:
+            if response.status_code in self.configuration.retries.status_forcelist:
                 response.raise_for_status()
-            except httpx.HTTPStatusError as exc:
-                if (
-                    exc.response.status_code
-                    in self.configuration.retries.status_forcelist
-                ):
-                    raise exc
             return response
 
         return await _()
@@ -85,3 +80,24 @@ class AsyncHttpClient:
 
     async def patch(self, *args, **kwargs) -> httpx.Response:
         return await self._request(self._client.patch, *args, **kwargs)
+
+    def _wait_callback(self, retry_state: tenacity.RetryCallState) -> int:
+        assert retry_state.outcome is not None
+        response: httpx.Response = retry_state.outcome.exception().response
+        if response.status_code in _RETRY_AFTER_STATUS_CODES:
+            if retry_after := response.headers.get("Retry-After"):
+                try:
+                    next_try = parsedate_to_datetime(retry_after)
+                    return int(
+                        (next_try - datetime.now(tz=next_try.tzinfo)).total_seconds()
+                    )
+                except ValueError:
+                    pass
+                try:
+                    return int(retry_after)
+                except ValueError:
+                    pass
+        # https://urllib3.readthedocs.io/en/stable/reference/urllib3.util.html#utilities
+        return self.configuration.retries.backoff_factor * (
+            2**retry_state.attempt_number
+        )
