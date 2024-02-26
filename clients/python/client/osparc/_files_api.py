@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any, Iterator, List, Optional, Tuple, Union
 
 import httpx
-from httpx import AsyncClient, Response
+from httpx import Response
 from osparc_client import (
     BodyCompleteMultipartUploadV0FilesFileIdCompletePost,
     ClientFile,
@@ -114,7 +114,9 @@ class FilesApi(_FilesApi):
 
             uploaded_parts: list[UploadedPart] = []
             print("- uploading chunks...")
-            async with AsyncHttpClient(timeout=timeout_seconds) as session:
+            async with AsyncHttpClient(
+                configuration=self.api_client.configuration, timeout=timeout_seconds
+            ) as session:
                 async for chunck, size in tqdm(
                     file_chunk_generator(file, chunk_size), total=n_urls
                 ):
@@ -130,6 +132,7 @@ class FilesApi(_FilesApi):
                     )
 
                 async with AsyncHttpClient(
+                    configuration=self.api_client.configuration,
                     request_type="post",
                     url=links.abort_upload,
                     base_url=self.api_client.configuration.host,
@@ -148,7 +151,7 @@ class FilesApi(_FilesApi):
 
         async def _complete_multipart_upload(
             self,
-            http_client: AsyncClient,
+            http_client: AsyncHttpClient,
             complete_link: str,
             client_file: ClientFile,
             uploaded_parts: List[UploadedPart],
@@ -167,7 +170,7 @@ class FilesApi(_FilesApi):
 
         async def _upload_chunck(
             self,
-            http_client: AsyncClient,
+            http_client: AsyncHttpClient,
             chunck: bytes,
             chunck_size: int,
             upload_link: str,
