@@ -92,7 +92,7 @@ class AsyncHttpClient:
                     return int(
                         (next_try - datetime.now(tz=next_try.tzinfo)).total_seconds()
                     )
-                except ValueError:
+                except (ValueError, TypeError):
                     pass
                 try:
                     return int(retry_after)
