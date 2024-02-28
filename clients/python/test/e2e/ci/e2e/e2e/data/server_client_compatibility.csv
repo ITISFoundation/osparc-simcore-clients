@@ -8,9 +8,9 @@ api.osparc-staging.speag.com,production,True
 api.osparc.speag.com,master+dev_features,False
 api.osparc.speag.com,master-dev_features,False
 api.osparc.speag.com,production,True
-api.staging.osparc.io,master+dev_features,False
-api.staging.osparc.io,master-dev_features,True
-api.staging.osparc.io,production,True
+api.osparc-staging.io,master+dev_features,False
+api.osparc-staging.io,master-dev_features,True
+api.osparc-staging.io,production,True
 api.osparc.io,master+dev_features,False
 api.osparc.io,master-dev_features,False
 api.osparc.io,production,True
