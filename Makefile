@@ -72,13 +72,11 @@ http-doc: docs ## generates and serves doc
 
 ## CLEAN -------------------------------------------------------------------------------
 
-
 .PHONY: clean-hooks
 clean-hooks: ## Uninstalls git pre-commit hooks
 	@-pre-commit uninstall 2> /dev/null || rm .git/hooks/pre-commit
 
 _git_clean_args := -dx --force --exclude=.vscode --exclude=TODO.md --exclude=.venv --exclude=.python-version --exclude="*keep*"
-
 
 .check-clean:
 	@git clean -n $(_git_clean_args)
