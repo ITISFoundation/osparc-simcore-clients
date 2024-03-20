@@ -1,3 +1,4 @@
+import json
 import logging
 
 import osparc
@@ -61,7 +62,7 @@ async def test_logstreaming(cfg: osparc.Configuration):
         configuration (osparc.Configuration): The Configuration
     """
     solver: str = "simcore/services/comp/itis/sleeper"
-    version: str = "2.0.2"
+    version: str = "2.1.6"
     with osparc.ApiClient(cfg) as api_client:
         solvers_api: osparc.SolversApi = osparc.SolversApi(api_client)
         sleeper: osparc.Solver = solvers_api.get_solver_release(
@@ -79,15 +80,22 @@ async def test_logstreaming(cfg: osparc.Configuration):
             auth=BasicAuth(username=cfg.username, password=cfg.password),
         )  # type: ignore
         nloglines: int = 0
-        _logger.info("starting logstreaming...")
+        print("starting logstreaming...")
         async with client.stream(
             "GET",
             f"/v0/solvers/{sleeper.id}/releases/{sleeper.version}/jobs/{job.id}/logstream",
             timeout=15 * 60,
         ) as response:
             async for line in response.aiter_lines():
+                log = json.loads(line)
+                job_id = log.get("job_id")
+                assert job_id
+                assert job_id == job.id
                 nloglines += 1
-                _logger.info(line)
+                print("\n".join(log.get("messages")))
+                if nloglines > 10:  # dont wait too long
+                    await response.aclose()
+                    break
 
         assert nloglines > 0, f"Could not stream log for {sleeper.id=}, \
             {sleeper.version=} and {job.id=}"  # type: ignore
