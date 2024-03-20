@@ -73,8 +73,9 @@ def generate_ini(
     )
     pytest_config: PytestConfig = PytestConfig(
         env="\n" + "\n".join(envs),
-        required_plugins="pytest-env pytest-html",
+        required_plugins="pytest-env pytest-html pytest-asyncio",
         addopts=add_opts,
+        asyncio_mode="auto",
     )
 
     config: PytestIniFile = PytestIniFile(
