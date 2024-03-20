@@ -1,5 +1,6 @@
 import asyncio
 import json
+import logging
 import math
 import random
 import shutil
@@ -17,6 +18,7 @@ from osparc_client import (
 from osparc_client import FilesApi as _FilesApi
 from osparc_client import FileUploadCompletionBody, FileUploadData, UploadedPart
 from tqdm.asyncio import tqdm
+from tqdm.contrib.logging import logging_redirect_tqdm
 
 from . import ApiClient, File
 from ._http_client import AsyncHttpClient
@@ -27,6 +29,8 @@ from ._utils import (
     dev_features_enabled,
     file_chunk_generator,
 )
+
+_logger = logging.getLogger(__name__)
 
 
 class FilesApi(_FilesApi):
@@ -113,41 +117,44 @@ class FilesApi(_FilesApi):
                 )
 
             uploaded_parts: list[UploadedPart] = []
-            print("- uploading chunks...")
             async with AsyncHttpClient(
                 configuration=self.api_client.configuration, timeout=timeout_seconds
             ) as session:
-                async for chunck, size in tqdm(
-                    file_chunk_generator(file, chunk_size), total=n_urls
-                ):
-                    index, url = next(url_iter)
-                    uploaded_parts.append(
-                        await self._upload_chunck(
-                            http_client=session,
-                            chunck=chunck,
-                            chunck_size=size,
-                            upload_link=url,
-                            index=index,
+                with logging_redirect_tqdm():
+                    _logger.info("Uploading %i chunks", n_urls)
+                    async for chunck, size in tqdm(
+                        file_chunk_generator(file, chunk_size),
+                        total=n_urls,
+                        disable=(not _logger.isEnabledFor(logging.INFO)),
+                    ):
+                        index, url = next(url_iter)
+                        uploaded_parts.append(
+                            await self._upload_chunck(
+                                http_client=session,
+                                chunck=chunck,
+                                chunck_size=size,
+                                upload_link=url,
+                                index=index,
+                            )
                         )
-                    )
 
-                async with AsyncHttpClient(
-                    configuration=self.api_client.configuration,
-                    request_type="post",
-                    url=links.abort_upload,
-                    base_url=self.api_client.configuration.host,
-                    follow_redirects=True,
-                    auth=self._auth,
-                    timeout=timeout_seconds,
-                ) as session:
-                    print(
-                        "- completing upload (this might take a couple of minutes)..."
-                    )
-                    server_file: File = await self._complete_multipart_upload(
-                        session, links.complete_upload, client_file, uploaded_parts
-                    )
-                    print("- file upload complete")
-                    return server_file
+                    async with AsyncHttpClient(
+                        configuration=self.api_client.configuration,
+                        request_type="post",
+                        url=links.abort_upload,
+                        base_url=self.api_client.configuration.host,
+                        follow_redirects=True,
+                        auth=self._auth,
+                        timeout=timeout_seconds,
+                    ) as session:
+                        _logger.info(
+                            "Completing upload (this might take a couple of minutes)..."
+                        )
+                        server_file: File = await self._complete_multipart_upload(
+                            session, links.complete_upload, client_file, uploaded_parts
+                        )
+                        _logger.info("File upload complete")
+                        return server_file
 
         async def _complete_multipart_upload(
             self,
