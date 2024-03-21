@@ -11,6 +11,7 @@ from typing import Any, Iterator, List, Optional, Tuple, Union
 import httpx
 from httpx import Response
 from osparc_client import (
+    BodyAbortMultipartUploadV0FilesFileIdAbortPost,
     BodyCompleteMultipartUploadV0FilesFileIdCompletePost,
     ClientFile,
     ClientFileUploadData,
@@ -138,23 +139,27 @@ class FilesApi(_FilesApi):
                             )
                         )
 
-                    async with AsyncHttpClient(
-                        configuration=self.api_client.configuration,
-                        request_type="post",
-                        url=links.abort_upload,
-                        base_url=self.api_client.configuration.host,
-                        follow_redirects=True,
-                        auth=self._auth,
-                        timeout=timeout_seconds,
-                    ) as session:
-                        _logger.info(
-                            "Completing upload (this might take a couple of minutes)..."
-                        )
-                        server_file: File = await self._complete_multipart_upload(
-                            session, links.complete_upload, client_file, uploaded_parts
-                        )
-                        _logger.info("File upload complete")
-                        return server_file
+                abort_body = BodyAbortMultipartUploadV0FilesFileIdAbortPost(
+                    client_file=client_file
+                )
+                async with AsyncHttpClient(
+                    configuration=self.api_client.configuration,
+                    request_type="post",
+                    url=links.abort_upload,
+                    body=abort_body.to_dict(),
+                    base_url=self.api_client.configuration.host,
+                    follow_redirects=True,
+                    auth=self._auth,
+                    timeout=timeout_seconds,
+                ) as session:
+                    _logger.info(
+                        "- completing upload (this might take a couple of minutes)..."
+                    )
+                    server_file: File = await self._complete_multipart_upload(
+                        session, links.complete_upload, client_file, uploaded_parts
+                    )
+                    _logger.info("- file upload complete")
+                    return server_file
 
         async def _complete_multipart_upload(
             self,
