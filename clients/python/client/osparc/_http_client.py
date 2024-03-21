@@ -50,7 +50,7 @@ class AsyncHttpClient:
                                 self._url, json={} if self._body is None else self._body
                             )
                             response.raise_for_status()
-                except Exception as err:
+                except httpx.HTTPError as err:
                     await self._client.aclose()
                     raise err from exc_value
             await self._client.aclose()
