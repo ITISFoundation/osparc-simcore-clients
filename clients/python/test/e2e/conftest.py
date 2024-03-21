@@ -1,9 +1,11 @@
 import logging
 import os
 from pathlib import Path
+from typing import Iterable
 
 import osparc
 import pytest
+from httpx import AsyncClient, BasicAuth
 from numpy import random
 from pydantic import ByteSize
 
@@ -13,18 +15,31 @@ _GB: ByteSize = ByteSize(_MB * 1024)  # in bytes
 
 
 @pytest.fixture
-def cfg() -> osparc.Configuration:
-    """Configuration
-
-    Returns:
-        osparc.Configuration: The Configuration
-    """
-    cfg = osparc.Configuration(
-        host=os.environ["OSPARC_API_HOST"],
-        username=os.environ["OSPARC_API_KEY"],
-        password=os.environ["OSPARC_API_SECRET"],
+def configuration() -> Iterable[osparc.Configuration]:
+    assert (host := os.environ.get("OSPARC_API_HOST"))
+    assert (username := os.environ.get("OSPARC_API_KEY"))
+    assert (password := os.environ.get("OSPARC_API_SECRET"))
+    yield osparc.Configuration(
+        host=host,
+        username=username,
+        password=password,
     )
-    return cfg
+
+
+@pytest.fixture
+def api_client(configuration: osparc.Configuration) -> Iterable[osparc.ApiClient]:
+    with osparc.ApiClient(configuration=configuration) as api_client:
+        yield api_client
+
+
+@pytest.fixture
+def async_client(configuration) -> Iterable[AsyncClient]:
+    yield AsyncClient(
+        base_url=configuration.host,
+        auth=BasicAuth(
+            username=configuration.username, password=configuration.password
+        ),
+    )  # type: ignore
 
 
 @pytest.fixture
@@ -42,3 +57,12 @@ def tmp_file(tmp_path: Path, caplog) -> Path:
         tmp_file.stat().st_size == byte_size
     ), f"Could not create file of size: {byte_size}"
     return tmp_file
+
+
+@pytest.fixture
+def sleeper(api_client: osparc.ApiClient) -> Iterable[osparc.Solver]:
+    solvers_api = osparc.SolversApi(api_client=api_client)
+    sleeper: osparc.Solver = solvers_api.get_solver_release(
+        "simcore/services/comp/itis/sleeper", "2.0.2"
+    )  # type: ignore
+    yield sleeper

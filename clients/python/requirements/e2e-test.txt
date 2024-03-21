@@ -10,6 +10,7 @@ pandas
 papermill<2.5.0 # due to bug in 2.5.0 (https://github.com/nteract/papermill/issues/735). Remove this requirement once the bug is fixed
 pydantic
 pytest
+pytest-asyncio
 pytest-env
 pytest-html
 packaging
