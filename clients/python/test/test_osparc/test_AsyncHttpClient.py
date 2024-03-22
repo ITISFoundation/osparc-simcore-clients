@@ -69,7 +69,7 @@ async def test_aexit(
         assert _body["msg"] == msg
         return httpx.Response(status_code=200)
 
-    respx_mock.post(_exit_url).mock(side_effect=_side_effect)
+    exit_mock = respx_mock.post(_exit_url).mock(side_effect=_side_effect)
     respx_mock.put(_call_url).mock(return_value=httpx.Response(500))
 
     with pytest.raises(httpx.HTTPError):
@@ -81,3 +81,5 @@ async def test_aexit(
         ) as session:
             response = await session.put(_call_url)
             response.raise_for_status()
+
+    assert exit_mock.called
