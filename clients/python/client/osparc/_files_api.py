@@ -105,7 +105,7 @@ class FilesApi(_FilesApi):
             )
             client_upload_schema: ClientFileUploadData = self._super.get_upload_links(
                 client_file=client_file, _request_timeout=timeout_seconds
-            )
+            )  # type: ignore
             chunk_size: int = client_upload_schema.upload_schema.chunk_size
             links: FileUploadData = client_upload_schema.upload_schema.links
             url_iter: Iterator[Tuple[int, str]] = enumerate(
@@ -122,12 +122,12 @@ class FilesApi(_FilesApi):
                 configuration=self.api_client.configuration, timeout=timeout_seconds
             ) as session:
                 with logging_redirect_tqdm():
-                    _logger.info("Uploading %i chunks", n_urls)
+                    _logger.info("Uploading %s in %i chunks", file.name, n_urls)
                     async for chunck, size in tqdm(
                         file_chunk_generator(file, chunk_size),
                         total=n_urls,
                         disable=(not _logger.isEnabledFor(logging.INFO)),
-                    ):
+                    ):  # type: ignore
                         index, url = next(url_iter)
                         uploaded_parts.append(
                             await self._upload_chunck(
@@ -153,12 +153,16 @@ class FilesApi(_FilesApi):
                     timeout=timeout_seconds,
                 ) as session:
                     _logger.info(
-                        "Completing upload (this might take a couple of minutes)..."
+                        (
+                            "Completing upload of %s "
+                            "(this might take a couple of minutes)..."
+                        ),
+                        file.name,
                     )
                     server_file: File = await self._complete_multipart_upload(
                         session, links.complete_upload, client_file, uploaded_parts
                     )
-                    _logger.info("File upload complete")
+                    _logger.info("File upload complete: %s", file.name)
                     return server_file
 
         async def _complete_multipart_upload(
