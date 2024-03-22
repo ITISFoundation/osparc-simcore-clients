@@ -1,6 +1,6 @@
 from datetime import datetime
 from email.utils import parsedate_to_datetime
-from typing import Any, Awaitable, Callable, Optional, Set
+from typing import Any, Awaitable, Callable, Dict, Optional, Set
 
 import httpx
 import tenacity
@@ -18,12 +18,17 @@ class AsyncHttpClient:
         configuration: Configuration,
         request_type: Optional[str] = None,
         url: Optional[str] = None,
+        body: Optional[Dict] = None,
         **httpx_async_client_kwargs,
     ):
         self.configuration = configuration
         self._client = httpx.AsyncClient(**httpx_async_client_kwargs)
         self._callback = getattr(self._client, request_type) if request_type else None
         self._url = url
+        self._body = body
+        if self._callback is not None:
+            assert self._url is not None  # nosec
+            assert self._body is not None  # nosec
 
     async def __aenter__(self) -> "AsyncHttpClient":
         return self
@@ -41,9 +46,11 @@ class AsyncHttpClient:
                         retry=tenacity.retry_if_exception_type(httpx.RequestError),
                     ):
                         with attempt:
-                            response = await self._callback(self._url)
+                            response = await self._callback(
+                                self._url, json={} if self._body is None else self._body
+                            )
                             response.raise_for_status()
-                except Exception as err:
+                except httpx.HTTPError as err:
                     await self._client.aclose()
                     raise err from exc_value
             await self._client.aclose()

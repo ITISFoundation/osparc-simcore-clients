@@ -1,4 +1,7 @@
 -r ../../../requirements.txt
+faker
 pipdeptree
 pipreqs
 pytest
+pytest-asyncio
+respx
