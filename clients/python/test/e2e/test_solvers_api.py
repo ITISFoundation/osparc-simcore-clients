@@ -48,7 +48,6 @@ def test_jobs(api_client: osparc.ApiClient, sleeper: osparc.Solver):
         solvers_api.delete_job(sleeper.id, sleeper.version, elm)
 
 
-@requires_dev_features
 async def test_logstreaming(
     api_client: osparc.ApiClient, sleeper: osparc.Solver, async_client: AsyncClient
 ):
