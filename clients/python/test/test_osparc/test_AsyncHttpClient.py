@@ -31,6 +31,7 @@ def test_retry_strategy(cfg: osparc.Configuration, fake_retry_state):
         configuration=cfg,
         request_type="get",
         url="79ae41cc-0d89-4714-ac9d-c23ee1b110ce",
+        body={},
     )
     assert (
         async_client._wait_callback(
