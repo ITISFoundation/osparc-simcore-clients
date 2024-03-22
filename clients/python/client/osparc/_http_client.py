@@ -27,8 +27,8 @@ class AsyncHttpClient:
         self._url = url
         self._body = body
         if self._callback is not None:
-            assert self._url is not None
-            assert self._body is not None
+            assert self._url is not None  # nosec
+            assert self._body is not None  # nosec
 
     async def __aenter__(self) -> "AsyncHttpClient":
         return self
