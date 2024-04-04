@@ -1,6 +1,7 @@
 import os
 import subprocess
 from pathlib import Path
+from typing import Optional
 
 import osparc
 import pytest
@@ -35,3 +36,19 @@ def requires_dev_features(test):
             )
         )(test)
     return test
+
+
+def requires_osparc_version(
+    *,
+    at_least: Optional[Version],
+    at_most: Optional[Version],
+    exactly: Optional[Version],
+):
+    def _wrapper(test):
+        if at_least and Version(osparc.__version__) < at_least:
+            return pytest.mark.skip((f"{osparc.__version__=}<{str(at_least)} "))(test)
+        if at_most and Version(osparc.__version__) > at_most:
+            return pytest.mark.skip((f"{osparc.__version__=}>{str(at_most)} "))(test)
+        if exactly and Version(osparc.__version__) != exactly:
+            return pytest.mark.skip((f"{osparc.__version__=}!={str(exactly)} "))(test)
+        return test
