@@ -32,7 +32,7 @@ def requires_dev_features(test):
         return pytest.mark.skip(
             (
                 f"{osparc.__version__=}<{str(repo_version)} "
-                "or {osparc_dev_features_enabled()=}"
+                f"or {osparc_dev_features_enabled()=}"
             )
         )(test)
     return test
