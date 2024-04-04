@@ -53,7 +53,7 @@ def test_jobs(api_client: osparc.ApiClient, sleeper: osparc.Solver):
 async def test_logstreaming(
     api_client: osparc.ApiClient, sleeper: osparc.Solver, async_client: AsyncClient
 ):
-    """Test the log streaming"""
+    """Test log streaming"""
     solvers_api: osparc.SolversApi = osparc.SolversApi(api_client)
     job: osparc.Job = solvers_api.create_job(
         sleeper.id, sleeper.version, osparc.JobInputs({"input1": 1.0})
