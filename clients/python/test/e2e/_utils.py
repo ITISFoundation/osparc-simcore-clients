@@ -40,9 +40,9 @@ def requires_dev_features(test):
 
 def requires_osparc_version(
     *,
-    at_least: Optional[Version],
-    at_most: Optional[Version],
-    exactly: Optional[Version],
+    at_least: Optional[Version] = None,
+    at_most: Optional[Version] = None,
+    exactly: Optional[Version] = None,
 ):
     def _wrapper(test):
         if at_least and Version(osparc.__version__) < at_least:
@@ -52,3 +52,5 @@ def requires_osparc_version(
         if exactly and Version(osparc.__version__) != exactly:
             return pytest.mark.skip((f"{osparc.__version__=}!={str(exactly)} "))(test)
         return test
+
+    return _wrapper

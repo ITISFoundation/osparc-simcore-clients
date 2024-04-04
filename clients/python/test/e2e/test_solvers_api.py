@@ -49,15 +49,11 @@ def test_jobs(api_client: osparc.ApiClient, sleeper: osparc.Solver):
         solvers_api.delete_job(sleeper.id, sleeper.version, elm)
 
 
-@requires_osparc_version(at_least=Version("6.5"))
+@requires_osparc_version(at_least=Version("0.6.5"))
 async def test_logstreaming(
     api_client: osparc.ApiClient, sleeper: osparc.Solver, async_client: AsyncClient
 ):
-    """Test the log streaming
-
-    Args:
-        configuration (osparc.Configuration): The Configuration
-    """
+    """Test the log streaming"""
     solvers_api: osparc.SolversApi = osparc.SolversApi(api_client)
     job: osparc.Job = solvers_api.create_job(
         sleeper.id, sleeper.version, osparc.JobInputs({"input1": 1.0})
