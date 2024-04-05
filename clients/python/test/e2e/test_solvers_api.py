@@ -1,14 +1,14 @@
 import json
 
 import osparc
-from _utils import requires_dev_features, requires_osparc_version
+from _utils import skip_if_no_dev_features, skip_if_osparc_version
 from httpx import AsyncClient
 from packaging.version import Version
 
 DEFAULT_TIMEOUT_SECONDS = 10 * 60  # 10 min
 
 
-@requires_dev_features
+@skip_if_no_dev_features
 def test_jobs(api_client: osparc.ApiClient, sleeper: osparc.Solver):
     """Test the jobs method
 
@@ -49,7 +49,7 @@ def test_jobs(api_client: osparc.ApiClient, sleeper: osparc.Solver):
         solvers_api.delete_job(sleeper.id, sleeper.version, elm)
 
 
-@requires_osparc_version(at_least=Version("0.6.5"))
+@skip_if_osparc_version(at_least=Version("0.6.5"))
 async def test_logstreaming(
     api_client: osparc.ApiClient, sleeper: osparc.Solver, async_client: AsyncClient
 ):

@@ -24,7 +24,7 @@ def repo_version() -> Version:
     return Version(version_file.read_text())
 
 
-def requires_dev_features(test):
+def skip_if_no_dev_features(test):
     if (
         Version(osparc.__version__) < repo_version()
         or not osparc_dev_features_enabled()
@@ -38,7 +38,7 @@ def requires_dev_features(test):
     return test
 
 
-def requires_osparc_version(
+def skip_if_osparc_version(
     *,
     at_least: Optional[Version] = None,
     at_most: Optional[Version] = None,

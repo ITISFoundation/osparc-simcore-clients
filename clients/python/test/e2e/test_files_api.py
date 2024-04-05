@@ -3,7 +3,7 @@ from pathlib import Path
 
 import osparc
 import pytest
-from _utils import requires_dev_features
+from _utils import skip_if_no_dev_features
 from conftest import _KB
 
 
@@ -19,7 +19,7 @@ def _hash_file(file: Path) -> str:
         return sha256.hexdigest()
 
 
-@requires_dev_features
+@skip_if_no_dev_features
 def test_upload_file(tmp_file: Path, api_client: osparc.ApiClient) -> None:
     """Test that we can upload a file via the multipart upload"""
     tmp_path: Path = tmp_file.parent
@@ -37,7 +37,7 @@ def test_upload_file(tmp_file: Path, api_client: osparc.ApiClient) -> None:
     files_api.delete_file(uploaded_file1.id)
 
 
-@requires_dev_features
+@skip_if_no_dev_features
 @pytest.mark.parametrize("use_checksum", [True, False])
 @pytest.mark.parametrize("use_id", [True, False])
 def test_search_files(
