@@ -231,11 +231,11 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "Response List Files V0 Files Get",
-                  "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/File"
-                  }
+                  },
+                  "type": "array",
+                  "title": "Response List Files V0 Files Get"
                 }
               }
             }
@@ -319,10 +319,10 @@
           {
             "required": false,
             "schema": {
-              "title": "Limit",
+              "type": "integer",
               "maximum": 100,
               "minimum": 1,
-              "type": "integer",
+              "title": "Limit",
               "default": 50
             },
             "name": "limit",
@@ -331,9 +331,9 @@
           {
             "required": false,
             "schema": {
-              "title": "Offset",
-              "minimum": 0,
               "type": "integer",
+              "minimum": 0,
+              "title": "Offset",
               "default": 0
             },
             "name": "offset",
@@ -342,7 +342,7 @@
         ],
         "responses": {
           "501": {
-            "description": "Server does not support this operation",
+            "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
@@ -381,8 +381,8 @@
           {
             "required": false,
             "schema": {
-              "title": "Content-Length",
-              "type": "string"
+              "type": "string",
+              "title": "Content-Length"
             },
             "name": "content-length",
             "in": "header"
@@ -604,9 +604,9 @@
           {
             "required": true,
             "schema": {
-              "title": "File Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "File Id"
             },
             "name": "file_id",
             "in": "path"
@@ -710,9 +710,9 @@
           {
             "required": true,
             "schema": {
-              "title": "File Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "File Id"
             },
             "name": "file_id",
             "in": "path"
@@ -817,9 +817,9 @@
           {
             "required": false,
             "schema": {
-              "title": "Sha256 Checksum",
+              "type": "string",
               "pattern": "^[a-fA-F0-9]{64}$",
-              "type": "string"
+              "title": "Sha256 Checksum"
             },
             "name": "sha256_checksum",
             "in": "query"
@@ -827,9 +827,9 @@
           {
             "required": false,
             "schema": {
-              "title": "File Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "File Id"
             },
             "name": "file_id",
             "in": "query"
@@ -837,10 +837,10 @@
           {
             "required": false,
             "schema": {
-              "title": "Limit",
+              "type": "integer",
               "maximum": 100,
               "minimum": 1,
-              "type": "integer",
+              "title": "Limit",
               "default": 50
             },
             "name": "limit",
@@ -849,9 +849,9 @@
           {
             "required": false,
             "schema": {
-              "title": "Offset",
-              "minimum": 0,
               "type": "integer",
+              "minimum": 0,
+              "title": "Offset",
               "default": 0
             },
             "name": "offset",
@@ -958,9 +958,9 @@
           {
             "required": true,
             "schema": {
-              "title": "File Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "File Id"
             },
             "name": "file_id",
             "in": "path"
@@ -1064,9 +1064,9 @@
           {
             "required": true,
             "schema": {
-              "title": "File Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "File Id"
             },
             "name": "file_id",
             "in": "path"
@@ -1182,9 +1182,9 @@
           {
             "required": true,
             "schema": {
-              "title": "File Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "File Id"
             },
             "name": "file_id",
             "in": "path"
@@ -1254,6 +1254,22 @@
               }
             }
           },
+          "200": {
+            "description": "Returns a arbitrary binary data",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -1286,11 +1302,11 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "Response List Solvers V0 Solvers Get",
-                  "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/Solver"
-                  }
+                  },
+                  "type": "array",
+                  "title": "Response List Solvers V0 Solvers Get"
                 }
               }
             }
@@ -1374,10 +1390,10 @@
           {
             "required": false,
             "schema": {
-              "title": "Limit",
+              "type": "integer",
               "maximum": 100,
               "minimum": 1,
-              "type": "integer",
+              "title": "Limit",
               "default": 50
             },
             "name": "limit",
@@ -1386,9 +1402,9 @@
           {
             "required": false,
             "schema": {
-              "title": "Offset",
-              "minimum": 0,
               "type": "integer",
+              "minimum": 0,
+              "title": "Offset",
               "default": 0
             },
             "name": "offset",
@@ -1397,7 +1413,7 @@
         ],
         "responses": {
           "501": {
-            "description": "Not implemented",
+            "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
@@ -1433,11 +1449,11 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "Response List Solvers Releases V0 Solvers Releases Get",
-                  "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/Solver"
-                  }
+                  },
+                  "type": "array",
+                  "title": "Response List Solvers Releases V0 Solvers Releases Get"
                 }
               }
             }
@@ -1521,10 +1537,10 @@
           {
             "required": false,
             "schema": {
-              "title": "Limit",
+              "type": "integer",
               "maximum": 100,
               "minimum": 1,
-              "type": "integer",
+              "title": "Limit",
               "default": 50
             },
             "name": "limit",
@@ -1533,9 +1549,9 @@
           {
             "required": false,
             "schema": {
-              "title": "Offset",
-              "minimum": 0,
               "type": "integer",
+              "minimum": 0,
+              "title": "Offset",
               "default": 0
             },
             "name": "offset",
@@ -1544,7 +1560,7 @@
         ],
         "responses": {
           "501": {
-            "description": "Not implemented",
+            "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
@@ -1578,9 +1594,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Solver Key",
+              "type": "string",
               "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
-              "type": "string"
+              "title": "Solver Key"
             },
             "name": "solver_key",
             "in": "path"
@@ -1687,9 +1703,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Solver Key",
+              "type": "string",
               "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
-              "type": "string"
+              "title": "Solver Key"
             },
             "name": "solver_key",
             "in": "path"
@@ -1701,11 +1717,11 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "Response List Solver Releases V0 Solvers  Solver Key  Releases Get",
-                  "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/Solver"
-                  }
+                  },
+                  "type": "array",
+                  "title": "Response List Solver Releases V0 Solvers  Solver Key  Releases Get"
                 }
               }
             }
@@ -1799,9 +1815,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Solver Key",
+              "type": "string",
               "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
-              "type": "string"
+              "title": "Solver Key"
             },
             "name": "solver_key",
             "in": "path"
@@ -1809,10 +1825,10 @@
           {
             "required": false,
             "schema": {
-              "title": "Limit",
+              "type": "integer",
               "maximum": 100,
               "minimum": 1,
-              "type": "integer",
+              "title": "Limit",
               "default": 50
             },
             "name": "limit",
@@ -1821,9 +1837,9 @@
           {
             "required": false,
             "schema": {
-              "title": "Offset",
-              "minimum": 0,
               "type": "integer",
+              "minimum": 0,
+              "title": "Offset",
               "default": 0
             },
             "name": "offset",
@@ -1832,7 +1848,7 @@
         ],
         "responses": {
           "501": {
-            "description": "Not implemented",
+            "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
@@ -1866,9 +1882,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Solver Key",
+              "type": "string",
               "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
-              "type": "string"
+              "title": "Solver Key"
             },
             "name": "solver_key",
             "in": "path"
@@ -1876,9 +1892,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Version",
+              "type": "string",
               "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
-              "type": "string"
+              "title": "Version"
             },
             "name": "version",
             "in": "path"
@@ -1985,9 +2001,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Solver Key",
+              "type": "string",
               "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
-              "type": "string"
+              "title": "Solver Key"
             },
             "name": "solver_key",
             "in": "path"
@@ -1995,9 +2011,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Version",
+              "type": "string",
               "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
-              "type": "string"
+              "title": "Version"
             },
             "name": "version",
             "in": "path"
@@ -2103,9 +2119,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Solver Key",
+              "type": "string",
               "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
-              "type": "string"
+              "title": "Solver Key"
             },
             "name": "solver_key",
             "in": "path"
@@ -2113,9 +2129,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Version",
+              "type": "string",
               "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
-              "type": "string"
+              "title": "Version"
             },
             "name": "version",
             "in": "path"
@@ -2222,9 +2238,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Solver Key",
+              "type": "string",
               "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
-              "type": "string"
+              "title": "Solver Key"
             },
             "name": "solver_key",
             "in": "path"
@@ -2232,9 +2248,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Version",
+              "type": "string",
               "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
-              "type": "string"
+              "title": "Version"
             },
             "name": "version",
             "in": "path"
@@ -2246,11 +2262,11 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "Response List Jobs V0 Solvers  Solver Key  Releases  Version  Jobs Get",
-                  "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/Job"
-                  }
+                  },
+                  "type": "array",
+                  "title": "Response List Jobs V0 Solvers  Solver Key  Releases  Version  Jobs Get"
                 }
               }
             }
@@ -2353,9 +2369,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Solver Key",
+              "type": "string",
               "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
-              "type": "string"
+              "title": "Solver Key"
             },
             "name": "solver_key",
             "in": "path"
@@ -2363,9 +2379,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Version",
+              "type": "string",
               "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
-              "type": "string"
+              "title": "Version"
             },
             "name": "version",
             "in": "path"
@@ -2492,9 +2508,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Solver Key",
+              "type": "string",
               "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
-              "type": "string"
+              "title": "Solver Key"
             },
             "name": "solver_key",
             "in": "path"
@@ -2502,9 +2518,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Version",
+              "type": "string",
               "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
-              "type": "string"
+              "title": "Version"
             },
             "name": "version",
             "in": "path"
@@ -2512,9 +2528,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Job Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Job Id"
             },
             "name": "job_id",
             "in": "path"
@@ -2629,9 +2645,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Solver Key",
+              "type": "string",
               "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
-              "type": "string"
+              "title": "Solver Key"
             },
             "name": "solver_key",
             "in": "path"
@@ -2639,9 +2655,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Version",
+              "type": "string",
               "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
-              "type": "string"
+              "title": "Version"
             },
             "name": "version",
             "in": "path"
@@ -2649,9 +2665,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Job Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Job Id"
             },
             "name": "job_id",
             "in": "path"
@@ -2761,9 +2777,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Solver Key",
+              "type": "string",
               "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
-              "type": "string"
+              "title": "Solver Key"
             },
             "name": "solver_key",
             "in": "path"
@@ -2771,9 +2787,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Version",
+              "type": "string",
               "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
-              "type": "string"
+              "title": "Version"
             },
             "name": "version",
             "in": "path"
@@ -2781,9 +2797,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Job Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Job Id"
             },
             "name": "job_id",
             "in": "path"
@@ -2791,9 +2807,9 @@
           {
             "required": false,
             "schema": {
-              "title": "Cluster Id",
+              "type": "integer",
               "minimum": 0,
-              "type": "integer"
+              "title": "Cluster Id"
             },
             "name": "cluster_id",
             "in": "query"
@@ -2909,9 +2925,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Solver Key",
+              "type": "string",
               "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
-              "type": "string"
+              "title": "Solver Key"
             },
             "name": "solver_key",
             "in": "path"
@@ -2919,9 +2935,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Version",
+              "type": "string",
               "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
-              "type": "string"
+              "title": "Version"
             },
             "name": "version",
             "in": "path"
@@ -2929,9 +2945,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Job Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Job Id"
             },
             "name": "job_id",
             "in": "path"
@@ -3047,9 +3063,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Solver Key",
+              "type": "string",
               "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
-              "type": "string"
+              "title": "Solver Key"
             },
             "name": "solver_key",
             "in": "path"
@@ -3057,9 +3073,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Version",
+              "type": "string",
               "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
-              "type": "string"
+              "title": "Version"
             },
             "name": "version",
             "in": "path"
@@ -3067,9 +3083,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Job Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Job Id"
             },
             "name": "job_id",
             "in": "path"
@@ -3186,9 +3202,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Solver Key",
+              "type": "string",
               "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
-              "type": "string"
+              "title": "Solver Key"
             },
             "name": "solver_key",
             "in": "path"
@@ -3196,9 +3212,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Version",
+              "type": "string",
               "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
-              "type": "string"
+              "title": "Version"
             },
             "name": "version",
             "in": "path"
@@ -3206,9 +3222,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Job Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Job Id"
             },
             "name": "job_id",
             "in": "path"
@@ -3313,9 +3329,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Solver Key",
+              "type": "string",
               "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
-              "type": "string"
+              "title": "Solver Key"
             },
             "name": "solver_key",
             "in": "path"
@@ -3323,9 +3339,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Version",
+              "type": "string",
               "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
-              "type": "string"
+              "title": "Version"
             },
             "name": "version",
             "in": "path"
@@ -3333,9 +3349,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Job Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Job Id"
             },
             "name": "job_id",
             "in": "path"
@@ -3452,9 +3468,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Solver Key",
+              "type": "string",
               "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
-              "type": "string"
+              "title": "Solver Key"
             },
             "name": "solver_key",
             "in": "path"
@@ -3462,9 +3478,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Version",
+              "type": "string",
               "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
-              "type": "string"
+              "title": "Version"
             },
             "name": "version",
             "in": "path"
@@ -3472,10 +3488,10 @@
           {
             "required": false,
             "schema": {
-              "title": "Limit",
+              "type": "integer",
               "maximum": 100,
               "minimum": 1,
-              "type": "integer",
+              "title": "Limit",
               "default": 50
             },
             "name": "limit",
@@ -3484,9 +3500,9 @@
           {
             "required": false,
             "schema": {
-              "title": "Offset",
-              "minimum": 0,
               "type": "integer",
+              "minimum": 0,
+              "title": "Offset",
               "default": 0
             },
             "name": "offset",
@@ -3603,9 +3619,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Solver Key",
+              "type": "string",
               "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
-              "type": "string"
+              "title": "Solver Key"
             },
             "name": "solver_key",
             "in": "path"
@@ -3613,9 +3629,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Version",
+              "type": "string",
               "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
-              "type": "string"
+              "title": "Version"
             },
             "name": "version",
             "in": "path"
@@ -3623,9 +3639,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Job Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Job Id"
             },
             "name": "job_id",
             "in": "path"
@@ -3742,9 +3758,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Solver Key",
+              "type": "string",
               "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
-              "type": "string"
+              "title": "Solver Key"
             },
             "name": "solver_key",
             "in": "path"
@@ -3752,9 +3768,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Version",
+              "type": "string",
               "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
-              "type": "string"
+              "title": "Version"
             },
             "name": "version",
             "in": "path"
@@ -3762,9 +3778,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Job Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Job Id"
             },
             "name": "job_id",
             "in": "path"
@@ -3878,9 +3894,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Solver Key",
+              "type": "string",
               "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
-              "type": "string"
+              "title": "Solver Key"
             },
             "name": "solver_key",
             "in": "path"
@@ -3888,9 +3904,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Version",
+              "type": "string",
               "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
-              "type": "string"
+              "title": "Version"
             },
             "name": "version",
             "in": "path"
@@ -3898,9 +3914,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Job Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Job Id"
             },
             "name": "job_id",
             "in": "path"
@@ -4016,9 +4032,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Solver Key",
+              "type": "string",
               "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
-              "type": "string"
+              "title": "Solver Key"
             },
             "name": "solver_key",
             "in": "path"
@@ -4026,9 +4042,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Version",
+              "type": "string",
               "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
-              "type": "string"
+              "title": "Version"
             },
             "name": "version",
             "in": "path"
@@ -4036,9 +4052,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Job Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Job Id"
             },
             "name": "job_id",
             "in": "path"
@@ -4144,9 +4160,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Solver Key",
+              "type": "string",
               "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
-              "type": "string"
+              "title": "Solver Key"
             },
             "name": "solver_key",
             "in": "path"
@@ -4154,9 +4170,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Version",
+              "type": "string",
               "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
-              "type": "string"
+              "title": "Version"
             },
             "name": "version",
             "in": "path"
@@ -4164,9 +4180,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Job Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Job Id"
             },
             "name": "job_id",
             "in": "path"
@@ -4273,10 +4289,10 @@
           {
             "required": false,
             "schema": {
-              "title": "Limit",
+              "type": "integer",
               "maximum": 100,
               "minimum": 1,
-              "type": "integer",
+              "title": "Limit",
               "default": 50
             },
             "name": "limit",
@@ -4285,9 +4301,9 @@
           {
             "required": false,
             "schema": {
-              "title": "Offset",
-              "minimum": 0,
               "type": "integer",
+              "minimum": 0,
+              "title": "Offset",
               "default": 0
             },
             "name": "offset",
@@ -4335,9 +4351,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Study Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Study Id"
             },
             "name": "study_id",
             "in": "path"
@@ -4393,9 +4409,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Study Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Study Id"
             },
             "name": "study_id",
             "in": "path"
@@ -4452,9 +4468,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Study Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Study Id"
             },
             "name": "study_id",
             "in": "path"
@@ -4510,9 +4526,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Study Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Study Id"
             },
             "name": "study_id",
             "in": "path"
@@ -4520,10 +4536,10 @@
           {
             "required": false,
             "schema": {
-              "title": "Limit",
+              "type": "integer",
               "maximum": 100,
               "minimum": 1,
-              "type": "integer",
+              "title": "Limit",
               "default": 50
             },
             "name": "limit",
@@ -4532,9 +4548,9 @@
           {
             "required": false,
             "schema": {
-              "title": "Offset",
-              "minimum": 0,
               "type": "integer",
+              "minimum": 0,
+              "title": "Offset",
               "default": 0
             },
             "name": "offset",
@@ -4543,7 +4559,7 @@
         ],
         "responses": {
           "501": {
-            "description": "Not implemented",
+            "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
@@ -4574,17 +4590,27 @@
           {
             "required": true,
             "schema": {
-              "title": "Study Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Study Id"
             },
             "name": "study_id",
             "in": "path"
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobInputs"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
-          "501": {
-            "description": "Not implemented",
+          "200": {
+            "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
@@ -4603,7 +4629,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
       }
     },
     "/v0/studies/{study_id}/jobs/{job_id}": {
@@ -4617,9 +4648,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Study Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Study Id"
             },
             "name": "study_id",
             "in": "path"
@@ -4627,9 +4658,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Job Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Job Id"
             },
             "name": "job_id",
             "in": "path"
@@ -4637,7 +4668,7 @@
         ],
         "responses": {
           "501": {
-            "description": "Not implemented",
+            "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
@@ -4663,14 +4694,15 @@
           "studies"
         ],
         "summary": "Delete Study Job",
+        "description": "Deletes an existing study job",
         "operationId": "delete_study_job",
         "parameters": [
           {
             "required": true,
             "schema": {
-              "title": "Study Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Study Id"
             },
             "name": "study_id",
             "in": "path"
@@ -4678,20 +4710,25 @@
           {
             "required": true,
             "schema": {
-              "title": "Job Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Job Id"
             },
             "name": "job_id",
             "in": "path"
           }
         ],
         "responses": {
-          "501": {
-            "description": "Not implemented",
+          "204": {
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
               }
             }
           },
@@ -4705,7 +4742,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
       }
     },
     "/v0/studies/{study_id}/jobs/{job_id}:start": {
@@ -4719,9 +4761,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Study Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Study Id"
             },
             "name": "study_id",
             "in": "path"
@@ -4729,17 +4771,27 @@
           {
             "required": true,
             "schema": {
-              "title": "Job Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Job Id"
             },
             "name": "job_id",
             "in": "path"
+          },
+          {
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "title": "Cluster Id"
+            },
+            "name": "cluster_id",
+            "in": "query"
           }
         ],
         "responses": {
-          "501": {
-            "description": "Not implemented",
+          "200": {
+            "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
@@ -4758,7 +4810,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
       }
     },
     "/v0/studies/{study_id}/jobs/{job_id}:stop": {
@@ -4772,9 +4829,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Study Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Study Id"
             },
             "name": "study_id",
             "in": "path"
@@ -4782,70 +4839,17 @@
           {
             "required": true,
             "schema": {
-              "title": "Job Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Job Id"
             },
             "name": "job_id",
             "in": "path"
           }
         ],
         "responses": {
-          "501": {
-            "description": "Not implemented",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Job"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v0/studies/{study_id}/jobs/{job_id}:inspect": {
-      "post": {
-        "tags": [
-          "studies"
-        ],
-        "summary": "Inspect Study Job",
-        "operationId": "inspect_study_job",
-        "parameters": [
-          {
-            "required": true,
-            "schema": {
-              "title": "Study Id",
-              "type": "string",
-              "format": "uuid"
-            },
-            "name": "study_id",
-            "in": "path"
-          },
-          {
-            "required": true,
-            "schema": {
-              "title": "Job Id",
-              "type": "string",
-              "format": "uuid"
-            },
-            "name": "job_id",
-            "in": "path"
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not implemented",
+          "200": {
+            "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
@@ -4864,7 +4868,70 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
+      }
+    },
+    "/v0/studies/{study_id}/jobs/{job_id}:inspect": {
+      "post": {
+        "tags": [
+          "studies"
+        ],
+        "summary": "Inspect Study Job",
+        "operationId": "inspect_study_job",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Study Id"
+            },
+            "name": "study_id",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Job Id"
+            },
+            "name": "job_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobStatus"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
       }
     },
     "/v0/studies/{study_id}/jobs/{job_id}/outputs": {
@@ -4878,9 +4945,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Study Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Study Id"
             },
             "name": "study_id",
             "in": "path"
@@ -4888,17 +4955,17 @@
           {
             "required": true,
             "schema": {
-              "title": "Job Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Job Id"
             },
             "name": "job_id",
             "in": "path"
           }
         ],
         "responses": {
-          "501": {
-            "description": "Not implemented",
+          "200": {
+            "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
@@ -4917,7 +4984,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
       }
     },
     "/v0/studies/{study_id}/jobs/{job_id}/outputs/logfile": {
@@ -4931,9 +5003,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Study Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Study Id"
             },
             "name": "study_id",
             "in": "path"
@@ -4941,9 +5013,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Job Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Job Id"
             },
             "name": "job_id",
             "in": "path"
@@ -4951,7 +5023,7 @@
         ],
         "responses": {
           "501": {
-            "description": "Not implemented"
+            "description": "Successful Response"
           },
           "422": {
             "description": "Validation Error",
@@ -4978,9 +5050,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Study Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Study Id"
             },
             "name": "study_id",
             "in": "path"
@@ -4988,9 +5060,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Job Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Job Id"
             },
             "name": "job_id",
             "in": "path"
@@ -4998,7 +5070,7 @@
         ],
         "responses": {
           "501": {
-            "description": "Not implemented",
+            "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
@@ -5030,9 +5102,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Study Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Study Id"
             },
             "name": "study_id",
             "in": "path"
@@ -5040,9 +5112,9 @@
           {
             "required": true,
             "schema": {
-              "title": "Job Id",
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "title": "Job Id"
             },
             "name": "job_id",
             "in": "path"
@@ -5060,7 +5132,7 @@
         },
         "responses": {
           "501": {
-            "description": "Not implemented",
+            "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {}
@@ -5187,8 +5259,8 @@
           {
             "required": true,
             "schema": {
-              "title": "Wallet Id",
-              "type": "integer"
+              "type": "integer",
+              "title": "Wallet Id"
             },
             "name": "wallet_id",
             "in": "path"
@@ -5297,24 +5369,18 @@
   "components": {
     "schemas": {
       "Body_abort_multipart_upload_v0_files__file_id__abort_post": {
-        "title": "Body_abort_multipart_upload_v0_files__file_id__abort_post",
-        "required": [
-          "client_file"
-        ],
-        "type": "object",
         "properties": {
           "client_file": {
             "$ref": "#/components/schemas/ClientFile"
           }
-        }
+        },
+        "type": "object",
+        "required": [
+          "client_file"
+        ],
+        "title": "Body_abort_multipart_upload_v0_files__file_id__abort_post"
       },
       "Body_complete_multipart_upload_v0_files__file_id__complete_post": {
-        "title": "Body_complete_multipart_upload_v0_files__file_id__complete_post",
-        "required": [
-          "client_file",
-          "uploaded_parts"
-        ],
-        "type": "object",
         "properties": {
           "client_file": {
             "$ref": "#/components/schemas/ClientFile"
@@ -5322,210 +5388,269 @@
           "uploaded_parts": {
             "$ref": "#/components/schemas/FileUploadCompletionBody"
           }
-        }
+        },
+        "type": "object",
+        "required": [
+          "client_file",
+          "uploaded_parts"
+        ],
+        "title": "Body_complete_multipart_upload_v0_files__file_id__complete_post"
       },
       "Body_upload_file_v0_files_content_put": {
-        "title": "Body_upload_file_v0_files_content_put",
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File"
+          }
+        },
+        "type": "object",
         "required": [
           "file"
         ],
-        "type": "object",
-        "properties": {
-          "file": {
-            "title": "File",
-            "type": "string",
-            "format": "binary"
-          }
-        }
+        "title": "Body_upload_file_v0_files_content_put"
       },
       "ClientFile": {
-        "title": "ClientFile",
+        "properties": {
+          "filename": {
+            "type": "string",
+            "title": "Filename",
+            "description": "File name"
+          },
+          "filesize": {
+            "type": "integer",
+            "title": "Filesize",
+            "description": "File size in bytes"
+          },
+          "sha256_checksum": {
+            "type": "string",
+            "pattern": "^[a-fA-F0-9]{64}$",
+            "title": "Sha256 Checksum",
+            "description": "SHA256 checksum"
+          }
+        },
+        "type": "object",
         "required": [
           "filename",
           "filesize",
           "sha256_checksum"
         ],
-        "type": "object",
-        "properties": {
-          "filename": {
-            "title": "Filename",
-            "type": "string",
-            "description": "File name"
-          },
-          "filesize": {
-            "title": "Filesize",
-            "type": "integer",
-            "description": "File size in bytes"
-          },
-          "sha256_checksum": {
-            "title": "Sha256 Checksum",
-            "pattern": "^[a-fA-F0-9]{64}$",
-            "type": "string",
-            "description": "SHA256 checksum"
-          }
-        },
+        "title": "ClientFile",
         "description": "Represents a file stored on the client side"
       },
       "ClientFileUploadData": {
-        "title": "ClientFileUploadData",
-        "required": [
-          "file_id",
-          "upload_schema"
-        ],
-        "type": "object",
         "properties": {
           "file_id": {
-            "title": "File Id",
             "type": "string",
-            "description": "The file resource id",
-            "format": "uuid"
+            "format": "uuid",
+            "title": "File Id",
+            "description": "The file resource id"
           },
           "upload_schema": {
-            "title": "Upload Schema",
             "allOf": [
               {
                 "$ref": "#/components/schemas/FileUploadData"
               }
             ],
+            "title": "Upload Schema",
             "description": "Schema for uploading file"
           }
-        }
+        },
+        "type": "object",
+        "required": [
+          "file_id",
+          "upload_schema"
+        ],
+        "title": "ClientFileUploadData"
       },
       "ErrorGet": {
-        "title": "ErrorGet",
+        "properties": {
+          "errors": {
+            "items": {},
+            "type": "array",
+            "title": "Errors"
+          }
+        },
+        "type": "object",
         "required": [
           "errors"
         ],
-        "type": "object",
-        "properties": {
-          "errors": {
-            "title": "Errors",
-            "type": "array",
-            "items": {}
-          }
-        }
+        "title": "ErrorGet"
       },
       "File": {
-        "title": "File",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id",
+            "description": "Resource identifier"
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename",
+            "description": "Name of the file with extension"
+          },
+          "content_type": {
+            "type": "string",
+            "title": "Content Type",
+            "description": "Guess of type content [EXPERIMENTAL]"
+          },
+          "checksum": {
+            "type": "string",
+            "pattern": "^[a-fA-F0-9]{64}$",
+            "title": "Checksum",
+            "description": "SHA256 hash of the file's content"
+          },
+          "e_tag": {
+            "type": "string",
+            "title": "E Tag",
+            "description": "S3 entity tag"
+          }
+        },
+        "type": "object",
         "required": [
           "id",
           "filename"
         ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "title": "Id",
-            "type": "string",
-            "description": "Resource identifier",
-            "format": "uuid"
-          },
-          "filename": {
-            "title": "Filename",
-            "type": "string",
-            "description": "Name of the file with extension"
-          },
-          "content_type": {
-            "title": "Content Type",
-            "type": "string",
-            "description": "Guess of type content [EXPERIMENTAL]"
-          },
-          "checksum": {
-            "title": "Checksum",
-            "pattern": "^[a-fA-F0-9]{64}$",
-            "type": "string",
-            "description": "SHA256 hash of the file's content"
-          },
-          "e_tag": {
-            "title": "E Tag",
-            "type": "string",
-            "description": "S3 entity tag"
-          }
-        },
+        "title": "File",
         "description": "Represents a file stored on the server side i.e. a unique reference to a file in the cloud."
       },
       "FileUploadCompletionBody": {
-        "title": "FileUploadCompletionBody",
+        "properties": {
+          "parts": {
+            "items": {
+              "$ref": "#/components/schemas/UploadedPart"
+            },
+            "type": "array",
+            "title": "Parts"
+          }
+        },
+        "type": "object",
         "required": [
           "parts"
         ],
-        "type": "object",
-        "properties": {
-          "parts": {
-            "title": "Parts",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/UploadedPart"
-            }
-          }
-        }
+        "title": "FileUploadCompletionBody"
       },
       "FileUploadData": {
-        "title": "FileUploadData",
+        "properties": {
+          "chunk_size": {
+            "type": "integer",
+            "title": "Chunk Size"
+          },
+          "urls": {
+            "items": {
+              "type": "string",
+              "maxLength": 65536,
+              "minLength": 1,
+              "format": "uri"
+            },
+            "type": "array",
+            "title": "Urls"
+          },
+          "links": {
+            "$ref": "#/components/schemas/UploadLinks"
+          }
+        },
+        "type": "object",
         "required": [
           "chunk_size",
           "urls",
           "links"
         ],
-        "type": "object",
-        "properties": {
-          "chunk_size": {
-            "title": "Chunk Size",
-            "type": "integer"
-          },
-          "urls": {
-            "title": "Urls",
-            "type": "array",
-            "items": {
-              "maxLength": 65536,
-              "minLength": 1,
-              "type": "string",
-              "format": "uri"
-            }
-          },
-          "links": {
-            "$ref": "#/components/schemas/UploadLinks"
-          }
-        }
+        "title": "FileUploadData"
       },
       "Groups": {
-        "title": "Groups",
-        "required": [
-          "me",
-          "all"
-        ],
-        "type": "object",
         "properties": {
           "me": {
             "$ref": "#/components/schemas/UsersGroup"
           },
           "organizations": {
-            "title": "Organizations",
-            "type": "array",
             "items": {
               "$ref": "#/components/schemas/UsersGroup"
             },
+            "type": "array",
+            "title": "Organizations",
             "default": []
           },
           "all": {
             "$ref": "#/components/schemas/UsersGroup"
           }
-        }
+        },
+        "type": "object",
+        "required": [
+          "me",
+          "all"
+        ],
+        "title": "Groups"
       },
       "HTTPValidationError": {
-        "title": "HTTPValidationError",
-        "type": "object",
         "properties": {
           "errors": {
-            "title": "Validation errors",
-            "type": "array",
             "items": {
               "$ref": "#/components/schemas/ValidationError"
-            }
+            },
+            "type": "array",
+            "title": "Validation errors"
           }
-        }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
       },
       "Job": {
-        "title": "Job",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "pattern": "^([^\\s/]+/?){1,10}$",
+            "title": "Name"
+          },
+          "inputs_checksum": {
+            "type": "string",
+            "title": "Inputs Checksum",
+            "description": "Input's checksum"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At",
+            "description": "Job creation timestamp"
+          },
+          "runner_name": {
+            "type": "string",
+            "pattern": "^([^\\s/]+/?){1,10}$",
+            "title": "Runner Name",
+            "description": "Runner that executes job"
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 2083,
+            "minLength": 1,
+            "format": "uri",
+            "title": "Url",
+            "description": "Link to get this resource (self)"
+          },
+          "runner_url": {
+            "type": "string",
+            "maxLength": 2083,
+            "minLength": 1,
+            "format": "uri",
+            "title": "Runner Url",
+            "description": "Link to the solver's job (parent collection)"
+          },
+          "outputs_url": {
+            "type": "string",
+            "maxLength": 2083,
+            "minLength": 1,
+            "format": "uri",
+            "title": "Outputs Url",
+            "description": "Link to the job outputs (sub-collection)"
+          }
+        },
+        "type": "object",
         "required": [
           "id",
           "name",
@@ -5536,60 +5661,7 @@
           "runner_url",
           "outputs_url"
         ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "title": "Id",
-            "type": "string",
-            "format": "uuid"
-          },
-          "name": {
-            "title": "Name",
-            "pattern": "^([^\\s/]+/?){1,10}$",
-            "type": "string"
-          },
-          "inputs_checksum": {
-            "title": "Inputs Checksum",
-            "type": "string",
-            "description": "Input's checksum"
-          },
-          "created_at": {
-            "title": "Created At",
-            "type": "string",
-            "description": "Job creation timestamp",
-            "format": "date-time"
-          },
-          "runner_name": {
-            "title": "Runner Name",
-            "pattern": "^([^\\s/]+/?){1,10}$",
-            "type": "string",
-            "description": "Runner that executes job"
-          },
-          "url": {
-            "title": "Url",
-            "maxLength": 2083,
-            "minLength": 1,
-            "type": "string",
-            "description": "Link to get this resource (self)",
-            "format": "uri"
-          },
-          "runner_url": {
-            "title": "Runner Url",
-            "maxLength": 2083,
-            "minLength": 1,
-            "type": "string",
-            "description": "Link to the solver's job (parent collection)",
-            "format": "uri"
-          },
-          "outputs_url": {
-            "title": "Outputs Url",
-            "maxLength": 2083,
-            "minLength": 1,
-            "type": "string",
-            "description": "Link to the job outputs (sub-collection)",
-            "format": "uri"
-          }
-        },
+        "title": "Job",
         "example": {
           "id": "f622946d-fd29-35b9-a193-abdd1095167c",
           "name": "solvers/isolve/releases/1.3.4/jobs/f622946d-fd29-35b9-a193-abdd1095167c",
@@ -5602,15 +5674,8 @@
         }
       },
       "JobInputs": {
-        "title": "JobInputs",
-        "required": [
-          "values"
-        ],
-        "type": "object",
         "properties": {
           "values": {
-            "title": "Values",
-            "type": "object",
             "additionalProperties": {
               "anyOf": [
                 {
@@ -5629,13 +5694,20 @@
                   "type": "string"
                 },
                 {
-                  "type": "array",
-                  "items": {}
+                  "items": {},
+                  "type": "array"
                 }
               ]
-            }
+            },
+            "type": "object",
+            "title": "Values"
           }
         },
+        "type": "object",
+        "required": [
+          "values"
+        ],
+        "title": "JobInputs",
         "example": {
           "values": {
             "x": 4.33,
@@ -5650,58 +5722,54 @@
         }
       },
       "JobMetadata": {
-        "title": "JobMetadata",
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Job Id",
+            "description": "Parent Job"
+          },
+          "metadata": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "type": "object",
+            "title": "Metadata",
+            "description": "Custom key-value map"
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 2083,
+            "minLength": 1,
+            "format": "uri",
+            "title": "Url",
+            "description": "Link to get this resource (self)"
+          }
+        },
+        "type": "object",
         "required": [
           "job_id",
           "metadata",
           "url"
         ],
-        "type": "object",
-        "properties": {
-          "job_id": {
-            "title": "Job Id",
-            "type": "string",
-            "description": "Parent Job",
-            "format": "uuid"
-          },
-          "metadata": {
-            "title": "Metadata",
-            "type": "object",
-            "additionalProperties": {
-              "anyOf": [
-                {
-                  "type": "boolean"
-                },
-                {
-                  "type": "integer"
-                },
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "string"
-                }
-              ]
-            },
-            "description": "Custom key-value map"
-          },
-          "url": {
-            "title": "Url",
-            "maxLength": 2083,
-            "minLength": 1,
-            "type": "string",
-            "description": "Link to get this resource (self)",
-            "format": "uri"
-          }
-        }
+        "title": "JobMetadata"
       },
       "JobMetadataUpdate": {
-        "title": "JobMetadataUpdate",
-        "type": "object",
         "properties": {
           "metadata": {
-            "title": "Metadata",
-            "type": "object",
             "additionalProperties": {
               "anyOf": [
                 {
@@ -5718,27 +5786,23 @@
                 }
               ]
             },
+            "type": "object",
+            "title": "Metadata",
             "description": "Custom key-value map"
           }
-        }
+        },
+        "type": "object",
+        "title": "JobMetadataUpdate"
       },
       "JobOutputs": {
-        "title": "JobOutputs",
-        "required": [
-          "job_id",
-          "results"
-        ],
-        "type": "object",
         "properties": {
           "job_id": {
-            "title": "Job Id",
             "type": "string",
-            "description": "Job that produced this output",
-            "format": "uuid"
+            "format": "uuid",
+            "title": "Job Id",
+            "description": "Job that produced this output"
           },
           "results": {
-            "title": "Results",
-            "type": "object",
             "additionalProperties": {
               "anyOf": [
                 {
@@ -5757,13 +5821,21 @@
                   "type": "string"
                 },
                 {
-                  "type": "array",
-                  "items": {}
+                  "items": {},
+                  "type": "array"
                 }
               ]
-            }
+            },
+            "type": "object",
+            "title": "Results"
           }
         },
+        "type": "object",
+        "required": [
+          "job_id",
+          "results"
+        ],
+        "title": "JobOutputs",
         "example": {
           "job_id": "99d9ac65-9f10-4e2f-a433-b5e412bb037b",
           "results": {
@@ -5779,48 +5851,48 @@
         }
       },
       "JobStatus": {
-        "title": "JobStatus",
-        "required": [
-          "job_id",
-          "state",
-          "submitted_at"
-        ],
-        "type": "object",
         "properties": {
           "job_id": {
-            "title": "Job Id",
             "type": "string",
-            "format": "uuid"
+            "format": "uuid",
+            "title": "Job Id"
           },
           "state": {
             "$ref": "#/components/schemas/RunningState"
           },
           "progress": {
-            "title": "Progress",
+            "type": "integer",
             "maximum": 100,
             "minimum": 0,
-            "type": "integer",
+            "title": "Progress",
             "default": 0
           },
           "submitted_at": {
-            "title": "Submitted At",
             "type": "string",
-            "description": "Last modification timestamp of the solver job",
-            "format": "date-time"
+            "format": "date-time",
+            "title": "Submitted At",
+            "description": "Last modification timestamp of the solver job"
           },
           "started_at": {
-            "title": "Started At",
             "type": "string",
-            "description": "Timestamp that indicate the moment the solver starts execution or None if the event did not occur",
-            "format": "date-time"
+            "format": "date-time",
+            "title": "Started At",
+            "description": "Timestamp that indicate the moment the solver starts execution or None if the event did not occur"
           },
           "stopped_at": {
-            "title": "Stopped At",
             "type": "string",
-            "description": "Timestamp at which the solver finished or killed execution or None if the event did not occur",
-            "format": "date-time"
+            "format": "date-time",
+            "title": "Stopped At",
+            "description": "Timestamp at which the solver finished or killed execution or None if the event did not occur"
           }
         },
+        "type": "object",
+        "required": [
+          "job_id",
+          "state",
+          "submitted_at"
+        ],
+        "title": "JobStatus",
         "example": {
           "job_id": "145beae4-a3a8-4fde-adbb-4e8257c2c083",
           "state": "STARTED",
@@ -5830,79 +5902,79 @@
         }
       },
       "Links": {
-        "title": "Links",
-        "type": "object",
         "properties": {
           "first": {
-            "title": "First",
             "type": "string",
+            "title": "First",
             "example": "/api/v1/users?limit=1&offset1"
           },
           "last": {
-            "title": "Last",
             "type": "string",
+            "title": "Last",
             "example": "/api/v1/users?limit=1&offset1"
           },
           "self": {
-            "title": "Self",
             "type": "string",
+            "title": "Self",
             "example": "/api/v1/users?limit=1&offset1"
           },
           "next": {
-            "title": "Next",
             "type": "string",
+            "title": "Next",
             "example": "/api/v1/users?limit=1&offset1"
           },
           "prev": {
-            "title": "Prev",
             "type": "string",
+            "title": "Prev",
             "example": "/api/v1/users?limit=1&offset1"
           }
-        }
+        },
+        "type": "object",
+        "title": "Links"
       },
       "Meta": {
-        "title": "Meta",
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
+            "title": "Version"
+          },
+          "released": {
+            "additionalProperties": {
+              "type": "string",
+              "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$"
+            },
+            "type": "object",
+            "title": "Released",
+            "description": "Maps every route's path tag with a released version"
+          },
+          "docs_url": {
+            "type": "string",
+            "maxLength": 65536,
+            "minLength": 1,
+            "format": "uri",
+            "title": "Docs Url"
+          },
+          "docs_dev_url": {
+            "type": "string",
+            "maxLength": 65536,
+            "minLength": 1,
+            "format": "uri",
+            "title": "Docs Dev Url"
+          }
+        },
+        "type": "object",
         "required": [
           "name",
           "version",
           "docs_url",
           "docs_dev_url"
         ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "title": "Name",
-            "type": "string"
-          },
-          "version": {
-            "title": "Version",
-            "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
-            "type": "string"
-          },
-          "released": {
-            "title": "Released",
-            "type": "object",
-            "additionalProperties": {
-              "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
-              "type": "string"
-            },
-            "description": "Maps every route's path tag with a released version"
-          },
-          "docs_url": {
-            "title": "Docs Url",
-            "maxLength": 65536,
-            "minLength": 1,
-            "type": "string",
-            "format": "uri"
-          },
-          "docs_dev_url": {
-            "title": "Docs Dev Url",
-            "maxLength": 65536,
-            "minLength": 1,
-            "type": "string",
-            "format": "uri"
-          }
-        },
+        "title": "Meta",
         "example": {
           "name": "simcore_service_foo",
           "version": "2.4.45",
@@ -5915,203 +5987,223 @@
         }
       },
       "OnePage_SolverPort_": {
-        "title": "OnePage[SolverPort]",
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/SolverPort"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0,
+            "title": "Total"
+          }
+        },
+        "type": "object",
         "required": [
           "items"
         ],
-        "type": "object",
-        "properties": {
-          "items": {
-            "title": "Items",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SolverPort"
-            }
-          },
-          "total": {
-            "title": "Total",
-            "minimum": 0,
-            "type": "integer"
-          }
-        },
+        "title": "OnePage[SolverPort]",
         "description": "A single page is used to envelope a small sequence that does not require\npagination\n\nIf total >  MAXIMUM_NUMBER_OF_ITEMS_PER_PAGE, we should consider extending this\nentrypoint to proper pagination"
       },
       "OnePage_StudyPort_": {
-        "title": "OnePage[StudyPort]",
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/StudyPort"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0,
+            "title": "Total"
+          }
+        },
+        "type": "object",
         "required": [
           "items"
         ],
-        "type": "object",
-        "properties": {
-          "items": {
-            "title": "Items",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/StudyPort"
-            }
-          },
-          "total": {
-            "title": "Total",
-            "minimum": 0,
-            "type": "integer"
-          }
-        },
+        "title": "OnePage[StudyPort]",
         "description": "A single page is used to envelope a small sequence that does not require\npagination\n\nIf total >  MAXIMUM_NUMBER_OF_ITEMS_PER_PAGE, we should consider extending this\nentrypoint to proper pagination"
       },
       "Page_File_": {
-        "title": "Page[File]",
-        "required": [
-          "items",
-          "total",
-          "links"
-        ],
-        "type": "object",
         "properties": {
           "items": {
-            "title": "Items",
-            "type": "array",
             "items": {
               "$ref": "#/components/schemas/File"
-            }
+            },
+            "type": "array",
+            "title": "Items"
           },
           "total": {
-            "title": "Total",
+            "type": "integer",
             "minimum": 0,
-            "type": "integer"
+            "title": "Total"
           },
           "limit": {
-            "title": "Limit",
+            "type": "integer",
             "minimum": 1,
-            "type": "integer"
+            "title": "Limit"
           },
           "offset": {
-            "title": "Offset",
+            "type": "integer",
             "minimum": 0,
-            "type": "integer"
+            "title": "Offset"
           },
           "links": {
             "$ref": "#/components/schemas/Links"
           }
-        }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "links"
+        ],
+        "title": "Page[File]"
       },
       "Page_Job_": {
-        "title": "Page[Job]",
-        "required": [
-          "items",
-          "total",
-          "links"
-        ],
-        "type": "object",
         "properties": {
           "items": {
-            "title": "Items",
-            "type": "array",
             "items": {
               "$ref": "#/components/schemas/Job"
-            }
+            },
+            "type": "array",
+            "title": "Items"
           },
           "total": {
-            "title": "Total",
+            "type": "integer",
             "minimum": 0,
-            "type": "integer"
+            "title": "Total"
           },
           "limit": {
-            "title": "Limit",
+            "type": "integer",
             "minimum": 1,
-            "type": "integer"
+            "title": "Limit"
           },
           "offset": {
-            "title": "Offset",
+            "type": "integer",
             "minimum": 0,
-            "type": "integer"
+            "title": "Offset"
           },
           "links": {
             "$ref": "#/components/schemas/Links"
           }
-        }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "links"
+        ],
+        "title": "Page[Job]"
       },
       "Page_Solver_": {
-        "title": "Page[Solver]",
-        "required": [
-          "items",
-          "total",
-          "links"
-        ],
-        "type": "object",
         "properties": {
           "items": {
-            "title": "Items",
-            "type": "array",
             "items": {
               "$ref": "#/components/schemas/Solver"
-            }
+            },
+            "type": "array",
+            "title": "Items"
           },
           "total": {
-            "title": "Total",
+            "type": "integer",
             "minimum": 0,
-            "type": "integer"
+            "title": "Total"
           },
           "limit": {
-            "title": "Limit",
+            "type": "integer",
             "minimum": 1,
-            "type": "integer"
+            "title": "Limit"
           },
           "offset": {
-            "title": "Offset",
+            "type": "integer",
             "minimum": 0,
-            "type": "integer"
+            "title": "Offset"
           },
           "links": {
             "$ref": "#/components/schemas/Links"
           }
-        }
-      },
-      "Page_Study_": {
-        "title": "Page[Study]",
+        },
+        "type": "object",
         "required": [
           "items",
-          "total",
           "links"
         ],
-        "type": "object",
+        "title": "Page[Solver]"
+      },
+      "Page_Study_": {
         "properties": {
           "items": {
-            "title": "Items",
-            "type": "array",
             "items": {
               "$ref": "#/components/schemas/Study"
-            }
+            },
+            "type": "array",
+            "title": "Items"
           },
           "total": {
-            "title": "Total",
+            "type": "integer",
             "minimum": 0,
-            "type": "integer"
+            "title": "Total"
           },
           "limit": {
-            "title": "Limit",
+            "type": "integer",
             "minimum": 1,
-            "type": "integer"
+            "title": "Limit"
           },
           "offset": {
-            "title": "Offset",
+            "type": "integer",
             "minimum": 0,
-            "type": "integer"
+            "title": "Offset"
           },
           "links": {
             "$ref": "#/components/schemas/Links"
           }
-        }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "links"
+        ],
+        "title": "Page[Study]"
       },
       "PricingPlanClassification": {
-        "title": "PricingPlanClassification",
+        "type": "string",
         "enum": [
           "TIER"
         ],
-        "type": "string",
+        "title": "PricingPlanClassification",
         "description": "An enumeration."
       },
       "PricingUnitGet": {
-        "title": "PricingUnitGet",
+        "properties": {
+          "pricingUnitId": {
+            "type": "integer",
+            "exclusiveMinimum": true,
+            "title": "Pricingunitid",
+            "minimum": 0
+          },
+          "unitName": {
+            "type": "string",
+            "title": "Unitname"
+          },
+          "unitExtraInfo": {
+            "type": "object",
+            "title": "Unitextrainfo"
+          },
+          "currentCostPerUnit": {
+            "type": "number",
+            "title": "Currentcostperunit"
+          },
+          "default": {
+            "type": "boolean",
+            "title": "Default"
+          }
+        },
+        "type": "object",
         "required": [
           "pricingUnitId",
           "unitName",
@@ -6119,63 +6211,32 @@
           "currentCostPerUnit",
           "default"
         ],
-        "type": "object",
-        "properties": {
-          "pricingUnitId": {
-            "title": "Pricingunitid",
-            "exclusiveMinimum": true,
-            "type": "integer",
-            "minimum": 0
-          },
-          "unitName": {
-            "title": "Unitname",
-            "type": "string"
-          },
-          "unitExtraInfo": {
-            "title": "Unitextrainfo",
-            "type": "object"
-          },
-          "currentCostPerUnit": {
-            "title": "Currentcostperunit",
-            "type": "number"
-          },
-          "default": {
-            "title": "Default",
-            "type": "boolean"
-          }
-        }
+        "title": "PricingUnitGet"
       },
       "Profile": {
-        "title": "Profile",
-        "required": [
-          "id",
-          "login",
-          "role"
-        ],
-        "type": "object",
         "properties": {
           "first_name": {
-            "title": "First Name",
-            "maxLength": 255,
             "type": "string",
+            "maxLength": 255,
+            "title": "First Name",
             "example": "James"
           },
           "last_name": {
-            "title": "Last Name",
-            "maxLength": 255,
             "type": "string",
+            "maxLength": 255,
+            "title": "Last Name",
             "example": "Maxwell"
           },
           "id": {
-            "title": "Id",
-            "exclusiveMinimum": true,
             "type": "integer",
+            "exclusiveMinimum": true,
+            "title": "Id",
             "minimum": 0
           },
           "login": {
-            "title": "Login",
             "type": "string",
-            "format": "email"
+            "format": "email",
+            "title": "Login"
           },
           "role": {
             "$ref": "#/components/schemas/UserRoleEnum"
@@ -6184,12 +6245,19 @@
             "$ref": "#/components/schemas/Groups"
           },
           "gravatar_id": {
-            "title": "Gravatar Id",
-            "maxLength": 40,
             "type": "string",
+            "maxLength": 40,
+            "title": "Gravatar Id",
             "description": "md5 hash value of email to retrieve an avatar image from https://www.gravatar.com"
           }
         },
+        "type": "object",
+        "required": [
+          "id",
+          "login",
+          "role"
+        ],
+        "title": "Profile",
         "example": {
           "id": "20",
           "first_name": "James",
@@ -6213,25 +6281,25 @@
         }
       },
       "ProfileUpdate": {
-        "title": "ProfileUpdate",
-        "type": "object",
         "properties": {
           "first_name": {
-            "title": "First Name",
-            "maxLength": 255,
             "type": "string",
+            "maxLength": 255,
+            "title": "First Name",
             "example": "James"
           },
           "last_name": {
-            "title": "Last Name",
-            "maxLength": 255,
             "type": "string",
+            "maxLength": 255,
+            "title": "Last Name",
             "example": "Maxwell"
           }
-        }
+        },
+        "type": "object",
+        "title": "ProfileUpdate"
       },
       "RunningState": {
-        "title": "RunningState",
+        "type": "string",
         "enum": [
           "UNKNOWN",
           "PUBLISHED",
@@ -6244,11 +6312,46 @@
           "ABORTED",
           "WAITING_FOR_CLUSTER"
         ],
-        "type": "string",
+        "title": "RunningState",
         "description": "State of execution of a project's computational workflow\n\nSEE StateType for task state"
       },
       "ServicePricingPlanGet": {
-        "title": "ServicePricingPlanGet",
+        "properties": {
+          "pricingPlanId": {
+            "type": "integer",
+            "exclusiveMinimum": true,
+            "title": "Pricingplanid",
+            "minimum": 0
+          },
+          "displayName": {
+            "type": "string",
+            "title": "Displayname"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "classification": {
+            "$ref": "#/components/schemas/PricingPlanClassification"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Createdat"
+          },
+          "pricingPlanKey": {
+            "type": "string",
+            "title": "Pricingplankey"
+          },
+          "pricingUnits": {
+            "items": {
+              "$ref": "#/components/schemas/PricingUnitGet"
+            },
+            "type": "array",
+            "title": "Pricingunits"
+          }
+        },
+        "type": "object",
         "required": [
           "pricingPlanId",
           "displayName",
@@ -6258,45 +6361,45 @@
           "pricingPlanKey",
           "pricingUnits"
         ],
-        "type": "object",
-        "properties": {
-          "pricingPlanId": {
-            "title": "Pricingplanid",
-            "exclusiveMinimum": true,
-            "type": "integer",
-            "minimum": 0
-          },
-          "displayName": {
-            "title": "Displayname",
-            "type": "string"
-          },
-          "description": {
-            "title": "Description",
-            "type": "string"
-          },
-          "classification": {
-            "$ref": "#/components/schemas/PricingPlanClassification"
-          },
-          "createdAt": {
-            "title": "Createdat",
-            "type": "string",
-            "format": "date-time"
-          },
-          "pricingPlanKey": {
-            "title": "Pricingplankey",
-            "type": "string"
-          },
-          "pricingUnits": {
-            "title": "Pricingunits",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/PricingUnitGet"
-            }
-          }
-        }
+        "title": "ServicePricingPlanGet"
       },
       "Solver": {
-        "title": "Solver",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
+            "title": "Id",
+            "description": "Solver identifier"
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
+            "title": "Version",
+            "description": "semantic version number of the node"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "description": "Human readable name"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "maintainer": {
+            "type": "string",
+            "title": "Maintainer"
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 2083,
+            "minLength": 1,
+            "format": "uri",
+            "title": "Url",
+            "description": "Link to get this resource"
+          }
+        },
+        "type": "object",
         "required": [
           "id",
           "version",
@@ -6304,42 +6407,7 @@
           "maintainer",
           "url"
         ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "title": "Id",
-            "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
-            "type": "string",
-            "description": "Solver identifier"
-          },
-          "version": {
-            "title": "Version",
-            "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
-            "type": "string",
-            "description": "semantic version number of the node"
-          },
-          "title": {
-            "title": "Title",
-            "type": "string",
-            "description": "Human readable name"
-          },
-          "description": {
-            "title": "Description",
-            "type": "string"
-          },
-          "maintainer": {
-            "title": "Maintainer",
-            "type": "string"
-          },
-          "url": {
-            "title": "Url",
-            "maxLength": 2083,
-            "minLength": 1,
-            "type": "string",
-            "description": "Link to get this resource",
-            "format": "uri"
-          }
-        },
+        "title": "Solver",
         "description": "A released solver with a specific version",
         "example": {
           "id": "simcore/services/comp/isolve",
@@ -6351,33 +6419,33 @@
         }
       },
       "SolverPort": {
-        "title": "SolverPort",
-        "required": [
-          "key",
-          "kind"
-        ],
-        "type": "object",
         "properties": {
           "key": {
-            "title": "Key name",
-            "pattern": "^[^_\\W0-9]\\w*$",
             "type": "string",
+            "pattern": "^[^_\\W0-9]\\w*$",
+            "title": "Key name",
             "description": "port identifier name"
           },
           "kind": {
-            "title": "Kind",
+            "type": "string",
             "enum": [
               "input",
               "output"
             ],
-            "type": "string"
+            "title": "Kind"
           },
           "content_schema": {
-            "title": "Content Schema",
             "type": "object",
+            "title": "Content Schema",
             "description": "jsonschema for the port's value. SEE https://json-schema.org"
           }
         },
+        "type": "object",
+        "required": [
+          "key",
+          "kind"
+        ],
+        "title": "SolverPort",
         "example": {
           "key": "input_2",
           "kind": "input",
@@ -6391,55 +6459,55 @@
         }
       },
       "Study": {
-        "title": "Study",
+        "properties": {
+          "uid": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Uid"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          }
+        },
+        "type": "object",
         "required": [
           "uid"
         ],
-        "type": "object",
-        "properties": {
-          "uid": {
-            "title": "Uid",
-            "type": "string",
-            "format": "uuid"
-          },
-          "title": {
-            "title": "Title",
-            "type": "string"
-          },
-          "description": {
-            "title": "Description",
-            "type": "string"
-          }
-        }
+        "title": "Study"
       },
       "StudyPort": {
-        "title": "StudyPort",
-        "required": [
-          "key",
-          "kind"
-        ],
-        "type": "object",
         "properties": {
           "key": {
-            "title": "Key name",
             "type": "string",
-            "description": "port identifier name.Correponds to the UUID of the parameter/probe node in the study",
-            "format": "uuid"
+            "format": "uuid",
+            "title": "Key name",
+            "description": "port identifier name.Correponds to the UUID of the parameter/probe node in the study"
           },
           "kind": {
-            "title": "Kind",
+            "type": "string",
             "enum": [
               "input",
               "output"
             ],
-            "type": "string"
+            "title": "Kind"
           },
           "content_schema": {
-            "title": "Content Schema",
             "type": "object",
+            "title": "Content Schema",
             "description": "jsonschema for the port's value. SEE https://json-schema.org"
           }
         },
+        "type": "object",
+        "required": [
+          "key",
+          "kind"
+        ],
+        "title": "StudyPort",
         "example": {
           "key": "input_2",
           "kind": "input",
@@ -6453,45 +6521,45 @@
         }
       },
       "UploadLinks": {
-        "title": "UploadLinks",
+        "properties": {
+          "abort_upload": {
+            "type": "string",
+            "title": "Abort Upload"
+          },
+          "complete_upload": {
+            "type": "string",
+            "title": "Complete Upload"
+          }
+        },
+        "type": "object",
         "required": [
           "abort_upload",
           "complete_upload"
         ],
-        "type": "object",
-        "properties": {
-          "abort_upload": {
-            "title": "Abort Upload",
-            "type": "string"
-          },
-          "complete_upload": {
-            "title": "Complete Upload",
-            "type": "string"
-          }
-        }
+        "title": "UploadLinks"
       },
       "UploadedPart": {
-        "title": "UploadedPart",
+        "properties": {
+          "number": {
+            "type": "integer",
+            "exclusiveMinimum": true,
+            "title": "Number",
+            "minimum": 0
+          },
+          "e_tag": {
+            "type": "string",
+            "title": "E Tag"
+          }
+        },
+        "type": "object",
         "required": [
           "number",
           "e_tag"
         ],
-        "type": "object",
-        "properties": {
-          "number": {
-            "title": "Number",
-            "exclusiveMinimum": true,
-            "type": "integer",
-            "minimum": 0
-          },
-          "e_tag": {
-            "title": "E Tag",
-            "type": "string"
-          }
-        }
+        "title": "UploadedPart"
       },
       "UserRoleEnum": {
-        "title": "UserRoleEnum",
+        "type": "string",
         "enum": [
           "ANONYMOUS",
           "GUEST",
@@ -6500,43 +6568,34 @@
           "PRODUCT_OWNER",
           "ADMIN"
         ],
-        "type": "string",
+        "title": "UserRoleEnum",
         "description": "An enumeration."
       },
       "UsersGroup": {
-        "title": "UsersGroup",
+        "properties": {
+          "gid": {
+            "type": "string",
+            "title": "Gid"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          }
+        },
+        "type": "object",
         "required": [
           "gid",
           "label"
         ],
-        "type": "object",
-        "properties": {
-          "gid": {
-            "title": "Gid",
-            "type": "string"
-          },
-          "label": {
-            "title": "Label",
-            "type": "string"
-          },
-          "description": {
-            "title": "Description",
-            "type": "string"
-          }
-        }
+        "title": "UsersGroup"
       },
       "ValidationError": {
-        "title": "ValidationError",
-        "required": [
-          "loc",
-          "msg",
-          "type"
-        ],
-        "type": "object",
         "properties": {
           "loc": {
-            "title": "Location",
-            "type": "array",
             "items": {
               "anyOf": [
                 {
@@ -6546,20 +6605,72 @@
                   "type": "integer"
                 }
               ]
-            }
+            },
+            "type": "array",
+            "title": "Location"
           },
           "msg": {
-            "title": "Message",
-            "type": "string"
+            "type": "string",
+            "title": "Message"
           },
           "type": {
-            "title": "Error Type",
-            "type": "string"
+            "type": "string",
+            "title": "Error Type"
           }
-        }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
       },
       "WalletGetWithAvailableCredits": {
-        "title": "WalletGetWithAvailableCredits",
+        "properties": {
+          "walletId": {
+            "type": "integer",
+            "exclusiveMinimum": true,
+            "title": "Walletid",
+            "minimum": 0
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "owner": {
+            "type": "integer",
+            "exclusiveMinimum": true,
+            "title": "Owner",
+            "minimum": 0
+          },
+          "thumbnail": {
+            "type": "string",
+            "title": "Thumbnail"
+          },
+          "status": {
+            "$ref": "#/components/schemas/WalletStatus"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created"
+          },
+          "modified": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Modified"
+          },
+          "availableCredits": {
+            "type": "number",
+            "title": "Availablecredits"
+          }
+        },
+        "type": "object",
         "required": [
           "walletId",
           "name",
@@ -6569,58 +6680,15 @@
           "modified",
           "availableCredits"
         ],
-        "type": "object",
-        "properties": {
-          "walletId": {
-            "title": "Walletid",
-            "exclusiveMinimum": true,
-            "type": "integer",
-            "minimum": 0
-          },
-          "name": {
-            "title": "Name",
-            "type": "string"
-          },
-          "description": {
-            "title": "Description",
-            "type": "string"
-          },
-          "owner": {
-            "title": "Owner",
-            "exclusiveMinimum": true,
-            "type": "integer",
-            "minimum": 0
-          },
-          "thumbnail": {
-            "title": "Thumbnail",
-            "type": "string"
-          },
-          "status": {
-            "$ref": "#/components/schemas/WalletStatus"
-          },
-          "created": {
-            "title": "Created",
-            "type": "string",
-            "format": "date-time"
-          },
-          "modified": {
-            "title": "Modified",
-            "type": "string",
-            "format": "date-time"
-          },
-          "availableCredits": {
-            "title": "Availablecredits",
-            "type": "number"
-          }
-        }
+        "title": "WalletGetWithAvailableCredits"
       },
       "WalletStatus": {
-        "title": "WalletStatus",
+        "type": "string",
         "enum": [
           "ACTIVE",
           "INACTIVE"
         ],
-        "type": "string",
+        "title": "WalletStatus",
         "description": "An enumeration."
       }
     },
