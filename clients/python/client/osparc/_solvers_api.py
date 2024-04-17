@@ -1,15 +1,24 @@
-from typing import List, Optional
+from typing import Any, List, Optional
 
 import httpx
 from osparc_client import OnePageSolverPort, SolverPort
 from osparc_client import SolversApi as _SolversApi
 
 from . import ApiClient
-from ._utils import PaginationGenerator, dev_features_enabled
+from ._utils import PaginationGenerator, dev_feature, dev_features_enabled
 
 
 class SolversApi(_SolversApi):
     """Class for interacting with solvers"""
+
+    _dev_features = [
+        "get_jobs_page",
+    ]
+
+    def __getattribute__(self, name: str) -> Any:
+        if (name in SolversApi._dev_features) and (not dev_features_enabled()):
+            raise NotImplementedError(f"SolversApi.{name} is still under development")
+        return super().__getattribute__(name)
 
     def __init__(self, api_client: Optional[ApiClient] = None):
         """Construct object
@@ -33,36 +42,31 @@ class SolversApi(_SolversApi):
         )  # type: ignore
         return page.items if page.items else []
 
-    if dev_features_enabled():
+    @dev_feature
+    def jobs(self, solver_key: str, version: str) -> PaginationGenerator:
+        """Returns an iterator through which one can iterate over
+        all Jobs submitted to the solver
 
-        def get_jobs_page(self, solver_key: str, version: str) -> None:
-            """Method only for internal use"""
-            raise NotImplementedError("This method is only for internal use")
+        Args:
+            solver_key (str): The solver key
+            version (str): The solver version
+            limit (int, optional): the limit of a single page
+            offset (int, optional): the offset of the first element to return
 
-        def jobs(self, solver_key: str, version: str) -> PaginationGenerator:
-            """Returns an iterator through which one can iterate over
-            all Jobs submitted to the solver
+        Returns:
+            PaginationGenerator: A generator whose elements are the Jobs submitted
+            to the solver and the total number of jobs the iterator can yield
+            (its "length")
+        """
 
-            Args:
-                solver_key (str): The solver key
-                version (str): The solver version
-                limit (int, optional): the limit of a single page
-                offset (int, optional): the offset of the first element to return
-
-            Returns:
-                PaginationGenerator: A generator whose elements are the Jobs submitted
-                to the solver and the total number of jobs the iterator can yield
-                (its "length")
-            """
-
-            def pagination_method():
-                return super(SolversApi, self).get_jobs_page(
-                    solver_key=solver_key, version=version, limit=20, offset=0
-                )
-
-            return PaginationGenerator(
-                first_page_callback=pagination_method,
-                api_client=self.api_client,
-                base_url=self.api_client.configuration.host,
-                auth=self._auth,
+        def pagination_method():
+            return super(SolversApi, self).get_jobs_page(
+                solver_key=solver_key, version=version, limit=20, offset=0
             )
+
+        return PaginationGenerator(
+            first_page_callback=pagination_method,
+            api_client=self.api_client,
+            base_url=self.api_client.configuration.host,
+            auth=self._auth,
+        )
