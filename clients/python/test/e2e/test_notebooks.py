@@ -1,13 +1,14 @@
 import shutil
 import sys
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, Final, List
 
 import osparc
 import papermill as pm
 import pytest
 from packaging.version import Version
 
+_NOTEBOOK_EXECUTION_TIMEOUT_SECONDS: Final[int] = 60 * 20  # 20min
 docs_dir: Path = Path(__file__).parent.parent.parent / "docs"
 all_notebooks: List[Path] = list(docs_dir.rglob("*.ipynb"))
 min_version_reqs: Dict[str, Version] = {
@@ -60,4 +61,5 @@ def test_run_notebooks(tmp_path: Path, notebook: Path, params: dict[str, Any] = 
         output_path=output,
         kernel_name="python3",
         parameters=params,
+        execution_timeout=_NOTEBOOK_EXECUTION_TIMEOUT_SECONDS,
     )
