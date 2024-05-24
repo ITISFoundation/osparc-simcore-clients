@@ -182,7 +182,10 @@ def generate_html_table(e2e_artifacts_dir: str) -> None:
     s.set_table_styles(style)
     s.set_caption("OSPARC e2e python client vs server tests")
     s.to_html(artifacts / "test_results.html")
-    typer.echo(df.to_markdown(tablefmt="grid"))
+    typer.echo(
+        typer.style("\n\n\nOSPARC e2e python client vs server tests:", bold=True)
+    )
+    typer.echo(df.to_markdown(tablefmt="double_grid"))
 
 
 @cli.command()
