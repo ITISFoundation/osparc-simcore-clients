@@ -116,7 +116,7 @@ def check_for_failure(e2e_artifacts_dir: str):
     artifacts: Path = Path(e2e_artifacts_dir)
     if not artifacts.is_dir():
         raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
-    result_jsons = list(Path(artifacts).glob("*.json"))
+    result_jsons = list(artifacts.glob("*.json"))
     if not len(result_jsons):
         raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
     for pth in result_jsons:
