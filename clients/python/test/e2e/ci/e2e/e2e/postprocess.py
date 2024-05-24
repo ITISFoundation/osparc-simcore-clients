@@ -111,13 +111,12 @@ def single_testrun(exit_code: int) -> None:
 
 @cli.command()
 @handle_validation_error
-def check_for_failure():
+def check_for_failure(e2e_artifacts_dir: str):
     """Loop through all json artifacts and fail in case of testfailure"""
-    pytest_ini: PytestIniFile = PytestIniFile.create_from_file()
-    artifacts: Artifacts = pytest_ini.artifacts
-    if not artifacts.log_dir.is_dir():
+    artifacts: Path = Path(e2e_artifacts_dir)
+    if not artifacts.is_dir():
         raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
-    result_jsons = list(Path(artifacts.artifact_dir).glob("*.json"))
+    result_jsons = list(Path(artifacts).glob("*.json"))
     if not len(result_jsons):
         raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
     for pth in result_jsons:
@@ -182,6 +181,7 @@ def generate_html_table(e2e_artifacts_dir: str) -> None:
     s.set_table_attributes('style="font-size: 20px"')
     s.set_table_styles(style)
     s.set_caption("OSPARC e2e python client vs server tests")
+    typer.echo(s.to_string())
     s.to_html(artifacts / "test_results.html")
 
 
