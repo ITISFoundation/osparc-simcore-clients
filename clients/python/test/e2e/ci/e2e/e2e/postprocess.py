@@ -122,9 +122,7 @@ def check_for_failure():
         raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
     for pth in result_jsons:
         df = pd.read_json(pth)
-        df = (df != pytest.ExitCode.OK) & (
-            df != E2eExitCodes.SKIP_DUE_TO_INCOMPATIBILE_CLIENT_SERVER
-        )
+        df = (df != pytest.ExitCode.OK) & (df != E2eExitCodes.SKIPPING_TESTS)
         if df.to_numpy().flatten().any():
             raise typer.Exit(code=pytest.ExitCode.TESTS_FAILED)
 
@@ -141,7 +139,7 @@ def _exitcode_to_text(exitcode: int) -> str:
 
 def _make_pretty(entry: str):
     color: str
-    if entry == E2eExitCodes.SKIP_DUE_TO_INCOMPATIBILE_CLIENT_SERVER.name:
+    if entry == E2eExitCodes.SKIPPING_TESTS.name:
         color = "#999999"
     elif entry == pytest.ExitCode.OK.name:
         color = "#99FF99"
