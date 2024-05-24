@@ -123,7 +123,7 @@ def check_for_failure():
     for pth in result_jsons:
         df = pd.read_json(pth)
         df = (df != pytest.ExitCode.OK) & (
-            df != E2eExitCodes.INCOMPATIBLE_CLIENT_SERVER
+            df != E2eExitCodes.SKIP_DUE_TO_INCOMPATIBILE_CLIENT_SERVER
         )
         if df.to_numpy().flatten().any():
             raise typer.Exit(code=pytest.ExitCode.TESTS_FAILED)
@@ -141,7 +141,7 @@ def _exitcode_to_text(exitcode: int) -> str:
 
 def _make_pretty(entry: str):
     color: str
-    if entry == E2eExitCodes.INCOMPATIBLE_CLIENT_SERVER.name:
+    if entry == E2eExitCodes.SKIP_DUE_TO_INCOMPATIBILE_CLIENT_SERVER.name:
         color = "#999999"
     elif entry == pytest.ExitCode.OK.name:
         color = "#99FF99"
