@@ -35,7 +35,7 @@ class E2eExitCodes(IntEnum):
     """
 
     CI_SCRIPT_FAILURE = 100
-    INCOMPATIBLE_CLIENT_SERVER = 101
+    SKIPPING_TESTS = 101
     INVALID_JSON_DATA = 102
 
 

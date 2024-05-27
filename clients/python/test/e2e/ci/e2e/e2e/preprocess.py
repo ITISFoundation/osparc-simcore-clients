@@ -116,6 +116,6 @@ def check_compatibility() -> None:
         raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
 
     if not is_compatible:
-        raise typer.Exit(code=E2eExitCodes.INCOMPATIBLE_CLIENT_SERVER)
+        raise typer.Exit(code=E2eExitCodes.SKIPPING_TESTS)
     else:
         raise typer.Exit(code=pytest.ExitCode.OK)

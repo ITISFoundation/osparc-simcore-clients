@@ -111,22 +111,20 @@ def single_testrun(exit_code: int) -> None:
 
 @cli.command()
 @handle_validation_error
-def check_for_failure():
+def check_for_failure(e2e_artifacts_dir: str):
     """Loop through all json artifacts and fail in case of testfailure"""
-    pytest_ini: PytestIniFile = PytestIniFile.create_from_file()
-    artifacts: Artifacts = pytest_ini.artifacts
-    if not artifacts.log_dir.is_dir():
+    artifacts: Path = Path(e2e_artifacts_dir)
+    if not artifacts.is_dir():
         raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
-    result_jsons = list(Path(artifacts.artifact_dir).glob("*.json"))
-    if not len(result_jsons):
-        raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
-    for pth in result_jsons:
+    count = 0
+    for pth in artifacts.glob("*.json"):
+        count += 1
         df = pd.read_json(pth)
-        df = (df != pytest.ExitCode.OK) & (
-            df != E2eExitCodes.INCOMPATIBLE_CLIENT_SERVER
-        )
+        df = (df != pytest.ExitCode.OK) & (df != E2eExitCodes.SKIPPING_TESTS)
         if df.to_numpy().flatten().any():
             raise typer.Exit(code=pytest.ExitCode.TESTS_FAILED)
+    if count == 0:
+        raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
 
 
 def _exitcode_to_text(exitcode: int) -> str:
@@ -141,7 +139,7 @@ def _exitcode_to_text(exitcode: int) -> str:
 
 def _make_pretty(entry: str):
     color: str
-    if entry == E2eExitCodes.INCOMPATIBLE_CLIENT_SERVER.name:
+    if entry == E2eExitCodes.SKIPPING_TESTS.name:
         color = "#999999"
     elif entry == pytest.ExitCode.OK.name:
         color = "#99FF99"
@@ -185,6 +183,8 @@ def generate_html_table(e2e_artifacts_dir: str) -> None:
     s.set_table_styles(style)
     s.set_caption("OSPARC e2e python client vs server tests")
     s.to_html(artifacts / "test_results.html")
+    df.rename_axis("OSPARC e2e python client vs server test")
+    typer.echo(df.to_markdown(tablefmt="double_grid"))
 
 
 @cli.command()
