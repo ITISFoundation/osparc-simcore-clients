@@ -116,14 +116,15 @@ def check_for_failure(e2e_artifacts_dir: str):
     artifacts: Path = Path(e2e_artifacts_dir)
     if not artifacts.is_dir():
         raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
-    result_jsons = list(artifacts.glob("*.json"))
-    if not len(result_jsons):
-        raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
-    for pth in result_jsons:
+    count = 0
+    for pth in artifacts.glob("*.json"):
+        count += 1
         df = pd.read_json(pth)
         df = (df != pytest.ExitCode.OK) & (df != E2eExitCodes.SKIPPING_TESTS)
         if df.to_numpy().flatten().any():
             raise typer.Exit(code=pytest.ExitCode.TESTS_FAILED)
+    if count == 0:
+        raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
 
 
 def _exitcode_to_text(exitcode: int) -> str:
