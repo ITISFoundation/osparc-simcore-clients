@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+title: o²S²PARC Clients
+message: >-
+  If you use this software, please cite it using
+  these metadata
+type: software
+contact:
+  - affiliation: "IT'IS Foundation"
+    email: "support@osparc.io"
+    family-names: Neufeld
+    given-names: Esra
+authors:
+  - given-names: Pedro
+    family-names: Crespo-Valero
+    orcid: "https://orcid.org/0000-0002-9441-1569"
+  - given-names: Elisabetta
+    family-names: Iavarone
+    affiliation: "IT'IS Foundation"
+    orcid: "https://orcid.org/0000-0001-5157-247X"
+  - given-names: Mads Rystok
+    family-names: Bisgaard
+    affiliation: "IT'IS Foundation"
+  - given-names: Werner
+    family-names: Van Geit
+    affiliation: "IT'IS Foundation"
+    orcid: "https://orcid.org/0000-0002-2915-720X"
+url: "https://itisfoundation.github.io/osparc-simcore-clients/#/"
+repository-code: "https://github.com/ITISFoundation/osparc-simcore-clients"
