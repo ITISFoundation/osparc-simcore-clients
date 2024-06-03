@@ -2395,6 +2395,26 @@
             },
             "name": "hidden",
             "in": "query"
+          },
+          {
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "X-Simcore-Parent-Project-Uuid"
+            },
+            "name": "x-simcore-parent-project-uuid",
+            "in": "header"
+          },
+          {
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "X-Simcore-Parent-Node-Id"
+            },
+            "name": "x-simcore-parent-node-id",
+            "in": "header"
           }
         ],
         "requestBody": {
@@ -4425,6 +4445,26 @@
             },
             "name": "study_id",
             "in": "path"
+          },
+          {
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "X-Simcore-Parent-Project-Uuid"
+            },
+            "name": "x-simcore-parent-project-uuid",
+            "in": "header"
+          },
+          {
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "X-Simcore-Parent-Node-Id"
+            },
+            "name": "x-simcore-parent-node-id",
+            "in": "header"
           }
         ],
         "responses": {
@@ -4617,6 +4657,26 @@
             },
             "name": "hidden",
             "in": "query"
+          },
+          {
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "X-Simcore-Parent-Project-Uuid"
+            },
+            "name": "x-simcore-parent-project-uuid",
+            "in": "header"
+          },
+          {
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "X-Simcore-Parent-Node-Id"
+            },
+            "name": "x-simcore-parent-node-id",
+            "in": "header"
           }
         ],
         "requestBody": {
@@ -5090,7 +5150,7 @@
           }
         ],
         "responses": {
-          "501": {
+          "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
@@ -5110,7 +5170,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -5152,11 +5217,13 @@
           "required": true
         },
         "responses": {
-          "501": {
+          "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/JobMetadata"
+                }
               }
             }
           },
@@ -5170,7 +5237,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
       }
     },
     "/v0/wallets/default": {
