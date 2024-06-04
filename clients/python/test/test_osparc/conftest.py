@@ -1,3 +1,4 @@
+import os
 from typing import Iterator
 
 import osparc
@@ -11,3 +12,12 @@ def cfg() -> Iterator[osparc.Configuration]:
         username="askjdg",
         password="asdjbaskjdb",
     )
+
+
+@pytest.fixture
+def enable_dev_mode():
+    dev_mode = os.environ.get("OSPARC_DEV_FEATURES_ENABLED")
+    if dev_mode is None:
+        os.environ["OSPARC_DEV_FEATURES_ENABLED"] = "1"
+        yield
+        del os.environ["OSPARC_DEV_FEATURES_ENABLED"]
