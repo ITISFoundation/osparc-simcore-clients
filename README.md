@@ -27,7 +27,13 @@ See the different `clients/<language>/README.md` for the workflows for generatin
     2. The [openapi-generator](https://github.com/ITISFoundation/openapi-generator)-tool. The exact docker image of this tool to use is specifies in `scripts/common.Makefile`.
 
 ## Code lifecycle
-[This](https://www.ibm.com/docs/en/acvfc?topic=manager-product-lifecycle) link explains the lifecycle of the osparc client(s).
+This link explains the lifecycle of the osparc client(s) (borrowed from https://www.ibm.com/docs/en/acvfc?topic=manager-product-lifecycle)
+<p align="center">
+<a href="https://www.ibm.com/docs/en/acvfc?topic=manager-product-lifecycle" target="_blank">
+<image src="https://github.com/ITISFoundation/osparc-simcore-clients/tree/master/docs/_media/code_lifecycle.png.png" alt="Code lifecycle" width="20%" />
+</a>
+</p>
+
 
 ## Documentation
 
