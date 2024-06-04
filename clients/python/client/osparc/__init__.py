@@ -1,6 +1,6 @@
 import warnings
 from platform import python_version
-from typing import Final, List, Tuple
+from typing import List, Tuple
 
 import nest_asyncio
 from osparc_client import (  # APIs; API client; models
@@ -46,7 +46,7 @@ from ._studies_api import StudiesApi
 from ._utils import dev_features_enabled
 
 if Version(python_version()) < Version("3.8.0"):
-    warning_msg: Final[str] = (
+    warning_msg: str = (
         "This is the final version of osparc which "
         f"will support Python {python_version()}. "
         "Future versions of osparc will only support Python version >=3.8.0."
