@@ -126,10 +126,7 @@ def dev_features_enabled() -> bool:
 def dev_feature(func: Callable):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        self = args[0]
         if not dev_features_enabled():
-            if osparc_client_method := super(self).getattr(func.__name__):
-                return osparc_client_method(*args, **kwargs)
             raise NotImplementedError(f"{func.__name__} is still under development")
         return func(*args, **kwargs)
 
