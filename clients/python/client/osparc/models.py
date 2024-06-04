@@ -22,7 +22,8 @@ from ._exceptions import VisibleDeprecationWarning
 warning_msg: Final[str] = (
     "osparc.models has been deprecated. Instead functionality within this module "
     "should be imported directly from osparc. I.e. please do 'from osparc import "
-    "<fcn>' instead of 'from osparc.models import <fcn>'"
+    "<fcn>' instead of 'from osparc.models import <fcn>'. "
+    "Future version of osparc will not allow import of osparc.models."
 )
 warnings.warn(warning_msg, VisibleDeprecationWarning)
 

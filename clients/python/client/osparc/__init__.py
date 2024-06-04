@@ -1,4 +1,6 @@
-from typing import List, Tuple
+import warnings
+from platform import python_version
+from typing import Final, List, Tuple
 
 import nest_asyncio
 from osparc_client import (  # APIs; API client; models
@@ -34,13 +36,23 @@ from osparc_client import (  # APIs; API client; models
     ValidationError,
     __version__,
 )
+from packaging.version import Version
 
-from ._exceptions import RequestError
+from ._exceptions import RequestError, VisibleDeprecationWarning
 from ._files_api import FilesApi
 from ._info import openapi
 from ._solvers_api import SolversApi
 from ._studies_api import StudiesApi
 from ._utils import dev_features_enabled
+
+if Version(python_version()) < Version("3.8.0"):
+    warning_msg: Final[str] = (
+        "This is the final version of osparc which "
+        f"will support Python {python_version()}. "
+        "Future versions of osparc will only support Python version >=3.8.0."
+    )
+    warnings.warn(warning_msg, VisibleDeprecationWarning)
+
 
 nest_asyncio.apply()  # allow to run coroutines via asyncio.run(coro)
 
