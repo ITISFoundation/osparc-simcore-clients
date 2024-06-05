@@ -1,5 +1,5 @@
 import warnings
-from typing import Final, Tuple
+from typing import Tuple
 
 from osparc_client.models import (
     BodyUploadFileV0FilesContentPut,
@@ -19,10 +19,11 @@ from osparc_client.models import Solver, UserRoleEnum, UsersGroup, ValidationErr
 
 from ._exceptions import VisibleDeprecationWarning
 
-warning_msg: Final[str] = (
+warning_msg: str = (
     "osparc.models has been deprecated. Instead functionality within this module "
     "should be imported directly from osparc. I.e. please do 'from osparc import "
-    "<fcn>' instead of 'from osparc.models import <fcn>'"
+    "<fcn>' instead of 'from osparc.models import <fcn>'. "
+    "Future version of osparc will not allow import of osparc.models."
 )
 warnings.warn(warning_msg, VisibleDeprecationWarning)
 
