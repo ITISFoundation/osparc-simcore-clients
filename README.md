@@ -26,6 +26,14 @@ See the different `clients/<language>/README.md` for the workflows for generatin
     1. The openapi specification which is a json file located in `api/openapi.json`. This generated in [osparc-simcore](https://github.com/ITISFoundation/osparc-simcore/tree/master/services/api-server) and then moved here.
     2. The [openapi-generator](https://github.com/ITISFoundation/openapi-generator)-tool. The exact docker image of this tool to use is specifies in `scripts/common.Makefile`.
 
+## Code lifecycle
+This link explains the lifecycle of the osparc client(s) (borrowed from https://www.ibm.com/docs/en/acvfc?topic=manager-product-lifecycle)
+<p align="center">
+<a href="https://www.ibm.com/docs/en/acvfc?topic=manager-product-lifecycle" target="_blank">
+<image src="https://github.com/ITISFoundation/osparc-simcore-clients/blob/master/docs/_media/code_lifecycle.png?raw=true" alt="Code lifecycle" width="20%" />
+</a>
+</p>
+
 
 ## Documentation
 
@@ -37,3 +45,9 @@ Here is an inexhaustive list which have this repo as a dependency. So changing s
 
 - [e2e-portal-testing](https://git.speag.com/oSparc/e2e-portal-testing/-/commit/950762bde1a60c7ce23286da9c100150ed6926e4)
 - [osparc-simcore](https://github.com/ITISFoundation/osparc-simcore/actions/runs/5319311892/jobs/9631979977)
+
+<p align="center">
+<a href="https://www.z43.swiss" target="_blank">
+<image src="https://github.com/ITISFoundation/osparc-simcore-clients/blob/master/docs/_media/mwl.png?raw=true" alt="Made with love (and lots of hard work) at www.z43.swiss" width="20%" />
+</a>
+</p>

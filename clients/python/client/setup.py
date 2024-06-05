@@ -22,6 +22,7 @@ REQUIRES = [
     "tenacity",
     "pydantic>=2.0.0",
     "pydantic-settings",
+    "packaging",
 ]
 
 setup(
