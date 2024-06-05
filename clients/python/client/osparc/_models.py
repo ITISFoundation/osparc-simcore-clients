@@ -15,6 +15,6 @@ class ParentProjectInfo(BaseSettings):
 
     @field_validator("x_simcore_parent_project_uuid", "x_simcore_parent_node_id")
     @classmethod
-    def double(cls, v: str) -> str:
+    def validate_uuids(cls, v: str) -> str:
         _ = UUID(v)
         return v
