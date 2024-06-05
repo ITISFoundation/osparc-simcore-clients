@@ -11,3 +11,8 @@ def cfg() -> Iterator[osparc.Configuration]:
         username="askjdg",
         password="asdjbaskjdb",
     )
+
+
+@pytest.fixture
+def enable_dev_mode(monkeypatch):
+    monkeypatch.setenv("OSPARC_DEV_FEATURES_ENABLED", "1")

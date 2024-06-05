@@ -20,6 +20,8 @@ REQUIRES = [
     "tqdm>=4.48.0",
     "nest_asyncio",
     "tenacity",
+    "pydantic>=2.0.0",
+    "pydantic-settings",
     "packaging",
 ]
 

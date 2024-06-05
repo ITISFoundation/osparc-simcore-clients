@@ -5,6 +5,7 @@ from osparc_client import OnePageSolverPort, SolverPort
 from osparc_client import SolversApi as _SolversApi
 
 from . import ApiClient
+from ._models import ParentProjectInfo
 from ._utils import PaginationGenerator, dev_feature, dev_features_enabled
 
 
@@ -18,6 +19,8 @@ class SolversApi(_SolversApi):
     def __getattribute__(self, name: str) -> Any:
         if (name in SolversApi._dev_features) and (not dev_features_enabled()):
             raise NotImplementedError(f"SolversApi.{name} is still under development")
+        if name.endswith("_with_http_info"):
+            raise NotImplementedError(f"SolversApi.{name} is only for internal use")
         return super().__getattribute__(name)
 
     def __init__(self, api_client: Optional[ApiClient] = None):
@@ -70,3 +73,7 @@ class SolversApi(_SolversApi):
             base_url=self.api_client.configuration.host,
             auth=self._auth,
         )
+
+    def create_job(self, solver_key, version, job_inputs, **kwargs):
+        kwargs = {**kwargs, **ParentProjectInfo().model_dump(exclude_none=True)}
+        return super().create_job(solver_key, version, job_inputs, **kwargs)
