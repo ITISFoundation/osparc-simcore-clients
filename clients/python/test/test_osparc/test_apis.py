@@ -1,23 +1,32 @@
 import os
+from typing import Callable
 
 import pytest
 from osparc import SolversApi, StudiesApi
-from osparc._models import ParentProjectInfo
 
 
-@pytest.mark.parametrize("parent_headers", [True, False])
+@pytest.fixture
+def create_parent_env(monkeypatch, faker) -> Callable[[bool], None]:
+    def _(enable: bool):
+        if enable:
+            monkeypatch.setenv("OSPARC_STUDY_ID", f"{faker.uuid4()}")
+            monkeypatch.setenv("OSPARC_NODE_ID", f"{faker.uuid4()}")
+
+    yield _
+
+
+@pytest.mark.parametrize("parent_env", [True, False])
 def test_create_jobs_parent_headers(
-    mocker, faker, enable_dev_mode, parent_headers: bool
+    mocker, faker, create_parent_env, enable_dev_mode, parent_env: bool
 ):
+    create_parent_env(parent_env)
+
     def check_headers(**kwargs):
-        parent_info = ParentProjectInfo()
-        if parent_headers:
-            assert parent_info.x_simcore_parent_project_uuid is not None
-            assert parent_info.x_simcore_parent_node_id is not None
-            assert parent_info.x_simcore_parent_project_uuid == kwargs.get(
+        if parent_env:
+            assert os.environ["OSPARC_STUDY_ID"] == kwargs.get(
                 "x_simcore_parent_project_uuid"
             )
-            assert parent_info.x_simcore_parent_node_id == kwargs.get(
+            assert os.environ["OSPARC_NODE_ID"] == kwargs.get(
                 "x_simcore_parent_node_id"
             )
 
@@ -35,10 +44,6 @@ def test_create_jobs_parent_headers(
         "osparc_client.StudiesApi.clone_study",
         side_effect=lambda study_id, **kwargs: check_headers(**kwargs),
     )
-
-    if parent_headers:
-        os.environ["OSPARC_STUDY_ID"] = f"{faker.uuid4()}"
-        os.environ["OSPARC_NODE_ID"] = f"{faker.uuid4()}"
 
     solvers_api = SolversApi()
     solvers_api.create_job(solver_key="mysolver", version="1.2.3", job_inputs={})
