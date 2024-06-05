@@ -32,9 +32,9 @@ class StudiesApi(_StudiesApi):
         return super().__getattribute__(name)
 
     def create_study_job(self, study_id, job_inputs, **kwargs):
-        kwargs = kwargs | ParentProjectInfo().model_dump(exclude_none=True)
+        kwargs = {**kwargs, **ParentProjectInfo().model_dump(exclude_none=True)}
         return super().create_study_job(study_id, job_inputs, **kwargs)
 
     def clone_study(self, study_id, **kwargs):
-        kwargs = kwargs | ParentProjectInfo().model_dump(exclude_none=True)
+        kwargs = {**kwargs, **ParentProjectInfo().model_dump(exclude_none=True)}
         return super().clone_study(study_id, **kwargs)

@@ -75,5 +75,5 @@ class SolversApi(_SolversApi):
         )
 
     def create_job(self, solver_key, version, job_inputs, **kwargs):
-        kwargs = kwargs | ParentProjectInfo().model_dump(exclude_none=True)
+        kwargs = {**kwargs, **ParentProjectInfo().model_dump(exclude_none=True)}
         return super().create_job(solver_key, version, job_inputs, **kwargs)
