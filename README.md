@@ -30,7 +30,7 @@ See the different `clients/<language>/README.md` for the workflows for generatin
 This link explains the lifecycle of the osparc client(s) (borrowed from https://www.ibm.com/docs/en/acvfc?topic=manager-product-lifecycle)
 <p align="center">
 <a href="https://www.ibm.com/docs/en/acvfc?topic=manager-product-lifecycle" target="_blank">
-<image src="https://github.com/ITISFoundation/osparc-simcore-clients/blob/master/docs/_media/code_lifecycle.png?raw=true" alt="Code lifecycle" width="20%" />
+<image src="https://github.com/ITISFoundation/osparc-simcore-clients/blob/master/docs/_media/code_lifecycle.png?raw=true" alt="Code lifecycle" width="50%" />
 </a>
 </p>
 
