@@ -19,8 +19,6 @@ class SolversApi(_SolversApi):
     def __getattribute__(self, name: str) -> Any:
         if (name in SolversApi._dev_features) and (not dev_features_enabled()):
             raise NotImplementedError(f"SolversApi.{name} is still under development")
-        if name.endswith("_with_http_info"):
-            raise NotImplementedError(f"SolversApi.{name} is only for internal use")
         return super().__getattribute__(name)
 
     def __init__(self, api_client: Optional[ApiClient] = None):
