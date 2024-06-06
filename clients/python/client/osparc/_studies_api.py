@@ -27,8 +27,6 @@ class StudiesApi(_StudiesApi):
     def __getattribute__(self, name: str) -> Any:
         if (name in StudiesApi._dev_features) and (not dev_features_enabled()):
             raise NotImplementedError(f"StudiesApi.{name} is still under development")
-        if name.endswith("_with_http_info"):
-            raise NotImplementedError(f"StudiesApi.{name} is only for internal use")
         return super().__getattribute__(name)
 
     def create_study_job(self, study_id, job_inputs, **kwargs):
