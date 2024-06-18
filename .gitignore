@@ -64,8 +64,11 @@ target/
 #Ipython Notebook
 .ipynb_checkpoints
 
-# vscode config
+# IDEs config (except templates)
 .vscode/*
+!.vscode/*.template.json
+.idea/
+
 
 # docs output
 site
