@@ -1,3 +1,4 @@
+import datetime
 import logging
 import os
 from pathlib import Path
@@ -8,9 +9,6 @@ import pytest
 from httpx import AsyncClient, BasicAuth
 from numpy import random
 from pydantic import ByteSize
-import pytest
-import datetime
-
 
 _KB: ByteSize = ByteSize(1024)  # in bytes
 _MB: ByteSize = ByteSize(_KB * 1024)  # in bytes
