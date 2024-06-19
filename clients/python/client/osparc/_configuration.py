@@ -1,6 +1,8 @@
-from typing import Set
-from osparc_client.configuration import Configuration as _Configuration
 import os
+from typing import Set
+
+from osparc_client.configuration import Configuration as _Configuration
+import osparc_client
 
 class Configuration(_Configuration):
     def __init__(
@@ -34,3 +36,6 @@ class Configuration(_Configuration):
             retry_status_codes=retry_status_codes,
             retry_backoff_factor=retry_backoff_factor,
         )
+
+
+osparc_client.Configuration = Configuration
