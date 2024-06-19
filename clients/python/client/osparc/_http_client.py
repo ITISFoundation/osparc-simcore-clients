@@ -4,7 +4,7 @@ from typing import Any, Awaitable, Callable, Dict, Optional, Set
 
 import httpx
 import tenacity
-from osparc_client import Configuration
+from ._configuration import Configuration
 
 _RETRY_AFTER_STATUS_CODES: Set[int] = {429, 503}
 
