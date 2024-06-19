@@ -2,22 +2,30 @@ import os
 from typing import Callable
 
 import pytest
-from osparc import SolversApi, StudiesApi
+from faker import Faker
+from osparc import ApiClient, Configuration, SolversApi, StudiesApi
+from pytest_mock import MockerFixture
 
 
 @pytest.fixture
-def create_parent_env(monkeypatch, faker) -> Callable[[bool], None]:
+def create_parent_env(
+    monkeypatch: pytest.MonkeyPatch, faker: Faker
+) -> Callable[[bool], None]:
     def _(enable: bool):
         if enable:
             monkeypatch.setenv("OSPARC_STUDY_ID", f"{faker.uuid4()}")
             monkeypatch.setenv("OSPARC_NODE_ID", f"{faker.uuid4()}")
 
-    yield _
+    return _
 
 
 @pytest.mark.parametrize("parent_env", [True, False])
 def test_create_jobs_parent_headers(
-    mocker, faker, create_parent_env, enable_dev_mode, parent_env: bool
+    mocker: MockerFixture,
+    faker: Faker,
+    create_parent_env: Callable,
+    dev_mode_enabled: None,
+    parent_env: bool,
 ):
     create_parent_env(parent_env)
 
@@ -51,3 +59,35 @@ def test_create_jobs_parent_headers(
     studies_api = StudiesApi()
     studies_api.create_study_job(study_id=faker.uuid4(), job_inputs={})
     studies_api.clone_study(study_id=faker.uuid4())
+
+
+def test_configuration_constructor(monkeypatch: pytest.MonkeyPatch):
+    with monkeypatch.context() as patch:
+        patch.delenv("OSPARC_API_BASE_URL", raising=False)
+        patch.delenv("OSPARC_API_KEY", raising=False)
+        patch.delenv("OSPARC_API_SECRET", raising=False)
+
+        config = Configuration()
+        assert config.host == "https://api.osparc.io"
+        assert config.username is None
+        assert config.password is None
+
+    with monkeypatch.context() as patch:
+        patch.setenv("OSPARC_API_BASE_URL", "https://api.foo.com")
+        patch.setenv("OSPARC_API_KEY", "key")
+        patch.setenv("OSPARC_API_SECRET", "secret")
+
+        config = Configuration()
+        assert config.host == "https://api.foo.com"
+        assert config.username == "key"
+        assert config.password == "secret"
+
+        api = ApiClient()
+        assert api.configuration.host == config.host
+        assert api.configuration.username == config.username
+        assert api.configuration.password == config.password
+
+        config = Configuration(username="foo")
+        assert config.host == "https://api.foo.com"
+        assert config.username == "foo"
+        assert config.password == "secret"

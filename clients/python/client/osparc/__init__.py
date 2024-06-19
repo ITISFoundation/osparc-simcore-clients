@@ -10,7 +10,6 @@ from osparc_client import (  # APIs; API client; models
     ApiTypeError,
     ApiValueError,
     BodyUploadFileV0FilesContentPut,
-    Configuration,
     ErrorGet,
     File,
     Groups,
@@ -44,6 +43,7 @@ from ._info import openapi
 from ._solvers_api import SolversApi
 from ._studies_api import StudiesApi
 from ._utils import dev_features_enabled
+from ._configuration import Configuration
 
 _PYTHON_VERSION_DEPRECATED = Version("3.6.0")
 _PYTHON_VERSION_SUPPORTED = Version("3.8.0")
@@ -81,13 +81,16 @@ if dev_features_enabled():
 
 __all__: Tuple[str, ...] = tuple(dev_features) + (
     "__version__",
-    "FilesApi",
-    "MetaApi",
-    "SolversApi",
-    "StudiesApi",
-    "UsersApi",
+    "ApiClient",
+    "ApiException",
+    "ApiKeyError",
+    "ApiTypeError",
+    "ApiValueError",
     "BodyUploadFileV0FilesContentPut",
+    "Configuration",
+    "ErrorGet",
     "File",
+    "FilesApi",
     "Groups",
     "HTTPValidationError",
     "Job",
@@ -95,23 +98,20 @@ __all__: Tuple[str, ...] = tuple(dev_features) + (
     "JobOutputs",
     "JobStatus",
     "Meta",
+    "MetaApi",
+    "OnePageSolverPort",
+    "openapi",
+    "OpenApiException",
     "Profile",
     "ProfileUpdate",
+    "RequestError",
     "Solver",
+    "SolverPort",
+    "SolversApi",
+    "StudiesApi",
     "TaskStates",
     "UserRoleEnum",
+    "UsersApi",
     "UsersGroup",
     "ValidationError",
-    "ApiClient",
-    "Configuration",
-    "OpenApiException",
-    "ApiTypeError",
-    "ApiValueError",
-    "ApiKeyError",
-    "ApiException",
-    "OnePageSolverPort",
-    "SolverPort",
-    "ErrorGet",
-    "openapi",
-    "RequestError",
 )  # type: ignore

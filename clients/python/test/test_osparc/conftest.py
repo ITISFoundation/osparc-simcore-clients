@@ -14,5 +14,5 @@ def cfg() -> Iterator[osparc.Configuration]:
 
 
 @pytest.fixture
-def enable_dev_mode(monkeypatch):
+def dev_mode_enabled(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("OSPARC_DEV_FEATURES_ENABLED", "1")
