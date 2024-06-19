@@ -67,7 +67,6 @@ target/
 # IDEs config (except templates)
 .vscode/*
 !.vscode/*.template.json
-.idea/
 
 
 # docs output
