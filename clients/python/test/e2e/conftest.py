@@ -27,7 +27,7 @@ def _construct_graylog_url(api_host, start_time, end_time):
     """
     Construct a Graylog URL for the given time interval.
     """
-    base_url = api_host.replace("api.", "monitoring.", count=1).rstrip("/")
+    base_url = api_host.replace("api.", "monitoring.", 1).rstrip("/")
     url = f"{base_url}/graylog/search"
     start_time_str = start_time.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
     end_time_str = end_time.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
@@ -52,7 +52,7 @@ def pytest_runtest_makereport(item, call):
         if call.excinfo is not None:
             test_name = item.name
             test_location = item.location
-            api_host = os.environ.get("OSPARC_API_HOST")
+            api_host = os.environ.get("OSPARC_API_HOST", "")
 
             diagnostics = {
                 "test_name": test_name,
@@ -70,7 +70,7 @@ def pytest_runtest_makereport(item, call):
             # Print the diagnostics
             print(f"\nDiagnostics for {test_name}:")
             for key, value in diagnostics.items():
-                print(key, ":", value)
+                print("  ", key, ":", value)
 
 
 @pytest.hookimpl(tryfirst=True)
