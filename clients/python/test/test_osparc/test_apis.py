@@ -3,7 +3,7 @@ from typing import Callable
 
 import pytest
 from faker import Faker
-from osparc import Configuration, SolversApi, StudiesApi
+from osparc import ApiClient, Configuration, SolversApi, StudiesApi
 from pytest_mock import MockerFixture
 
 
@@ -60,11 +60,8 @@ def test_create_jobs_parent_headers(
     studies_api.create_study_job(study_id=faker.uuid4(), job_inputs={})
     studies_api.clone_study(study_id=faker.uuid4())
 
-from osparc import ApiClient
-
 
 def test_configuration_constructor(monkeypatch: pytest.MonkeyPatch):
-
     with monkeypatch.context() as patch:
         patch.delenv("OSPARC_API_BASE_URL", raising=False)
         patch.delenv("OSPARC_API_KEY", raising=False)
@@ -86,11 +83,11 @@ def test_configuration_constructor(monkeypatch: pytest.MonkeyPatch):
         assert config.password == "secret"
 
         api = ApiClient()
-        assert api.configuration == config
+        assert api.configuration.host == config.host
+        assert api.configuration.username == config.username
+        assert api.configuration.password == config.password
 
         config = Configuration(username="foo")
         assert config.host == "https://api.foo.com"
         assert config.username == "foo"
         assert config.password == "secret"
-
-
