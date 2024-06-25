@@ -3,7 +3,16 @@ import hashlib
 import os
 from functools import wraps
 from pathlib import Path
-from typing import AsyncGenerator, Callable, Generator, Optional, Tuple, TypeVar, Union
+from typing import (
+    AsyncGenerator,
+    Callable,
+    Generator,
+    List,
+    Optional,
+    Tuple,
+    TypeVar,
+    Union,
+)
 
 import httpx
 from osparc_client import (
@@ -131,3 +140,17 @@ def dev_feature(func: Callable):
         return func(*args, **kwargs)
 
     return wrapper
+
+
+def ensure_unique_names(names: List[str]) -> List[str]:
+    distinct_names = set()
+    for idx, name in enumerate(names):
+        corrected_name = name
+        jj = 1
+        while corrected_name in distinct_names:
+            corrected_name = name + f"({jj})"
+            jj += 1
+
+        names[idx] = corrected_name
+        distinct_names.union({corrected_name})
+    return names

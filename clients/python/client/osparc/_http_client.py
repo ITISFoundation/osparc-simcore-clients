@@ -88,6 +88,9 @@ class AsyncHttpClient:
     async def patch(self, *args, **kwargs) -> httpx.Response:
         return await self._request(self._client.patch, *args, **kwargs)
 
+    async def get(self, *args, **kwargs) -> httpx.Response:
+        return await self._request(self._client.get, *args, **kwargs)
+
     def _wait_callback(self, retry_state: tenacity.RetryCallState) -> int:
         assert retry_state.outcome is not None
         response: httpx.Response = retry_state.outcome.exception().response
