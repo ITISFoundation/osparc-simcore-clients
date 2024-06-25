@@ -72,7 +72,14 @@ class StudiesApi(_StudiesApi):
             auth=self._auth,
         )
 
+    def get_study_job_output_logfiles(self, study_id, job_id) -> Path:
+        return asyncio.run(
+            self.get_study_job_output_logfiles_async(study_id=study_id, job_id=job_id)
+        )
+
     async def get_study_job_output_logfiles_async(self, study_id, job_id) -> Path:
+        """Download study logs. The log from each node will
+        appear as a file with the node's name in the directory"""
         logs_map = super().get_study_job_output_logfile(study_id, job_id)
         assert isinstance(logs_map, JobLogsMap)  # nosec
         log_links = logs_map.log_links
