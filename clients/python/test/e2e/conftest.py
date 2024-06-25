@@ -3,6 +3,7 @@ import logging
 import os
 from pathlib import Path
 from typing import Iterable
+from uuid import UUID
 
 import osparc
 import pytest
@@ -47,7 +48,6 @@ def pytest_runtest_makereport(item, call):
     Hook to add extra information when a test fails.
     """
     if call.when == "call":
-
         # Check if the test failed
         if call.excinfo is not None:
             test_name = item.name
@@ -65,7 +65,9 @@ def pytest_runtest_makereport(item, call):
             end_time = _utc_now()
 
             if start_time:
-                diagnostics["graylog_url"] = _construct_graylog_url(api_host, start_time, end_time)
+                diagnostics["graylog_url"] = _construct_graylog_url(
+                    api_host, start_time, end_time
+                )
 
             # Print the diagnostics
             print(f"\nDiagnostics for {test_name}:")
@@ -131,3 +133,26 @@ def sleeper(api_client: osparc.ApiClient) -> osparc.Solver:
         "simcore/services/comp/itis/sleeper", "2.0.2"
     )  # type: ignore
     return sleeper
+
+
+@pytest.fixture
+def sleeper_study_id(api_client: osparc.ApiClient) -> UUID:
+    _test_study_title = "sleeper_test_study"
+    study_api = osparc.StudiesApi(api_client=api_client)
+    for study in study_api.studies():
+        if study.title == _test_study_title:
+            return UUID(study.uid)
+    raise AssertionError(f"Could not find {_test_study_title}")
+
+
+@pytest.fixture
+def file_with_number(
+    tmp_path: Path, api_client: osparc.ApiClient
+) -> Iterable[osparc.File]:
+    files_api = osparc.FilesApi(api_client=api_client)
+    file = tmp_path / "file_with_number.txt"
+    file.write_text("1")
+    server_file = files_api.upload_file(file)
+    yield server_file
+
+    files_api.delete_file(server_file.id)
