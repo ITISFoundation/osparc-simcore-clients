@@ -18,6 +18,7 @@ async def test_studies_logs(
         study_id=f"{sleeper_study_id}", job_inputs=job_inputs
     )
     assert isinstance(job, osparc.Job)
+    print(f"Running study job: {job.id}")
     status = studies_api.start_study_job(study_id=f"{sleeper_study_id}", job_id=job.id)
     assert isinstance(status, osparc.JobStatus)
     async for attempt in tenacity.AsyncRetrying(
@@ -32,7 +33,7 @@ async def test_studies_logs(
             )
             assert isinstance(status, osparc.JobStatus)
             assert status.stopped_at is not None
-
+    assert status.state == "SUCCESS"
     try:
         log_dir = await studies_api.get_study_job_output_logfiles_async(
             study_id=f"{sleeper_study_id}", job_id=job.id
