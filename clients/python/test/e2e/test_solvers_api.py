@@ -62,10 +62,12 @@ async def test_logstreaming(
     solvers_api.start_job(sleeper.id, sleeper.version, job.id)
 
     nloglines: int = 0
-    print("starting logstreaming...")
+    url = f"/v0/solvers/{sleeper.id}/releases/{sleeper.version}/jobs/{job.id}/logstream"
+    print(f"starting logstreaming from {url}...")
+    
     async with async_client.stream(
         "GET",
-        f"/v0/solvers/{sleeper.id}/releases/{sleeper.version}/jobs/{job.id}/logstream",
+        url,
         timeout=DEFAULT_TIMEOUT_SECONDS,
     ) as response:
         async for line in response.aiter_lines():
