@@ -1,23 +1,36 @@
+# pylint: disable=redefined-outer-name
+# pylint: disable=unused-argument
+# pylint: disable=unused-variable
+# pylint: disable=too-many-arguments
+
 import os
 from typing import Callable
 
 import pytest
+from faker import Faker
 from osparc import SolversApi, StudiesApi
+from pytest_mock import MockerFixture
 
 
 @pytest.fixture
-def create_parent_env(monkeypatch, faker) -> Callable[[bool], None]:
+def create_parent_env(
+    monkeypatch: pytest.MonkeyPatch, faker: Faker
+) -> Callable[[bool], None]:
     def _(enable: bool):
         if enable:
             monkeypatch.setenv("OSPARC_STUDY_ID", f"{faker.uuid4()}")
             monkeypatch.setenv("OSPARC_NODE_ID", f"{faker.uuid4()}")
 
-    yield _
+    return _
 
 
 @pytest.mark.parametrize("parent_env", [True, False])
 def test_create_jobs_parent_headers(
-    mocker, faker, create_parent_env, enable_dev_mode, parent_env: bool
+    mocker: MockerFixture,
+    faker: Faker,
+    create_parent_env: Callable,
+    dev_mode_enabled: None,
+    parent_env: bool,
 ):
     create_parent_env(parent_env)
 
