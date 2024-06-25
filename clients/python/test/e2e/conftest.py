@@ -33,8 +33,8 @@ def configuration() -> osparc.Configuration:
 
 @pytest.fixture
 def api_client(configuration: osparc.Configuration) -> Iterable[osparc.ApiClient]:
-    with osparc.ApiClient(configuration=configuration) as client:
-        yield client
+    with osparc.ApiClient(configuration=configuration) as _api_client:
+        yield _api_client
 
 
 @pytest.fixture
