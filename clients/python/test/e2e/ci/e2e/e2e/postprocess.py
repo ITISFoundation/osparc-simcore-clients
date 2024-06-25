@@ -215,8 +215,8 @@ def clean_up_jobs(artifacts_dir: Path, retry_minutes: Optional[PositiveInt] = No
     for server_config in servers:
         config = osparc.Configuration(
             host=server_config.host,
-            username=server_config.key,
-            password=server_config.secret,
+            username=server_config.key.get_secret_value(),
+            password=server_config.secret.get_secret_value(),
         )
         msg = "Cleaning up jobs for user: "
         msg += f"\n{server_config.model_dump_json(indent=1)}"
