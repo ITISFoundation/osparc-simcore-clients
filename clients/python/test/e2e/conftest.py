@@ -20,11 +20,11 @@ _GB: ByteSize = ByteSize(_MB * 1024)  # in bytes
 
 
 @pytest.fixture
-def configuration() -> Iterable[osparc.Configuration]:
+def configuration() -> osparc.Configuration:
     assert (host := os.environ.get("OSPARC_API_HOST"))
     assert (username := os.environ.get("OSPARC_API_KEY"))
     assert (password := os.environ.get("OSPARC_API_SECRET"))
-    yield osparc.Configuration(
+    return osparc.Configuration(
         host=host,
         username=username,
         password=password,
@@ -48,7 +48,7 @@ def async_client(configuration: osparc.Configuration) -> AsyncClient:
 
 
 @pytest.fixture
-def tmp_file(tmp_path: Path, caplog) -> Path:
+def tmp_file(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> Path:
     caplog.set_level(logging.INFO)
     byte_size: ByteSize = 1 * _GB
     tmp_file = tmp_path / "large_test_file.txt"

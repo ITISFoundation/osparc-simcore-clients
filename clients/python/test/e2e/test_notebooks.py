@@ -41,7 +41,7 @@ def test_notebook_config(tmp_path: Path):
 
 
 @pytest.mark.parametrize("notebook", all_notebooks, ids=lambda nb: nb.name)
-def test_run_notebooks(tmp_path: Path, notebook: Path, params: dict[str, Any] = {}):
+def test_run_notebooks(tmp_path: Path, notebook: Path, params: dict[str, Any]):
     """Run all notebooks in the documentation"""
     assert (
         notebook.is_file()
@@ -60,6 +60,6 @@ def test_run_notebooks(tmp_path: Path, notebook: Path, params: dict[str, Any] = 
         input_path=tmp_nb,
         output_path=output,
         kernel_name="python3",
-        parameters=params,
+        parameters=params or {},
         execution_timeout=_NOTEBOOK_EXECUTION_TIMEOUT_SECONDS,
     )
