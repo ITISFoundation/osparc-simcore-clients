@@ -137,6 +137,8 @@ def sleeper(api_client: osparc.ApiClient) -> osparc.Solver:
 
 @pytest.fixture
 def sleeper_study_id(api_client: osparc.ApiClient) -> UUID:
+    """Simple sleeper study template which takes
+    as input a single file containing a single integer"""
     _test_study_title = "sleeper_test_study"
     study_api = osparc.StudiesApi(api_client=api_client)
     for study in study_api.studies():
