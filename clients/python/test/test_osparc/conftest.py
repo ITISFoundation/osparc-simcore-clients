@@ -1,18 +1,16 @@
-from typing import Iterator
-
 import osparc
 import pytest
-
+from faker import Faker
 
 @pytest.fixture
-def cfg() -> Iterator[osparc.Configuration]:
-    yield osparc.Configuration(
-        host="https://1a52d8d7-9f9f-48e5-b2f0-a226e6b25f0b.com",
-        username="askjdg",
-        password="asdjbaskjdb",
+def cfg(faker: Faker) -> osparc.Configuration:
+    return osparc.Configuration(
+        host=f"https://api.{faker.safe_domain_name()}",
+        username=faker.user_name(),
+        password=faker.password(),
     )
 
 
 @pytest.fixture
-def enable_dev_mode(monkeypatch):
+def dev_mode_enabled(monkeypatch:pytest.MonkeyPatch):
     monkeypatch.setenv("OSPARC_DEV_FEATURES_ENABLED", "1")
