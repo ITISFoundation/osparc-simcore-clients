@@ -12,5 +12,5 @@ def cfg(faker: Faker) -> osparc.Configuration:
 
 
 @pytest.fixture
-def enable_dev_mode(monkeypatch:pytest.MonkeyPatch):
+def dev_mode_enabled(monkeypatch:pytest.MonkeyPatch):
     monkeypatch.setenv("OSPARC_DEV_FEATURES_ENABLED", "1")
