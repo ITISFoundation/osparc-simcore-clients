@@ -3,8 +3,11 @@ from uuid import UUID
 
 import osparc
 import tenacity
+from _utils import skip_if_osparc_version
+from packaging.version import Version
 
 
+@skip_if_osparc_version(at_least=Version("0.6.6"))
 async def test_studies_logs(
     api_client: osparc.ApiClient, file_with_number: osparc.File, sleeper_study_id: UUID
 ):
