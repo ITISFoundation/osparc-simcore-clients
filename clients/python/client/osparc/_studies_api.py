@@ -1,7 +1,7 @@
 import asyncio
 import logging
 from pathlib import Path
-from tempfile import TemporaryDirectory
+from tempfile import mkdtemp
 from typing import Any, Optional
 
 import httpx
@@ -16,7 +16,6 @@ from ._utils import (
     _DEFAULT_PAGINATION_OFFSET,
     PaginationGenerator,
     dev_features_enabled,
-    ensure_unique_names,
 )
 
 _logger = logging.getLogger(__name__)
@@ -90,19 +89,19 @@ class StudiesApi(_StudiesApi):
         )
 
     async def get_study_job_output_logfiles_async(
-        self, study_id: str, job_id: str
+        self, study_id: str, job_id: str, download_dir: Path | None = None
     ) -> Path:
         """Download study logs. The log from each node will
         appear as a file with the node's name in the directory"""
+        if download_dir is not None and not download_dir.is_dir():
+            raise RuntimeError(f"{download_dir=} must be a valid directory")
         logs_map = super().get_study_job_output_logfile(study_id, job_id)
         assert isinstance(logs_map, JobLogsMap)  # nosec
         log_links = logs_map.log_links
         assert log_links  # nosec
-        download_links = [link.download_link for link in log_links]
-        unique_node_names = ensure_unique_names([link.node_name for link in log_links])
 
-        tmp_dir = Path(TemporaryDirectory().name).resolve()
-        tmp_dir.mkdir(parents=True)
+        folder = download_dir or Path(mkdtemp()).resolve()
+        assert folder.is_dir()  # nosec
         async with AsyncHttpClient(
             configuration=self.api_client.configuration
         ) as client:
@@ -110,14 +109,18 @@ class StudiesApi(_StudiesApi):
             async def _download(unique_node_name: str, download_link: str) -> None:
                 response = await client.get(download_link)
                 response.raise_for_status()
-                file = tmp_dir / unique_node_name
+                file = folder / unique_node_name
+                ct = 1
+                while file.exists():
+                    file = file.with_stem(f"{file.stem}({ct})")
+                    ct += 1
                 file.touch()
                 for chunk in response.iter_bytes():
                     file.write_bytes(chunk)
 
             tasks = [
-                asyncio.create_task(_download(name, link))
-                for name, link in zip(unique_node_names, download_links)
+                asyncio.create_task(_download(link.node_name, link.download_link))
+                for link in log_links
             ]
             _logger.info(
                 "Downloading log files for study_id=%s and job_id=%s...",
@@ -128,4 +131,4 @@ class StudiesApi(_StudiesApi):
                 *tasks, disable=(not _logger.isEnabledFor(logging.INFO))
             )
 
-        return tmp_dir
+        return folder

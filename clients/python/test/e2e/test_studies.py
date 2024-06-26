@@ -5,17 +5,24 @@
 # pylint: disable=unused-variable
 
 import shutil
+from pathlib import Path
 from uuid import UUID
 
 import osparc
+import pytest
 import tenacity
 from _utils import skip_if_osparc_version
 from packaging.version import Version
 
 
 @skip_if_osparc_version(at_least=Version("0.6.6"))
+@pytest.mark.parametrize("download_dir", [True, False])
 async def test_studies_logs(
-    api_client: osparc.ApiClient, file_with_number: osparc.File, sleeper_study_id: UUID
+    api_client: osparc.ApiClient,
+    file_with_number: osparc.File,
+    sleeper_study_id: UUID,
+    download_dir: bool,
+    tmp_path: Path,
 ):
     studies_api = osparc.StudiesApi(api_client=api_client)
     job_inputs = osparc.JobInputs(
@@ -45,7 +52,9 @@ async def test_studies_logs(
     assert status.state == "SUCCESS"
     try:
         log_dir = await studies_api.get_study_job_output_logfiles_async(
-            study_id=f"{sleeper_study_id}", job_id=job.id
+            study_id=f"{sleeper_study_id}",
+            job_id=job.id,
+            download_dir=tmp_path if download_dir else None,
         )
         assert log_dir.is_dir()
         n_logfiles = sum(1 for _ in log_dir.rglob("*") if _.is_file())
