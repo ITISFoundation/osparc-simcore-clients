@@ -89,7 +89,7 @@ class StudiesApi(_StudiesApi):
         )
 
     async def get_study_job_output_logfiles_async(
-        self, study_id: str, job_id: str, download_dir: Path | None = None
+        self, study_id: str, job_id: str, download_dir: Optional[Path] = None
     ) -> Path:
         """Download study logs. The log from each node will
         appear as a file with the node's name in the directory"""
