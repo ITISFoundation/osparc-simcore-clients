@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any, Optional
@@ -6,6 +7,7 @@ from typing import Any, Optional
 import httpx
 from osparc_client import ApiClient, JobInputs, JobLogsMap, PageStudy
 from osparc_client import StudiesApi as _StudiesApi
+from tqdm.asyncio import tqdm_asyncio
 
 from ._http_client import AsyncHttpClient
 from ._models import ParentProjectInfo
@@ -16,6 +18,8 @@ from ._utils import (
     dev_features_enabled,
     ensure_unique_names,
 )
+
+_logger = logging.getLogger(__name__)
 
 
 class StudiesApi(_StudiesApi):
@@ -103,7 +107,7 @@ class StudiesApi(_StudiesApi):
             configuration=self.api_client.configuration
         ) as client:
 
-            async def _(unique_node_name: str, download_link: str) -> None:
+            async def _download(unique_node_name: str, download_link: str) -> None:
                 response = await client.get(download_link)
                 response.raise_for_status()
                 file = tmp_dir / unique_node_name
@@ -112,9 +116,12 @@ class StudiesApi(_StudiesApi):
                     file.write_bytes(chunk)
 
             tasks = [
-                asyncio.create_task(_(name, link))
+                asyncio.create_task(_download(name, link))
                 for name, link in zip(unique_node_names, download_links)
             ]
-            await asyncio.gather(*tasks)
+            _logger.info("Downloading log files...")
+            await tqdm_asyncio.gather(
+                *tasks, disable=(not _logger.isEnabledFor(logging.INFO))
+            )
 
         return tmp_dir
