@@ -1,7 +1,7 @@
 from typing import Any, List, Optional
 
 import httpx
-from osparc_client import OnePageSolverPort, SolverPort
+from osparc_client import JobInputs, OnePageSolverPort, SolverPort
 from osparc_client import SolversApi as _SolversApi
 
 from . import ApiClient
@@ -81,6 +81,8 @@ class SolversApi(_SolversApi):
             auth=self._auth,
         )
 
-    def create_job(self, solver_key, version, job_inputs, **kwargs):
+    def create_job(
+        self, solver_key: str, version: str, job_inputs: JobInputs, **kwargs
+    ):
         kwargs = {**kwargs, **ParentProjectInfo().model_dump(exclude_none=True)}
         return super().create_job(solver_key, version, job_inputs, **kwargs)

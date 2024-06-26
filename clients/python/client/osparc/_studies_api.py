@@ -4,7 +4,7 @@ from tempfile import TemporaryDirectory
 from typing import Any, Optional
 
 import httpx
-from osparc_client import ApiClient, JobLogsMap, PageStudy
+from osparc_client import ApiClient, JobInputs, JobLogsMap, PageStudy
 from osparc_client import StudiesApi as _StudiesApi
 
 from ._http_client import AsyncHttpClient
@@ -57,11 +57,11 @@ class StudiesApi(_StudiesApi):
             raise NotImplementedError(f"StudiesApi.{name} is still under development")
         return super().__getattribute__(name)
 
-    def create_study_job(self, study_id, job_inputs, **kwargs):
+    def create_study_job(self, study_id: str, job_inputs: JobInputs, **kwargs):
         kwargs = {**kwargs, **ParentProjectInfo().model_dump(exclude_none=True)}
         return super().create_study_job(study_id, job_inputs, **kwargs)
 
-    def clone_study(self, study_id, **kwargs):
+    def clone_study(self, study_id: str, **kwargs):
         kwargs = {**kwargs, **ParentProjectInfo().model_dump(exclude_none=True)}
         return super().clone_study(study_id, **kwargs)
 
@@ -80,12 +80,14 @@ class StudiesApi(_StudiesApi):
             auth=self._auth,
         )
 
-    def get_study_job_output_logfiles(self, study_id, job_id) -> Path:
+    def get_study_job_output_logfiles(self, study_id: str, job_id: str) -> Path:
         return asyncio.run(
             self.get_study_job_output_logfiles_async(study_id=study_id, job_id=job_id)
         )
 
-    async def get_study_job_output_logfiles_async(self, study_id, job_id) -> Path:
+    async def get_study_job_output_logfiles_async(
+        self, study_id: str, job_id: str
+    ) -> Path:
         """Download study logs. The log from each node will
         appear as a file with the node's name in the directory"""
         logs_map = super().get_study_job_output_logfile(study_id, job_id)
