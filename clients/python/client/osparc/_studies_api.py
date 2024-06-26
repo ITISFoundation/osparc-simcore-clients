@@ -119,7 +119,11 @@ class StudiesApi(_StudiesApi):
                 asyncio.create_task(_download(name, link))
                 for name, link in zip(unique_node_names, download_links)
             ]
-            _logger.info("Downloading log files...")
+            _logger.info(
+                "Downloading log files for study_id=%s and job_id=%s...",
+                study_id,
+                job_id,
+            )
             await tqdm_asyncio.gather(
                 *tasks, disable=(not _logger.isEnabledFor(logging.INFO))
             )
