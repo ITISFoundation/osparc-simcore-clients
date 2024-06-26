@@ -9,7 +9,13 @@ from osparc_client import StudiesApi as _StudiesApi
 
 from ._http_client import AsyncHttpClient
 from ._models import ParentProjectInfo
-from ._utils import PaginationGenerator, dev_features_enabled, ensure_unique_names
+from ._utils import (
+    _DEFAULT_PAGINATION_LIMIT,
+    _DEFAULT_PAGINATION_OFFSET,
+    PaginationGenerator,
+    dev_features_enabled,
+    ensure_unique_names,
+)
 
 
 class StudiesApi(_StudiesApi):
@@ -60,13 +66,15 @@ class StudiesApi(_StudiesApi):
         return super().clone_study(study_id, **kwargs)
 
     def studies(self) -> PaginationGenerator:
-        def pagination_method():
-            page_study = super(StudiesApi, self).list_studies(limit=20, offset=0)
+        def _pagination_method():
+            page_study = super(StudiesApi, self).list_studies(
+                limit=_DEFAULT_PAGINATION_LIMIT, offset=_DEFAULT_PAGINATION_OFFSET
+            )
             assert isinstance(page_study, PageStudy)  # nosec
             return page_study
 
         return PaginationGenerator(
-            first_page_callback=pagination_method,
+            first_page_callback=_pagination_method,
             api_client=self.api_client,
             base_url=self.api_client.configuration.host,
             auth=self._auth,

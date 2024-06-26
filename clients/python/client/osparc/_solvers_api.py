@@ -6,7 +6,13 @@ from osparc_client import SolversApi as _SolversApi
 
 from . import ApiClient
 from ._models import ParentProjectInfo
-from ._utils import PaginationGenerator, dev_feature, dev_features_enabled
+from ._utils import (
+    _DEFAULT_PAGINATION_LIMIT,
+    _DEFAULT_PAGINATION_OFFSET,
+    PaginationGenerator,
+    dev_feature,
+    dev_features_enabled,
+)
 
 
 class SolversApi(_SolversApi):
@@ -60,13 +66,16 @@ class SolversApi(_SolversApi):
             (its "length")
         """
 
-        def pagination_method():
+        def _pagination_method():
             return super(SolversApi, self).get_jobs_page(
-                solver_key=solver_key, version=version, limit=20, offset=0
+                solver_key=solver_key,
+                version=version,
+                limit=_DEFAULT_PAGINATION_LIMIT,
+                offset=_DEFAULT_PAGINATION_OFFSET,
             )
 
         return PaginationGenerator(
-            first_page_callback=pagination_method,
+            first_page_callback=_pagination_method,
             api_client=self.api_client,
             base_url=self.api_client.configuration.host,
             auth=self._auth,
