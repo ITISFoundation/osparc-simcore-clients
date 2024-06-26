@@ -119,7 +119,7 @@ class FilesApi(_FilesApi):
             configuration=self.api_client.configuration, timeout=timeout_seconds
         ) as session:
             with logging_redirect_tqdm():
-                _logger.info("Uploading %s in %i chunks", file.name, n_urls)
+                _logger.info("Uploading %s in %i chunk(s)", file.name, n_urls)
                 async for chunck, size in tqdm(
                     file_chunk_generator(file, chunk_size),
                     total=n_urls,
@@ -206,7 +206,7 @@ class FilesApi(_FilesApi):
         sha256_checksum: Optional[str] = None,
         timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
     ) -> PaginationGenerator:
-        def pagination_method():
+        def _pagination_method():
             return super(FilesApi, self).search_files_page(
                 file_id=file_id,
                 sha256_checksum=sha256_checksum,
@@ -214,7 +214,7 @@ class FilesApi(_FilesApi):
             )
 
         return PaginationGenerator(
-            first_page_callback=pagination_method,
+            first_page_callback=_pagination_method,
             api_client=self.api_client,
             base_url=self.api_client.configuration.host,
             auth=self._auth,

@@ -1,12 +1,14 @@
+# pylint: disable=protected-access
 # pylint: disable=redefined-outer-name
+# pylint: disable=too-many-arguments
 # pylint: disable=unused-argument
 # pylint: disable=unused-variable
-# pylint: disable=too-many-arguments
 
 import logging
 import os
 from pathlib import Path
 from typing import Iterable
+from uuid import UUID
 
 import osparc
 import pytest
@@ -71,3 +73,28 @@ def sleeper(api_client: osparc.ApiClient) -> osparc.Solver:
         "simcore/services/comp/itis/sleeper", "2.0.2"
     )  # type: ignore
     return sleeper
+
+
+@pytest.fixture
+def sleeper_study_id(api_client: osparc.ApiClient) -> UUID:
+    """Simple sleeper study template which takes
+    as input a single file containing a single integer"""
+    _test_study_title = "sleeper_test_study"
+    study_api = osparc.StudiesApi(api_client=api_client)
+    for study in study_api.studies():
+        if study.title == _test_study_title:
+            return UUID(study.uid)
+    pytest.fail(f"Could not find {_test_study_title} study")
+
+
+@pytest.fixture
+def file_with_number(
+    tmp_path: Path, api_client: osparc.ApiClient
+) -> Iterable[osparc.File]:
+    files_api = osparc.FilesApi(api_client=api_client)
+    file = tmp_path / "file_with_number.txt"
+    file.write_text("1")
+    server_file = files_api.upload_file(file)
+    yield server_file
+
+    files_api.delete_file(server_file.id)

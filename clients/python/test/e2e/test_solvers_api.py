@@ -1,3 +1,9 @@
+# pylint: disable=protected-access
+# pylint: disable=redefined-outer-name
+# pylint: disable=too-many-arguments
+# pylint: disable=unused-argument
+# pylint: disable=unused-variable
+
 import json
 
 import osparc
@@ -64,7 +70,7 @@ async def test_logstreaming(
     nloglines: int = 0
     url = f"/v0/solvers/{sleeper.id}/releases/{sleeper.version}/jobs/{job.id}/logstream"
     print(f"starting logstreaming from {url}...")
-    
+
     async with async_client.stream(
         "GET",
         url,
