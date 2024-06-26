@@ -1,7 +1,8 @@
+# pylint: disable=protected-access
 # pylint: disable=redefined-outer-name
+# pylint: disable=too-many-arguments
 # pylint: disable=unused-argument
 # pylint: disable=unused-variable
-# pylint: disable=too-many-arguments
 
 import logging
 import os
@@ -83,7 +84,7 @@ def sleeper_study_id(api_client: osparc.ApiClient) -> UUID:
     for study in study_api.studies():
         if study.title == _test_study_title:
             return UUID(study.uid)
-    raise AssertionError(f"Could not find {_test_study_title}")
+    raise AssertionError(f"Could not find {_test_study_title} study")
 
 
 @pytest.fixture
