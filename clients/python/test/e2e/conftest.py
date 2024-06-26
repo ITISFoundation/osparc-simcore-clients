@@ -84,7 +84,7 @@ def sleeper_study_id(api_client: osparc.ApiClient) -> UUID:
     for study in study_api.studies():
         if study.title == _test_study_title:
             return UUID(study.uid)
-    raise AssertionError(f"Could not find {_test_study_title} study")
+    pytest.fail(f"Could not find {_test_study_title} study")
 
 
 @pytest.fixture
