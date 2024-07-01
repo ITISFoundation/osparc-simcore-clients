@@ -4,7 +4,7 @@ from typing import Dict
 
 import osparc
 from packaging.version import InvalidVersion, Version
-from pydantic import BaseModel, field_validator, SecretStr
+from pydantic import BaseModel, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Holds classes for passing data around between scripts.
@@ -20,7 +20,9 @@ class ServerSettings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="osparc_api_")
 
     def __hash__(self):
-        return hash(self.host + self.key.get_secret_value() + self.secret.get_secret_value())
+        return hash(
+            self.host + self.key.get_secret_value() + self.secret.get_secret_value()
+        )
 
     def __eq__(self, other):
         return (
@@ -114,9 +116,19 @@ class PytestIniFile(BaseModel):
         """Generate the pytest.ini file"""
         pth.unlink(missing_ok=True)
         pth.parent.mkdir(exist_ok=True)
+
         config: configparser.ConfigParser = configparser.ConfigParser()
+
         for field_name in self.model_fields:
             model: BaseModel = getattr(self, field_name)
-            config[field_name] = model.model_dump(exclude_none=True)
+            # WARNING: this is a temporary solution until we learn how to customize
+            # the serialization used in model_dump
+            config[field_name] = {
+                name: value.get_secret_value()
+                if isinstance(value, SecretStr)
+                else value
+                for name, value in model.model_dump(exclude_none=True).items()
+            }
+
         with open(pth, "w") as f:
             config.write(f)
