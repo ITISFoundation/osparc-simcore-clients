@@ -1,3 +1,4 @@
+from contextlib import suppress
 from datetime import datetime
 from email.utils import parsedate_to_datetime
 from typing import Any, Awaitable, Callable, Dict, Optional, Set
@@ -93,21 +94,20 @@ class AsyncHttpClient:
 
     def _wait_callback(self, retry_state: tenacity.RetryCallState) -> int:
         assert retry_state.outcome is not None
-        response: httpx.Response = retry_state.outcome.exception().response
-        if response.status_code in _RETRY_AFTER_STATUS_CODES:
-            retry_after = response.headers.get("Retry-After")
-            if retry_after is not None:
-                try:
-                    next_try = parsedate_to_datetime(retry_after)
-                    return int(
-                        (next_try - datetime.now(tz=next_try.tzinfo)).total_seconds()
-                    )
-                except (ValueError, TypeError):
-                    pass
-                try:
-                    return int(retry_after)
-                except ValueError:
-                    pass
+        if retry_state.outcome and retry_state.outcome.exception():
+            response: httpx.Response = retry_state.outcome.exception().response
+            if response.status_code in _RETRY_AFTER_STATUS_CODES:
+                retry_after = response.headers.get("Retry-After")
+                if retry_after is not None:
+                    with suppress(ValueError, TypeError):
+                        next_try = parsedate_to_datetime(retry_after)
+                        return int(
+                            (
+                                next_try - datetime.now(tz=next_try.tzinfo)
+                            ).total_seconds()
+                        )
+                    with suppress(ValueError):
+                        return int(retry_after)
         # https://urllib3.readthedocs.io/en/stable/reference/urllib3.util.html#utilities
         return self.configuration.retries.backoff_factor * (
             2**retry_state.attempt_number
