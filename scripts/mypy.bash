@@ -10,7 +10,7 @@ SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 IMAGE_NAME="local/scripts-$(basename "$0"):latest"
 WORKDIR="$(pwd)"
 
-DEFAULT_MYPY_CONFIG="$(git rev-parse --show-toplevel)/mypy.ini"
+DEFAULT_MYPY_CONFIG="$(git rev-parse --show-toplevel)/clients/python/mypy.ini"
 MYPY_CONFIG=$(realpath "${2:-${DEFAULT_MYPY_CONFIG}}")
 
 build() {

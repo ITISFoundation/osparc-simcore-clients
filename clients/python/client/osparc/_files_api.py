@@ -129,7 +129,7 @@ class FilesApi(_FilesApi):
                     file_chunk_generator(file, chunk_size),
                     total=n_urls,
                     disable=(not _logger.isEnabledFor(logging.INFO)),
-                ):  # type: ignore
+                ):
                     index, url = next(url_iter)
                     uploaded_parts.append(
                         await self._upload_chunck(
