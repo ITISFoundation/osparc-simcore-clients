@@ -67,10 +67,12 @@ class StudiesApi(_StudiesApi):
         kwargs = {**kwargs, **ParentProjectInfo().model_dump(exclude_none=True)}
         return super().clone_study(study_id, **kwargs)
 
-    def studies(self) -> PaginationGenerator:
+    def studies(self, **kwargs) -> PaginationGenerator:
         def _pagination_method():
-            page_study = super().list_studies(
-                limit=_DEFAULT_PAGINATION_LIMIT, offset=_DEFAULT_PAGINATION_OFFSET
+            page_study = self.list_studies(
+                limit=_DEFAULT_PAGINATION_LIMIT,
+                offset=_DEFAULT_PAGINATION_OFFSET,
+                **kwargs,
             )
             assert isinstance(page_study, PageStudy)  # nosec
             return page_study
