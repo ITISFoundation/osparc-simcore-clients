@@ -15,7 +15,7 @@ from _utils import skip_if_osparc_version
 from packaging.version import Version
 
 
-@skip_if_osparc_version(at_least=Version("0.6.6"))
+@skip_if_osparc_version(at_least=Version("0.6.6.post7"))
 @pytest.mark.parametrize("download_dir", [True, False])
 async def test_studies_logs(
     api_client: osparc.ApiClient,
