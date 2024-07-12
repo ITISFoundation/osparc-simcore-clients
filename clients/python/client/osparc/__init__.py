@@ -9,6 +9,7 @@ from osparc_client import (  # APIs; API client; models
     ApiTypeError,
     ApiValueError,
     BodyUploadFileV0FilesContentPut,
+    Configuration,
     ErrorGet,
     File,
     Groups,
@@ -37,7 +38,6 @@ from osparc_client import (  # APIs; API client; models
 from packaging.version import Version
 
 from ._api_client import ApiClient
-from ._configuration import Configuration
 from ._exceptions import RequestError, VisibleDeprecationWarning
 from ._files_api import FilesApi
 from ._info import openapi
