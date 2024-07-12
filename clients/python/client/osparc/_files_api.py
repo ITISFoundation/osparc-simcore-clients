@@ -21,7 +21,8 @@ from osparc_client import FileUploadCompletionBody, FileUploadData, UploadedPart
 from tqdm.asyncio import tqdm
 from tqdm.contrib.logging import logging_redirect_tqdm
 
-from . import ApiClient, File
+from . import File
+from ._api_client import ApiClient
 from ._http_client import AsyncHttpClient
 from ._utils import (
     DEFAULT_TIMEOUT_SECONDS,
@@ -36,7 +37,7 @@ _logger = logging.getLogger(__name__)
 class FilesApi(_FilesApi):
     """Class for interacting with files"""
 
-    def __init__(self, api_client: Optional[ApiClient] = None):
+    def __init__(self, api_client: ApiClient):
         """Construct object
 
         Args:

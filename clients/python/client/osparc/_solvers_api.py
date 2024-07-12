@@ -4,7 +4,7 @@ import httpx
 from osparc_client import JobInputs, OnePageSolverPort, SolverPort
 from osparc_client import SolversApi as _SolversApi
 
-from . import ApiClient
+from ._api_client import ApiClient
 from ._models import ParentProjectInfo
 from ._utils import (
     _DEFAULT_PAGINATION_LIMIT,
@@ -27,7 +27,7 @@ class SolversApi(_SolversApi):
             raise NotImplementedError(f"SolversApi.{name} is still under development")
         return super().__getattribute__(name)
 
-    def __init__(self, api_client: Optional[ApiClient] = None):
+    def __init__(self, api_client: ApiClient):
         """Construct object
 
         Args:
