@@ -8,6 +8,7 @@ import osparc
 import pytest
 from httpx import AsyncClient, BasicAuth
 from numpy import random
+from osparc._models import ConfigurationModel
 from pydantic import ByteSize
 
 _KB: ByteSize = ByteSize(1024)  # in bytes
@@ -47,7 +48,6 @@ def pytest_runtest_makereport(item, call):
     Hook to add extra information when a test fails.
     """
     if call.when == "call":
-
         # Check if the test failed
         if call.excinfo is not None:
             test_name = item.name
@@ -65,7 +65,9 @@ def pytest_runtest_makereport(item, call):
             end_time = _utc_now()
 
             if start_time:
-                diagnostics["graylog_url"] = _construct_graylog_url(api_host, start_time, end_time)
+                diagnostics["graylog_url"] = _construct_graylog_url(
+                    api_host, start_time, end_time
+                )
 
             # Print the diagnostics
             print(f"\nDiagnostics for {test_name}:")
@@ -80,29 +82,19 @@ def pytest_configure(config):
 
 
 @pytest.fixture
-def configuration() -> Iterable[osparc.Configuration]:
-    assert (host := os.environ.get("OSPARC_API_HOST"))
-    assert (username := os.environ.get("OSPARC_API_KEY"))
-    assert (password := os.environ.get("OSPARC_API_SECRET"))
-    yield osparc.Configuration(
-        host=host,
-        username=username,
-        password=password,
-    )
-
-
-@pytest.fixture
-def api_client(configuration: osparc.Configuration) -> Iterable[osparc.ApiClient]:
-    with osparc.ApiClient(configuration=configuration) as api_client:
+def api_client() -> Iterable[osparc.ApiClient]:
+    with osparc.ApiClient() as api_client:
         yield api_client
 
 
 @pytest.fixture
-def async_client(configuration) -> Iterable[AsyncClient]:
+def async_client() -> Iterable[AsyncClient]:
+    configuration = ConfigurationModel()
     yield AsyncClient(
-        base_url=configuration.host,
+        base_url=f"{configuration.OSPARC_API_HOST}".rstrip("/"),
         auth=BasicAuth(
-            username=configuration.username, password=configuration.password
+            username=configuration.OSPARC_API_KEY,
+            password=configuration.OSPARC_API_SECRET,
         ),
     )  # type: ignore
 

@@ -20,7 +20,9 @@ class ApiClient(_ApiClient):
             try:
                 env_vars = ConfigurationModel()
                 configuration = Configuration(
-                    host=f"{env_vars.OSPARC_API_HOST}",
+                    host=f"{env_vars.OSPARC_API_HOST}".rstrip(
+                        "/"
+                    ),  # https://github.com/pydantic/pydantic/issues/7186
                     username=env_vars.OSPARC_API_KEY,
                     password=env_vars.OSPARC_API_SECRET,
                 )
