@@ -1,3 +1,5 @@
+from typing import Optional
+
 from osparc_client import ApiClient as _ApiClient
 from osparc_client import Configuration
 from pydantic import ValidationError
@@ -8,7 +10,7 @@ from ._models import ConfigurationModel
 class ApiClient(_ApiClient):
     def __init__(
         self,
-        configuration=None,
+        configuration: Optional[Configuration] = None,
         header_name=None,
         header_value=None,
         cookie=None,
