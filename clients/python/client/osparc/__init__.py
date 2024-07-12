@@ -4,7 +4,6 @@ from typing import List, Tuple
 
 import nest_asyncio
 from osparc_client import (  # APIs; API client; models
-    ApiClient,
     ApiException,
     ApiKeyError,
     ApiTypeError,
@@ -37,13 +36,14 @@ from osparc_client import (  # APIs; API client; models
 )
 from packaging.version import Version
 
+from ._api_client import ApiClient
+from ._configuration import Configuration
 from ._exceptions import RequestError, VisibleDeprecationWarning
 from ._files_api import FilesApi
 from ._info import openapi
 from ._solvers_api import SolversApi
 from ._studies_api import StudiesApi
 from ._utils import dev_features_enabled
-from ._configuration import Configuration
 
 _PYTHON_VERSION_DEPRECATED = Version("3.6.0")
 _PYTHON_VERSION_SUPPORTED = Version("3.8.0")
