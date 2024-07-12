@@ -1,9 +1,9 @@
 import os
-from typing import Callable
+from typing import Callable, Optional
 
 import pytest
 from faker import Faker
-from osparc import ApiClient, Configuration, SolversApi, StudiesApi
+from osparc import ApiClient, SolversApi, StudiesApi
 from pytest_mock import MockerFixture
 
 
@@ -61,33 +61,35 @@ def test_create_jobs_parent_headers(
     studies_api.clone_study(study_id=faker.uuid4())
 
 
-def test_configuration_constructor(monkeypatch: pytest.MonkeyPatch):
+@pytest.mark.parametrize(
+    "OSPARC_API_HOST", ["https://api.foo.com", "https://api.bar.com/", None]
+)
+@pytest.mark.parametrize("OSPARC_API_KEY", ["key", None])
+@pytest.mark.parametrize("OSPARC_API_SECRET", ["secret", None])
+def test_api_client_constructor(
+    monkeypatch: pytest.MonkeyPatch,
+    OSPARC_API_HOST: Optional[str],
+    OSPARC_API_KEY: Optional[str],
+    OSPARC_API_SECRET: Optional[str],
+):
     with monkeypatch.context() as patch:
-        patch.delenv("OSPARC_API_BASE_URL", raising=False)
+        patch.delenv("OSPARC_API_HOST", raising=False)
         patch.delenv("OSPARC_API_KEY", raising=False)
         patch.delenv("OSPARC_API_SECRET", raising=False)
 
-        config = Configuration()
-        assert config.host == "https://api.osparc.io"
-        assert config.username is None
-        assert config.password is None
+        if OSPARC_API_HOST is not None:
+            patch.setenv("OSPARC_API_HOST", OSPARC_API_HOST)
+        if OSPARC_API_KEY is not None:
+            patch.setenv("OSPARC_API_KEY", OSPARC_API_KEY)
+        if OSPARC_API_SECRET is not None:
+            patch.setenv("OSPARC_API_SECRET", OSPARC_API_SECRET)
 
-    with monkeypatch.context() as patch:
-        patch.setenv("OSPARC_API_BASE_URL", "https://api.foo.com")
-        patch.setenv("OSPARC_API_KEY", "key")
-        patch.setenv("OSPARC_API_SECRET", "secret")
+        if OSPARC_API_HOST and OSPARC_API_KEY and OSPARC_API_SECRET:
+            api = ApiClient()
+            assert api.configuration.host == OSPARC_API_HOST.rstrip("/")
+            assert api.configuration.username == OSPARC_API_KEY
+            assert api.configuration.password == OSPARC_API_SECRET
 
-        config = Configuration()
-        assert config.host == "https://api.foo.com"
-        assert config.username == "key"
-        assert config.password == "secret"
-
-        api = ApiClient()
-        assert api.configuration.host == config.host
-        assert api.configuration.username == config.username
-        assert api.configuration.password == config.password
-
-        config = Configuration(username="foo")
-        assert config.host == "https://api.foo.com"
-        assert config.username == "foo"
-        assert config.password == "secret"
+        else:
+            with pytest.raises(RuntimeError):
+                ApiClient()
