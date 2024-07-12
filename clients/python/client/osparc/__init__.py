@@ -70,13 +70,13 @@ nest_asyncio.apply()  # allow to run coroutines via asyncio.run(coro)
 dev_features: List[str] = []
 if dev_features_enabled():
     dev_features = [
-        "PaginationGenerator",
-        "StudyPort",
-        "Study",
+        "JobMetadata",
         "JobMetadataUpdate",
         "Links",
-        "JobMetadata",
         "OnePageStudyPort",
+        "PaginationGenerator",
+        "Study",
+        "StudyPort",
     ]
 
 __all__: Tuple[str, ...] = tuple(dev_features) + (

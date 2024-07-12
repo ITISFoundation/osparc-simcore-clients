@@ -50,8 +50,8 @@ def generate_ini(
 
     envs: List[str] = []
     envs.append(f"OSPARC_API_HOST={urlparse(server_cfg.host).geturl()}")
-    envs.append(f"OSPARC_API_KEY={server_cfg.key}")
-    envs.append(f"OSPARC_API_SECRET={server_cfg.secret}")
+    envs.append(f"OSPARC_API_KEY={server_cfg.key.get_secret_value()}")
+    envs.append(f"OSPARC_API_SECRET={server_cfg.secret.get_secret_value()}")
     envs.append(
         f"OSPARC_DEV_FEATURES_ENABLED=" f"{1 if client_cfg.dev_features else 0}"
     )

@@ -43,7 +43,6 @@ class FilesApi(_FilesApi):
             api_client (ApiClient, optinal): osparc.ApiClient object
         """
         super().__init__(api_client)
-        self._super = super(FilesApi, self)
         user: Optional[str] = self.api_client.configuration.username
         passwd: Optional[str] = self.api_client.configuration.password
         self._auth: Optional[httpx.BasicAuth] = (
@@ -53,13 +52,13 @@ class FilesApi(_FilesApi):
         )
 
     def download_file(
-        self, file_id: str, *, destination_folder: Optional[Path] = None
+        self, file_id: str, *, destination_folder: Optional[Path] = None, **kwargs
     ) -> str:
         if destination_folder is not None and not destination_folder.is_dir():
             raise RuntimeError(
                 f"destination_folder: {destination_folder} must be a directory"
             )
-        downloaded_file: Path = Path(super().download_file(file_id))
+        downloaded_file: Path = Path(super().download_file(file_id, **kwargs))
         if destination_folder is not None:
             dest_file: Path = destination_folder / downloaded_file.name
             while dest_file.is_file():
@@ -74,14 +73,20 @@ class FilesApi(_FilesApi):
         return str(downloaded_file.resolve())
 
     def upload_file(
-        self, file: Union[str, Path], timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS
+        self,
+        file: Union[str, Path],
+        timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
+        **kwargs,
     ):
         return asyncio.run(
-            self.upload_file_async(file=file, timeout_seconds=timeout_seconds)
+            self.upload_file_async(file=file, timeout_seconds=timeout_seconds, **kwargs)
         )
 
     async def upload_file_async(
-        self, file: Union[str, Path], timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS
+        self,
+        file: Union[str, Path],
+        timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
+        **kwargs,
     ) -> File:
         if isinstance(file, str):
             file = Path(file)
@@ -100,9 +105,9 @@ class FilesApi(_FilesApi):
             filesize=file.stat().st_size,
             sha256_checksum=checksum,
         )
-        client_upload_schema: ClientFileUploadData = self._super.get_upload_links(
-            client_file=client_file, _request_timeout=timeout_seconds
-        )  # type: ignore
+        client_upload_schema: ClientFileUploadData = super().get_upload_links(
+            client_file=client_file, _request_timeout=timeout_seconds, **kwargs
+        )
         chunk_size: int = client_upload_schema.upload_schema.chunk_size
         links: FileUploadData = client_upload_schema.upload_schema.links
         url_iter: Iterator[Tuple[int, str]] = enumerate(
@@ -119,12 +124,12 @@ class FilesApi(_FilesApi):
             configuration=self.api_client.configuration, timeout=timeout_seconds
         ) as session:
             with logging_redirect_tqdm():
-                _logger.info("Uploading %s in %i chunks", file.name, n_urls)
+                _logger.info("Uploading %s in %i chunk(s)", file.name, n_urls)
                 async for chunck, size in tqdm(
                     file_chunk_generator(file, chunk_size),
                     total=n_urls,
                     disable=(not _logger.isEnabledFor(logging.INFO)),
-                ):  # type: ignore
+                ):
                     index, url = next(url_iter)
                     uploaded_parts.append(
                         await self._upload_chunck(
@@ -206,7 +211,7 @@ class FilesApi(_FilesApi):
         sha256_checksum: Optional[str] = None,
         timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
     ) -> PaginationGenerator:
-        def pagination_method():
+        def _pagination_method():
             return super(FilesApi, self).search_files_page(
                 file_id=file_id,
                 sha256_checksum=sha256_checksum,
@@ -214,7 +219,7 @@ class FilesApi(_FilesApi):
             )
 
         return PaginationGenerator(
-            first_page_callback=pagination_method,
+            first_page_callback=_pagination_method,
             api_client=self.api_client,
             base_url=self.api_client.configuration.host,
             auth=self._auth,

@@ -3,7 +3,7 @@
   "info": {
     "title": "osparc.io web API (dev)",
     "description": "osparc-simcore public API specifications",
-    "version": "0.5.1-dev"
+    "version": "0.6.0-dev"
   },
   "paths": {
     "/v0/meta": {
@@ -2282,7 +2282,7 @@
             }
           },
           "404": {
-            "description": "Job not found",
+            "description": "Job/wallet/pricing details not found",
             "content": {
               "application/json": {
                 "schema": {
@@ -2449,7 +2449,7 @@
             }
           },
           "404": {
-            "description": "Job not found",
+            "description": "Job/wallet/pricing details not found",
             "content": {
               "application/json": {
                 "schema": {
@@ -2588,7 +2588,7 @@
             }
           },
           "404": {
-            "description": "Job not found",
+            "description": "Job/wallet/pricing details not found",
             "content": {
               "application/json": {
                 "schema": {
@@ -2718,7 +2718,7 @@
             }
           },
           "404": {
-            "description": "Job not found",
+            "description": "Job/wallet/pricing details not found",
             "content": {
               "application/json": {
                 "schema": {
@@ -2801,7 +2801,7 @@
           "solvers"
         ],
         "summary": "Start Job",
-        "description": "Starts job job_id created with the solver solver_key:version\n\nNew in *version 0.4.3*: cluster_id",
+        "description": "Starts job job_id created with the solver solver_key:version\n\nNew in *version 0.4.3*: cluster_id\nNew in *version 0.6.0*: This endpoint responds with a 202 when successfully starting a computation",
         "operationId": "start_job",
         "parameters": [
           {
@@ -2846,7 +2846,7 @@
           }
         ],
         "responses": {
-          "200": {
+          "202": {
             "description": "Successful Response",
             "content": {
               "application/json": {
@@ -2867,7 +2867,7 @@
             }
           },
           "404": {
-            "description": "Job not found",
+            "description": "Job/wallet/pricing details not found",
             "content": {
               "application/json": {
                 "schema": {
@@ -2926,12 +2926,32 @@
               }
             }
           },
-          "422": {
-            "description": "Validation Error",
+          "200": {
+            "description": "Job already started",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/JobStatus"
+                }
+              }
+            }
+          },
+          "406": {
+            "description": "Cluster not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Configuration error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
                 }
               }
             }
@@ -3005,7 +3025,7 @@
             }
           },
           "404": {
-            "description": "Job not found",
+            "description": "Job/wallet/pricing details not found",
             "content": {
               "application/json": {
                 "schema": {
@@ -3143,7 +3163,7 @@
             }
           },
           "404": {
-            "description": "Job not found",
+            "description": "Job/wallet/pricing details not found",
             "content": {
               "application/json": {
                 "schema": {
@@ -3561,7 +3581,7 @@
             }
           },
           "404": {
-            "description": "Job not found",
+            "description": "Job/wallet/pricing details not found",
             "content": {
               "application/json": {
                 "schema": {
@@ -4837,6 +4857,7 @@
           "studies"
         ],
         "summary": "Start Study Job",
+        "description": "New in *version 0.6.0*: This endpoint responds with a 202 when successfully starting a computation",
         "operationId": "start_study_job",
         "parameters": [
           {
@@ -4871,7 +4892,7 @@
           }
         ],
         "responses": {
-          "200": {
+          "202": {
             "description": "Successful Response",
             "content": {
               "application/json": {
@@ -4881,12 +4902,102 @@
               }
             }
           },
-          "422": {
-            "description": "Validation Error",
+          "402": {
+            "description": "Payment required",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Job/wallet/pricing details not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Unexpected error when communicating with backend service",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Request to a backend service timed out.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Job already started",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobStatus"
+                }
+              }
+            }
+          },
+          "406": {
+            "description": "Cluster not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Configuration error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
                 }
               }
             }
@@ -5073,12 +5184,12 @@
         ]
       }
     },
-    "/v0/studies/{study_id}/jobs/{job_id}/outputs/logfile": {
-      "post": {
+    "/v0/studies/{study_id}/jobs/{job_id}/outputs/log-links": {
+      "get": {
         "tags": [
           "studies"
         ],
-        "summary": "Get Study Job Output Logfile",
+        "summary": "Get download links for study job log files",
         "operationId": "get_study_job_output_logfile",
         "parameters": [
           {
@@ -5103,8 +5214,15 @@
           }
         ],
         "responses": {
-          "501": {
-            "description": "Successful Response"
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobLogsMap"
+                }
+              }
+            }
           },
           "422": {
             "description": "Validation Error",
@@ -5116,7 +5234,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
       }
     },
     "/v0/studies/{study_id}/jobs/{job_id}/metadata": {
@@ -5457,6 +5580,32 @@
           }
         ]
       }
+    },
+    "/v0/credits/price": {
+      "get": {
+        "tags": [
+          "credits"
+        ],
+        "summary": "Get Credits Price",
+        "operationId": "get_credits_price",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCreditPrice"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -5658,6 +5807,33 @@
         ],
         "title": "FileUploadData"
       },
+      "GetCreditPrice": {
+        "properties": {
+          "productName": {
+            "type": "string",
+            "title": "Productname"
+          },
+          "usdPerCredit": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Usdpercredit",
+            "description": "Price of a credit in USD. If None, then this product's price is UNDEFINED"
+          },
+          "minPaymentAmountUsd": {
+            "type": "integer",
+            "minimum": 0,
+            "title": "Minpaymentamountusd",
+            "description": "Minimum amount (included) in USD that can be paid for this productCan be None if this product's price is UNDEFINED"
+          }
+        },
+        "type": "object",
+        "required": [
+          "productName",
+          "usdPerCredit",
+          "minPaymentAmountUsd"
+        ],
+        "title": "GetCreditPrice"
+      },
       "Groups": {
         "properties": {
           "me": {
@@ -5819,6 +5995,23 @@
             }
           }
         }
+      },
+      "JobLogsMap": {
+        "properties": {
+          "log_links": {
+            "items": {
+              "$ref": "#/components/schemas/LogLink"
+            },
+            "type": "array",
+            "title": "Log Links",
+            "description": "Array of download links"
+          }
+        },
+        "type": "object",
+        "required": [
+          "log_links"
+        ],
+        "title": "JobLogsMap"
       },
       "JobMetadata": {
         "properties": {
@@ -6030,6 +6223,27 @@
         },
         "type": "object",
         "title": "Links"
+      },
+      "LogLink": {
+        "properties": {
+          "node_name": {
+            "type": "string",
+            "title": "Node Name"
+          },
+          "download_link": {
+            "type": "string",
+            "maxLength": 65536,
+            "minLength": 1,
+            "format": "uri",
+            "title": "Download Link"
+          }
+        },
+        "type": "object",
+        "required": [
+          "node_name",
+          "download_link"
+        ],
+        "title": "LogLink"
       },
       "Meta": {
         "properties": {

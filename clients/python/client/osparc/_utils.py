@@ -24,6 +24,9 @@ _KB = 1024  # in bytes
 _MB = _KB * 1024  # in bytes
 _GB = _MB * 1024  # in bytes
 
+_DEFAULT_PAGINATION_LIMIT: int = 20
+_DEFAULT_PAGINATION_OFFSET: int = 0
+
 DEFAULT_TIMEOUT_SECONDS: int = 30 * 60
 
 Page = Union[PageJob, PageFile, PageSolver, PageStudy]

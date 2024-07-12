@@ -1,12 +1,18 @@
 from typing import Any, List, Optional
 
 import httpx
-from osparc_client import OnePageSolverPort, SolverPort
+from osparc_client import JobInputs, OnePageSolverPort, SolverPort
 from osparc_client import SolversApi as _SolversApi
 
 from . import ApiClient
 from ._models import ParentProjectInfo
-from ._utils import PaginationGenerator, dev_feature, dev_features_enabled
+from ._utils import (
+    _DEFAULT_PAGINATION_LIMIT,
+    _DEFAULT_PAGINATION_OFFSET,
+    PaginationGenerator,
+    dev_feature,
+    dev_features_enabled,
+)
 
 
 class SolversApi(_SolversApi):
@@ -16,7 +22,7 @@ class SolversApi(_SolversApi):
         "get_jobs_page",
     ]
 
-    def __getattribute__(self, name: str) -> Any:
+    def __getattr__(self, name: str) -> Any:
         if (name in SolversApi._dev_features) and (not dev_features_enabled()):
             raise NotImplementedError(f"SolversApi.{name} is still under development")
         return super().__getattribute__(name)
@@ -27,8 +33,7 @@ class SolversApi(_SolversApi):
         Args:
             api_client (ApiClient, optinal): osparc.ApiClient object
         """
-        self._super: _SolversApi = super()
-        self._super.__init__(api_client)
+        super().__init__(api_client)
         user: Optional[str] = self.api_client.configuration.username
         passwd: Optional[str] = self.api_client.configuration.password
         self._auth: Optional[httpx.BasicAuth] = (
@@ -37,10 +42,12 @@ class SolversApi(_SolversApi):
             else None
         )
 
-    def list_solver_ports(self, solver_key: str, version: str) -> List[SolverPort]:
-        page: OnePageSolverPort = self._super.list_solver_ports(
-            solver_key=solver_key, version=version
-        )  # type: ignore
+    def list_solver_ports(
+        self, solver_key: str, version: str, **kwargs
+    ) -> List[SolverPort]:
+        page: OnePageSolverPort = super().list_solver_ports(
+            solver_key=solver_key, version=version, **kwargs
+        )
         return page.items if page.items else []
 
     @dev_feature
@@ -60,18 +67,23 @@ class SolversApi(_SolversApi):
             (its "length")
         """
 
-        def pagination_method():
+        def _pagination_method():
             return super(SolversApi, self).get_jobs_page(
-                solver_key=solver_key, version=version, limit=20, offset=0
+                solver_key=solver_key,
+                version=version,
+                limit=_DEFAULT_PAGINATION_LIMIT,
+                offset=_DEFAULT_PAGINATION_OFFSET,
             )
 
         return PaginationGenerator(
-            first_page_callback=pagination_method,
+            first_page_callback=_pagination_method,
             api_client=self.api_client,
             base_url=self.api_client.configuration.host,
             auth=self._auth,
         )
 
-    def create_job(self, solver_key, version, job_inputs, **kwargs):
+    def create_job(
+        self, solver_key: str, version: str, job_inputs: JobInputs, **kwargs
+    ):
         kwargs = {**kwargs, **ParentProjectInfo().model_dump(exclude_none=True)}
         return super().create_job(solver_key, version, job_inputs, **kwargs)

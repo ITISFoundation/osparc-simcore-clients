@@ -4,7 +4,7 @@ from typing import Dict
 
 import osparc
 from packaging.version import InvalidVersion, Version
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Holds classes for passing data around between scripts.
@@ -14,19 +14,21 @@ class ServerSettings(BaseSettings):
     """Holds data about server configuration"""
 
     host: str
-    key: str
-    secret: str
+    key: SecretStr
+    secret: SecretStr
 
     model_config = SettingsConfigDict(env_prefix="osparc_api_")
 
     def __hash__(self):
-        return hash(self.host + self.key + self.secret)
+        return hash(
+            self.host + self.key.get_secret_value() + self.secret.get_secret_value()
+        )
 
     def __eq__(self, other):
         return (
             self.host == other.host
-            and self.key == other.key
-            and self.secret == other.secret
+            and self.key.get_secret_value() == other.key.get_secret_value()
+            and self.secret.get_secret_value() == other.secret.get_secret_value()
         )
 
 
@@ -43,15 +45,16 @@ class ClientSettings(BaseSettings):
     dev_features: bool = False
 
     @field_validator("version", mode="after")
-    def validate_client(cls, v):
+    @classmethod
+    def _validate_client(cls, v):
         if v not in {"latest_release", "latest_master"}:
             try:
                 version = Version(v)
                 assert version == Version(osparc.__version__)
-            except InvalidVersion:
-                raise ValueError(f"Received invalid semantic version: {v}")
-            except AssertionError:
-                raise ValueError(f"{v=} != {osparc.__version__=}")
+            except InvalidVersion as e:
+                raise ValueError(f"Received invalid semantic version: {v}") from e
+            except AssertionError as e:
+                raise ValueError(f"{v=} != {osparc.__version__=}") from e
         return v
 
     @property
@@ -113,9 +116,19 @@ class PytestIniFile(BaseModel):
         """Generate the pytest.ini file"""
         pth.unlink(missing_ok=True)
         pth.parent.mkdir(exist_ok=True)
+
         config: configparser.ConfigParser = configparser.ConfigParser()
+
         for field_name in self.model_fields:
             model: BaseModel = getattr(self, field_name)
-            config[field_name] = model.model_dump(exclude_none=True)
+            # WARNING: this is a temporary solution until we learn how to customize
+            # the serialization used in model_dump
+            config[field_name] = {
+                name: value.get_secret_value()
+                if isinstance(value, SecretStr)
+                else value
+                for name, value in model.model_dump(exclude_none=True).items()
+            }
+
         with open(pth, "w") as f:
             config.write(f)
