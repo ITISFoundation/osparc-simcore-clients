@@ -31,6 +31,7 @@ def test_create_jobs_parent_headers(
     create_parent_env: Callable,
     dev_mode_enabled: None,
     parent_env: bool,
+    api_client: ApiClient,
 ):
     create_parent_env(parent_env)
 
@@ -58,10 +59,10 @@ def test_create_jobs_parent_headers(
         side_effect=lambda study_id, **kwargs: check_headers(**kwargs),
     )
 
-    solvers_api = SolversApi()
+    solvers_api = SolversApi(api_client=api_client)
     solvers_api.create_job(solver_key="mysolver", version="1.2.3", job_inputs={})
 
-    studies_api = StudiesApi()
+    studies_api = StudiesApi(api_client=api_client)
     studies_api.create_study_job(study_id=faker.uuid4(), job_inputs={})
     studies_api.clone_study(study_id=faker.uuid4())
 

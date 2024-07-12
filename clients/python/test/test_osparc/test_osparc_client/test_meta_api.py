@@ -14,14 +14,16 @@ from __future__ import absolute_import
 
 import unittest
 
-from osparc import MetaApi  # noqa: E501
+from osparc import ApiClient, Configuration, MetaApi  # noqa: E501
 
 
 class TestMetaApi(unittest.TestCase):
     """MetaApi unit test stubs"""
 
     def setUp(self):
-        self.api = MetaApi()  # noqa: E501
+        self.api = MetaApi(
+            api_client=ApiClient(configuration=Configuration())
+        )  # noqa: E501
 
     def tearDown(self):
         pass

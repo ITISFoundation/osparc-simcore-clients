@@ -14,14 +14,16 @@ from __future__ import absolute_import
 
 import unittest
 
-from osparc import UsersApi  # noqa: E501
+from osparc import ApiClient, Configuration, UsersApi  # noqa: E501
 
 
 class TestUsersApi(unittest.TestCase):
     """UsersApi unit test stubs"""
 
     def setUp(self):
-        self.api = UsersApi()  # noqa: E501
+        self.api = UsersApi(
+            api_client=ApiClient(configuration=Configuration())
+        )  # noqa: E501
 
     def tearDown(self):
         pass
