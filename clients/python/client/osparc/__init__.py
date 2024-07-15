@@ -45,22 +45,22 @@ from ._solvers_api import SolversApi
 from ._studies_api import StudiesApi
 from ._utils import dev_features_enabled
 
-_PYTHON_VERSION_DEPRECATED = Version("3.6.0")
-_PYTHON_VERSION_SUPPORTED = Version("3.8.0")
+_PYTHON_VERSION_RETIRED = Version("3.8.0")
+_PYTHON_VERSION_DEPRECATED = Version("3.8.0")
+assert _PYTHON_VERSION_RETIRED <= _PYTHON_VERSION_DEPRECATED  # nosec
 
-if Version(python_version()) < _PYTHON_VERSION_DEPRECATED:
+if Version(python_version()) < _PYTHON_VERSION_RETIRED:
     error_msg: str = (
         f"Python version {python_version()} is retired for this version of osparc. "
-        f"Please use Python version {_PYTHON_VERSION_SUPPORTED}."
+        f"Please use Python version {_PYTHON_VERSION_DEPRECATED}."
     )
     raise RuntimeError(error_msg)
 
-if Version(python_version()) < _PYTHON_VERSION_SUPPORTED:
+if Version(python_version()) < _PYTHON_VERSION_DEPRECATED:
     warning_msg: str = (
-        "This is the final version of osparc which "
-        f"will support Python {python_version()}. "
-        "Future versions of osparc will only support "
-        f"Python version >= {_PYTHON_VERSION_SUPPORTED}."
+        f"Python {python_version()} is deprecated. "
+        "Please upgrade to "
+        f"Python version >= {_PYTHON_VERSION_DEPRECATED}."
     )
     warnings.warn(warning_msg, VisibleDeprecationWarning)
 
