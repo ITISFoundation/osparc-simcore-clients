@@ -27,6 +27,7 @@ class ParentProjectInfo(BaseSettings):
 class ConfigurationModel(BaseSettings):
     """Model for capturing env vars which should go into the Configuration"""
 
+    # Service side: https://github.com/ITISFoundation/osparc-simcore/pull/5966
     OSPARC_API_HOST: AnyHttpUrl = Field(
         default=...,
         validation_alias=AliasChoices("OSPARC_API_BASE_URL", "OSPARC_API_HOST"),
