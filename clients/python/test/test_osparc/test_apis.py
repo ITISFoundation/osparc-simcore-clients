@@ -70,29 +70,46 @@ def test_create_jobs_parent_headers(
 @pytest.mark.parametrize(
     "OSPARC_API_HOST", ["https://api.foo.com", "https://api.bar.com/", None]
 )
+@pytest.mark.parametrize(
+    "OSPARC_API_BASE_URL", ["https://api.sdkjbf.com", "https://api.alskjd.com/", None]
+)
 @pytest.mark.parametrize("OSPARC_API_KEY", ["key", None])
 @pytest.mark.parametrize("OSPARC_API_SECRET", ["secret", None])
 def test_api_client_constructor(
     monkeypatch: pytest.MonkeyPatch,
     OSPARC_API_HOST: Optional[str],
+    OSPARC_API_BASE_URL: Optional[str],
     OSPARC_API_KEY: Optional[str],
     OSPARC_API_SECRET: Optional[str],
 ):
     with monkeypatch.context() as patch:
         patch.delenv("OSPARC_API_HOST", raising=False)
+        patch.delenv("OSPARC_API_BASE_URL", raising=False)
         patch.delenv("OSPARC_API_KEY", raising=False)
         patch.delenv("OSPARC_API_SECRET", raising=False)
 
         if OSPARC_API_HOST is not None:
             patch.setenv("OSPARC_API_HOST", OSPARC_API_HOST)
+        if OSPARC_API_BASE_URL is not None:
+            patch.setenv("OSPARC_API_BASE_URL", OSPARC_API_BASE_URL)
         if OSPARC_API_KEY is not None:
             patch.setenv("OSPARC_API_KEY", OSPARC_API_KEY)
         if OSPARC_API_SECRET is not None:
             patch.setenv("OSPARC_API_SECRET", OSPARC_API_SECRET)
 
-        if OSPARC_API_HOST and OSPARC_API_KEY and OSPARC_API_SECRET:
+        if (
+            (OSPARC_API_HOST or OSPARC_API_BASE_URL)
+            and OSPARC_API_KEY
+            and OSPARC_API_SECRET
+        ):
             api = ApiClient()
-            assert api.configuration.host == OSPARC_API_HOST.rstrip("/")
+            # if OSPARC_API_BASE_URL and OSPARC_API_HOST are both
+            # in env, the former has preference
+            if OSPARC_API_BASE_URL is not None:
+                assert api.configuration.host == OSPARC_API_BASE_URL.rstrip("/")
+            elif OSPARC_API_HOST is not None:
+                assert api.configuration.host == OSPARC_API_HOST.rstrip("/")
+
             assert api.configuration.username == OSPARC_API_KEY
             assert api.configuration.password == OSPARC_API_SECRET
 
