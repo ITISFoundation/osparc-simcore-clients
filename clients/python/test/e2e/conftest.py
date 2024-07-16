@@ -15,6 +15,7 @@ import osparc
 import pytest
 from httpx import AsyncClient, BasicAuth
 from numpy import random
+from packaging.version import Version
 from pydantic import ByteSize
 
 try:
@@ -101,12 +102,12 @@ def api_client() -> Iterable[osparc.ApiClient]:
 
 @pytest.fixture
 def async_client() -> Iterable[AsyncClient]:
-    try:
+    if Version(osparc.__version__) >= Version("8.0.0"):
         configuration = ConfigurationModel()
         host = configuration.OSPARC_API_HOST.rstrip("/")
         username = configuration.OSPARC_API_KEY
         password = configuration.OSPARC_API_SECRET
-    except NameError:
+    else:
         host = os.environ.get("OSPARC_API_HOST")
         username = os.environ.get("OSPARC_API_KEY")
         password = os.environ.get("OSPARC_API_SECRET")
