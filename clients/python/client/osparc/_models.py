@@ -1,7 +1,7 @@
 from typing import Optional
 from uuid import UUID
 
-from pydantic import AnyHttpUrl, Field, field_validator
+from pydantic import AliasChoices, AnyHttpUrl, Field, field_validator
 from pydantic_settings import BaseSettings
 
 
@@ -27,8 +27,10 @@ class ParentProjectInfo(BaseSettings):
 class ConfigurationModel(BaseSettings):
     """Model for capturing env vars which should go into the Configuration"""
 
+    # Service side: https://github.com/ITISFoundation/osparc-simcore/pull/5966
     OSPARC_API_HOST: AnyHttpUrl = Field(
         default=...,
+        validation_alias=AliasChoices("OSPARC_API_BASE_URL", "OSPARC_API_HOST"),
         description="OSPARC api url",
         examples=["https://api.osparc-master.speag.com/"],
     )
