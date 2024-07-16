@@ -15,8 +15,13 @@ import osparc
 import pytest
 from httpx import AsyncClient, BasicAuth
 from numpy import random
-from osparc._models import ConfigurationModel
 from pydantic import ByteSize
+
+try:
+    from osparc._models import ConfigurationModel
+except ImportError:
+    pass
+
 
 _KB: ByteSize = ByteSize(1024)  # in bytes
 _MB: ByteSize = ByteSize(_KB * 1024)  # in bytes
@@ -96,12 +101,21 @@ def api_client() -> Iterable[osparc.ApiClient]:
 
 @pytest.fixture
 def async_client() -> Iterable[AsyncClient]:
-    configuration = ConfigurationModel()
+    try:
+        configuration = ConfigurationModel()
+        host = configuration.OSPARC_API_HOST.rstrip("/")
+        username = configuration.OSPARC_API_KEY
+        password = configuration.OSPARC_API_SECRET
+    except NameError:
+        host = os.environ.get("OSPARC_API_HOST")
+        username = os.environ.get("OSPARC_API_KEY")
+        password = os.environ.get("OSPARC_API_SECRET")
+        assert host and username and password
     yield AsyncClient(
-        base_url=f"{configuration.OSPARC_API_HOST}".rstrip("/"),
+        base_url=host,
         auth=BasicAuth(
-            username=configuration.OSPARC_API_KEY,
-            password=configuration.OSPARC_API_SECRET,
+            username=username,
+            password=password,
         ),
     )  # type: ignore
 
