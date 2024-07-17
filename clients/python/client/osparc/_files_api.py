@@ -125,11 +125,11 @@ class FilesApi(_FilesApi):
             configuration=self.api_client.configuration, timeout=timeout_seconds
         ) as session:
             with logging_redirect_tqdm():
-                _logger.info("Uploading %s in %i chunk(s)", file.name, n_urls)
+                _logger.debug("Uploading %s in %i chunk(s)", file.name, n_urls)
                 async for chunck, size in tqdm(
                     file_chunk_generator(file, chunk_size),
                     total=n_urls,
-                    disable=(not _logger.isEnabledFor(logging.INFO)),
+                    disable=(not _logger.isEnabledFor(logging.DEBUG)),
                 ):
                     index, url = next(url_iter)
                     uploaded_parts.append(
@@ -155,7 +155,7 @@ class FilesApi(_FilesApi):
                 auth=self._auth,
                 timeout=timeout_seconds,
             ) as session:
-                _logger.info(
+                _logger.debug(
                     (
                         "Completing upload of %s "
                         "(this might take a couple of minutes)..."
@@ -165,7 +165,7 @@ class FilesApi(_FilesApi):
                 server_file: File = await self._complete_multipart_upload(
                     session, links.complete_upload, client_file, uploaded_parts
                 )
-                _logger.info("File upload complete: %s", file.name)
+                _logger.debug("File upload complete: %s", file.name)
                 return server_file
 
     async def _complete_multipart_upload(

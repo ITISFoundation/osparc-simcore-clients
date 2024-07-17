@@ -124,13 +124,13 @@ class StudiesApi(_StudiesApi):
                 asyncio.create_task(_download(link.node_name, link.download_link))
                 for link in log_links
             ]
-            _logger.info(
+            _logger.debug(
                 "Downloading log files for study_id=%s and job_id=%s...",
                 study_id,
                 job_id,
             )
             await tqdm_asyncio.gather(
-                *tasks, disable=(not _logger.isEnabledFor(logging.INFO))
+                *tasks, disable=(not _logger.isEnabledFor(logging.DEBUG))
             )
 
         return folder
