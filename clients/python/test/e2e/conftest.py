@@ -96,8 +96,19 @@ def pytest_configure(config):
 
 @pytest.fixture
 def api_client() -> Iterable[osparc.ApiClient]:
-    with osparc.ApiClient() as api_client:
-        yield api_client
+    if Version(osparc.__version__) >= Version("8.0.0"):
+        with osparc.ApiClient() as api_client:
+            yield api_client
+    else:
+        host = os.environ.get("OSPARC_API_HOST")
+        username = os.environ.get("OSPARC_API_KEY")
+        password = os.environ.get("OSPARC_API_SECRET")
+        assert host and username and password
+        configuration = osparc.Configuration(
+            host=host, username=username, password=password
+        )
+        with osparc.ApiClient(configuration=configuration) as api_client:
+            yield api_client
 
 
 @pytest.fixture
