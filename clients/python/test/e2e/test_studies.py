@@ -49,7 +49,7 @@ async def test_studies_logs(
                 study_id=f"{sleeper_study_id}", job_id=job.id
             )
             assert isinstance(status, osparc.JobStatus)
-            print(f"--- idle_for={attempt.retry_state.idle_for}\n", status)
+            print(f"--- seconds idle: {attempt.retry_state.idle_for}\n", status)
             assert status.stopped_at is not None
     assert status.state == "SUCCESS"
     try:
