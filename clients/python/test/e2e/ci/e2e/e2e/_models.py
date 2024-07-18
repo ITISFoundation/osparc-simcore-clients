@@ -16,6 +16,8 @@ class ServerSettings(BaseSettings):
     host: str
     key: SecretStr
     secret: SecretStr
+    email: str
+    password: SecretStr
 
     model_config = SettingsConfigDict(env_prefix="osparc_api_")
 
