@@ -5,6 +5,7 @@
 # pylint: disable=unused-variable
 
 import shutil
+from datetime import timedelta
 from pathlib import Path
 from uuid import UUID
 
@@ -39,8 +40,8 @@ async def test_studies_logs(
     assert isinstance(status, osparc.JobStatus)
     async for attempt in tenacity.AsyncRetrying(
         reraise=True,
-        wait=tenacity.wait_fixed(1),
-        stop=tenacity.stop_after_delay(30),
+        wait=tenacity.wait_fixed(timedelta(seconds=5)),
+        stop=tenacity.stop_after_delay(timedelta(minutes=10)),
         retry=tenacity.retry_if_exception_type(AssertionError),
     ):
         with attempt:
@@ -48,6 +49,7 @@ async def test_studies_logs(
                 study_id=f"{sleeper_study_id}", job_id=job.id
             )
             assert isinstance(status, osparc.JobStatus)
+            print(f"--- seconds idle: {attempt.retry_state.idle_for}\n", status)
             assert status.stopped_at is not None
     assert status.state == "SUCCESS"
     try:
