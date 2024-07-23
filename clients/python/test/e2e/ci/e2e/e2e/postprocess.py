@@ -177,8 +177,8 @@ def generate_html_table(e2e_artifacts_dir: str) -> None:
         {"selector": "th", "props": [("background-color", "#F2F2F2")]},
     ]
 
-    df = df.applymap(_exitcode_to_text)
-    s = df.style.applymap(_make_pretty)
+    df = df.map(_exitcode_to_text)
+    s = df.style.map(_make_pretty)
     s.set_table_attributes('style="font-size: 20px"')
     s.set_table_styles(style)
     s.set_caption("OSPARC e2e python client vs server tests")
