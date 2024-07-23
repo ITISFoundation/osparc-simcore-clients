@@ -158,8 +158,8 @@ def generate_html_table(e2e_artifacts_dir: str) -> None:
         raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
 
     df: pd.DataFrame = pd.DataFrame()
-    for file in artifacts.glob("*.json"):
-        df = pd.concat([df, pd.read_json(file)], axis=1)
+    for path in artifacts.glob("*.json"):
+        df = pd.concat([df, pd.read_json(path)], axis=1)
 
     for exit_code in df.to_numpy().flatten():
         if not _exit_code_valid(exit_code):
@@ -178,6 +178,7 @@ def generate_html_table(e2e_artifacts_dir: str) -> None:
     ]
 
     df = df.map(_exitcode_to_text)
+    df = df.reindex(sorted(df.columns), axis=1)  # Sort columns alphabetically
     s = df.style.map(_make_pretty)
     s.set_table_attributes('style="font-size: 20px"')
     s.set_table_styles(style)
