@@ -25,9 +25,6 @@ from osparc_client import (
     OpenApiException,
     Profile,
     ProfileUpdate,
-)
-from osparc_client import RunningState as TaskStates
-from osparc_client import (
     Solver,
     SolverPort,
     UserRoleEnum,
@@ -36,6 +33,7 @@ from osparc_client import (
     ValidationError,
     __version__,
 )
+from osparc_client import RunningState as TaskStates
 from packaging.version import Version
 
 from ._api_client import ApiClient
