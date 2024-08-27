@@ -11,7 +11,7 @@ from tqdm.asyncio import tqdm_asyncio
 
 from ._api_client import ApiClient
 from ._http_client import AsyncHttpClient
-from ._models import ParentProjectInfo
+from ._settings import ParentProjectInfo
 from ._utils import (
     _DEFAULT_PAGINATION_LIMIT,
     _DEFAULT_PAGINATION_OFFSET,

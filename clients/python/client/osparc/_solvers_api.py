@@ -5,7 +5,7 @@ from osparc_client import JobInputs, OnePageSolverPort, SolverPort
 from osparc_client import SolversApi as _SolversApi
 
 from ._api_client import ApiClient
-from ._models import ParentProjectInfo
+from ._settings import ParentProjectInfo
 from ._utils import (
     _DEFAULT_PAGINATION_LIMIT,
     _DEFAULT_PAGINATION_OFFSET,

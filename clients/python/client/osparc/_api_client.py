@@ -4,7 +4,7 @@ from osparc_client import ApiClient as _ApiClient
 from osparc_client import Configuration
 from pydantic import ValidationError
 
-from ._models import ConfigurationModel
+from ._settings import ConfigurationModel
 
 
 class ApiClient(_ApiClient):
