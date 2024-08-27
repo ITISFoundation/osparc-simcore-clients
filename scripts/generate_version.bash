@@ -14,6 +14,9 @@ release_version=$(echo "${release_info}" | grep -oP '(?<=refs/tags/v)\d+\.\d+\.\
 release_commit=$(echo "${release_info}" | grep -oE '^[[:alnum:]]+')
 current_commit=$(git rev-parse HEAD)
 
+#
+# Determines how many commits since the last release and adds that as `post` index.
+# WARNING: we should change Version Scheme to https://packaging.python.org/en/latest/specifications/version-specifiers/#version-scheme
 merge_base=$(git merge-base "${release_commit}" "${current_commit}")
 n_commits_to_merge_base=$(git rev-list --count "${merge_base}".."${current_commit}")
 echo -n "${release_version}.post${n_commits_to_merge_base}"
