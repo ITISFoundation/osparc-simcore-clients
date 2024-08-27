@@ -6,8 +6,9 @@ from pydantic_settings import BaseSettings
 
 
 class ParentProjectInfo(BaseSettings):
-    """Information a project cann pass onto its "children" (i.e. projects
-    'spawned' through the api-server)"""
+    """This is information a project can pass onto its "children" (i.e. projects
+    'spawned' through the api-server)
+    """
 
     x_simcore_parent_project_uuid: Optional[str] = Field(
         alias="OSPARC_STUDY_ID", default=None
