@@ -139,7 +139,7 @@ test-dev: _check_venv_active ## runs tests during development
 		$(PYTHON_DIR)/test/test_osparc
 
 .PHONY: dist
-dist: artifacts_dir ## builds distribution wheel
+dist: artifacts_dir ## builds distribution wheel for `osparc_client` and `osparc` packages -> $(ARTIFACTS_DIR)/dist
 	# installs pypa/build
 	python -m pip install build
     # Build a binary wheel and a source tarball
@@ -151,9 +151,6 @@ dist: artifacts_dir ## builds distribution wheel
 	@cp $$(ls client/dist/*.whl) $(ARTIFACTS_DIR)/dist
 	@cp client/VERSION $(ARTIFACTS_DIR)/dist
 
-
-.PHONY: dist-ci
-dist-ci: python-client dist ## build wheel and tar ball in a single command
 
 .PHONY: build-n-install-osparc-dev
 build-n-install-osparc-dev: python-client ## install the built osparc package in editable mode
