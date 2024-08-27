@@ -7,6 +7,7 @@ assert VERSION_FILE.is_file()
 
 NAME = "osparc"
 VERSION = VERSION_FILE.read_text()
+
 # To install the library, run the following
 #
 # python setup.py install
@@ -25,7 +26,7 @@ REQUIRES = [
     f"osparc_client=={VERSION}",
 ]
 
-setup(
+SETUP = dict(
     name=NAME,
     version=VERSION,
     description="osparc.io web API",
@@ -35,7 +36,7 @@ setup(
     install_requires=REQUIRES,
     packages=find_packages(exclude=["test", "tests"]),
     include_package_data=True,
-    package_dir={"": "."},
+    package_dir={"": "src"},
     package_data={
         "": [
             "data/openapi.json",
@@ -56,3 +57,7 @@ setup(
         "Programming Language :: Python :: 3",
     ],
 )
+
+
+if __name__ == "__main__":
+    setup(**SETUP)
