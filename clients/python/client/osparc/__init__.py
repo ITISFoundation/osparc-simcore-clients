@@ -3,7 +3,7 @@ from platform import python_version
 from typing import List, Tuple
 
 import nest_asyncio
-from osparc_client import (  # APIs; API client; models
+from osparc_client import (
     ApiException,
     ApiKeyError,
     ApiTypeError,
@@ -27,7 +27,7 @@ from osparc_client import (  # APIs; API client; models
     ProfileUpdate,
 )
 from osparc_client import RunningState as TaskStates
-from osparc_client import (  # APIs; API client; models
+from osparc_client import (
     Solver,
     SolverPort,
     UserRoleEnum,
