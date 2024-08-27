@@ -55,3 +55,21 @@ guard-%:
 		echo "Environment variable $* not set"; \
 		exit 1; \
 	fi
+
+## CLEAN -------------------------------------------------------------------------------
+
+.PHONY: clean-hooks
+clean-hooks: ## Uninstalls git pre-commit hooks
+	@-pre-commit uninstall 2> /dev/null || rm .git/hooks/pre-commit
+
+_git_clean_args := -dx --force --exclude=.vscode --exclude=TODO.md --exclude=.venv --exclude=.python-version --exclude="*keep*"
+
+.check-clean:
+	@git clean -n $(_git_clean_args)
+	@echo -n "Are you sure? [y/N] " && read ans && [ $${ans:-N} = y ]
+	@echo -n "$(shell whoami), are you REALLY sure? [y/N] " && read ans && [ $${ans:-N} = y ]
+
+
+clean: .check-clean ## cleans all unversioned files in project and temp files create by this makefile
+	# Cleaning unversioned
+	@git clean $(_git_clean_args)

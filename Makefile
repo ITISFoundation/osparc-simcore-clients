@@ -2,6 +2,13 @@ include ./scripts/common.Makefile
 
 PYTHON_DIR    := $(CLIENTS_DIR)/python
 
+
+.vscode/%.json: .vscode/%.template.json
+	$(if $(wildcard $@), \
+	@echo "WARNING #####  $< is newer than $@ ####"; diff -uN $@ $<; false;,\
+	@echo "WARNING ##### $@ does not exist, cloning $< as $@ ############"; cp $< $@)
+
+
 .PHONY: info
 info: ## general information
 	# system
@@ -30,7 +37,7 @@ info: ## general information
 	@$@/bin/pip3 list --verbose
 
 .PHONY: devenv
-devenv: .venv ## create a python virtual environment with dev tools (e.g. linters, etc)
+devenv: .venv .vscode/settings.json .vscode/launch.json ## create a python virtual environment with dev tools (e.g. linters, etc)
 	$</bin/pip3 --quiet install -r requirements.txt
 	# Installing pre-commit hooks in current .git repo
 	@$</bin/pre-commit install
@@ -53,6 +60,7 @@ define _bumpversion
 endef
 
 ## DOCUMENTATION ------------------------------------------------------------------------
+
 .PHONY: http-doc docs
 docs: ## generate docs
 	# generate documentation
@@ -69,21 +77,3 @@ http-doc: docs ## generates and serves doc
 	# starting doc website
 	@echo "Check site on http://127.0.0.1:50001/"
 	python3 -m http.server 50001 --bind 127.0.0.1
-
-## CLEAN -------------------------------------------------------------------------------
-
-.PHONY: clean-hooks
-clean-hooks: ## Uninstalls git pre-commit hooks
-	@-pre-commit uninstall 2> /dev/null || rm .git/hooks/pre-commit
-
-_git_clean_args := -dx --force --exclude=.vscode --exclude=TODO.md --exclude=.venv --exclude=.python-version --exclude="*keep*"
-
-.check-clean:
-	@git clean -n $(_git_clean_args)
-	@echo -n "Are you sure? [y/N] " && read ans && [ $${ans:-N} = y ]
-	@echo -n "$(shell whoami), are you REALLY sure? [y/N] " && read ans && [ $${ans:-N} = y ]
-
-
-clean: .check-clean ## cleans all unversioned files in project and temp files create by this makefile
-	# Cleaning unversioned
-	@git clean $(_git_clean_args)
