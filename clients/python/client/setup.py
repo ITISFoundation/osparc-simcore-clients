@@ -15,14 +15,14 @@ VERSION = VERSION_FILE.read_text()
 # http://pypi.python.org/pypi/setuptools
 
 REQUIRES = [
-    f"osparc_client=={VERSION}",
     "httpx",
-    "tqdm>=4.48.0",
     "nest_asyncio",
-    "tenacity",
-    "pydantic>=2.0.0",
-    "pydantic-settings",
     "packaging",
+    "pydantic-settings",
+    "pydantic>=2.0.0",
+    "tenacity",
+    "tqdm>=4.48.0",
+    f"osparc_client=={VERSION}",
 ]
 
 setup(
@@ -51,8 +51,8 @@ setup(
     classifiers=[
         "Development Status :: 3 - Alpha",
         "License :: OSI Approved :: MIT License",
-        "Programming Language :: Python :: 3",
-        "Operating System :: OS Independent",
         "Natural Language :: English",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3",
     ],
 )
