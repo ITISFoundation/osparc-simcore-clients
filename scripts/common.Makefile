@@ -18,8 +18,8 @@ OPENAPI_GENERATOR_TAG   := v0
 OPENAPI_GENERATOR_IMAGE := $(OPENAPI_GENERATOR_NAME):$(OPENAPI_GENERATOR_TAG)
 
 # openapi specification
-REL_API_JSON_PATH       := api/openapi.json
-ABS_API_JSON_PATH       := $(REPO_ROOT)/$(REL_API_JSON_PATH)
+OPENAPI_SPECS_JSON_REL_PATH       := api/openapi.json
+OPENAPI_SPECS_JSON_ABS_PATH       := $(REPO_ROOT)/$(OPENAPI_SPECS_JSON_REL_PATH)
 
 GIT_USER_ID := ITISFoundation
 GIT_CLIENT_REPO_ID := osparc-simcore-clients
@@ -40,7 +40,7 @@ help: ## help on rule's targets
 validate-api-specification: ## validates openapi-specification
 	@docker run --rm \
 			--volume "$(REPO_ROOT):/local" \
-			$(OPENAPI_GENERATOR_IMAGE) validate --input-spec /local/$(REL_API_JSON_PATH)
+			$(OPENAPI_GENERATOR_IMAGE) validate --input-spec /local/$(OPENAPI_SPECS_JSON_REL_PATH)
 
 # check variables
 

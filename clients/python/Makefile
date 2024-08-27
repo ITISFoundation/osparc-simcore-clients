@@ -1,7 +1,8 @@
 -include ../../scripts/common.Makefile
+
 PYTHON_DIR           := $(CLIENTS_DIR)/python
 ARTIFACTS_DIR        := $(PYTHON_DIR)/artifacts
-CONTAINER_API_JSON   := /local/$(REL_API_JSON_PATH)
+CONTAINER_API_JSON   := /local/$(OPENAPI_SPECS_JSON_REL_PATH)
 GENERATOR            := python
 UID                  := $(shell id -u)
 ADDITIONAL_PROPS := \
