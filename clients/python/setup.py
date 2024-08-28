@@ -34,8 +34,8 @@ SETUP = dict(
     author_email="support@osparc.io",
     url="https://itisfoundation.github.io/osparc-simcore-clients/",
     install_requires=REQUIRES,
-    packages=find_packages(exclude=["test", "tests"]),
     include_package_data=True,
+    packages=find_packages(where="src"),
     package_dir={"": "src"},
     package_data={
         "": [
