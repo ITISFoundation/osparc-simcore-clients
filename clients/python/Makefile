@@ -144,13 +144,13 @@ dist: artifacts_dir ## builds distribution wheel for `osparc_client` and `osparc
 	python -m pip install build
 	# Building a binary wheel and a source tarball ...
 	python -m build --sdist --wheel $(ARTIFACTS_DIR)/client
-	python -m build --sdist --wheel $(CLIENTS_PYTHON_DIR)/src
+	python -m build --sdist --wheel $(CLIENTS_PYTHON_DIR)
 	# Copying to artifacts/dist ...
 	@-rm -rf $(ARTIFACTS_DIR)/dist
 	@mkdir $(ARTIFACTS_DIR)/dist
-	@cp $$(ls artifacts/client/dist/*.whl) $(ARTIFACTS_DIR)/dist
-	@cp $$(ls client/dist/*.whl) $(ARTIFACTS_DIR)/dist
-	@cp VERSION $(ARTIFACTS_DIR)/dist
+	@cp -v $$(ls artifacts/client/dist/*.whl) $(ARTIFACTS_DIR)/dist
+	@cp -v $$(ls dist/*.whl) $(ARTIFACTS_DIR)/dist
+	@cp -v VERSION $(ARTIFACTS_DIR)/dist
 
 .PHONY: build-n-install-osparc-dev
 build-n-install-osparc-dev: python-client ## install the built osparc package in editable mode
