@@ -34,3 +34,4 @@ testpaths = [
 ]
 # SEE https://pytest-asyncio.readthedocs.io/en/stable/concepts.html#test-discovery-modes
 asyncio_mode = "auto"
+required_plugins = "pytest-asyncio"
