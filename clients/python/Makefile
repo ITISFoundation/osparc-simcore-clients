@@ -202,7 +202,7 @@ e2e-shell: guard-GH_TOKEN ## shell for running e2e tests
 
 .PHONY: image
 image: VERSION ## builds image $(APP_NAME):version
-	docker build -f Dockerfile -t $(APP_NAME):$(shell cat $(VERSION_FILE)) $(CURDIR)
+	docker build -f docker/Dockerfile -t $(APP_NAME):$(shell cat $(VERSION_FILE)) $(CURDIR)
 
 .PHONY: shell
 shell: VERSION ## runs container and opens bash shell
