@@ -9,7 +9,7 @@ import osparc._settings
 import pydantic
 import pytest
 
-_PYTHON_DIR: Path = Path(__file__).parent.parent.parent
+_CLIENTS_PYTHON_DIR: Path = Path(__file__).parent.parent.parent
 
 
 def test_get_api():
@@ -23,29 +23,36 @@ def test_dependencies(tmp_path: Path):
     """
     # get imported packages
     import_file: Path = tmp_path / "imported_packages.txt"
-    source_package: Path = _PYTHON_DIR / "client" / "osparc"
+    source_package: Path = _CLIENTS_PYTHON_DIR / "src" / "osparc"
     assert source_package.is_dir()
-    cmd: list[str] = [
-        "pipreqs",
-        "--savepath",
-        str(import_file.resolve()),
-        "--mode",
-        "no-pin",
-    ]
-    output = subprocess.run(
-        cmd, cwd=source_package, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+
+    subprocess.run(
+        [
+            "pipreqs",
+            "--savepath",
+            str(import_file.resolve()),
+            "--mode",
+            "no-pin",
+        ],
+        cwd=source_package,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=True,
     )
-    assert output.returncode == 0
     import_dependencies: Set[str] = set(import_file.read_text().splitlines())
 
     # generate requirements file based on installed osparc
-    cmd: list[str] = [
-        "pipdeptree",
-        "-p",
-        "osparc",
-        "--json",
-    ]
-    output = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    output = subprocess.run(
+        [
+            "pipdeptree",
+            "-p",
+            "osparc",
+            "--json",
+        ],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
     assert output.returncode == 0
     dep_tree: List[Dict[str, Any]] = json.loads(output.stdout)
     dep_tree = [elm for elm in dep_tree if elm["package"]["key"] == "osparc"]
