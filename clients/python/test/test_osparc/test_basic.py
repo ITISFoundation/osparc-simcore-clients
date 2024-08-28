@@ -21,7 +21,7 @@ def test_dependencies(tmp_path: Path):
     """
     Ensure packages which are imported in osparc are also specified in setup.py
     """
-    # get imported packages
+    # get in-code imported packages
     import_file: Path = tmp_path / "imported_packages.txt"
     source_package: Path = _CLIENTS_PYTHON_DIR / "src" / "osparc"
     assert source_package.is_dir()
@@ -39,7 +39,9 @@ def test_dependencies(tmp_path: Path):
         stderr=subprocess.PIPE,
         check=True,
     )
-    import_dependencies: Set[str] = set(import_file.read_text().splitlines())
+    import_dependencies: Set[str] = set(
+        _.removesuffix(".egg") for _ in import_file.read_text().splitlines()
+    )
 
     # generate requirements file based on installed osparc
     output = subprocess.run(
@@ -54,11 +56,14 @@ def test_dependencies(tmp_path: Path):
         check=False,
     )
     assert output.returncode == 0
-    dep_tree: List[Dict[str, Any]] = json.loads(output.stdout)
-    dep_tree = [elm for elm in dep_tree if elm["package"]["key"] == "osparc"]
-    assert len(dep_tree) == 1
-    install_dependencies: Set(str) = {
-        dep["package_name"].replace("-", "_") for dep in dep_tree[0]["dependencies"]
+    dependency_tree: List[Dict[str, Any]] = json.loads(output.stdout)
+    dependency_tree = [
+        node for node in dependency_tree if node["package"]["key"] == "osparc"
+    ]
+    assert len(dependency_tree) == 1
+    install_dependencies: Set[str] = {
+        dep["package_name"].replace("-", "_")
+        for dep in dependency_tree[0]["dependencies"]
     }
     msg: str = (
         "imported dependencies not specified "
