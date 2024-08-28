@@ -1,19 +1,25 @@
+"""
+To install the library, run the following
+
+python setup.py install
+
+
+prerequisites:
+    - setuptools
+    - VERSION
+
+SEE http://pypi.python.org/pypi/setuptools
+"""
+
 from pathlib import Path
 
 from setuptools import find_packages, setup  # noqa: H301
 
 VERSION_FILE: Path = Path(__file__).parent / "VERSION"
-assert VERSION_FILE.is_file()
+assert VERSION_FILE.is_file(), "Did you forget `make VERSION`?"
 
 NAME = "osparc"
 VERSION = VERSION_FILE.read_text()
-
-# To install the library, run the following
-#
-# python setup.py install
-#
-# prerequisite: setuptools
-# http://pypi.python.org/pypi/setuptools
 
 REQUIRES = [
     "httpx",
