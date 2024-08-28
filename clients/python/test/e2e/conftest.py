@@ -19,7 +19,7 @@ from packaging.version import Version
 from pydantic import ByteSize
 
 try:
-    from osparc._models import ConfigurationModel
+    from osparc._settings import ConfigurationModel
 except ImportError:
     pass
 
