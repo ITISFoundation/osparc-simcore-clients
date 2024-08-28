@@ -26,22 +26,24 @@ info: ## general information
 	@echo nox --list-session
 
 
-.venv:
-	@python3 --version
-	python3 -m venv $@
+.venv: .check-uv-installed
+	@uv venv $@
 	## upgrading tools to latest version in $(shell python3 --version)
-	$@/bin/pip3 --quiet install --upgrade \
-		pip \
+	@uv pip --quiet install --upgrade \
+		pip~=24.0 \
 		wheel \
-		setuptools
-	@$@/bin/pip3 list --verbose
+		setuptools \
+		uv
+	@uv pip list
+
 
 .PHONY: devenv
 devenv: .venv .vscode/settings.json .vscode/launch.json ## create a python virtual environment with dev tools (e.g. linters, etc)
-	$</bin/pip3 --quiet install -r requirements.txt
+	@uv pip --quiet install -r requirements/devenv.txt
 	# Installing pre-commit hooks in current .git repo
 	@$</bin/pre-commit install
 	@echo "To activate the venv, execute 'source .venv/bin/activate'"
+
 
 
 ## VERSION -------------------------------------------------------------------------------

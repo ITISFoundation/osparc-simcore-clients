@@ -71,3 +71,17 @@ _git_clean_args := -dx --force --exclude=.vscode --exclude=TODO.md --exclude=.ve
 clean: .check-clean ## cleans all unversioned files in project and temp files create by this makefile
 	# Cleaning unversioned
 	@git clean $(_git_clean_args)
+
+
+
+.PHONY: .check-uv-installed
+.check-uv-installed:
+	@echo "Checking if 'uv' is installed..."
+	@if ! command -v uv >/dev/null 2>&1; then \
+			curl -LsSf https://astral.sh/uv/install.sh | sh; \
+	else \
+			printf "\033[32m'uv' is installed. Version: \033[0m"; \
+			uv --version; \
+	fi
+	# upgrading uv
+	-@uv self --quiet update

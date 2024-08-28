@@ -96,22 +96,28 @@ _check_venv_active:
 	@python3 -c "import sys; assert sys.base_prefix!=sys.prefix"
 
 
-
 .PHONY: install-dev
-install-dev: _check_venv_active ## install packages for development
-	pip install -r requirements/dev.txt
+install-dev: python-client _check_venv_active ## installs osparc_client and osparc in edit mode
+	python -m pip install -e artifacts/client
+	python -m pip install -e .
+	pip list
+
+
+#.PHONY: install-dev
+#install-dev: _check_venv_active ## install packages for development
+#	pip install -r requirements/dev.txt
 
 .PHONY: install-unit-test
 install-unit-test: _check_venv_active ## install packages for unit testing client
-	pip install -r $(CLIENTS_PYTHON_DIR)/requirements/unit-test.txt
+	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/unit-test.txt
 
 .PHONY: install-e2e-test
 install-e2e-test: _check_venv_active ## install packages for e2e testing client
-	pip install -r $(CLIENTS_PYTHON_DIR)/requirements/e2e-test.txt
+	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/e2e-test.txt
 
 .PHONY: install-doc
 install-doc: _check_venv_active install-dev ## install packages for generating documentation
-	pip install -r $(CLIENTS_PYTHON_DIR)/requirements/doc.txt
+	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/doc.txt
 
 
 
@@ -141,21 +147,18 @@ test-dev: _check_venv_active ## runs tests during development
 .PHONY: dist
 dist: artifacts_dir ## builds distribution wheel for `osparc_client` and `osparc` packages -> $(ARTIFACTS_DIR)/dist
 	# Installing pypa/build ...
-	python -m pip install build
+	uv pip install build
+
 	# Building a binary wheel and a source tarball ...
 	python -m build --sdist --wheel $(ARTIFACTS_DIR)/client
 	python -m build --sdist --wheel $(CLIENTS_PYTHON_DIR)
+
 	# Copying to artifacts/dist ...
 	@-rm -rf $(ARTIFACTS_DIR)/dist
 	@mkdir $(ARTIFACTS_DIR)/dist
 	@cp -v $$(ls artifacts/client/dist/*.whl) $(ARTIFACTS_DIR)/dist
 	@cp -v $$(ls dist/*.whl) $(ARTIFACTS_DIR)/dist
 	@cp -v VERSION $(ARTIFACTS_DIR)/dist
-
-.PHONY: build-n-install-osparc-dev
-build-n-install-osparc-dev: python-client ## install the built osparc package in editable mode
-	python -m pip install -e artifacts/client
-	python -m pip install -e client/
 
 
 
