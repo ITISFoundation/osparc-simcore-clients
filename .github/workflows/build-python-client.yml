@@ -34,7 +34,7 @@ jobs:
         run: |
           source .venv/bin/activate
           cd clients/python
-          make install-dev
+          pip install -r requirements/dev.txt
           make python-client
           make dist
       - name: Set variables
