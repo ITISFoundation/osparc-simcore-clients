@@ -29,7 +29,7 @@ jobs:
           source .venv/bin/activate
           version=$(echo ${{ github.ref }} | grep -oP '(?<=refs/tags/v)\d+\.\d+\.\d+')
           python scripts/is_semantic_version.py "${version}"
-          echo "${version}" > clients/python/client/VERSION
+          echo "${version}" > clients/python/VERSION
       - name: Auto-generate python_client and build distributions
         run: |
           source .venv/bin/activate

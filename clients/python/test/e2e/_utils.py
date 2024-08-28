@@ -7,8 +7,8 @@ import osparc
 import pytest
 from packaging.version import Version
 
-_python_dir: Path = Path(__file__).parent.parent.parent
-assert _python_dir.is_dir()
+_clients_python_dir: Path = Path(__file__).parent.parent.parent
+assert _clients_python_dir.is_dir()
 
 
 def osparc_dev_features_enabled() -> bool:
@@ -17,9 +17,9 @@ def osparc_dev_features_enabled() -> bool:
 
 def repo_version() -> Version:
     subprocess.run(
-        "make client/VERSION", cwd=_python_dir.resolve(), shell=True
+        "make client/VERSION", cwd=_clients_python_dir.resolve(), shell=True
     ).check_returncode()
-    version_file: Path = Path(_python_dir / "client" / "VERSION")
+    version_file: Path = Path(_clients_python_dir / "VERSION")
     assert version_file.is_file()
     return Version(version_file.read_text())
 

@@ -1,7 +1,7 @@
 -include ../../scripts/common.Makefile
 
-PYTHON_DIR           := $(CLIENTS_DIR)/python
-ARTIFACTS_DIR        := $(PYTHON_DIR)/artifacts
+CLIENTS_PYTHON_DIR   := $(CLIENTS_DIR)/python
+ARTIFACTS_DIR        := $(CLIENTS_PYTHON_DIR)/artifacts
 CONTAINER_API_JSON   := /local/$(OPENAPI_SPECS_JSON_REL_PATH)
 GENERATOR            := python
 UID                  := $(shell id -u)
@@ -13,28 +13,20 @@ ADDITIONAL_PROPS := \
 	packageUrl=$(shell bash $(SCRIPTS_DIR)/jq.bash -r .homepage $(REPO_ROOT)/api/config.json)\
 	projectName=osparc_client
 ADDITIONAL_PROPS := $(foreach prop,$(ADDITIONAL_PROPS),$(strip $(prop)))
-VERSION_FILE := $(PYTHON_DIR)/client/VERSION
+VERSION_FILE := $(CLIENTS_PYTHON_DIR)/VERSION
 
 .PHONY: generate_version
-client/VERSION:
+VERSION:
 	@bash $(SCRIPTS_DIR)/generate_version.bash > $(VERSION_FILE)
 
 .PHONY: artifacts_dir
 artifacts_dir:
-	-mkdir $(ARTIFACTS_DIR)
+	-mkdir --parents $(ARTIFACTS_DIR)
 
-.PHONY: postprocess-build
-postprocess-build:
-	black $(PYTHON_DIR)/artifacts/client/*.py
-	@-rm -f $(PYTHON_DIR)/artifacts/client/README.md
-	@echo "Please visit our [website](https://itisfoundation.github.io/osparc-simcore-clients/#/) for documentation" > $(PYTHON_DIR)/artifacts/client/README.md
-	@-rm -rf $(PYTHON_DIR)/client/osparc/data/
-	@-mkdir $(PYTHON_DIR)/client/osparc/data/
-	@cp $(REPO_ROOT)/api/openapi.json $(PYTHON_DIR)/client/osparc/data/
 
 # Generation of Python client
 .PHONY: python-client
-python-client: client/VERSION validate-api-specification artifacts_dir ## generate python client
+python-client: VERSION validate-api-specification artifacts_dir ## auto-generate python client
 	$(eval VERSION := $(shell cat $(VERSION_FILE)))
 	-rm -r $(ARTIFACTS_DIR)/client
 	docker run --rm --user $(UID):$(UID)\
@@ -52,7 +44,7 @@ python-client: client/VERSION validate-api-specification artifacts_dir ## genera
 	$(MAKE) postprocess-build
 
 .PHONY: python-client-from-templates
-python-client-from-templates: client/VERSION validate-api-specification artifacts_dir ## generate python client using templates in a specified directory (usage: 'make python-client-from-templates -e TEMPLATE_DIR=path/to/templates')
+python-client-from-templates: VERSION validate-api-specification artifacts_dir ## generate python client using templates in a specified directory (usage: 'make python-client-from-templates -e TEMPLATE_DIR=path/to/templates')
 	$(if $(TEMPLATE_DIR),,$(error The TEMPLATE_DIR environment variable must be set))
 	@echo "Using template-dir: $(TEMPLATE_DIR)"
 	$(eval VERSION := $(shell cat $(VERSION_FILE)))
@@ -109,22 +101,22 @@ install-dev: _check_venv_active ## install packages for development
 
 .PHONY: install-unit-test
 install-unit-test: _check_venv_active ## install packages for unit testing client
-	pip install -r $(PYTHON_DIR)/requirements/unit-test.txt
+	pip install -r $(CLIENTS_PYTHON_DIR)/requirements/unit-test.txt
 
 .PHONY: install-e2e-test
 install-e2e-test: _check_venv_active ## install packages for e2e testing client
-	pip install -r $(PYTHON_DIR)/requirements/e2e-test.txt
+	pip install -r $(CLIENTS_PYTHON_DIR)/requirements/e2e-test.txt
 
 .PHONY: install-doc
 install-doc: _check_venv_active install-dev ## install packages for generating documentation
-	pip install -r $(PYTHON_DIR)/requirements/doc.txt
+	pip install -r $(CLIENTS_PYTHON_DIR)/requirements/doc.txt
 
 .PHONY: pylint
 pylint: _check_venv_active ## runs linter (only to check errors. SEE .pylintrc enabled)
-	pylint --rcfile "$(PYTHON_DIR)/.pylintrc" -v "$(ARTIFACTS_DIR)/client"
+	pylint --rcfile "$(CLIENTS_PYTHON_DIR)/.pylintrc" -v "$(ARTIFACTS_DIR)/client"
 
 .PHONY: mypy
-mypy: $(SCRIPTS_DIR)/mypy.bash $(PYTHON_DIR)/mypy.ini ## runs mypy python static type-checker on this services's code. Use AFTER make install-*
+mypy: $(SCRIPTS_DIR)/mypy.bash $(CLIENTS_PYTHON_DIR)/mypy.ini ## runs mypy python static type-checker on this services's code. Use AFTER make install-*
 	@$(SCRIPTS_DIR)/mypy.bash client
 
 .PHONY: test-dev
@@ -136,7 +128,7 @@ test-dev: _check_venv_active ## runs tests during development
 		--failed-first \
 		--durations=10 \
 		--pdb \
-		$(PYTHON_DIR)/test/test_osparc
+		$(CLIENTS_PYTHON_DIR)/test/test_osparc
 
 .PHONY: dist
 dist: artifacts_dir ## builds distribution wheel for `osparc_client` and `osparc` packages -> $(ARTIFACTS_DIR)/dist
@@ -144,18 +136,29 @@ dist: artifacts_dir ## builds distribution wheel for `osparc_client` and `osparc
 	python -m pip install build
     # Build a binary wheel and a source tarball
 	python -m build --sdist --wheel $(ARTIFACTS_DIR)/client
-	python -m build --sdist --wheel $(PYTHON_DIR)/client
+	python -m build --sdist --wheel $(CLIENTS_PYTHON_DIR)/src
 	@-rm -rf $(ARTIFACTS_DIR)/dist
 	@mkdir $(ARTIFACTS_DIR)/dist
 	@cp $$(ls artifacts/client/dist/*.whl) $(ARTIFACTS_DIR)/dist
 	@cp $$(ls client/dist/*.whl) $(ARTIFACTS_DIR)/dist
-	@cp client/VERSION $(ARTIFACTS_DIR)/dist
+	@cp VERSION $(ARTIFACTS_DIR)/dist
 
 
 .PHONY: build-n-install-osparc-dev
 build-n-install-osparc-dev: python-client ## install the built osparc package in editable mode
 	python -m pip install -e artifacts/client
 	python -m pip install -e client/
+
+
+.PHONY: postprocess-build
+postprocess-build:
+	black $(ARTIFACTS_DIR)/client/*.py
+	@-rm -f $(ARTIFACTS_DIR)/client/README.md
+	@echo "Please visit our [website](https://itisfoundation.github.io/osparc-simcore-clients/#/) for documentation" > $(ARTIFACTS_DIR)/client/README.md
+	@-rm -rf $(CLIENTS_PYTHON_DIR)/src/osparc/data/
+	@-mkdir $(CLIENTS_PYTHON_DIR)/src/osparc/data/
+	@cp $(REPO_ROOT)/api/openapi.json $(CLIENTS_PYTHON_DIR)/src/osparc/data/
+
 
 ## TEST ---------------------------------------------------------------------------------
 
@@ -189,9 +192,9 @@ e2e-shell: guard-GH_TOKEN ## shell for running e2e tests
 	@echo "WARNING ##### $@ does not exist, cloning $< as $@ ############"; cp $< $@)
 
 .PHONY: image
-image: client/VERSION ## builds image $(APP_NAME):version
+image: VERSION ## builds image $(APP_NAME):version
 	docker build -f Dockerfile -t $(APP_NAME):$(shell cat $(VERSION_FILE)) $(CURDIR)
 
 .PHONY: shell
-shell: client/VERSION ## runs container and opens bash shell
+shell: VERSION ## runs container and opens bash shell
 	docker run -it $(APP_NAME):$(shell cat $(VERSION_FILE)) /bin/bash
