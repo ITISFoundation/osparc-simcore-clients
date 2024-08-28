@@ -95,6 +95,8 @@ _check_venv_active:
 	# checking whether virtual environment was activated
 	@python3 -c "import sys; assert sys.base_prefix!=sys.prefix"
 
+
+
 .PHONY: install-dev
 install-dev: _check_venv_active ## install packages for development
 	pip install -r requirements/dev.txt
@@ -111,13 +113,17 @@ install-e2e-test: _check_venv_active ## install packages for e2e testing client
 install-doc: _check_venv_active install-dev ## install packages for generating documentation
 	pip install -r $(CLIENTS_PYTHON_DIR)/requirements/doc.txt
 
+
+
 .PHONY: pylint
 pylint: _check_venv_active ## runs linter (only to check errors. SEE .pylintrc enabled)
-	pylint --rcfile "$(CLIENTS_PYTHON_DIR)/.pylintrc" -v "$(ARTIFACTS_DIR)/client"
+	pylint --rcfile "$(CLIENTS_PYTHON_DIR)/.pylintrc" -v src/osparc
 
 .PHONY: mypy
 mypy: $(SCRIPTS_DIR)/mypy.bash $(CLIENTS_PYTHON_DIR)/mypy.ini ## runs mypy python static type-checker on this services's code. Use AFTER make install-*
-	@$(SCRIPTS_DIR)/mypy.bash client
+	@$(SCRIPTS_DIR)/mypy.bash src/osparc
+
+
 
 .PHONY: test-dev
 test-dev: _check_venv_active ## runs tests during development
@@ -130,24 +136,27 @@ test-dev: _check_venv_active ## runs tests during development
 		--pdb \
 		$(CLIENTS_PYTHON_DIR)/test/test_osparc
 
+
+
 .PHONY: dist
 dist: artifacts_dir ## builds distribution wheel for `osparc_client` and `osparc` packages -> $(ARTIFACTS_DIR)/dist
-	# installs pypa/build
+	# Installing pypa/build ...
 	python -m pip install build
-    # Build a binary wheel and a source tarball
+	# Building a binary wheel and a source tarball ...
 	python -m build --sdist --wheel $(ARTIFACTS_DIR)/client
 	python -m build --sdist --wheel $(CLIENTS_PYTHON_DIR)/src
+	# Copying to artifacts/dist ...
 	@-rm -rf $(ARTIFACTS_DIR)/dist
 	@mkdir $(ARTIFACTS_DIR)/dist
 	@cp $$(ls artifacts/client/dist/*.whl) $(ARTIFACTS_DIR)/dist
 	@cp $$(ls client/dist/*.whl) $(ARTIFACTS_DIR)/dist
 	@cp VERSION $(ARTIFACTS_DIR)/dist
 
-
 .PHONY: build-n-install-osparc-dev
 build-n-install-osparc-dev: python-client ## install the built osparc package in editable mode
 	python -m pip install -e artifacts/client
 	python -m pip install -e client/
+
 
 
 .PHONY: postprocess-build
@@ -160,7 +169,7 @@ postprocess-build:
 	@cp $(REPO_ROOT)/api/openapi.json $(CLIENTS_PYTHON_DIR)/src/osparc/data/
 
 
-## TEST ---------------------------------------------------------------------------------
+## e2e TEST ---------------------------------------------------------------------------------
 
 GH_TOKEN_FILE := $(wildcard $(HOME)/.gh-token)
 ifneq ($(GH_TOKEN_FILE),)

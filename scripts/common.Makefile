@@ -35,16 +35,14 @@ comma := ,
 help: ## help on rule's targets
 	@awk --posix 'BEGIN {FS = ":.*?## "} /^[[:alpha:][:space:]_-]+:.*?## / {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-# Validate openapi specification --------------------------------------------------------------
 
 validate-api-specification: ## validates openapi-specification
 	@docker run --rm \
 			--volume "$(REPO_ROOT):/local" \
 			$(OPENAPI_GENERATOR_IMAGE) validate --input-spec /local/$(OPENAPI_SPECS_JSON_REL_PATH)
 
-# check variables
-
-# Check that given variables are set and all have non-empty values,
+#
+# check variables: check that given variables are set and all have non-empty values,
 # die with an error otherwise.
 #
 # Params:
