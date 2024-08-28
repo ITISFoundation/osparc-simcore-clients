@@ -39,7 +39,7 @@ info: ## general information
 
 .PHONY: devenv
 devenv: .venv .vscode/settings.json .vscode/launch.json ## create a python virtual environment with dev tools (e.g. linters, etc)
-	@uv pip --quiet install -r requirements/devenv.txt
+	@uv pip --quiet install -r requirements.txt
 	# Installing pre-commit hooks in current .git repo
 	@$</bin/pre-commit install
 	@echo "To activate the venv, execute 'source .venv/bin/activate'"
