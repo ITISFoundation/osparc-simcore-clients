@@ -40,7 +40,7 @@ def test_dependencies(tmp_path: Path):
         check=True,
     )
     import_dependencies: Set[str] = set(
-        _.removesuffix(".egg") for _ in import_file.read_text().splitlines()
+        _.replace(".egg", "") for _ in import_file.read_text().splitlines()
     )
 
     # generate requirements file based on installed osparc
