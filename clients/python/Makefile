@@ -96,16 +96,16 @@ _check_venv_active:
 	@python3 -c "import sys; assert sys.base_prefix!=sys.prefix"
 
 
+
+.PHONY: .install-dev-reqs
+.install-dev-reqs: _check_venv_active
+	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/dev.txt
+
 .PHONY: install-dev
-install-dev: python-client _check_venv_active ## installs osparc_client and osparc in edit mode
-	python -m pip install -e artifacts/client
-	python -m pip install -e .
-	pip list
-
-
-#.PHONY: install-dev
-#install-dev: _check_venv_active ## install packages for development
-#	pip install -r requirements/dev.txt
+install-dev: _check_venv_active .install-dev-reqs python-client  ## installs osparc_client and osparc in edit mode
+	uv pip install -e artifacts/client
+	uv pip install -e .
+	uv pip list
 
 .PHONY: install-unit-test
 install-unit-test: _check_venv_active ## install packages for unit testing client
@@ -116,7 +116,7 @@ install-e2e-test: _check_venv_active ## install packages for e2e testing client
 	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/e2e-test.txt
 
 .PHONY: install-doc
-install-doc: _check_venv_active install-dev ## install packages for generating documentation
+install-doc: _check_venv_active .install-dev-reqs ## install packages for generating documentation
 	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/doc.txt
 
 
