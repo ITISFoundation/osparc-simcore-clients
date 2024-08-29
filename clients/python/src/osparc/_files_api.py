@@ -29,13 +29,16 @@ from ._utils import (
     PaginationGenerator,
     compute_sha256,
     file_chunk_generator,
+    dev_features_enabled,
 )
 
 _logger = logging.getLogger(__name__)
 
 
 class FilesApi(_FilesApi):
-    """Class for interacting with files"""
+    _dev_features = [
+        "get_jobs_page",
+    ]
 
     def __init__(self, api_client: ApiClient):
         """Construct object
@@ -51,6 +54,11 @@ class FilesApi(_FilesApi):
             if (user is not None and passwd is not None)
             else None
         )
+
+    def __getattr__(self, name: str) -> Any:
+        if (name in FilesApi._dev_features) and (not dev_features_enabled()):
+            raise NotImplementedError(f"FilesApi.{name} is still under development")
+        return super().__getattribute__(name)
 
     def download_file(
         self, file_id: str, *, destination_folder: Optional[Path] = None, **kwargs

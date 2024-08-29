@@ -24,11 +24,6 @@ class SolversApi(_SolversApi):
         "get_jobs_page",
     ]
 
-    def __getattr__(self, name: str) -> Any:
-        if (name in SolversApi._dev_features) and (not dev_features_enabled()):
-            raise NotImplementedError(f"SolversApi.{name} is still under development")
-        return super().__getattribute__(name)
-
     def __init__(self, api_client: ApiClient):
         """Construct object
 
@@ -43,6 +38,11 @@ class SolversApi(_SolversApi):
             if (user is not None and passwd is not None)
             else None
         )
+
+    def __getattr__(self, name: str) -> Any:
+        if (name in SolversApi._dev_features) and (not dev_features_enabled()):
+            raise NotImplementedError(f"SolversApi.{name} is still under development")
+        return super().__getattribute__(name)
 
     def list_solver_ports(
         self, solver_key: str, version: str, **kwargs
