@@ -26,7 +26,7 @@ REQUIRES = [
     "nest_asyncio",
     "packaging",
     "pydantic-settings",
-    "pydantic>=2.0.0",
+    "pydantic",
     "tenacity",
     "tqdm>=4.48.0",
     f"osparc_client=={VERSION}",
