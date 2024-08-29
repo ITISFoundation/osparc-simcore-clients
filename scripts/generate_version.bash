@@ -22,7 +22,7 @@ n_commits_to_merge_base=$(git rev-list --count "${merge_base}".."${current_commi
 
 # NOTE:
 #   - we develop using post-release versioning
-#       - i.e. 1.2.3.post3.devN where N is the number of commits with respect to last release 1.2.3)
+#       - i.e. 1.2.3.post0.devN where N is the number of commits with respect to last release 1.2.3)
 #       - Another approach would be using a pre-release version but we do not want to decide on that version
 #   - the releases are of the type  1.2.3
 #   - we never do post releases as 1.2.3.postX but instead use patches i.e. 1.2.4
@@ -30,7 +30,7 @@ n_commits_to_merge_base=$(git rev-list --count "${merge_base}".."${current_commi
 #   - SEE .github/workflows/publish-python-client.yml for more details
 #
 if [ "$n_commits_to_merge_base" -gt 0 ]; then
-    echo "${released_version}.post3.dev${n_commits_to_merge_base}"
+    echo "${released_version}.post0.dev${n_commits_to_merge_base}"
 elif [ "$n_commits_to_merge_base" -eq 0 ]; then
     echo "${released_version}"
 else
