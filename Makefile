@@ -9,21 +9,44 @@ PYTHON_DIR    := $(CLIENTS_DIR)/python
 	@echo "WARNING ##### $@ does not exist, cloning $< as $@ ############"; cp $< $@)
 
 
-.PHONY: info
-info: ## general information
-	# system
-	@echo ' CURDIR           : ${CURDIR}'
-	@echo ' NOW_TIMESTAMP    : ${NOW_TIMESTAMP}'
-	@echo ' VCS_URL          : ${VCS_URL}'
-	@echo ' VCS_REF          : ${VCS_REF}'
-	# installed in .venv
-	@which python
-	@pip list
-	# API
-	@echo  ' title        : $(shell bash $(SCRIPTS_DIR)/jq.bash -r .info.title $(REPO_ROOT)/api/openapi.json)'
-	@echo  ' version      : $(shell bash $(SCRIPTS_DIR)/jq.bash -r .info.version $(REPO_ROOT)/api/openapi.json)'
-	# nox
-	@echo nox --list-session
+.PHONY: info-api info-envs info-tools info-pip info
+
+info-api: ## info on openapi specs
+	# Openapi specs ---------
+	@echo  ' title           : $(shell bash $(SCRIPTS_DIR)/jq.bash -r .info.title $(REPO_ROOT)/api/openapi.json)'
+	@echo  ' version         : $(shell bash $(SCRIPTS_DIR)/jq.bash -r .info.version $(REPO_ROOT)/api/openapi.json)'
+
+
+info-envs: ## info on envs
+	# Environments ----------
+	@echo ' CURDIR          : ${CURDIR}'
+	@echo ' NOW_TIMESTAMP   : ${NOW_TIMESTAMP}'
+	@echo ' VCS_URL         : ${VCS_URL}'
+	@echo ' VCS_REF         : ${VCS_REF}'
+
+
+info-tools: ## info on tooling
+	# Tooling ---------------
+	@echo ' make          	 : $(shell make --version 2>&1 | head -n 1)'
+	@echo ' jq            	 : $(shell jq --version)'
+	@echo ' awk           	 : $(shell awk -W version 2>&1 | head -n 1)'
+	@echo ' python        	 : $(shell python3 --version)'
+	@echo ' uv            	 : $(shell uv --version)'
+	@echo ' docker        	 : $(shell docker --version)'
+	@echo ' docker buildx 	 : $(shell docker buildx version)'
+	@echo ' docker compose	 : $(shell docker compose version)'
+
+
+info-pip: ## info index versions
+	# Pypi ------------------
+	@pip index versions \
+		osparc \
+		--pre \
+		--index-url https://test.pypi.org/simple/ \
+		--extra-index-url https://pypi.org/simple/
+
+
+info: info-api info-envs info-tools info-pip ## all infos
 
 
 .venv: .check-uv-installed
