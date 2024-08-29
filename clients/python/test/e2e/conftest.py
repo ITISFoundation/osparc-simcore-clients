@@ -164,7 +164,7 @@ def sleeper_study_id(api_client: osparc.ApiClient) -> UUID:
     as input a single file containing a single integer"""
     _test_study_title = "sleeper_test_study"
     study_api = osparc.StudiesApi(api_client=api_client)
-    for study in study_api.studies():
+    for study in study_api.iter_studies():
         if study.title == _test_study_title:
             return UUID(study.uid)
     pytest.fail(f"Could not find {_test_study_title} study")

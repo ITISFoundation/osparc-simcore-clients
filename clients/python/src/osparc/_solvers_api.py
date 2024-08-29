@@ -14,6 +14,8 @@ from ._utils import (
     dev_features_enabled,
 )
 
+import warnings
+
 
 class SolversApi(_SolversApi):
     """Class for interacting with solvers"""
@@ -51,7 +53,7 @@ class SolversApi(_SolversApi):
         return page.items if page.items else []
 
     @dev_feature
-    def jobs(self, solver_key: str, version: str) -> PaginationGenerator:
+    def iter_jobs(self, solver_key: str, version: str, **kwargs) -> PaginationGenerator:
         """Returns an iterator through which one can iterate over
         all Jobs submitted to the solver
 
@@ -73,6 +75,7 @@ class SolversApi(_SolversApi):
                 version=version,
                 limit=_DEFAULT_PAGINATION_LIMIT,
                 offset=_DEFAULT_PAGINATION_OFFSET,
+                **kwargs,
             )
 
         return PaginationGenerator(
@@ -81,6 +84,16 @@ class SolversApi(_SolversApi):
             base_url=self.api_client.configuration.host,
             auth=self._auth,
         )
+
+    @dev_feature
+    def jobs(self, solver_key: str, version: str, **kwargs) -> PaginationGenerator:
+        warnings.warn(
+            "The 'jobs' method is deprecated and will be removed in a future version. "
+            "Please use 'iter_jobs' instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.iter_jobs(solver_key, version, **kwargs)
 
     def create_job(
         self, solver_key: str, version: str, job_inputs: JobInputs, **kwargs

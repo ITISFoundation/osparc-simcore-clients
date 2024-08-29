@@ -239,7 +239,7 @@ def clean_up_jobs(artifacts_dir: Path, retry_minutes: Optional[PositiveInt] = No
                             assert isinstance(solver, osparc.Solver)
                             assert (id_ := solver.id) is not None
                             assert (version := solver.version) is not None
-                            for job in solvers_api.jobs(id_, version):
+                            for job in solvers_api.iter_jobs(id_, version):
                                 assert isinstance(job, osparc.Job)
                                 solvers_api.delete_job(id_, version, job.id)
         except RetryError as exc:
