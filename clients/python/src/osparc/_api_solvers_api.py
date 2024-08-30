@@ -1,3 +1,4 @@
+import warnings
 from typing import List, Optional
 
 import httpx
@@ -11,8 +12,6 @@ from ._utils import (
     _DEFAULT_PAGINATION_OFFSET,
     PaginationGenerator,
 )
-
-import warnings
 
 
 class SolversApi(_SolversApi):

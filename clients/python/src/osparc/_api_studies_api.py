@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import warnings
 from pathlib import Path
 from tempfile import mkdtemp
 from typing import Optional
@@ -17,7 +18,6 @@ from ._utils import (
     _DEFAULT_PAGINATION_OFFSET,
     PaginationGenerator,
 )
-import warnings
 
 _logger = logging.getLogger(__name__)
 

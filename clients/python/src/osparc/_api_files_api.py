@@ -15,9 +15,11 @@ from osparc_client import (
     BodyCompleteMultipartUploadV0FilesFileIdCompletePost,
     ClientFile,
     ClientFileUploadData,
+    FileUploadCompletionBody,
+    FileUploadData,
+    UploadedPart,
 )
 from osparc_client import FilesApi as _FilesApi
-from osparc_client import FileUploadCompletionBody, FileUploadData, UploadedPart
 from tqdm.asyncio import tqdm
 from tqdm.contrib.logging import logging_redirect_tqdm
 
