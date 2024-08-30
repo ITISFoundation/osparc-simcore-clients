@@ -1,7 +1,5 @@
 import asyncio
 import hashlib
-import os
-from functools import wraps
 from pathlib import Path
 from typing import AsyncGenerator, Callable, Generator, Optional, Tuple, TypeVar, Union
 
@@ -101,15 +99,6 @@ async def file_chunk_generator(
             bytes_read += nbytes
 
 
-S = TypeVar("S")
-
-
-async def _fcn_to_coro(callback: Callable[..., S], *args) -> S:
-    """Get a coroutine from a callback."""
-    result = await asyncio.get_event_loop().run_in_executor(None, callback, *args)
-    return result
-
-
 def compute_sha256(file: Path) -> str:
     assert file.is_file()
     sha256 = hashlib.sha256()
@@ -120,17 +109,3 @@ def compute_sha256(file: Path) -> str:
                 break
             sha256.update(data)
         return sha256.hexdigest()
-
-
-def dev_features_enabled() -> bool:
-    return os.environ.get("OSPARC_DEV_FEATURES_ENABLED") == "1"
-
-
-def dev_feature(func: Callable):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        if not dev_features_enabled():
-            raise NotImplementedError(f"{func.__name__} is still under development")
-        return func(*args, **kwargs)
-
-    return wrapper
