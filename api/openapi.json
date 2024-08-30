@@ -1,9 +1,9 @@
 {
   "openapi": "3.0.2",
   "info": {
-    "title": "osparc.io web API (dev)",
+    "title": "osparc.io public API (519588697)",
     "description": "osparc-simcore public API specifications",
-    "version": "0.6.0-dev"
+    "version": "0.6.0.post0.dev0+519588697"
   },
   "paths": {
     "/v0/meta": {
@@ -223,7 +223,7 @@
           "files"
         ],
         "summary": "List Files",
-        "description": "Lists all files stored in the system\n\nSEE get_files_page for a paginated version of this function",
+        "description": "Lists all files stored in the system\n\nSEE `get_files_page` for a paginated version of this function",
         "operationId": "list_files",
         "responses": {
           "200": {
@@ -2232,7 +2232,7 @@
           "solvers"
         ],
         "summary": "List Jobs",
-        "description": "List of jobs in a specific released solver (limited to 20 jobs)\n\nSEE get_jobs_page for paginated version of this function",
+        "description": "List of jobs in a specific released solver (limited to 20 jobs)\n\nSEE `get_jobs_page` for paginated version of this function",
         "operationId": "list_jobs",
         "parameters": [
           {
@@ -2801,7 +2801,7 @@
           "solvers"
         ],
         "summary": "Start Job",
-        "description": "Starts job job_id created with the solver solver_key:version\n\nNew in *version 0.4.3*: cluster_id\nNew in *version 0.6.0*: This endpoint responds with a 202 when successfully starting a computation",
+        "description": "Starts job job_id created with the solver solver_key:version\n\nAdded in *version 0.4.3*: query parameter `cluster_id`\nAdded in *version 0.6*: responds with a 202 when successfully starting a computation",
         "operationId": "start_job",
         "parameters": [
           {
@@ -3512,7 +3512,7 @@
           "solvers"
         ],
         "summary": "Get Jobs Page",
-        "description": "List of jobs on a specific released solver (includes pagination)",
+        "description": "List of jobs on a specific released solver (includes pagination)\n\nNew in *version 0.7*",
         "operationId": "get_jobs_page",
         "parameters": [
           {
@@ -3802,7 +3802,7 @@
           "solvers"
         ],
         "summary": "Get Job Output Logfile",
-        "description": "Special extra output with persistent logs file for the solver run.\n\nNOTE: this is not a log stream but a predefined output that is only\navailable after the job is done.\n\nNew in *version 0.4.0*",
+        "description": "Special extra output with persistent logs file for the solver run.\n\n**NOTE**: this is not a log stream but a predefined output that is only\navailable after the job is done.\n\nNew in *version 0.4.0*",
         "operationId": "get_job_output_logfile",
         "parameters": [
           {
@@ -4240,11 +4240,20 @@
         ],
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Returns a JobLog or an ErrorGet",
             "content": {
               "application/x-ndjson": {
                 "schema": {
-                  "type": "string"
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/JobLog"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorGet"
+                    }
+                  ],
+                  "type": "string",
+                  "title": "Response 200 Get Log Stream V0 Solvers  Solver Key  Releases  Version  Jobs  Job Id  Logstream Get"
                 }
               }
             }
@@ -4857,7 +4866,7 @@
           "studies"
         ],
         "summary": "Start Study Job",
-        "description": "New in *version 0.6.0*: This endpoint responds with a 202 when successfully starting a computation",
+        "description": "Changed in *version 0.6.0*: Now responds with a 202 when successfully starting a computation",
         "operationId": "start_study_job",
         "parameters": [
           {
@@ -5587,6 +5596,7 @@
           "credits"
         ],
         "summary": "Get Credits Price",
+        "description": "New in *version 0.6.0*",
         "operationId": "get_credits_price",
         "responses": {
           "200": {
@@ -5994,6 +6004,46 @@
               "id": "0a3b2c56-dbcd-4871-b93b-d454b7883f9f"
             }
           }
+        }
+      },
+      "JobLog": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Job Id"
+          },
+          "node_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Node Id"
+          },
+          "log_level": {
+            "type": "integer",
+            "title": "Log Level"
+          },
+          "messages": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Messages"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id",
+          "log_level",
+          "messages"
+        ],
+        "title": "JobLog",
+        "example": {
+          "job_id": "145beae4-a3a8-4fde-adbb-4e8257c2c083",
+          "node_id": "3742215e-6756-48d2-8b73-4d043065309f",
+          "log_level": 10,
+          "messages": [
+            "PROGRESS: 5/10"
+          ]
         }
       },
       "JobLogsMap": {
@@ -6949,6 +6999,8 @@
           },
           "name": {
             "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
             "title": "Name"
           },
           "description": {
