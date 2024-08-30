@@ -40,7 +40,6 @@ def pytest_runtest_makereport(item, call):
     Hook to add extra information when a test fails.
     """
     if call.when == "call":
-
         # Check if the test failed
         if call.excinfo is not None:
             test_name = item.name

@@ -35,3 +35,13 @@ testpaths = [
 # SEE https://pytest-asyncio.readthedocs.io/en/stable/concepts.html#test-discovery-modes
 asyncio_mode = "auto"
 required_plugins = "pytest-asyncio"
+
+
+[tool.ruff]
+line-length = 88  # This should match Black's default line length
+
+[tool.ruff.lint]
+select = [
+    # isort
+    "I"
+    ]
