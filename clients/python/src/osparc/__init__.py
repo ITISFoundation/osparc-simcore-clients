@@ -76,10 +76,10 @@ from packaging.version import Version
 
 from ._api_client import ApiClient
 from ._exceptions import RequestError, VisibleDeprecationWarning
-from ._files_api import FilesApi
+from ._api_files_api import FilesApi
 from ._info import openapi
-from ._solvers_api import SolversApi
-from ._studies_api import StudiesApi
+from ._api_solvers_api import SolversApi
+from ._api_studies_api import StudiesApi
 
 
 _PYTHON_VERSION_RETIRED = Version("3.8.0")
