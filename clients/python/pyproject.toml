@@ -41,7 +41,7 @@ required_plugins = "pytest-asyncio"
 line-length = 88  # This should match Black's default line length
 
 [tool.ruff.lint]
-select = [
-    # isort
-    "I"
-    ]
+ select = [
+     # isort
+     "I"
+     ]

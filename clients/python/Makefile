@@ -140,7 +140,7 @@ test-dev: _check_venv_active ## runs tests during development
 		--failed-first \
 		--durations=10 \
 		--pdb \
-		$(CLIENTS_PYTHON_DIR)/test/test_osparc
+		$(CLIENTS_PYTHON_DIR)/test/unit
 
 
 

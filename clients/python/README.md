@@ -17,7 +17,7 @@ Changes to the client should not be performed within the generated python code, 
 *Please do not manually `git commit` auto generated code into this repository*
 
 # Testing
-Tests are located in `PYDIR/test_osparc` and `PYDIR/test_osparc_client`. They can be run by executing the following commands from PYDIR:
+Tests are located in `PYDIR/unit` and `PYDIR/test_osparc_client`. They can be run by executing the following commands from PYDIR:
 ```bash
 make install-test
 make test-dev
