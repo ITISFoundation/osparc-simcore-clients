@@ -3,19 +3,15 @@ from platform import python_version
 from typing import Tuple
 
 import nest_asyncio
-
-
+from osparc_client import RunningState as TaskStates
 from osparc_client import (
     __version__,
 )
-
 from osparc_client.api.credits_api import CreditsApi
 from osparc_client.api.meta_api import MetaApi
 from osparc_client.api.users_api import UsersApi
 from osparc_client.api.wallets_api import WalletsApi
-
 from osparc_client.configuration import Configuration
-
 from osparc_client.models.body_abort_multipart_upload_v0_files_file_id_abort_post import (
     BodyAbortMultipartUploadV0FilesFileIdAbortPost,
 )
@@ -70,17 +66,14 @@ from osparc_client.models.wallet_get_with_available_credits import (
     WalletGetWithAvailableCredits,
 )
 from osparc_client.models.wallet_status import WalletStatus
-
-from osparc_client import RunningState as TaskStates
 from packaging.version import Version
 
 from ._api_client import ApiClient
-from ._exceptions import RequestError, VisibleDeprecationWarning
 from ._api_files_api import FilesApi
-from ._info import openapi
 from ._api_solvers_api import SolversApi
 from ._api_studies_api import StudiesApi
-
+from ._exceptions import RequestError, VisibleDeprecationWarning
+from ._info import openapi
 
 _PYTHON_VERSION_RETIRED = Version("3.8.0")
 _PYTHON_VERSION_DEPRECATED = Version("3.8.0")
