@@ -112,7 +112,7 @@ install-unit-test: _check_venv_active ## install packages for unit testing clien
 	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/unit-test.txt
 
 .PHONY: install-e2e-test
-install-e2e-test: _check_venv_active ## install packages for e2e testing client
+install-e2e-test: _check_venv_active ## install packages for e2e testing client [e2e]
 	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/e2e-test.txt
 
 .PHONY: install-doc

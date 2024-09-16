@@ -17,7 +17,7 @@ def osparc_dev_features_enabled() -> bool:
 
 def repo_version() -> Version:
     subprocess.run(
-        "make client/VERSION", cwd=_clients_python_dir.resolve(), shell=True
+        "make VERSION", cwd=_clients_python_dir.resolve(), shell=True
     ).check_returncode()
     version_file: Path = Path(_clients_python_dir / "VERSION")
     assert version_file.is_file()
