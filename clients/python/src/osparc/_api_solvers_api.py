@@ -32,6 +32,41 @@ class SolversApi(_SolversApi):
             else None
         )
 
+    def iter_solvers(self, **kwargs) -> PaginationGenerator:
+        """Iterates over latest version of all solvers"""
+
+        def _pagination_method():
+            return super(SolversApi, self).get_solvers_page(
+                limit=_DEFAULT_PAGINATION_LIMIT,
+                offset=_DEFAULT_PAGINATION_OFFSET,
+                **kwargs,
+            )
+
+        return PaginationGenerator(
+            first_page_callback=_pagination_method,
+            api_client=self.api_client,
+            base_url=self.api_client.configuration.host,
+            auth=self._auth,
+        )
+
+    def iter_solver_releases(self, solver_key: str, **kwargs) -> PaginationGenerator:
+        """Iterates over all released versions of a given solver"""
+
+        def _pagination_method():
+            return super(SolversApi, self).get_solver_releases_page(
+                solver_key=solver_key,
+                limit=_DEFAULT_PAGINATION_LIMIT,
+                offset=_DEFAULT_PAGINATION_OFFSET,
+                **kwargs,
+            )
+
+        return PaginationGenerator(
+            first_page_callback=_pagination_method,
+            api_client=self.api_client,
+            base_url=self.api_client.configuration.host,
+            auth=self._auth,
+        )
+
     def list_solver_ports(
         self, solver_key: str, version: str, **kwargs
     ) -> List[SolverPort]:
