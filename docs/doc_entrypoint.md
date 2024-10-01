@@ -28,7 +28,7 @@ To begin using `osparc`, simply import the package and refer to the detailed exa
 
 ### API Key/Secret Setup
 
-Before interacting with the osparc API, you need to generate an API key-secret pair from your osparc account. Follow the [instructions here](https://docs.osparc.io/#/docs/platform_introduction/profile?id=preferences) to create the key and secret.
+Before interacting with the osparc API, you need to generate an API key-secret pair from your osparc account. Follow the [instructions here](https://docs.osparc.io/#/docs/platform_introduction/user_setup/security_details?id=generating-o%c2%b2s%c2%b2parc-tokens) to create the key and secret.
 
 Once generated, you can configure them by either:
 
