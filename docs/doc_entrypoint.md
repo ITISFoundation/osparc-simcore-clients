@@ -80,7 +80,7 @@ For more in-depth usage, refer to the following tutorial guides:
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](../LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
 
 ---
 

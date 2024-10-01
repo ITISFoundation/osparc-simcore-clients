@@ -32,9 +32,9 @@ def test_markdown_links(md_file: Path, link_text: str, file_link: str):
     if file_link.startswith("http"):
         pytest.skip(f"External link skipped: {file_link}")
 
-    relative_to_md = (md_file.parent / file_link).resolve()
+    # NOTE: that current doc only support relative to repo!
     relative_to_repo = (_REPO_DIR / file_link).resolve()
 
     assert (
-        relative_to_md.exists() or relative_to_repo.exists()
+        relative_to_repo.exists()
     ), f"Broken link found: [{link_text}]({file_link}) in {md_file}"
