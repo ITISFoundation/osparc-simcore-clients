@@ -21,29 +21,43 @@ You can install `osparc` directly from PyPI:
 pip install osparc
 ```
 
-## Usage
 
-To get started with `osparc`, import the package and follow the examples in the [documentation](https://github.com/your-username/osparc/wiki).
+## Getting Started with `osparc`
 
+To begin using `osparc`, simply import the package and refer to the detailed examples provided in the [official documentation](https://github.com/your-username/osparc/wiki).
+
+### API Key/Secret Setup
+
+Before interacting with the osparc API, you need to generate an API key-secret pair from your osparc account. Follow the [instructions here](https://docs.osparc.io/#/docs/platform_introduction/profile?id=preferences) to create the key and secret.
+
+Once generated, you can configure them by either:
+
+1. Setting environment variables:
+   - `OSPARC_API_KEY`
+   - `OSPARC_API_SECRET`
+
+   Or,
+
+2. Explicitly creating a `osparc.Configuration` instance and passing it to the `osparc.ApiClient`.
+
+### Minimal Example
+
+Here’s a minimal script demonstrating how to interact with the osparc API to retrieve your user profile:
 
 ```python
+import os
 from osparc import ApiClient, UsersApi
 
-cfg = Configuration(
-    host=os.environ["OSPARC_API_HOST"],
-    username=os.environ["OSPARC_API_KEY"],
-    password=os.environ["OSPARC_API_SECRET"],
-)
-
-with ApiClient(cfg) as api_client:
-
+# Initialize the API client
+with ApiClient() as api_client:
     users_api = UsersApi(api_client)
 
+    # Fetch and print user profile information
     profile = users_api.get_my_profile()
     print(profile)
 
-    #
-    #  {'first_name': 'foo',
+    # Example output:
+    # {'first_name': 'foo',
     #  'gravatar_id': 'aa33fssec77ea434c2ea4fb92d0fd379e',
     #  'groups': {'all': {'description': 'all users',
     #                     'gid': '1',
@@ -55,11 +69,15 @@ with ApiClient(cfg) as api_client:
     #  'last_name': '',
     #  'login': 'foo@itis.swiss',
     #  'role': 'USER'}
-    #
 ```
-To dive deeper check these tutorials
-  - [v0.5](clients/python/docs/v0.5.0/README.md)
-  - [v0.6](clients/python/docs/v0.6.0/README.md)
+
+### Additional Resources
+
+For more in-depth usage, refer to the following tutorial guides:
+
+- [Version 0.5 Documentation](clients/python/docs/v0.5.0/README.md)
+- [Version 0.6 Documentation](clients/python/docs/v0.6.0/README.md)
+
 
 ## Contributing
 

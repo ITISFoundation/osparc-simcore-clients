@@ -28,10 +28,10 @@ class ApiClient(_ApiClient):
                 )
             except ValidationError as exc:
                 raise RuntimeError(
-                    "Could not initialize configuration from environment. "
+                    f"Could not initialize configuration from environment (expected {ConfigurationModel.model_fields_set}). "
                     "If your osparc host, key and secret are not exposed as "
                     "environment variables you must construct the "
-                    "Configuration object explicitly"
+                    "osparc.Configuration object explicitly"
                 ) from exc
 
         super().__init__(configuration, header_name, header_value, cookie, pool_threads)
