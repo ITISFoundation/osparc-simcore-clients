@@ -79,10 +79,6 @@ For more in-depth usage, refer to the following tutorial guides:
 - [Version 0.6 Documentation](clients/python/docs/v0.6.0/README.md)
 
 
-## Contributing
-
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on how to get involved.
-
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](../LICENSE) file for details.
