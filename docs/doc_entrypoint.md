@@ -24,7 +24,6 @@ pip install osparc
 
 ## Getting Started with `osparc`
 
-To begin using `osparc`, simply import the package and refer to the detailed examples provided in the [official documentation](https://github.com/your-username/osparc/wiki).
 
 ### API Key/Secret Setup
 
