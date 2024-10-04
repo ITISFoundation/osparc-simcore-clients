@@ -12,5 +12,8 @@
       },
     "pylint.args": [
         "--rcfile=clients/python/.pylintrc"
+    ],
+    "python.analysis.extraPaths": [
+        "./clients/python/artifacts/client"
     ]
 }
