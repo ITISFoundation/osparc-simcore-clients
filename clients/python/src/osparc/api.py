@@ -1,16 +1,10 @@
-import warnings
-from typing import Final, Tuple
+# pylint: disable=unused-import
 
-from osparc_client.api import FilesApi, MetaApi, SolversApi, UsersApi
+from osparc_client.api.credits_api import CreditsApi as CreditsApi
+from osparc_client.api.meta_api import MetaApi as MetaApi
+from osparc_client.api.users_api import UsersApi as UsersApi
+from osparc_client.api.wallets_api import WalletsApi as WalletsApi
 
-from ._exceptions import VisibleDeprecationWarning
-
-warning_msg: Final[str] = (
-    "osparc.api has been deprecated. Instead functionality within this module "
-    "should be imported directly from osparc. I.e. please do 'from osparc import "
-    "<fcn>' instead of 'from osparc.api import <fcn>'"
-)
-warnings.warn(warning_msg, VisibleDeprecationWarning)
-
-
-__all__: Tuple[str, ...] = ("FilesApi", "MetaApi", "SolversApi", "UsersApi")
+from ._api_solvers_api import SolversApi as SolversApi
+from ._api_studies_api import StudiesApi as StudiesApi
+from ._api_files_api import FilesApi as FilesApi

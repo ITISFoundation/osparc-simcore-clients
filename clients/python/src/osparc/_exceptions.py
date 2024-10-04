@@ -1,3 +1,5 @@
+# pylint: disable=unused-import
+
 from functools import wraps
 
 from httpx import HTTPStatusError
