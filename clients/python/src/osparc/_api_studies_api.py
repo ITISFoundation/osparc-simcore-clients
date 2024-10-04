@@ -1,3 +1,5 @@
+# Wraps osparc_client.api.studies_api
+
 import asyncio
 import logging
 from pathlib import Path
@@ -5,8 +7,8 @@ from tempfile import mkdtemp
 from typing import Any, Optional
 
 import httpx
-from osparc_client import JobInputs, JobLogsMap, PageStudy
-from osparc_client import StudiesApi as _StudiesApi
+from osparc_client.models import JobInputs, JobLogsMap, PageStudy
+from osparc_client.api.studies_api import StudiesApi as _StudiesApi
 from tqdm.asyncio import tqdm_asyncio
 
 from ._api_client import ApiClient

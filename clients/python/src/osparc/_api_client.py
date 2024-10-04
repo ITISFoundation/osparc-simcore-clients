@@ -1,6 +1,8 @@
+# wraps osparc_client.api_client
+
 from typing import Optional
 
-from osparc_client import ApiClient as _ApiClient
+from osparc_client.api_client import ApiClient as _ApiClient
 from osparc_client import Configuration
 from pydantic import ValidationError
 

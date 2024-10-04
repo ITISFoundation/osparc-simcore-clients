@@ -1,8 +1,10 @@
+# Wraps osparc_client.api.solvers_api
+
 from typing import Any, List, Optional
 
 import httpx
-from osparc_client import JobInputs, OnePageSolverPort, SolverPort
-from osparc_client import SolversApi as _SolversApi
+from osparc_client.api.solvers_api import SolversApi as _SolversApi
+from osparc_client.models import JobInputs, OnePageSolverPort, SolverPort
 
 from ._api_client import ApiClient
 from ._settings import ParentProjectInfo
