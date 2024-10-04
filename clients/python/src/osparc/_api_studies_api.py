@@ -7,7 +7,7 @@ from tempfile import mkdtemp
 from typing import Any, Optional
 
 import httpx
-from osparc_client.models import JobInputs, JobLogsMap, PageStudy
+from .models import JobInputs, JobLogsMap, PageStudy
 from osparc_client.api.studies_api import StudiesApi as _StudiesApi
 from tqdm.asyncio import tqdm_asyncio
 
