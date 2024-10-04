@@ -19,7 +19,7 @@ from packaging.version import Version
 from pydantic import ByteSize
 
 try:
-    from osparc._settings import ConfigurationModel
+    from osparc._settings import ConfigurationEnvVars
 except ImportError:
     pass
 
@@ -114,7 +114,7 @@ def api_client() -> Iterable[osparc.ApiClient]:
 @pytest.fixture
 def async_client() -> Iterable[AsyncClient]:
     if Version(osparc.__version__) >= Version("8.0.0"):
-        configuration = ConfigurationModel()
+        configuration = ConfigurationEnvVars()
         host = configuration.OSPARC_API_HOST.rstrip("/")
         username = configuration.OSPARC_API_KEY
         password = configuration.OSPARC_API_SECRET

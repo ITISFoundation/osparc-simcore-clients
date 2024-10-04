@@ -25,7 +25,7 @@ class ParentProjectInfo(BaseSettings):
         return v
 
 
-class ConfigurationModel(BaseSettings):
+class ConfigurationEnvVars(BaseSettings):
     """Model for capturing env vars which should go into the Configuration"""
 
     # Service side: https://github.com/ITISFoundation/osparc-simcore/pull/5966

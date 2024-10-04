@@ -4,7 +4,7 @@ from osparc_client import ApiClient as _ApiClient
 from osparc_client import Configuration
 from pydantic import ValidationError
 
-from ._settings import ConfigurationModel
+from ._settings import ConfigurationEnvVars
 
 
 class ApiClient(_ApiClient):
@@ -18,7 +18,7 @@ class ApiClient(_ApiClient):
     ):
         if configuration is None:
             try:
-                env_vars = ConfigurationModel()
+                env_vars = ConfigurationEnvVars()
                 configuration = Configuration(
                     host=f"{env_vars.OSPARC_API_HOST}".rstrip(
                         "/"
@@ -28,7 +28,7 @@ class ApiClient(_ApiClient):
                 )
             except ValidationError as exc:
                 raise RuntimeError(
-                    f"Could not initialize configuration from environment (expected {ConfigurationModel.model_fields_set}). "
+                    f"Could not initialize configuration from environment (expected {ConfigurationEnvVars.model_fields_set}). "
                     "If your osparc host, key and secret are not exposed as "
                     "environment variables you must construct the "
                     "osparc.Configuration object explicitly"
