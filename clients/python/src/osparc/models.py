@@ -53,7 +53,6 @@ from osparc_client.models.pricing_plan_classification import (
 from osparc_client.models.pricing_unit_get import PricingUnitGet as PricingUnitGet
 from osparc_client.models.profile import Profile as Profile
 from osparc_client.models.profile_update import ProfileUpdate as ProfileUpdate
-from osparc_client.models.running_state import RunningState as RunningState
 from osparc_client.models.service_pricing_plan_get import (
     ServicePricingPlanGet as ServicePricingPlanGet,
 )
