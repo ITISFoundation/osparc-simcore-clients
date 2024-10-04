@@ -24,6 +24,22 @@ artifacts_dir:
 	-mkdir --parents $(ARTIFACTS_DIR)
 
 
+.PHONY: generator-help
+generator-help: ## help on client-api generator
+	# generate help
+	@docker run --rm $(OPENAPI_GENERATOR_IMAGE) help generate
+
+
+.PHONY: _postprocess_osparc_client_artifacts
+_postprocess_osparc_client_artifacts:
+	black $(ARTIFACTS_DIR)/client/*.py
+	@-rm -f $(ARTIFACTS_DIR)/client/README.md
+	@echo "Please visit our [website](https://itisfoundation.github.io/osparc-simcore-clients/#/) for documentation" > $(ARTIFACTS_DIR)/client/README.md
+	@-rm -rf $(CLIENTS_PYTHON_DIR)/src/osparc/data/
+	@-mkdir $(CLIENTS_PYTHON_DIR)/src/osparc/data/
+	@cp $(REPO_ROOT)/api/openapi.json $(CLIENTS_PYTHON_DIR)/src/osparc/data/
+
+
 # Generation of Python client
 .PHONY: python-client
 python-client: VERSION validate-api-specification artifacts_dir ## auto-generate python client
@@ -41,7 +57,7 @@ python-client: VERSION validate-api-specification artifacts_dir ## auto-generate
 			--additional-properties=packageVersion=$(VERSION),$(subst $(space),$(comma),$(strip $(ADDITIONAL_PROPS))) \
 			--package-name=osparc_client \
 			--release-note="Updated to $(VERSION)"
-	$(MAKE) postprocess-build
+	$(MAKE) _postprocess_osparc_client_artifacts
 
 .PHONY: python-client-from-templates
 python-client-from-templates: VERSION validate-api-specification artifacts_dir ## generate python client using templates in a specified directory (usage: 'make python-client-from-templates -e TEMPLATE_DIR=path/to/templates')
@@ -63,14 +79,11 @@ python-client-from-templates: VERSION validate-api-specification artifacts_dir #
 			--package-name=osparc_client \
 			--release-note="Updated to $(VERSION)" \
 			--template-dir=/tmp/python_templates
-	$(MAKE) postprocess-build
+	$(MAKE) _postprocess_osparc_client_artifacts
 
-.PHONY: generator-help
-generator-help: ## help on client-api generator
-	# generate help
-	@docker run --rm $(OPENAPI_GENERATOR_IMAGE) help generate
 
-## Tools for "postprocessing" generated documentation --------------------------------------------
+
+## DOCUMENTATION  --------------------------------------------
 
 ARTIFACTS_DOCS := artifacts/docs
 
@@ -95,7 +108,7 @@ _check_venv_active:
 	# checking whether virtual environment was activated
 	@python3 -c "import sys; assert sys.base_prefix!=sys.prefix"
 
-
+# (0) Environment ---------------------
 
 .PHONY: .install-dev-reqs
 .install-dev-reqs: _check_venv_active
@@ -120,6 +133,7 @@ install-doc: _check_venv_active .install-dev-reqs ## install packages for genera
 	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/doc.txt
 
 
+# (1) Linters ---------------------
 
 .PHONY: pylint
 pylint: _check_venv_active ## runs linter (only to check errors. SEE .pylintrc enabled)
@@ -130,9 +144,10 @@ mypy: $(SCRIPTS_DIR)/mypy.bash $(CLIENTS_PYTHON_DIR)/mypy.ini ## runs mypy pytho
 	@$(SCRIPTS_DIR)/mypy.bash src/osparc
 
 
+# (2) Testing ---------------------
 
-.PHONY: test-dev
-test-dev: _check_venv_active ## runs tests during development
+.PHONY: tests
+tests: _check_venv_active ## runs tests during development
 	# runs tests for development (e.g w/ pdb)
 	python -m pytest \
 		-vv \
@@ -142,7 +157,7 @@ test-dev: _check_venv_active ## runs tests during development
 		--pdb \
 		$(CLIENTS_PYTHON_DIR)/test/test_osparc
 
-
+# (3) Packaging -------------------
 
 .PHONY: dist
 dist: artifacts_dir ## builds distribution wheel for `osparc_client` and `osparc` packages -> $(ARTIFACTS_DIR)/dist
@@ -161,15 +176,6 @@ dist: artifacts_dir ## builds distribution wheel for `osparc_client` and `osparc
 	@cp -v VERSION $(ARTIFACTS_DIR)/dist
 
 
-
-.PHONY: postprocess-build
-postprocess-build:
-	black $(ARTIFACTS_DIR)/client/*.py
-	@-rm -f $(ARTIFACTS_DIR)/client/README.md
-	@echo "Please visit our [website](https://itisfoundation.github.io/osparc-simcore-clients/#/) for documentation" > $(ARTIFACTS_DIR)/client/README.md
-	@-rm -rf $(CLIENTS_PYTHON_DIR)/src/osparc/data/
-	@-mkdir $(CLIENTS_PYTHON_DIR)/src/osparc/data/
-	@cp $(REPO_ROOT)/api/openapi.json $(CLIENTS_PYTHON_DIR)/src/osparc/data/
 
 
 ## e2e TEST ---------------------------------------------------------------------------------
