@@ -12,7 +12,6 @@ from osparc_client import (
     Job,
     PageFile,
     PageJob,
-    PageSolver,
     PageStudy,
     Solver,
     Study,
@@ -29,7 +28,7 @@ _DEFAULT_PAGINATION_OFFSET: int = 0
 
 DEFAULT_TIMEOUT_SECONDS: int = 30 * 60
 
-Page = Union[PageJob, PageFile, PageSolver, PageStudy]
+Page = Union[PageJob, PageFile, PageStudy]
 T = TypeVar("T", Job, File, Solver, Study)
 
 
@@ -128,9 +127,9 @@ def dev_features_enabled() -> bool:
 
 def dev_feature(func: Callable):
     @wraps(func)
-    def wrapper(*args, **kwargs):
+    def _wrapper(*args, **kwargs):
         if not dev_features_enabled():
             raise NotImplementedError(f"{func.__name__} is still under development")
         return func(*args, **kwargs)
 
-    return wrapper
+    return _wrapper
