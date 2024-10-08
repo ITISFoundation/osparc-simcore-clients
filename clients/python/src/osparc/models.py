@@ -50,7 +50,6 @@ from osparc_client.models.one_page_study_port import (
 )
 from osparc_client.models.page_file import PageFile as PageFile
 from osparc_client.models.page_job import PageJob as PageJob
-from osparc_client.models.page_solver import PageSolver as PageSolver
 from osparc_client.models.page_study import PageStudy as PageStudy
 from osparc_client.models.pricing_plan_classification import (
     PricingPlanClassification as PricingPlanClassification,
