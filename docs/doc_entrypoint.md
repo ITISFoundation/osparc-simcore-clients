@@ -71,10 +71,13 @@ with ApiClient() as api_client:
 
 For more in-depth usage, refer to the following resources:
 
-- [Version 0.5 Documentation](clients/python/docs/v0.5.0/README.md)
-- [Version 0.6 Documentation](clients/python/docs/v0.6.0/README.md)
+- 📚 Documentation
+  - [Version 0.6](clients/python/docs/v0.6.0/README.md)
+  - [Version 0.5](clients/python/docs/v0.5.0/README.md)
 - [Community-Contributed Scripts](https://github.com/topics/osparc-python)
   - ✨ [gh:newton1985/osparc_api_example](https://github.com/newton1985/osparc_api_example): A repository containing a "standalone" sample project that illustrates the use of the osparc API
+- 🤝 If you want your scripts to appear here, just create a github repository and [tag it with the  `osparc-python` topic](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/classifying-your-repository-with-topics) to it.
+
 
 ## License
 
