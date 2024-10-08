@@ -50,7 +50,9 @@ info: info-api info-envs info-tools info-pip ## all infos
 
 
 .venv: .check-uv-installed
-	@uv venv $@
+	@uv venv \
+		--python 3.10 \
+		$@
 	## upgrading tools to latest version in $(shell python3 --version)
 	@uv pip --quiet install --upgrade \
 		pip~=24.0 \
