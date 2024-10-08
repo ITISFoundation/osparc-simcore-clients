@@ -67,7 +67,7 @@ with ApiClient() as api_client:
     #  'role': 'USER'}
 ```
 
-### Additional Resources
+## Additional Resources
 
 For more in-depth usage, refer to the following resources:
 

@@ -4,6 +4,7 @@ To get started using the tools developed in this repository have a look at the
 [Documentation](https://itisfoundation.github.io/osparc-simcore-clients).
 
 For more in depth knowledge concerning the development of the repository, take a look at
+
 - [Release Notes](https://github.com/ITISFoundation/osparc-simcore-clients/releases)
 - [Development notes](#development-notes)
 
@@ -27,6 +28,7 @@ See the different `clients/<language>/README.md` for the workflows for generatin
     2. The [openapi-generator](https://github.com/ITISFoundation/openapi-generator)-tool. The exact docker image of this tool to use is specifies in `scripts/common.Makefile`.
 
 ## Code lifecycle
+
 This link explains the lifecycle of the osparc client(s) (borrowed from https://www.ibm.com/docs/en/acvfc?topic=manager-product-lifecycle)
 <p align="center">
 <a href="https://www.ibm.com/docs/en/acvfc?topic=manager-product-lifecycle" target="_blank">
