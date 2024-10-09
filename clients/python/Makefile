@@ -32,7 +32,7 @@ python-client-generator-help: ## help on client-api generator
 
 .PHONY: _postprocess_osparc_client_artifacts
 _postprocess_osparc_client_artifacts:
-	black $(ARTIFACTS_DIR)/client/*.py
+	uvx black $(ARTIFACTS_DIR)/client/*.py
 	@-rm -f $(ARTIFACTS_DIR)/client/README.md
 	@echo "Please visit our [website](https://itisfoundation.github.io/osparc-simcore-clients/#/) for documentation" > $(ARTIFACTS_DIR)/client/README.md
 	@-rm -rf $(CLIENTS_PYTHON_DIR)/src/osparc/data/
@@ -110,14 +110,11 @@ _check_venv_active:
 
 # (0) Environment ---------------------
 
-.PHONY: .install-dev-reqs
-.install-dev-reqs: _check_venv_active
-	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/dev.txt
+
 
 .PHONY: install-dev
-install-dev: _check_venv_active .install-dev-reqs python-client  ## installs osparc_client and osparc in edit mode
-	uv pip install -e artifacts/client
-	uv pip install -e .
+install-dev: _check_venv_active python-client  ## installs osparc_client and osparc in edit mode
+	uv pip sync requirements/dev.txt
 	uv pip list
 
 .PHONY: install-unit-test
@@ -129,7 +126,7 @@ install-e2e-test: _check_venv_active ## install packages for e2e testing client 
 	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/e2e-test.txt
 
 .PHONY: install-doc
-install-doc: _check_venv_active .install-dev-reqs ## install packages for generating documentation
+install-doc: _check_venv_active ## install packages for generating documentation
 	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/doc.txt
 
 
