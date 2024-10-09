@@ -115,7 +115,7 @@ def api_client() -> Iterable[osparc.ApiClient]:
 def async_client() -> Iterable[AsyncClient]:
     if Version(osparc.__version__) >= Version("8.0.0"):
         configuration = ConfigurationEnvVars()
-        host = configuration.OSPARC_API_HOST.rstrip("/")
+        host = str(configuration.OSPARC_API_HOST).rstrip("/")
         username = configuration.OSPARC_API_KEY
         password = configuration.OSPARC_API_SECRET
     else:
@@ -123,6 +123,7 @@ def async_client() -> Iterable[AsyncClient]:
         username = os.environ.get("OSPARC_API_KEY")
         password = os.environ.get("OSPARC_API_SECRET")
         assert host and username and password
+
     yield AsyncClient(
         base_url=host,
         auth=BasicAuth(
@@ -178,6 +179,7 @@ def file_with_number(
     file = tmp_path / "file_with_number.txt"
     file.write_text("1")
     server_file = files_api.upload_file(file)
+
     yield server_file
 
     files_api.delete_file(server_file.id)

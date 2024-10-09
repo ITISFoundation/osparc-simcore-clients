@@ -1,4 +1,6 @@
--r ../../../requirements.txt
+--editable artifacts/client
+--editable .
+
 -r unit-test.txt
 -r e2e-test.txt
 pylint

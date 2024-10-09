@@ -1,4 +1,2 @@
-black
-pre-commit
 semver
 typer
