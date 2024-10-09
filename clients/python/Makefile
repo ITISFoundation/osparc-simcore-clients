@@ -15,9 +15,9 @@ ADDITIONAL_PROPS := \
 ADDITIONAL_PROPS := $(foreach prop,$(ADDITIONAL_PROPS),$(strip $(prop)))
 VERSION_FILE := $(CLIENTS_PYTHON_DIR)/VERSION
 
-.PHONY: generate_version
+.PHONY: compute_version
 VERSION:
-	@bash $(SCRIPTS_DIR)/generate_version.bash > $(VERSION_FILE)
+	@bash $(SCRIPTS_DIR)/compute_version.bash > $(VERSION_FILE)
 
 .PHONY: artifacts_dir
 artifacts_dir:
