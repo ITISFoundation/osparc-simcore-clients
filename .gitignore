@@ -89,8 +89,3 @@ tmp*
 *ignore*
 !.dockerignore
 !.gitignore
-
-
-# api diffs
-api/openapi-*-diff.json
-api/openapi-dev.json
