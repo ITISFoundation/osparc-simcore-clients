@@ -8,6 +8,7 @@ import hashlib
 from pathlib import Path
 
 import osparc
+from osparc._utils import PaginationGenerator
 import pytest
 from _utils import skip_if_no_dev_features
 from conftest import _KB
@@ -50,7 +51,7 @@ def test_search_files(
     tmp_file: Path, api_client: osparc.ApiClient, use_checksum: bool, use_id: bool
 ) -> None:
     checksum: str = _hash_file(tmp_file)
-    results: osparc.PaginationGenerator
+    results: PaginationGenerator
     files_api: osparc.FilesApi = osparc.FilesApi(api_client=api_client)
     try:
         results = files_api._search_files(sha256_checksum=checksum)
