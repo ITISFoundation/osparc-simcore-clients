@@ -6,7 +6,7 @@ from pathlib import Path
 _CURRENT_DIR = (
     Path(sys.argv[0] if __name__ == "__main__" else __file__).resolve().parent
 )
-_REPO_DIR = _CURRENT_DIR.parent.parent.parent
+_REPO_DIR = _CURRENT_DIR.parent.parent.parent.parent
 _DOCS_DIR = _REPO_DIR / "docs"
 
 assert _DOCS_DIR.exists
