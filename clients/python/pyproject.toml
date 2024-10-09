@@ -29,9 +29,7 @@ warn_untyped_fields = true
 
 [tool.pytest.ini_options]
 # SEE https://docs.pytest.org/en/7.1.x/reference/customize.html#pyproject-toml
-testpaths = [
-    "test",
-]
+testpaths = ["test"]
 # SEE https://pytest-asyncio.readthedocs.io/en/stable/concepts.html#test-discovery-modes
 asyncio_mode = "auto"
 required_plugins = "pytest-asyncio"

@@ -19,7 +19,7 @@ VERSION_FILE: Path = Path(__file__).parent / "VERSION"
 assert VERSION_FILE.is_file(), "Did you forget `make VERSION`?"
 
 NAME = "osparc"
-VERSION = VERSION_FILE.read_text()
+VERSION = VERSION_FILE.read_text().strip()
 
 REQUIRES = [
     "httpx",

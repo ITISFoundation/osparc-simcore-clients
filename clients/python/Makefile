@@ -15,9 +15,9 @@ ADDITIONAL_PROPS := \
 ADDITIONAL_PROPS := $(foreach prop,$(ADDITIONAL_PROPS),$(strip $(prop)))
 VERSION_FILE := $(CLIENTS_PYTHON_DIR)/VERSION
 
-.PHONY: compute_version
-VERSION:
-	@bash $(SCRIPTS_DIR)/compute_version.bash > $(VERSION_FILE)
+.PHONY: VERSION
+VERSION: ## Computes and dumps current client version
+	@printf "$$(bash $(SCRIPTS_DIR)/compute_version.bash)" > $(VERSION_FILE) || (printf "Failed to compute version\n" && exit 1)
 
 .PHONY: artifacts_dir
 artifacts_dir:
