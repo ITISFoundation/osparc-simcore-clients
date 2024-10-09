@@ -27,6 +27,8 @@ GIT_CLIENT_REPO_ID := osparc-simcore-clients
 GIT_OPENAPI_REPO_ID := openapi-generator
 GENERATOR_NAME := python
 
+# SEE https://docs.astral.sh/uv/configuration/environment/
+export UV_PYTHON=3.10
 
 null  :=
 space := $(null) #
