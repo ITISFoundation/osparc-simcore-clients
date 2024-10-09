@@ -24,8 +24,8 @@ artifacts_dir:
 	-mkdir --parents $(ARTIFACTS_DIR)
 
 
-.PHONY: generator-help
-generator-help: ## help on client-api generator
+.PHONY: python-client-generator-help
+python-client-generator-help: ## help on client-api generator
 	# generate help
 	@docker run --rm $(OPENAPI_GENERATOR_IMAGE) help generate
 

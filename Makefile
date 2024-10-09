@@ -4,7 +4,7 @@ PYTHON_DIR    := $(CLIENTS_DIR)/python
 
 
 .vscode/%.json: .vscode/%.template.json
-	$(if $(wildcard $@), \
+	-$(if $(wildcard $@), \
 	@echo "WARNING #####  $< is newer than $@ ####"; diff -uN $@ $<; false;,\
 	@echo "WARNING ##### $@ does not exist, cloning $< as $@ ############"; cp $< $@)
 
