@@ -52,7 +52,6 @@ info: info-api info-envs info-tools info-pip ## all infos
 
 
 .venv: .check-uv-installed
-	# Using $$UV_PYTHON
 	@uv venv $@
 	## upgrading tools to latest version in $(shell python3 --version)
 	@uv pip --quiet install --upgrade \
@@ -65,9 +64,10 @@ info: info-api info-envs info-tools info-pip ## all infos
 
 .PHONY: devenv
 devenv: .venv .vscode/settings.json .vscode/launch.json ## create a python virtual environment with dev tools (e.g. linters, etc)
+	# Installing requirements.txt
 	@uv pip --quiet install -r requirements.txt
 	# Installing pre-commit hooks in current .git repo
-	uvx pre-commit install
+	@uvx pre-commit install
 	@echo "To activate the venv, execute 'source .venv/bin/activate'"
 
 
