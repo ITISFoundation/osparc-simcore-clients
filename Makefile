@@ -27,14 +27,16 @@ info-envs: ## info on envs
 
 info-tools: ## info on tooling
 	# Tooling ---------------
-	@echo ' make          	 : $(shell make --version 2>&1 | head -n 1)'
-	@echo ' jq            	 : $(shell jq --version)'
 	@echo ' awk           	 : $(shell awk -W version 2>&1 | head -n 1)'
-	@echo ' python        	 : $(shell python3 --version)'
-	@echo ' uv            	 : $(shell uv --version)'
+	@echo ' curl	         : $(shell curl --version | head -n 1)'
 	@echo ' docker        	 : $(shell docker --version)'
 	@echo ' docker buildx 	 : $(shell docker buildx version)'
 	@echo ' docker compose	 : $(shell docker compose version)'
+	@echo ' jq            	 : $(shell jq --version)'
+	@echo ' make          	 : $(shell make --version 2>&1 | head -n 1)'
+	@echo ' python        	 : $(shell python3 --version)'
+	@echo ' uv            	 : $(shell uv --version)'
+
 
 
 info-pip: ## info index versions
