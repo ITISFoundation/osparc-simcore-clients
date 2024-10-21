@@ -1,11 +1,13 @@
+# Wraps osparc_client.api.solvers_api
+
 from typing import Any, List, Optional
 
 import httpx
-from osparc_client import JobInputs, OnePageSolverPort, SolverPort
-from osparc_client import SolversApi as _SolversApi
+from osparc_client.api.solvers_api import SolversApi as _SolversApi
+from .models import JobInputs, OnePageSolverPort, SolverPort
 
 from ._api_client import ApiClient
-from ._models import ParentProjectInfo
+from ._settings import ParentProjectInfo
 from ._utils import (
     _DEFAULT_PAGINATION_LIMIT,
     _DEFAULT_PAGINATION_OFFSET,
@@ -14,6 +16,8 @@ from ._utils import (
     dev_features_enabled,
 )
 
+import warnings
+
 
 class SolversApi(_SolversApi):
     """Class for interacting with solvers"""
@@ -21,11 +25,6 @@ class SolversApi(_SolversApi):
     _dev_features = [
         "get_jobs_page",
     ]
-
-    def __getattr__(self, name: str) -> Any:
-        if (name in SolversApi._dev_features) and (not dev_features_enabled()):
-            raise NotImplementedError(f"SolversApi.{name} is still under development")
-        return super().__getattribute__(name)
 
     def __init__(self, api_client: ApiClient):
         """Construct object
@@ -42,6 +41,11 @@ class SolversApi(_SolversApi):
             else None
         )
 
+    def __getattr__(self, name: str) -> Any:
+        if (name in SolversApi._dev_features) and (not dev_features_enabled()):
+            raise NotImplementedError(f"SolversApi.{name} is still under development")
+        return super().__getattribute__(name)
+
     def list_solver_ports(
         self, solver_key: str, version: str, **kwargs
     ) -> List[SolverPort]:
@@ -51,7 +55,7 @@ class SolversApi(_SolversApi):
         return page.items if page.items else []
 
     @dev_feature
-    def jobs(self, solver_key: str, version: str) -> PaginationGenerator:
+    def iter_jobs(self, solver_key: str, version: str, **kwargs) -> PaginationGenerator:
         """Returns an iterator through which one can iterate over
         all Jobs submitted to the solver
 
@@ -73,6 +77,7 @@ class SolversApi(_SolversApi):
                 version=version,
                 limit=_DEFAULT_PAGINATION_LIMIT,
                 offset=_DEFAULT_PAGINATION_OFFSET,
+                **kwargs,
             )
 
         return PaginationGenerator(
@@ -81,6 +86,16 @@ class SolversApi(_SolversApi):
             base_url=self.api_client.configuration.host,
             auth=self._auth,
         )
+
+    @dev_feature
+    def jobs(self, solver_key: str, version: str, **kwargs) -> PaginationGenerator:
+        warnings.warn(
+            "The 'jobs' method is deprecated and will be removed in a future version. "
+            "Please use 'iter_jobs' instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.iter_jobs(solver_key, version, **kwargs)
 
     def create_job(
         self, solver_key: str, version: str, job_inputs: JobInputs, **kwargs

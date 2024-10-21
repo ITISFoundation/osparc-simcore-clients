@@ -20,7 +20,7 @@ Changes to the client should not be performed within the generated python code, 
 Tests are located in `PYDIR/test_osparc` and `PYDIR/test_osparc_client`. They can be run by executing the following commands from PYDIR:
 ```bash
 make install-test
-make test-dev
+make tests
 ```
 after the client has been generated (see the [workflow section](#workflow)). These tests should test the user-facing API. Jupyter notebooks in the PYDIR/docs folder are automatically run as part of the tests via `test_notebooks.py`. Hence, when writing a tutorial jupyter script, also think of it as a test. For this reason, any import of `osparc` in the notebook should be "guarded" by a `if importlib.util.find_spec('osparc') is None:` statement (see the [BasicTutorial](./docs/BasicTutorial.ipynb))
 

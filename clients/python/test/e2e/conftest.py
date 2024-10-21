@@ -19,7 +19,7 @@ from packaging.version import Version
 from pydantic import ByteSize
 
 try:
-    from osparc._models import ConfigurationModel
+    from osparc._settings import ConfigurationEnvVars
 except ImportError:
     pass
 
@@ -114,7 +114,7 @@ def api_client() -> Iterable[osparc.ApiClient]:
 @pytest.fixture
 def async_client() -> Iterable[AsyncClient]:
     if Version(osparc.__version__) >= Version("8.0.0"):
-        configuration = ConfigurationModel()
+        configuration = ConfigurationEnvVars()
         host = configuration.OSPARC_API_HOST.rstrip("/")
         username = configuration.OSPARC_API_KEY
         password = configuration.OSPARC_API_SECRET
@@ -164,7 +164,7 @@ def sleeper_study_id(api_client: osparc.ApiClient) -> UUID:
     as input a single file containing a single integer"""
     _test_study_title = "sleeper_test_study"
     study_api = osparc.StudiesApi(api_client=api_client)
-    for study in study_api.studies():
+    for study in study_api.iter_studies():
         if study.title == _test_study_title:
             return UUID(study.uid)
     pytest.fail(f"Could not find {_test_study_title} study")

@@ -1,3 +1,5 @@
+# wraps osparc_client.api.files_api
+
 import asyncio
 import json
 import logging
@@ -10,24 +12,27 @@ from typing import Any, Iterator, List, Optional, Tuple, Union
 
 import httpx
 from httpx import Response
-from osparc_client import (
+from osparc_client.api.files_api import FilesApi as _FilesApi
+from tqdm.asyncio import tqdm
+from tqdm.contrib.logging import logging_redirect_tqdm
+
+from ._api_client import ApiClient
+from ._http_client import AsyncHttpClient
+from .models import (
     BodyAbortMultipartUploadV0FilesFileIdAbortPost,
     BodyCompleteMultipartUploadV0FilesFileIdCompletePost,
     ClientFile,
     ClientFileUploadData,
+    File,
+    FileUploadCompletionBody,
+    FileUploadData,
+    UploadedPart,
 )
-from osparc_client import FilesApi as _FilesApi
-from osparc_client import FileUploadCompletionBody, FileUploadData, UploadedPart
-from tqdm.asyncio import tqdm
-from tqdm.contrib.logging import logging_redirect_tqdm
-
-from . import File
-from ._api_client import ApiClient
-from ._http_client import AsyncHttpClient
 from ._utils import (
     DEFAULT_TIMEOUT_SECONDS,
     PaginationGenerator,
     compute_sha256,
+    dev_features_enabled,
     file_chunk_generator,
 )
 
@@ -35,7 +40,9 @@ _logger = logging.getLogger(__name__)
 
 
 class FilesApi(_FilesApi):
-    """Class for interacting with files"""
+    _dev_features = [
+        "get_jobs_page",
+    ]
 
     def __init__(self, api_client: ApiClient):
         """Construct object
@@ -51,6 +58,11 @@ class FilesApi(_FilesApi):
             if (user is not None and passwd is not None)
             else None
         )
+
+    def __getattr__(self, name: str) -> Any:
+        if (name in FilesApi._dev_features) and (not dev_features_enabled()):
+            raise NotImplementedError(f"FilesApi.{name} is still under development")
+        return super().__getattribute__(name)
 
     def download_file(
         self, file_id: str, *, destination_folder: Optional[Path] = None, **kwargs

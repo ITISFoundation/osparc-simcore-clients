@@ -5,11 +5,11 @@ from pathlib import Path
 from typing import Any, Dict, List, Set
 
 import osparc
-import osparc._models
+import osparc._settings
 import pydantic
 import pytest
 
-_PYTHON_DIR: Path = Path(__file__).parent.parent.parent
+_CLIENTS_PYTHON_DIR: Path = Path(__file__).parent.parent.parent
 
 
 def test_get_api():
@@ -21,37 +21,49 @@ def test_dependencies(tmp_path: Path):
     """
     Ensure packages which are imported in osparc are also specified in setup.py
     """
-    # get imported packages
+    # get in-code imported packages
     import_file: Path = tmp_path / "imported_packages.txt"
-    source_package: Path = _PYTHON_DIR / "client" / "osparc"
+    source_package: Path = _CLIENTS_PYTHON_DIR / "src" / "osparc"
     assert source_package.is_dir()
-    cmd: list[str] = [
-        "pipreqs",
-        "--savepath",
-        str(import_file.resolve()),
-        "--mode",
-        "no-pin",
-    ]
-    output = subprocess.run(
-        cmd, cwd=source_package, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+
+    subprocess.run(
+        [
+            "pipreqs",
+            "--savepath",
+            str(import_file.resolve()),
+            "--mode",
+            "no-pin",
+        ],
+        cwd=source_package,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=True,
     )
-    assert output.returncode == 0
-    import_dependencies: Set[str] = set(import_file.read_text().splitlines())
+    import_dependencies: Set[str] = set(
+        _.replace(".egg", "") for _ in import_file.read_text().splitlines()
+    )
 
     # generate requirements file based on installed osparc
-    cmd: list[str] = [
-        "pipdeptree",
-        "-p",
-        "osparc",
-        "--json",
-    ]
-    output = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    output = subprocess.run(
+        [
+            "pipdeptree",
+            "-p",
+            "osparc",
+            "--json",
+        ],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
     assert output.returncode == 0
-    dep_tree: List[Dict[str, Any]] = json.loads(output.stdout)
-    dep_tree = [elm for elm in dep_tree if elm["package"]["key"] == "osparc"]
-    assert len(dep_tree) == 1
-    install_dependencies: Set(str) = {
-        dep["package_name"].replace("-", "_") for dep in dep_tree[0]["dependencies"]
+    dependency_tree: List[Dict[str, Any]] = json.loads(output.stdout)
+    dependency_tree = [
+        node for node in dependency_tree if node["package"]["key"] == "osparc"
+    ]
+    assert len(dependency_tree) == 1
+    install_dependencies: Set[str] = {
+        dep["package_name"].replace("-", "_")
+        for dep in dependency_tree[0]["dependencies"]
     }
     msg: str = (
         "imported dependencies not specified "
@@ -67,11 +79,11 @@ def test_parent_project_validation(faker, valid: bool):
     if valid:
         os.environ["OSPARC_STUDY_ID"] = f"{faker.uuid4()}"
         os.environ["OSPARC_NODE_ID"] = f"{faker.uuid4()}"
-        parent_info = osparc._models.ParentProjectInfo()
+        parent_info = osparc._settings.ParentProjectInfo()
         assert parent_info.x_simcore_parent_project_uuid is not None
         assert parent_info.x_simcore_parent_node_id is not None
     else:
         os.environ["OSPARC_STUDY_ID"] = f"{faker.text()}"
         os.environ["OSPARC_NODE_ID"] = f"{faker.text()}"
         with pytest.raises(pydantic.ValidationError):
-            _ = osparc._models.ParentProjectInfo()
+            _ = osparc._settings.ParentProjectInfo()

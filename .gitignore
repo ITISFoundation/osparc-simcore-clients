@@ -78,7 +78,14 @@ tmp*
 
 # auto generated python code
 /clients/python/artifacts/*
-/clients/python/client/build/*
-/clients/python/client/osparc/data/openapi.json
+/clients/python/src/build/*
+/clients/python/src/osparc/data/openapi.json
+/clients/python/VERSION
 /clients/python/test/e2e/pytest.ini
-/clients/python/client/VERSION
+
+
+# key-words in filename to ignore them
+*secret*
+*ignore*
+!.dockerignore
+!.gitignore

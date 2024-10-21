@@ -1,7 +1,11 @@
+# pylint: disable=unused-import
+
 from functools import wraps
 
 from httpx import HTTPStatusError
-from osparc_client import ApiException
+
+
+from osparc_client.exceptions import ApiException as ApiException
 
 
 class VisibleDeprecationWarning(UserWarning):

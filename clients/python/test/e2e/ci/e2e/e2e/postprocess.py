@@ -158,8 +158,8 @@ def generate_html_table(e2e_artifacts_dir: str) -> None:
         raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
 
     df: pd.DataFrame = pd.DataFrame()
-    for file in artifacts.glob("*.json"):
-        df = pd.concat([df, pd.read_json(file)], axis=1)
+    for path in artifacts.glob("*.json"):
+        df = pd.concat([df, pd.read_json(path)], axis=1)
 
     for exit_code in df.to_numpy().flatten():
         if not _exit_code_valid(exit_code):
@@ -177,8 +177,9 @@ def generate_html_table(e2e_artifacts_dir: str) -> None:
         {"selector": "th", "props": [("background-color", "#F2F2F2")]},
     ]
 
-    df = df.applymap(_exitcode_to_text)
-    s = df.style.applymap(_make_pretty)
+    df = df.map(_exitcode_to_text)
+    df = df.reindex(sorted(df.columns), axis=1)  # Sort columns alphabetically
+    s = df.style.map(_make_pretty)
     s.set_table_attributes('style="font-size: 20px"')
     s.set_table_styles(style)
     s.set_caption("OSPARC e2e python client vs server tests")
@@ -238,7 +239,7 @@ def clean_up_jobs(artifacts_dir: Path, retry_minutes: Optional[PositiveInt] = No
                             assert isinstance(solver, osparc.Solver)
                             assert (id_ := solver.id) is not None
                             assert (version := solver.version) is not None
-                            for job in solvers_api.jobs(id_, version):
+                            for job in solvers_api.iter_jobs(id_, version):
                                 assert isinstance(job, osparc.Job)
                                 solvers_api.delete_job(id_, version, job.id)
         except RetryError as exc:

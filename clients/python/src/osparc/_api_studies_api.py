@@ -1,3 +1,5 @@
+# Wraps osparc_client.api.studies_api
+
 import asyncio
 import logging
 from pathlib import Path
@@ -5,19 +7,20 @@ from tempfile import mkdtemp
 from typing import Any, Optional
 
 import httpx
-from osparc_client import JobInputs, JobLogsMap, PageStudy
-from osparc_client import StudiesApi as _StudiesApi
+from .models import JobInputs, JobLogsMap, PageStudy
+from osparc_client.api.studies_api import StudiesApi as _StudiesApi
 from tqdm.asyncio import tqdm_asyncio
 
 from ._api_client import ApiClient
 from ._http_client import AsyncHttpClient
-from ._models import ParentProjectInfo
+from ._settings import ParentProjectInfo
 from ._utils import (
     _DEFAULT_PAGINATION_LIMIT,
     _DEFAULT_PAGINATION_OFFSET,
     PaginationGenerator,
     dev_features_enabled,
 )
+import warnings
 
 _logger = logging.getLogger(__name__)
 
@@ -68,7 +71,7 @@ class StudiesApi(_StudiesApi):
         kwargs = {**kwargs, **ParentProjectInfo().model_dump(exclude_none=True)}
         return super().clone_study(study_id, **kwargs)
 
-    def studies(self, **kwargs) -> PaginationGenerator:
+    def iter_studies(self, **kwargs) -> PaginationGenerator:
         def _pagination_method():
             page_study = self.list_studies(
                 limit=_DEFAULT_PAGINATION_LIMIT,
@@ -84,6 +87,15 @@ class StudiesApi(_StudiesApi):
             base_url=self.api_client.configuration.host,
             auth=self._auth,
         )
+
+    def studies(self, **kwargs) -> PaginationGenerator:
+        warnings.warn(
+            "The 'studies' method is deprecated and will be removed in a future version. "
+            "Please use 'iter_studies' instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.iter_studies(**kwargs)
 
     def get_study_job_output_logfiles(self, study_id: str, job_id: str) -> Path:
         return asyncio.run(

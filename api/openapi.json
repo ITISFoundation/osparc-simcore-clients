@@ -1,9 +1,9 @@
 {
   "openapi": "3.0.2",
   "info": {
-    "title": "osparc.io web API (dev)",
+    "title": "osparc.io public API",
     "description": "osparc-simcore public API specifications",
-    "version": "0.6.0-dev"
+    "version": "0.7.0"
   },
   "paths": {
     "/v0/meta": {
@@ -223,7 +223,7 @@
           "files"
         ],
         "summary": "List Files",
-        "description": "Lists all files stored in the system\n\nSEE get_files_page for a paginated version of this function",
+        "description": "Lists all files stored in the system\n\nSEE `get_files_page` for a paginated version of this function",
         "operationId": "list_files",
         "responses": {
           "200": {
@@ -296,67 +296,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorGet"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "HTTPBasic": []
-          }
-        ]
-      }
-    },
-    "/v0/files/page": {
-      "get": {
-        "tags": [
-          "files"
-        ],
-        "summary": "Get Files Page",
-        "operationId": "get_files_page",
-        "parameters": [
-          {
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "maximum": 100,
-              "minimum": 1,
-              "title": "Limit",
-              "default": 50
-            },
-            "name": "limit",
-            "in": "query"
-          },
-          {
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "title": "Offset",
-              "default": 0
-            },
-            "name": "offset",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Page_File_"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
@@ -1379,62 +1318,6 @@
         ]
       }
     },
-    "/v0/solvers/page": {
-      "get": {
-        "tags": [
-          "solvers"
-        ],
-        "summary": "Get Solvers Page",
-        "operationId": "get_solvers_page",
-        "parameters": [
-          {
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "maximum": 100,
-              "minimum": 1,
-              "title": "Limit",
-              "default": 50
-            },
-            "name": "limit",
-            "in": "query"
-          },
-          {
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "title": "Offset",
-              "default": 0
-            },
-            "name": "offset",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Page_Solver_"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/v0/solvers/releases": {
       "get": {
         "tags": [
@@ -1524,62 +1407,6 @@
             "HTTPBasic": []
           }
         ]
-      }
-    },
-    "/v0/solvers/releases/page": {
-      "get": {
-        "tags": [
-          "solvers"
-        ],
-        "summary": "Get Solvers Releases Page",
-        "operationId": "get_solvers_releases_page",
-        "parameters": [
-          {
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "maximum": 100,
-              "minimum": 1,
-              "title": "Limit",
-              "default": 50
-            },
-            "name": "limit",
-            "in": "query"
-          },
-          {
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "title": "Offset",
-              "default": 0
-            },
-            "name": "offset",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Page_Solver_"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
       }
     },
     "/v0/solvers/{solver_key}/latest": {
@@ -1802,72 +1629,6 @@
             "HTTPBasic": []
           }
         ]
-      }
-    },
-    "/v0/solvers/{solver_key}/releases/page": {
-      "get": {
-        "tags": [
-          "solvers"
-        ],
-        "summary": "Get Solver Releases Page",
-        "operationId": "get_solver_releases_page",
-        "parameters": [
-          {
-            "required": true,
-            "schema": {
-              "type": "string",
-              "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
-              "title": "Solver Key"
-            },
-            "name": "solver_key",
-            "in": "path"
-          },
-          {
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "maximum": 100,
-              "minimum": 1,
-              "title": "Limit",
-              "default": 50
-            },
-            "name": "limit",
-            "in": "query"
-          },
-          {
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "title": "Offset",
-              "default": 0
-            },
-            "name": "offset",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Page_Solver_"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
       }
     },
     "/v0/solvers/{solver_key}/releases/{version}": {
@@ -2114,6 +1875,7 @@
           "solvers"
         ],
         "summary": "Get Solver Pricing Plan",
+        "description": "Gets solver pricing plan\n\nNew in *version 0.7*",
         "operationId": "get_solver_pricing_plan",
         "parameters": [
           {
@@ -2232,7 +1994,7 @@
           "solvers"
         ],
         "summary": "List Jobs",
-        "description": "List of jobs in a specific released solver (limited to 20 jobs)\n\nSEE get_jobs_page for paginated version of this function",
+        "description": "List of jobs in a specific released solver (limited to 20 jobs)\n\n- DEPRECATION: This implementation and returned values are deprecated and the will be replaced by that of get_jobs_page\n- SEE `get_jobs_page` for paginated version of this function",
         "operationId": "list_jobs",
         "parameters": [
           {
@@ -2669,7 +2431,7 @@
           "solvers"
         ],
         "summary": "Delete Job",
-        "description": "Deletes an existing solver job\n\nNew in *version 0.5*",
+        "description": "Deletes an existing solver job\n\nNew in *version 0.7*",
         "operationId": "delete_job",
         "parameters": [
           {
@@ -2801,7 +2563,7 @@
           "solvers"
         ],
         "summary": "Start Job",
-        "description": "Starts job job_id created with the solver solver_key:version\n\nNew in *version 0.4.3*: cluster_id\nNew in *version 0.6.0*: This endpoint responds with a 202 when successfully starting a computation",
+        "description": "Starts job job_id created with the solver solver_key:version\n\nAdded in *version 0.4.3*: query parameter `cluster_id`\nAdded in *version 0.6*: responds with a 202 when successfully starting a computation",
         "operationId": "start_job",
         "parameters": [
           {
@@ -3246,7 +3008,7 @@
           "solvers"
         ],
         "summary": "Get Job Custom Metadata",
-        "description": "Gets custom metadata from a job\n\nNew in *version 0.5*",
+        "description": "Gets custom metadata from a job\n\nNew in *version 0.7*",
         "operationId": "get_job_custom_metadata",
         "parameters": [
           {
@@ -3373,7 +3135,7 @@
           "solvers"
         ],
         "summary": "Replace Job Custom Metadata",
-        "description": "Updates custom metadata from a job\n\nNew in *version 0.5*",
+        "description": "Updates custom metadata from a job\n\nNew in *version 0.7*",
         "operationId": "replace_job_custom_metadata",
         "parameters": [
           {
@@ -3512,7 +3274,7 @@
           "solvers"
         ],
         "summary": "Get Jobs Page",
-        "description": "List of jobs on a specific released solver (includes pagination)",
+        "description": "List of jobs on a specific released solver (includes pagination)\n\nNew in *version 0.7*",
         "operationId": "get_jobs_page",
         "parameters": [
           {
@@ -3802,7 +3564,7 @@
           "solvers"
         ],
         "summary": "Get Job Output Logfile",
-        "description": "Special extra output with persistent logs file for the solver run.\n\nNOTE: this is not a log stream but a predefined output that is only\navailable after the job is done.\n\nNew in *version 0.4.0*",
+        "description": "Special extra output with persistent logs file for the solver run.\n\n**NOTE**: this is not a log stream but a predefined output that is only\navailable after the job is done.\n\nNew in *version 0.4.0*",
         "operationId": "get_job_output_logfile",
         "parameters": [
           {
@@ -3939,6 +3701,7 @@
           "solvers"
         ],
         "summary": "Get Job Wallet",
+        "description": "Get job wallet\n\nNew in *version 0.7*",
         "operationId": "get_job_wallet",
         "parameters": [
           {
@@ -4077,6 +3840,7 @@
           "solvers"
         ],
         "summary": "Get Job Pricing Unit",
+        "description": "Get job pricing unit\n\nNew in *version 0.7*",
         "operationId": "get_job_pricing_unit",
         "parameters": [
           {
@@ -4240,11 +4004,20 @@
         ],
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "Returns a JobLog or an ErrorGet",
             "content": {
               "application/x-ndjson": {
                 "schema": {
-                  "type": "string"
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/JobLog"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorGet"
+                    }
+                  ],
+                  "type": "string",
+                  "title": "Response 200 Get Log Stream V0 Solvers  Solver Key  Releases  Version  Jobs  Job Id  Logstream Get"
                 }
               }
             }
@@ -4586,70 +4359,6 @@
       }
     },
     "/v0/studies/{study_id}/jobs": {
-      "get": {
-        "tags": [
-          "studies"
-        ],
-        "summary": "List Study Jobs",
-        "operationId": "list_study_jobs",
-        "parameters": [
-          {
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "Study Id"
-            },
-            "name": "study_id",
-            "in": "path"
-          },
-          {
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "maximum": 100,
-              "minimum": 1,
-              "title": "Limit",
-              "default": 50
-            },
-            "name": "limit",
-            "in": "query"
-          },
-          {
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "title": "Offset",
-              "default": 0
-            },
-            "name": "offset",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Page_Job_"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      },
       "post": {
         "tags": [
           "studies"
@@ -4739,57 +4448,6 @@
       }
     },
     "/v0/studies/{study_id}/jobs/{job_id}": {
-      "get": {
-        "tags": [
-          "studies"
-        ],
-        "summary": "Get Study Job",
-        "operationId": "get_study_job",
-        "parameters": [
-          {
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "Study Id"
-            },
-            "name": "study_id",
-            "in": "path"
-          },
-          {
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "Job Id"
-            },
-            "name": "job_id",
-            "in": "path"
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Job"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      },
       "delete": {
         "tags": [
           "studies"
@@ -4857,7 +4515,7 @@
           "studies"
         ],
         "summary": "Start Study Job",
-        "description": "New in *version 0.6.0*: This endpoint responds with a 202 when successfully starting a computation",
+        "description": "Changed in *version 0.6.0*: Now responds with a 202 when successfully starting a computation",
         "operationId": "start_study_job",
         "parameters": [
           {
@@ -5248,7 +4906,7 @@
           "studies"
         ],
         "summary": "Get Study Job Custom Metadata",
-        "description": "Gets custom metadata from a job",
+        "description": "Get custom metadata from a study's job\n\nNew in *version 0.7*",
         "operationId": "get_study_job_custom_metadata",
         "parameters": [
           {
@@ -5305,7 +4963,7 @@
           "studies"
         ],
         "summary": "Replace Study Job Custom Metadata",
-        "description": "Changes job's custom metadata",
+        "description": "Changes custom metadata of a study's job\n\nNew in *version 0.7*",
         "operationId": "replace_study_job_custom_metadata",
         "parameters": [
           {
@@ -5374,6 +5032,7 @@
           "wallets"
         ],
         "summary": "Get Default Wallet",
+        "description": "Get default wallet\n\nNew in *version 0.7*",
         "operationId": "get_default_wallet",
         "responses": {
           "200": {
@@ -5470,6 +5129,7 @@
           "wallets"
         ],
         "summary": "Get Wallet",
+        "description": "Get wallet\n\nNew in *version 0.7*",
         "operationId": "get_wallet",
         "parameters": [
           {
@@ -5587,6 +5247,7 @@
           "credits"
         ],
         "summary": "Get Credits Price",
+        "description": "New in *version 0.6.0*",
         "operationId": "get_credits_price",
         "responses": {
           "200": {
@@ -5994,6 +5655,46 @@
               "id": "0a3b2c56-dbcd-4871-b93b-d454b7883f9f"
             }
           }
+        }
+      },
+      "JobLog": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Job Id"
+          },
+          "node_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Node Id"
+          },
+          "log_level": {
+            "type": "integer",
+            "title": "Log Level"
+          },
+          "messages": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Messages"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id",
+          "log_level",
+          "messages"
+        ],
+        "title": "JobLog",
+        "example": {
+          "job_id": "145beae4-a3a8-4fde-adbb-4e8257c2c083",
+          "node_id": "3742215e-6756-48d2-8b73-4d043065309f",
+          "log_level": 10,
+          "messages": [
+            "PROGRESS: 5/10"
+          ]
         }
       },
       "JobLogsMap": {
@@ -6412,41 +6113,6 @@
           "links"
         ],
         "title": "Page[Job]"
-      },
-      "Page_Solver_": {
-        "properties": {
-          "items": {
-            "items": {
-              "$ref": "#/components/schemas/Solver"
-            },
-            "type": "array",
-            "title": "Items"
-          },
-          "total": {
-            "type": "integer",
-            "minimum": 0,
-            "title": "Total"
-          },
-          "limit": {
-            "type": "integer",
-            "minimum": 1,
-            "title": "Limit"
-          },
-          "offset": {
-            "type": "integer",
-            "minimum": 0,
-            "title": "Offset"
-          },
-          "links": {
-            "$ref": "#/components/schemas/Links"
-          }
-        },
-        "type": "object",
-        "required": [
-          "items",
-          "links"
-        ],
-        "title": "Page[Solver]"
       },
       "Page_Study_": {
         "properties": {
@@ -6949,6 +6615,8 @@
           },
           "name": {
             "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
             "title": "Name"
           },
           "description": {

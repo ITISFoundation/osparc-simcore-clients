@@ -1,7 +1,8 @@
 -include ../../scripts/common.Makefile
-PYTHON_DIR           := $(CLIENTS_DIR)/python
-ARTIFACTS_DIR        := $(PYTHON_DIR)/artifacts
-CONTAINER_API_JSON   := /local/$(REL_API_JSON_PATH)
+
+CLIENTS_PYTHON_DIR   := $(CLIENTS_DIR)/python
+ARTIFACTS_DIR        := $(CLIENTS_PYTHON_DIR)/artifacts
+CONTAINER_API_JSON   := /local/$(OPENAPI_SPECS_JSON_REL_PATH)
 GENERATOR            := python
 UID                  := $(shell id -u)
 ADDITIONAL_PROPS := \
@@ -12,28 +13,36 @@ ADDITIONAL_PROPS := \
 	packageUrl=$(shell bash $(SCRIPTS_DIR)/jq.bash -r .homepage $(REPO_ROOT)/api/config.json)\
 	projectName=osparc_client
 ADDITIONAL_PROPS := $(foreach prop,$(ADDITIONAL_PROPS),$(strip $(prop)))
-VERSION_FILE := $(PYTHON_DIR)/client/VERSION
+VERSION_FILE := $(CLIENTS_PYTHON_DIR)/VERSION
 
-.PHONY: generate_version
-client/VERSION:
-	@bash $(SCRIPTS_DIR)/generate_version.bash > $(VERSION_FILE)
+.PHONY: VERSION
+VERSION: ## Computes and dumps current client version
+	@printf "$$(bash $(SCRIPTS_DIR)/compute_version.bash)" > $(VERSION_FILE) || (printf "Failed to compute version\n" && exit 1)
 
 .PHONY: artifacts_dir
 artifacts_dir:
-	-mkdir $(ARTIFACTS_DIR)
+	-mkdir --parents $(ARTIFACTS_DIR)
 
-.PHONY: postprocess-build
-postprocess-build:
-	black $(PYTHON_DIR)/artifacts/client/*.py
-	@-rm -f $(PYTHON_DIR)/artifacts/client/README.md
-	@echo "Please visit our [website](https://itisfoundation.github.io/osparc-simcore-clients/#/) for documentation" > $(PYTHON_DIR)/artifacts/client/README.md
-	@-rm -rf $(PYTHON_DIR)/client/osparc/data/
-	@-mkdir $(PYTHON_DIR)/client/osparc/data/
-	@cp $(REPO_ROOT)/api/openapi.json $(PYTHON_DIR)/client/osparc/data/
+
+.PHONY: python-client-generator-help
+python-client-generator-help: ## help on client-api generator
+	# generate help
+	@docker run --rm $(OPENAPI_GENERATOR_IMAGE) help generate
+
+
+.PHONY: _postprocess_osparc_client_artifacts
+_postprocess_osparc_client_artifacts:
+	black $(ARTIFACTS_DIR)/client/*.py
+	@-rm -f $(ARTIFACTS_DIR)/client/README.md
+	@echo "Please visit our [website](https://itisfoundation.github.io/osparc-simcore-clients/#/) for documentation" > $(ARTIFACTS_DIR)/client/README.md
+	@-rm -rf $(CLIENTS_PYTHON_DIR)/src/osparc/data/
+	@-mkdir $(CLIENTS_PYTHON_DIR)/src/osparc/data/
+	@cp $(REPO_ROOT)/api/openapi.json $(CLIENTS_PYTHON_DIR)/src/osparc/data/
+
 
 # Generation of Python client
 .PHONY: python-client
-python-client: client/VERSION validate-api-specification artifacts_dir ## generate python client
+python-client: VERSION validate-api-specification artifacts_dir ## auto-generate python client
 	$(eval VERSION := $(shell cat $(VERSION_FILE)))
 	-rm -r $(ARTIFACTS_DIR)/client
 	docker run --rm --user $(UID):$(UID)\
@@ -48,10 +57,10 @@ python-client: client/VERSION validate-api-specification artifacts_dir ## genera
 			--additional-properties=packageVersion=$(VERSION),$(subst $(space),$(comma),$(strip $(ADDITIONAL_PROPS))) \
 			--package-name=osparc_client \
 			--release-note="Updated to $(VERSION)"
-	$(MAKE) postprocess-build
+	$(MAKE) _postprocess_osparc_client_artifacts
 
 .PHONY: python-client-from-templates
-python-client-from-templates: client/VERSION validate-api-specification artifacts_dir ## generate python client using templates in a specified directory (usage: 'make python-client-from-templates -e TEMPLATE_DIR=path/to/templates')
+python-client-from-templates: VERSION validate-api-specification artifacts_dir ## generate python client using templates in a specified directory (usage: 'make python-client-from-templates -e TEMPLATE_DIR=path/to/templates')
 	$(if $(TEMPLATE_DIR),,$(error The TEMPLATE_DIR environment variable must be set))
 	@echo "Using template-dir: $(TEMPLATE_DIR)"
 	$(eval VERSION := $(shell cat $(VERSION_FILE)))
@@ -70,14 +79,11 @@ python-client-from-templates: client/VERSION validate-api-specification artifact
 			--package-name=osparc_client \
 			--release-note="Updated to $(VERSION)" \
 			--template-dir=/tmp/python_templates
-	$(MAKE) postprocess-build
+	$(MAKE) _postprocess_osparc_client_artifacts
 
-.PHONY: generator-help
-generator-help: ## help on client-api generator
-	# generate help
-	@docker run --rm $(OPENAPI_GENERATOR_IMAGE) help generate
 
-## Tools for "postprocessing" generated documentation --------------------------------------------
+
+## DOCUMENTATION  --------------------------------------------
 
 ARTIFACTS_DOCS := artifacts/docs
 
@@ -102,32 +108,46 @@ _check_venv_active:
 	# checking whether virtual environment was activated
 	@python3 -c "import sys; assert sys.base_prefix!=sys.prefix"
 
+# (0) Environment ---------------------
+
+.PHONY: .install-dev-reqs
+.install-dev-reqs: _check_venv_active
+	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/dev.txt
+
 .PHONY: install-dev
-install-dev: _check_venv_active ## install packages for development
-	pip install -r requirements/dev.txt
+install-dev: _check_venv_active .install-dev-reqs python-client  ## installs osparc_client and osparc in edit mode
+	uv pip install -e artifacts/client
+	uv pip install -e .
+	uv pip list
 
 .PHONY: install-unit-test
 install-unit-test: _check_venv_active ## install packages for unit testing client
-	pip install -r $(PYTHON_DIR)/requirements/unit-test.txt
+	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/unit-test.txt
 
 .PHONY: install-e2e-test
-install-e2e-test: _check_venv_active ## install packages for e2e testing client
-	pip install -r $(PYTHON_DIR)/requirements/e2e-test.txt
+install-e2e-test: _check_venv_active ## install packages for e2e testing client [e2e]
+	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/e2e-test.txt
 
 .PHONY: install-doc
-install-doc: _check_venv_active install-dev ## install packages for generating documentation
-	pip install -r $(PYTHON_DIR)/requirements/doc.txt
+install-doc: _check_venv_active .install-dev-reqs ## install packages for generating documentation
+	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/doc.txt
+
+
+# (1) Linters ---------------------
 
 .PHONY: pylint
 pylint: _check_venv_active ## runs linter (only to check errors. SEE .pylintrc enabled)
-	pylint --rcfile "$(PYTHON_DIR)/.pylintrc" -v "$(ARTIFACTS_DIR)/client"
+	pylint --rcfile "$(CLIENTS_PYTHON_DIR)/.pylintrc" -v src/osparc
 
 .PHONY: mypy
-mypy: $(SCRIPTS_DIR)/mypy.bash $(PYTHON_DIR)/mypy.ini ## runs mypy python static type-checker on this services's code. Use AFTER make install-*
-	@$(SCRIPTS_DIR)/mypy.bash client
+mypy: $(SCRIPTS_DIR)/mypy.bash $(CLIENTS_PYTHON_DIR)/mypy.ini ## runs mypy python static type-checker on this services's code. Use AFTER make install-*
+	@$(SCRIPTS_DIR)/mypy.bash src/osparc
 
-.PHONY: test-dev
-test-dev: _check_venv_active ## runs tests during development
+
+# (2) Testing ---------------------
+
+.PHONY: tests
+tests: _check_venv_active ## runs tests during development
 	# runs tests for development (e.g w/ pdb)
 	python -m pytest \
 		-vv \
@@ -135,31 +155,30 @@ test-dev: _check_venv_active ## runs tests during development
 		--failed-first \
 		--durations=10 \
 		--pdb \
-		$(PYTHON_DIR)/test/test_osparc
+		$(CLIENTS_PYTHON_DIR)/test/test_osparc
+
+# (3) Packaging -------------------
 
 .PHONY: dist
-dist: artifacts_dir ## builds distribution wheel
-	# installs pypa/build
-	python -m pip install build
-    # Build a binary wheel and a source tarball
+dist: artifacts_dir ## builds distribution wheel for `osparc_client` and `osparc` packages -> $(ARTIFACTS_DIR)/dist
+	# Installing pypa/build ...
+	uv pip install build
+
+	# Building a binary wheel and a source tarball ...
 	python -m build --sdist --wheel $(ARTIFACTS_DIR)/client
-	python -m build --sdist --wheel $(PYTHON_DIR)/client
+	python -m build --sdist --wheel $(CLIENTS_PYTHON_DIR)
+
+	# Copying to artifacts/dist ...
 	@-rm -rf $(ARTIFACTS_DIR)/dist
 	@mkdir $(ARTIFACTS_DIR)/dist
-	@cp $$(ls artifacts/client/dist/*.whl) $(ARTIFACTS_DIR)/dist
-	@cp $$(ls client/dist/*.whl) $(ARTIFACTS_DIR)/dist
-	@cp client/VERSION $(ARTIFACTS_DIR)/dist
+	@cp -v $$(ls artifacts/client/dist/*.whl) $(ARTIFACTS_DIR)/dist
+	@cp -v $$(ls dist/*.whl) $(ARTIFACTS_DIR)/dist
+	@cp -v VERSION $(ARTIFACTS_DIR)/dist
 
 
-.PHONY: dist-ci
-dist-ci: python-client dist ## build wheel and tar ball in a single command
 
-.PHONY: build-n-install-osparc-dev
-build-n-install-osparc-dev: python-client ## install the built osparc package in editable mode
-	python -m pip install -e artifacts/client
-	python -m pip install -e client/
 
-## TEST ---------------------------------------------------------------------------------
+## e2e TEST ---------------------------------------------------------------------------------
 
 GH_TOKEN_FILE := $(wildcard $(HOME)/.gh-token)
 ifneq ($(GH_TOKEN_FILE),)
@@ -191,9 +210,9 @@ e2e-shell: guard-GH_TOKEN ## shell for running e2e tests
 	@echo "WARNING ##### $@ does not exist, cloning $< as $@ ############"; cp $< $@)
 
 .PHONY: image
-image: client/VERSION ## builds image $(APP_NAME):version
-	docker build -f Dockerfile -t $(APP_NAME):$(shell cat $(VERSION_FILE)) $(CURDIR)
+image: VERSION ## builds image $(APP_NAME):version
+	docker build -f docker/Dockerfile -t $(APP_NAME):$(shell cat $(VERSION_FILE)) $(CURDIR)
 
 .PHONY: shell
-shell: client/VERSION ## runs container and opens bash shell
+shell: VERSION ## runs container and opens bash shell
 	docker run -it $(APP_NAME):$(shell cat $(VERSION_FILE)) /bin/bash

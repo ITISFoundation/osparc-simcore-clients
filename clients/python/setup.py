@@ -1,31 +1,38 @@
+"""
+To install the library, run the following
+
+python setup.py install
+
+
+prerequisites:
+    - setuptools
+    - VERSION
+
+SEE http://pypi.python.org/pypi/setuptools
+"""
+
 from pathlib import Path
 
 from setuptools import find_packages, setup  # noqa: H301
 
 VERSION_FILE: Path = Path(__file__).parent / "VERSION"
-assert VERSION_FILE.is_file()
+assert VERSION_FILE.is_file(), "Did you forget `make VERSION`?"
 
 NAME = "osparc"
-VERSION = VERSION_FILE.read_text()
-# To install the library, run the following
-#
-# python setup.py install
-#
-# prerequisite: setuptools
-# http://pypi.python.org/pypi/setuptools
+VERSION = VERSION_FILE.read_text().strip()
 
 REQUIRES = [
-    f"osparc_client=={VERSION}",
     "httpx",
-    "tqdm>=4.48.0",
     "nest_asyncio",
-    "tenacity",
-    "pydantic>=2.0.0",
-    "pydantic-settings",
     "packaging",
+    "pydantic-settings",
+    "pydantic",
+    "tenacity",
+    "tqdm>=4.48.0",
+    f"osparc_client=={VERSION}",
 ]
 
-setup(
+SETUP = dict(
     name=NAME,
     version=VERSION,
     description="osparc.io web API",
@@ -33,9 +40,9 @@ setup(
     author_email="support@osparc.io",
     url="https://itisfoundation.github.io/osparc-simcore-clients/",
     install_requires=REQUIRES,
-    packages=find_packages(exclude=["test", "tests"]),
     include_package_data=True,
-    package_dir={"": "."},
+    packages=find_packages(where="src"),
+    package_dir={"": "src"},
     package_data={
         "": [
             "data/openapi.json",
@@ -51,8 +58,12 @@ setup(
     classifiers=[
         "Development Status :: 3 - Alpha",
         "License :: OSI Approved :: MIT License",
-        "Programming Language :: Python :: 3",
-        "Operating System :: OS Independent",
         "Natural Language :: English",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3",
     ],
 )
+
+
+if __name__ == "__main__":
+    setup(**SETUP)
