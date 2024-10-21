@@ -29,12 +29,6 @@ jobs:
         with:
           name: osparc_python_wheels
           path: osparc_python_wheels/
-      - name: Publish to TestPyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository-url: https://test.pypi.org/legacy/
-          verbose: true
-          packages-dir: osparc_python_wheels/
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
