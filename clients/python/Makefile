@@ -125,8 +125,9 @@ install-unit-test: _check_venv_active ## install packages for unit testing clien
 	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/unit-test.txt
 
 .PHONY: install-e2e-test
-install-e2e-test: _check_venv_active ## install packages for e2e testing client [e2e]
-	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/e2e-test.txt
+install-e2e-test: _check_venv_active guard-OSPARC_VERSION ## install packages for e2e testing client [e2e]
+	$(eval version := $(shell bash $(CLIENTS_PYTHON_DIR)/test/e2e/ci/bash/osparc_version.bash $(OSPARC_VERSION)))
+	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/e2e-test.txt osparc==$(version)
 
 .PHONY: install-doc
 install-doc: _check_venv_active .install-dev-reqs ## install packages for generating documentation
