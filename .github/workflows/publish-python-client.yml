@@ -29,22 +29,7 @@ jobs:
         with:
           name: osparc_python_wheels
           path: osparc_python_wheels/
-      - name: Check release
-        id: release
-        run: |
-          source .venv/bin/activate
-          version=$(cat osparc_python_wheels/VERSION)
-          is_release=$(python scripts/is_semantic_version.py "${version}" --no-raise-result)
-          echo "is-release=${is_release}" >> $GITHUB_OUTPUT
-          rm osparc_python_wheels/VERSION
-      - name: Publish to TestPyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository-url: https://test.pypi.org/legacy/
-          verbose: true
-          packages-dir: osparc_python_wheels/
       - name: Publish to PyPI
-        if: steps.release.outputs.is-release == 'True'
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           verbose: true
