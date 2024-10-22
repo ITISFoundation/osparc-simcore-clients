@@ -173,7 +173,6 @@ dist: artifacts_dir ## builds distribution wheel for `osparc_client` and `osparc
 	@mkdir $(ARTIFACTS_DIR)/dist
 	@cp -v $$(ls artifacts/client/dist/*.whl) $(ARTIFACTS_DIR)/dist
 	@cp -v $$(ls dist/*.whl) $(ARTIFACTS_DIR)/dist
-	@cp -v VERSION $(ARTIFACTS_DIR)/dist
 
 
 
