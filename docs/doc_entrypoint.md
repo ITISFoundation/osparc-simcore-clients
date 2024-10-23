@@ -72,6 +72,7 @@ with ApiClient() as api_client:
 For more in-depth usage, refer to the following resources:
 
 - 📚 Documentation
+  - [Version 0.8](clients/python/docs/v0.8.0/README.md)
   - [Version 0.6](clients/python/docs/v0.6.0/README.md)
   - [Version 0.5](clients/python/docs/v0.5.0/README.md)
 - [Community-Contributed Scripts](https://github.com/topics/osparc-python)

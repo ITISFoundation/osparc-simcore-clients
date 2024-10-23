@@ -5,4 +5,4 @@
 
 ## Tutorials
 
-- [Basic tutorial](clients/python/docs/BasicTutorial_v0.6.0.md) ([Download as BasicTutorial.ipynb](clients/python/docs/BasicTutorial_v0.6.0.ipynb ":ignore title"))
+- [Basic tutorial](clients/python/artifacts/docs/BasicTutorial_v0.6.0.md) ([Download as BasicTutorial.ipynb](clients/python/docs/BasicTutorial_v0.6.0.ipynb ":ignore title"))
