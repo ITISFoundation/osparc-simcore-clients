@@ -34,6 +34,7 @@ jobs:
       - name: Generate artifacts
         run: |
           python -m venv .venv
+          python -m pip install uv
           source .venv/bin/activate
           make docs
       - name: Setup Pages
