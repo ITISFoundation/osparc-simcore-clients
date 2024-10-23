@@ -16,7 +16,6 @@ class ApiClient(_ApiClient):
         header_name=None,
         header_value=None,
         cookie=None,
-        pool_threads=1,
     ):
         if configuration is None:
             try:
@@ -36,4 +35,4 @@ class ApiClient(_ApiClient):
                     "osparc.Configuration object explicitly"
                 ) from exc
 
-        super().__init__(configuration, header_name, header_value, cookie, pool_threads)
+        super().__init__(configuration, header_name, header_value, cookie)

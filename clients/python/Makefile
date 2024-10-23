@@ -116,8 +116,8 @@ _check_venv_active:
 
 .PHONY: install-dev
 install-dev: _check_venv_active .install-dev-reqs python-client  ## installs osparc_client and osparc in edit mode
-	uv pip install -e artifacts/client
-	uv pip install -e .
+	# for some reason this command refuses to run with uv. Looks related to https://github.com/astral-sh/uv/issues/1661
+	pip install -e artifacts/client -e .
 	uv pip list
 
 .PHONY: install-unit-test
