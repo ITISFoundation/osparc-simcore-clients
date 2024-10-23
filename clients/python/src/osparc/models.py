@@ -12,9 +12,6 @@ from osparc_client.models.body_abort_multipart_upload_v0_files_file_id_abort_pos
 from osparc_client.models.body_complete_multipart_upload_v0_files_file_id_complete_post import (
     BodyCompleteMultipartUploadV0FilesFileIdCompletePost as BodyCompleteMultipartUploadV0FilesFileIdCompletePost,
 )
-from osparc_client.models.body_upload_file_v0_files_content_put import (
-    BodyUploadFileV0FilesContentPut as BodyUploadFileV0FilesContentPut,
-)
 from osparc_client.models.client_file import ClientFile as ClientFile
 from osparc_client.models.client_file_upload_data import (
     ClientFileUploadData as ClientFileUploadData,
