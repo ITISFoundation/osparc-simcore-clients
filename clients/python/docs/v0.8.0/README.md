@@ -1,6 +1,6 @@
 # OSPARC Python package
 
-- API version: 0.5.0
+- API version: 0.7.0
 - Package version: 0.8.0
 
 ## Tutorials
