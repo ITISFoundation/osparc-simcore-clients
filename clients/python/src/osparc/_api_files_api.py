@@ -9,6 +9,7 @@ import shutil
 import string
 from pathlib import Path
 from typing import Any, Iterator, List, Optional, Tuple, Union
+from tempfile import NamedTemporaryFile
 
 import httpx
 from httpx import Response
@@ -71,7 +72,10 @@ class FilesApi(_FilesApi):
             raise RuntimeError(
                 f"destination_folder: {destination_folder} must be a directory"
             )
-        downloaded_file: Path = Path(super().download_file(file_id, **kwargs))
+        with NamedTemporaryFile(delete=False) as tmp_file:
+            downloaded_file = Path(tmp_file.name)
+        data = super().download_file(file_id, **kwargs)
+        downloaded_file.write_bytes(data)
         if destination_folder is not None:
             dest_file: Path = destination_folder / downloaded_file.name
             while dest_file.is_file():
