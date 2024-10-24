@@ -113,6 +113,7 @@ _check_venv_active:
 .PHONY: .install-dev-reqs
 .install-dev-reqs: _check_venv_active
 	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/dev.txt
+	@touch setup.py
 
 .PHONY: install-dev
 install-dev: _check_venv_active .install-dev-reqs python-client  ## installs osparc_client and osparc in edit mode
