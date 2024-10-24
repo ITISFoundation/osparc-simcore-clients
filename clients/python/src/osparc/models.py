@@ -80,7 +80,9 @@ TaskStates = _RunningState
 
 class JobInputs(_JobInputs):
     def __init__(self, *args, **kwargs):
-        if len(args) == 1:
-            return _JobInputs.from_dict({"values": args[0]})
+        if len(args) == 1 and len(kwargs) == 0:
+            input = args[0]
+            assert isinstance(input, dict)
+            super().__init__(values={k: ValuesValue(v) for k, v in input.items()})
         else:
-            return _JobInputs(*args, **kwargs)
+            super().__init__(*args, **kwargs)

@@ -14,6 +14,7 @@ from tempfile import NamedTemporaryFile
 import httpx
 from httpx import Response
 from osparc_client.api.files_api import FilesApi as _FilesApi
+from osparc_client import Filesize as _Filesize
 from tqdm.asyncio import tqdm
 from tqdm.contrib.logging import logging_redirect_tqdm
 
@@ -119,7 +120,7 @@ class FilesApi(_FilesApi):
                 return file_result
         client_file: ClientFile = ClientFile(
             filename=file.name,
-            filesize=file.stat().st_size,
+            filesize=_Filesize(file.stat().st_size),
             sha256_checksum=checksum,
         )
         client_upload_schema: ClientFileUploadData = super().get_upload_links(
