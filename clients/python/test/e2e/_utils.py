@@ -24,20 +24,6 @@ def repo_version() -> Version:
     return Version(version_file.read_text())
 
 
-def skip_if_no_dev_features(test):
-    if (
-        Version(osparc.__version__) < repo_version()
-        or not osparc_dev_features_enabled()
-    ):
-        return pytest.mark.skip(
-            (
-                f"{osparc.__version__=}<{str(repo_version)} "
-                f"or {osparc_dev_features_enabled()=}"
-            )
-        )(test)
-    return test
-
-
 def skip_if_osparc_version(
     *,
     at_least: Optional[Version] = None,
