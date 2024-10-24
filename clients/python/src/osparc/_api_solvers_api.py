@@ -113,6 +113,6 @@ class SolversApi(_SolversApi):
 
     def get_job_outputs(self, *args, **kwargs) -> JobOutputs:
         _osparc_client_outputs = super().get_job_outputs(*args, **kwargs)
-        _outputs = JobOutputs(outputs=_osparc_client_outputs)
+        _outputs = JobOutputs.from_osparc_client_job_outputs(_osparc_client_outputs)
         assert _outputs is not None
         return _outputs

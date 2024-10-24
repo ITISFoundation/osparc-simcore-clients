@@ -72,7 +72,8 @@ from osparc_client.models.wallet_get_with_available_credits import (
     WalletGetWithAvailableCredits as WalletGetWithAvailableCredits,
 )
 from osparc_client.models.wallet_status import WalletStatus as WalletStatus
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, StrictStr
+from typing import Any, Dict
 
 # renames
 TaskStates = _RunningState
@@ -89,18 +90,16 @@ class JobInputs(_JobInputs):
 
 
 class JobOutputs(BaseModel):
-    outputs: _JobOutputs
+    job_id: StrictStr = Field(description="Job that produced this output")
+    results: Dict[str, Any]
 
-    @property
-    def results(self):
+    @classmethod
+    def from_osparc_client_job_outputs(cls, outputs: _JobOutputs) -> "JobOutputs":
         _results = {}
-        for k, v in self.outputs.results.items():
+        for k, v in outputs.results.items():
             if isinstance(v, ValuesValue):
                 _results[k] = v.actual_instance
             else:
                 _results[k] = v
-        return _results
 
-    @property
-    def job_id(self):
-        return self.outputs.job_id
+        return cls(job_id=outputs.job_id, results=_results)
