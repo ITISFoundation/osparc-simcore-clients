@@ -3,9 +3,8 @@
 from typing import Optional
 
 from osparc_client.api_client import ApiClient as _ApiClient
-from osparc_client import Configuration
+from ._configuration import Configuration
 from pydantic import ValidationError
-
 from ._settings import ConfigurationEnvVars
 
 
