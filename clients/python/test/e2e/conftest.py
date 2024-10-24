@@ -96,7 +96,7 @@ def pytest_configure(config):
 
 @pytest.fixture
 def api_client() -> Iterable[osparc.ApiClient]:
-    if Version(osparc.__version__) >= Version("8.0.0"):
+    if Version(osparc.__version__) >= Version("0.8.0"):
         with osparc.ApiClient() as api_client:
             yield api_client
     else:
