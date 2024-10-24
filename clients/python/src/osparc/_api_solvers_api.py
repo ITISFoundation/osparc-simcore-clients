@@ -4,7 +4,7 @@ from typing import Any, List, Optional
 
 import httpx
 from osparc_client.api.solvers_api import SolversApi as _SolversApi
-from .models import JobInputs, OnePageSolverPort, SolverPort
+from .models import JobInputs, OnePageSolverPort, SolverPort, JobOutputs
 
 from ._api_client import ApiClient
 from ._settings import ParentProjectInfo
@@ -15,8 +15,9 @@ from ._utils import (
     dev_feature,
     dev_features_enabled,
 )
-
 import warnings
+from tempfile import NamedTemporaryFile
+from pathlib import Path
 
 
 class SolversApi(_SolversApi):
@@ -102,3 +103,16 @@ class SolversApi(_SolversApi):
     ):
         kwargs = {**kwargs, **ParentProjectInfo().model_dump(exclude_none=True)}
         return super().create_job(solver_key, version, job_inputs, **kwargs)
+
+    def get_job_output_logfile(self, *args, **kwargs):
+        data = super().get_job_output_logfile(*args, **kwargs)
+        with NamedTemporaryFile(delete=False) as tmp_file:
+            log_file = Path(tmp_file.name)
+            log_file.write_bytes(data)
+            return log_file
+
+    def get_job_outputs(self, *args, **kwargs) -> JobOutputs:
+        _osparc_client_outputs = super().get_job_outputs(*args, **kwargs)
+        _outputs = JobOutputs(outputs=_osparc_client_outputs)
+        assert _outputs is not None
+        return _outputs

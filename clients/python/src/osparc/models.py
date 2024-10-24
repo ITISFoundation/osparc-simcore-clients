@@ -35,7 +35,7 @@ from osparc_client.models.job_metadata_update import (
     JobMetadataUpdate as JobMetadataUpdate,
 )
 from osparc_client.models.values_value import ValuesValue as ValuesValue
-from osparc_client.models.job_outputs import JobOutputs as JobOutputs
+from osparc_client.models.job_outputs import JobOutputs as _JobOutputs
 from osparc_client.models.job_status import JobStatus as JobStatus
 from osparc_client.models.links import Links as Links
 from osparc_client.models.log_link import LogLink as LogLink
@@ -72,7 +72,7 @@ from osparc_client.models.wallet_get_with_available_credits import (
     WalletGetWithAvailableCredits as WalletGetWithAvailableCredits,
 )
 from osparc_client.models.wallet_status import WalletStatus as WalletStatus
-
+from pydantic import BaseModel
 
 # renames
 TaskStates = _RunningState
@@ -86,3 +86,21 @@ class JobInputs(_JobInputs):
             super().__init__(values={k: ValuesValue(v) for k, v in input.items()})
         else:
             super().__init__(*args, **kwargs)
+
+
+class JobOutputs(BaseModel):
+    outputs: _JobOutputs
+
+    @property
+    def results(self):
+        _results = {}
+        for k, v in self.outputs.results.items():
+            if isinstance(v, ValuesValue):
+                _results[k] = v.actual_instance
+            else:
+                _results[k] = v
+        return _results
+
+    @property
+    def job_id(self):
+        return self.outputs.job_id
