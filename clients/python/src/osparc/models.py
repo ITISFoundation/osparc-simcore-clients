@@ -28,14 +28,12 @@ from osparc_client.models.http_validation_error import (
     HTTPValidationError as HTTPValidationError,
 )
 from osparc_client.models.job import Job as Job
-from osparc_client.models.job_inputs import JobInputs as _JobInputs
 from osparc_client.models.job_logs_map import JobLogsMap as JobLogsMap
 from osparc_client.models.job_metadata import JobMetadata as JobMetadata
 from osparc_client.models.job_metadata_update import (
     JobMetadataUpdate as JobMetadataUpdate,
 )
 from osparc_client.models.values_value import ValuesValue as ValuesValue
-from osparc_client.models.job_outputs import JobOutputs as _JobOutputs
 from osparc_client.models.job_status import JobStatus as JobStatus
 from osparc_client.models.links import Links as Links
 from osparc_client.models.log_link import LogLink as LogLink
@@ -72,51 +70,9 @@ from osparc_client.models.wallet_get_with_available_credits import (
     WalletGetWithAvailableCredits as WalletGetWithAvailableCredits,
 )
 from osparc_client.models.wallet_status import WalletStatus as WalletStatus
-from pydantic import BaseModel, Field, StrictStr
-from typing import Any, Dict
+
+from ._models import JobInputs as JobInputs
+from ._models import JobOutputs as JobOutputs
 
 # renames
 TaskStates = _RunningState
-
-
-def _values_dict(v: Dict[str, Any]) -> Dict[str, ValuesValue | None]:
-    result = {}
-    for k, v in v.items():
-        if v is not None:
-            result[k] = ValuesValue(v)
-        else:
-            result[k] = v
-    return result
-
-
-class JobInputs(_JobInputs):
-    def __init__(self, *args, **kwargs):
-        if len(args) == 1 and len(kwargs) == 0:
-            input = args[0]
-            assert isinstance(input, dict)
-            super().__init__(values=_values_dict(input))
-            return
-        if len(args) == 0 and len(kwargs) == 1:
-            values = kwargs.get("values")
-            if values is None:
-                raise RuntimeError("When passing a single kwarg it must be 'values'")
-            super().__init__(values=_values_dict(values))
-            return
-        else:
-            super().__init__(*args, **kwargs)
-
-
-class JobOutputs(BaseModel):
-    job_id: StrictStr = Field(description="Job that produced this output")
-    results: Dict[str, Any]
-
-    @classmethod
-    def from_osparc_client_job_outputs(cls, outputs: _JobOutputs) -> "JobOutputs":
-        _results = {}
-        for k, v in outputs.results.items():
-            if isinstance(v, ValuesValue):
-                _results[k] = v.actual_instance
-            else:
-                _results[k] = v
-
-        return cls(job_id=outputs.job_id, results=_results)
