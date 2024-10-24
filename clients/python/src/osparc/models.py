@@ -28,12 +28,13 @@ from osparc_client.models.http_validation_error import (
     HTTPValidationError as HTTPValidationError,
 )
 from osparc_client.models.job import Job as Job
-from osparc_client.models.job_inputs import JobInputs as JobInputs
+from osparc_client.models.job_inputs import JobInputs as _JobInputs
 from osparc_client.models.job_logs_map import JobLogsMap as JobLogsMap
 from osparc_client.models.job_metadata import JobMetadata as JobMetadata
 from osparc_client.models.job_metadata_update import (
     JobMetadataUpdate as JobMetadataUpdate,
 )
+from osparc_client.models.values_value import ValuesValue as ValuesValue
 from osparc_client.models.job_outputs import JobOutputs as JobOutputs
 from osparc_client.models.job_status import JobStatus as JobStatus
 from osparc_client.models.links import Links as Links
@@ -75,3 +76,11 @@ from osparc_client.models.wallet_status import WalletStatus as WalletStatus
 
 # renames
 TaskStates = _RunningState
+
+
+class JobInputs(_JobInputs):
+    def __init__(self, *args, **kwargs):
+        if len(args) == 1:
+            return _JobInputs.from_dict({"values": args[0]})
+        else:
+            return _JobInputs(*args, **kwargs)
