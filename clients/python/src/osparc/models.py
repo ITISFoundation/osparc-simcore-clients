@@ -44,6 +44,7 @@ from osparc_client.models.one_page_solver_port import (
 from osparc_client.models.one_page_study_port import (
     OnePageStudyPort as OnePageStudyPort,
 )
+from osparc_client import MetadataValue as MetadataValue
 from osparc_client.models.page_file import PageFile as PageFile
 from osparc_client.models.page_job import PageJob as PageJob
 from osparc_client.models.page_study import PageStudy as PageStudy
