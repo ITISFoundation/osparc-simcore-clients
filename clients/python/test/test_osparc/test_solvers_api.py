@@ -1,6 +1,6 @@
 import pytest
 from pytest_mock import MockerFixture
-from osparc import JobMetadata, MetadataValue, ApiClient, SolversApi
+from osparc import JobMetadata, ApiClient, SolversApi
 from faker import Faker
 from urllib3 import HTTPResponse
 
@@ -11,9 +11,9 @@ def job_metadata(faker: Faker) -> JobMetadata:
     return JobMetadata(
         job_id=f"{_job_id}",
         metadata={
-            "job_id": MetadataValue(_job_id),
-            "job_name": MetadataValue(faker.text()),
-            "node_id": MetadataValue(faker.uuid4()),
+            "job_id": _job_id,
+            "job_name": faker.text(),
+            "node_id": faker.uuid4(),
         },
         url=faker.url(),
     )
@@ -34,7 +34,9 @@ def test_job_metadata_serialization(
         json=None,
         **urlopen_kw,
     ) -> HTTPResponse:
-        response = HTTPResponse(status=200, body=job_metadata.to_json().encode())
+        response = HTTPResponse(
+            status=200, body=job_metadata.model_dump_json().encode()
+        )
         return response
 
     mocker.patch("urllib3.PoolManager.request", side_effect=_get_job_sideeffect)
@@ -43,4 +45,4 @@ def test_job_metadata_serialization(
     metadata = _solvers_api.get_job_custom_metadata(
         solver_key="mysolver", version="1.2.3", job_id=f"{faker.uuid4()}"
     )
-    print(metadata)
+    assert metadata == job_metadata

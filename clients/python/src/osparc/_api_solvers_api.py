@@ -4,7 +4,8 @@ from typing import Any, List, Optional
 
 import httpx
 from osparc_client.api.solvers_api import SolversApi as _SolversApi
-from .models import JobInputs, OnePageSolverPort, SolverPort, JobOutputs
+from .models import JobInputs, OnePageSolverPort, SolverPort, JobOutputs, JobMetadata
+from osparc_client import JobInputs as _JobInputs
 
 from ._api_client import ApiClient
 from ._settings import ParentProjectInfo
@@ -101,8 +102,9 @@ class SolversApi(_SolversApi):
     def create_job(
         self, solver_key: str, version: str, job_inputs: JobInputs, **kwargs
     ):
+        _job_inputs = _JobInputs.from_json(job_inputs.model_dump_json())
         kwargs = {**kwargs, **ParentProjectInfo().model_dump(exclude_none=True)}
-        return super().create_job(solver_key, version, job_inputs, **kwargs)
+        return super().create_job(solver_key, version, _job_inputs, **kwargs)
 
     def get_job_output_logfile(self, *args, **kwargs):
         data = super().get_job_output_logfile(*args, **kwargs)
@@ -113,6 +115,8 @@ class SolversApi(_SolversApi):
 
     def get_job_outputs(self, *args, **kwargs) -> JobOutputs:
         _osparc_client_outputs = super().get_job_outputs(*args, **kwargs)
-        _outputs = JobOutputs.from_osparc_client_job_outputs(_osparc_client_outputs)
-        assert _outputs is not None
-        return _outputs
+        return JobOutputs.model_validate_json(_osparc_client_outputs.to_json())
+
+    def get_job_custom_metadata(self, *args, **kwargs) -> JobMetadata:
+        metadata = super().get_job_custom_metadata(*args, **kwargs)
+        return JobMetadata.model_validate_json(metadata.to_json())
