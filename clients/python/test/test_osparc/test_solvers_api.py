@@ -1,4 +1,4 @@
-from osparc import JobMetadata, ApiClient, SolversApi, JobMetadataUpdate
+from osparc import JobMetadata, ApiClient, SolversApi, JobMetadataUpdate, JobInputs, Job
 from faker import Faker
 from typing import Callable, Generator
 from pydantic import BaseModel
@@ -10,11 +10,18 @@ def solvers_api(api_client: ApiClient) -> Generator[SolversApi, None, None]:
     yield SolversApi(api_client=api_client)
 
 
-# def test_create_job(
-#     create_server_mock: Callable[[int, BaseModel], None],
-#     job_inputs: JobInputs):
-#     job: Job
-#     create_server_mock(201, job)
+def test_create_job(
+    create_server_mock: Callable[[int, BaseModel], None],
+    job_inputs: JobInputs,
+    job: Job,
+    solvers_api: SolversApi,
+):
+    create_server_mock(201, job)
+
+    _job = solvers_api.create_job(
+        solver_key="mysolver", version="1.2.3", job_inputs=job_inputs
+    )
+    assert _job == job
 
 
 def test_get_job_custom_metadata(

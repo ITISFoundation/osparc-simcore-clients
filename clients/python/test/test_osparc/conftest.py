@@ -91,3 +91,17 @@ def job_inputs(faker: Faker) -> osparc.JobInputs:
             "None": None,
         }
     )
+
+
+@pytest.fixture
+def job(faker: Faker) -> osparc.Job:
+    return osparc.Job(
+        id=f"{faker.uuid4()}",
+        name=faker.file_name(),
+        inputs_checksum=f"{faker.sha256()}",
+        created_at=faker.date_time(),
+        runner_name="runner1",  # must validate regexp, hence hardcoded
+        url=None,
+        runner_url=None,
+        outputs_url=None,
+    )
