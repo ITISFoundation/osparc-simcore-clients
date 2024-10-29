@@ -1,45 +1,43 @@
 import pytest
-from pytest_mock import MockerFixture
-from osparc import JobMetadata, ApiClient, SolversApi
+from osparc import JobMetadata, ApiClient, SolversApi, JobMetadataUpdate
 from faker import Faker
-from urllib3 import HTTPResponse
+from typing import Callable
+from pydantic import BaseModel
 
 
 @pytest.fixture
 def job_metadata(faker: Faker) -> JobMetadata:
-    _job_id = faker.uuid4()
+    _job_id = f"{faker.uuid4()}"
     return JobMetadata(
-        job_id=f"{_job_id}",
+        job_id=_job_id,
         metadata={
             "job_id": _job_id,
-            "job_name": faker.text(),
-            "node_id": faker.uuid4(),
+            "job_name": f"{faker.text()}",
+            "node_id": f"{faker.uuid4()}",
         },
         url=faker.url(),
     )
 
 
-def test_job_metadata_serialization(
-    mocker: MockerFixture,
+@pytest.fixture
+def job_metadata_update(faker: Faker):
+    return JobMetadataUpdate(
+        metadata={
+            "var1": faker.boolean(),
+            "var2": faker.pyfloat(),
+            "var3": faker.pyint(),
+            "var4": faker.text(),
+        }
+    )
+
+
+def test_get_job_custom_metadata(
+    create_server_mock: Callable[[int, BaseModel], None],
     job_metadata: JobMetadata,
     api_client: ApiClient,
     faker: Faker,
 ):
-    def _get_job_sideeffect(
-        method: str,
-        url: str,
-        body=None,
-        fields=None,
-        headers=None,
-        json=None,
-        **urlopen_kw,
-    ) -> HTTPResponse:
-        response = HTTPResponse(
-            status=200, body=job_metadata.model_dump_json().encode()
-        )
-        return response
-
-    mocker.patch("urllib3.PoolManager.request", side_effect=_get_job_sideeffect)
+    create_server_mock(200, job_metadata)
 
     _solvers_api = SolversApi(api_client=api_client)
     metadata = _solvers_api.get_job_custom_metadata(
