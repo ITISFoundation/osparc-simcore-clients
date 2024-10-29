@@ -9,6 +9,7 @@ from typing import Any, Optional
 import httpx
 from .models import JobInputs, JobLogsMap, PageStudy
 from osparc_client.api.studies_api import StudiesApi as _StudiesApi
+from osparc_client import JobInputs as _JobInputs
 from tqdm.asyncio import tqdm_asyncio
 
 from ._api_client import ApiClient
@@ -64,8 +65,10 @@ class StudiesApi(_StudiesApi):
         return super().__getattribute__(name)
 
     def create_study_job(self, study_id: str, job_inputs: JobInputs, **kwargs):
+        _job_inputs = _JobInputs.from_json(job_inputs.model_dump_json())
+        assert _job_inputs is not None
         kwargs = {**kwargs, **ParentProjectInfo().model_dump(exclude_none=True)}
-        return super().create_study_job(study_id, job_inputs, **kwargs)
+        return super().create_study_job(study_id, _job_inputs, **kwargs)
 
     def clone_study(self, study_id: str, **kwargs):
         kwargs = {**kwargs, **ParentProjectInfo().model_dump(exclude_none=True)}

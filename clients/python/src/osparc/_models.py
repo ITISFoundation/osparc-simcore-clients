@@ -7,9 +7,7 @@ from pydantic import BaseModel, StrictStr, Field
 
 
 class JobInputs(BaseModel):
-    values: Dict[str, Union[File, List[object], bool, float, int, str, None]] = Field(
-        kw_only=False
-    )
+    values: Dict[str, Union[File, List[object], bool, float, int, str, None]]
 
     def __init__(
         self, values: Dict[str, Union[File, List[object], bool, float, int, str, None]]
