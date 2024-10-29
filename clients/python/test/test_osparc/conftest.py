@@ -77,3 +77,17 @@ def job_metadata(
         metadata=job_metadata_update.metadata,
         url=faker.url(),
     )
+
+
+@pytest.fixture
+def job_inputs(faker: Faker) -> osparc.JobInputs:
+    return osparc.JobInputs(
+        {
+            "File": osparc.File(id=f"{faker.uuid4()}", filename=faker.file_name()),
+            "bool": faker.boolean(),
+            "float": faker.pyfloat(),
+            "int": faker.pyint(),
+            "str": faker.text(),
+            "None": None,
+        }
+    )
