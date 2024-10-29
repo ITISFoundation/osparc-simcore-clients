@@ -53,3 +53,27 @@ def create_server_mock(
         mocker.patch("urllib3.PoolManager.request", side_effect=_sideeffect)
 
     yield _mock_server
+
+
+@pytest.fixture
+def job_metadata_update(faker: Faker):
+    return osparc.JobMetadataUpdate(
+        metadata={
+            "boolean": faker.boolean(),
+            "float": faker.pyfloat(),
+            "int": faker.pyint(),
+            "str": faker.text(),
+            "None": None,
+        }
+    )
+
+
+@pytest.fixture
+def job_metadata(
+    faker: Faker, job_metadata_update: osparc.JobMetadataUpdate
+) -> osparc.JobMetadata:
+    return osparc.JobMetadata(
+        job_id=f"{faker.uuid4()}",
+        metadata=job_metadata_update.metadata,
+        url=faker.url(),
+    )
