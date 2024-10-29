@@ -1,6 +1,7 @@
 from osparc_client import JobInputs as _JobInputs
 from osparc_client import JobOutputs as _JobOutputs
 from osparc_client import JobMetadata as _JobMetadata
+from osparc_client import JobMetadataUpdate as _JobMetadataUpdate
 from .models import File
 from typing import Dict, Union, List
 from pydantic import BaseModel, StrictStr, Field
@@ -33,3 +34,12 @@ class JobMetadata(BaseModel):
 
 
 assert set(_JobMetadata.model_fields.keys()) == set(JobMetadata.model_fields.keys())
+
+
+class JobMetadataUpdate(BaseModel):
+    metadata: Dict[str, Union[bool, float, int, str, None]]
+
+
+assert set(_JobMetadataUpdate.model_fields.keys()) == set(
+    JobMetadataUpdate.model_fields.keys()
+)

@@ -29,10 +29,6 @@ from osparc_client.models.http_validation_error import (
 )
 from osparc_client.models.job import Job as Job
 from osparc_client.models.job_logs_map import JobLogsMap as JobLogsMap
-from osparc_client.models.job_metadata import JobMetadata as JobMetadata
-from osparc_client.models.job_metadata_update import (
-    JobMetadataUpdate as JobMetadataUpdate,
-)
 from osparc_client.models.values_value import ValuesValue as ValuesValue
 from osparc_client.models.job_status import JobStatus as JobStatus
 from osparc_client.models.links import Links as Links
@@ -74,6 +70,8 @@ from osparc_client.models.wallet_status import WalletStatus as WalletStatus
 
 from ._models import JobInputs as JobInputs
 from ._models import JobOutputs as JobOutputs
+from ._models import JobMetadata as JobMetadata
+from ._models import JobMetadataUpdate as JobMetadataUpdate
 
 # renames
 TaskStates = _RunningState

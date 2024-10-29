@@ -4,8 +4,16 @@ from typing import Any, List, Optional
 
 import httpx
 from osparc_client.api.solvers_api import SolversApi as _SolversApi
-from .models import JobInputs, OnePageSolverPort, SolverPort, JobOutputs, JobMetadata
+from .models import (
+    JobInputs,
+    OnePageSolverPort,
+    SolverPort,
+    JobOutputs,
+    JobMetadata,
+    JobMetadataUpdate,
+)
 from osparc_client import JobInputs as _JobInputs
+from osparc_client import JobMetadataUpdate as _JobMetadataUpdate
 
 from ._api_client import ApiClient
 from ._settings import ParentProjectInfo
@@ -19,6 +27,7 @@ from ._utils import (
 import warnings
 from tempfile import NamedTemporaryFile
 from pathlib import Path
+from pydantic import validate_call
 
 
 class SolversApi(_SolversApi):
@@ -99,6 +108,7 @@ class SolversApi(_SolversApi):
         )
         return self.iter_jobs(solver_key, version, **kwargs)
 
+    @validate_call
     def create_job(
         self, solver_key: str, version: str, job_inputs: JobInputs, **kwargs
     ):
@@ -121,3 +131,20 @@ class SolversApi(_SolversApi):
     def get_job_custom_metadata(self, *args, **kwargs) -> JobMetadata:
         metadata = super().get_job_custom_metadata(*args, **kwargs)
         return JobMetadata.model_validate_json(metadata.to_json())
+
+    @validate_call
+    def replace_job_custom_metadata(
+        self,
+        solver_key: str,
+        version: str,
+        job_id: str,
+        job_metadata_update: JobMetadataUpdate,
+    ) -> JobMetadata:
+        _job_metadata_update = _JobMetadataUpdate.from_json(
+            job_metadata_update.model_dump_json()
+        )
+        assert _job_metadata_update is not None
+        _job_custom_metadata = super().replace_job_custom_metadata(
+            solver_key, version, job_id, _job_metadata_update
+        )
+        return JobMetadata.model_validate_json(_job_custom_metadata.to_json())
