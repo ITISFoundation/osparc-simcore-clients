@@ -80,10 +80,9 @@ def create_osparc_response_model(
     def _create_model(model_type: Type[T]) -> T:
         schemas = osparc_openapi_specs.get("components", {}).get("schemas", {})
         example_data = schemas.get(model_type.__name__, {}).get("example", {})
-        assert example_data, (
-            "Could not extract example data for",
-            " '{model_type.__name__}' from openapi specs",
-        )
+        error_msg = "Could not extract example data for"
+        error_msg += f" '{model_type.__name__}' from openapi specs"
+        assert example_data, error_msg
         return model_type.model_validate(example_data)
 
     yield _create_model
