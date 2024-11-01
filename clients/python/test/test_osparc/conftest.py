@@ -14,7 +14,7 @@ from prance import ResolvingParser
 import json
 from tempfile import NamedTemporaryFile
 from pathlib import Path
-from typing import Any, Type, TypeVar
+from typing import Any, TypeVar
 
 
 @pytest.fixture
@@ -49,7 +49,7 @@ def dev_mode_enabled(monkeypatch: pytest.MonkeyPatch) -> None:
 @pytest.fixture
 def create_server_mock(
     mocker: MockerFixture,
-) -> Generator[Callable[[int, BaseModel], None], None, None]:
+) -> Callable[[int, BaseModel], None]:
     def _mock_server(_status: int, _body: BaseModel) -> None:
         def _sideeffect(
             method: str,
@@ -67,7 +67,7 @@ def create_server_mock(
 
         mocker.patch("urllib3.PoolManager.request", side_effect=_sideeffect)
 
-    yield _mock_server
+    return _mock_server
 
 
 T = TypeVar("T", bound=BaseModel)
@@ -76,8 +76,8 @@ T = TypeVar("T", bound=BaseModel)
 @pytest.fixture
 def create_osparc_response_model(
     osparc_openapi_specs: dict[str, Any],
-) -> Generator[Callable[[Type[T]], T], None, None]:
-    def _create_model(model_type: Type[T]) -> T:
+) -> Callable[[type[T]], T]:
+    def _create_model(model_type: type[T]) -> T:
         schemas = osparc_openapi_specs.get("components", {}).get("schemas", {})
         example_data = schemas.get(model_type.__name__, {}).get("example", {})
         error_msg = "Could not extract example data for"
@@ -85,4 +85,4 @@ def create_osparc_response_model(
         assert example_data, error_msg
         return model_type.model_validate(example_data)
 
-    yield _create_model
+    return _create_model
