@@ -1,8 +1,10 @@
 -r ../../../requirements.txt
 black
 faker
+openapi-spec-validator #installed as backend for prance
 pipdeptree
 pipreqs
+prance
 pytest
 pytest-asyncio
 pytest-mock
