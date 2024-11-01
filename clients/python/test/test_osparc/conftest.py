@@ -10,6 +10,11 @@ from pytest_mock import MockerFixture
 from urllib3 import HTTPResponse
 from pydantic import BaseModel
 from typing import Callable, Generator
+from prance import ResolvingParser
+import json
+from tempfile import NamedTemporaryFile
+from pathlib import Path
+from typing import Any, Type, TypeVar
 
 
 @pytest.fixture
@@ -19,6 +24,16 @@ def cfg(faker: Faker) -> osparc.Configuration:
         username=faker.user_name(),
         password=faker.password(),
     )
+
+
+@pytest.fixture
+def osparc_openapi_specs() -> Generator[dict[str, Any], None, None]:
+    with NamedTemporaryFile(suffix=".json") as file:
+        file = Path(file.name)
+        file.write_text(json.dumps(osparc.openapi()))
+        osparc_spec = ResolvingParser(f"{file.resolve()}").specification
+    assert osparc_spec is not None
+    yield osparc_spec
 
 
 @pytest.fixture
@@ -55,53 +70,20 @@ def create_server_mock(
     yield _mock_server
 
 
-@pytest.fixture
-def job_metadata_update(faker: Faker):
-    return osparc.JobMetadataUpdate(
-        metadata={
-            "boolean": faker.boolean(),
-            "float": faker.pyfloat(),
-            "int": faker.pyint(),
-            "str": faker.text(),
-            "None": None,
-        }
-    )
+T = TypeVar("T", bound=BaseModel)
 
 
 @pytest.fixture
-def job_metadata(
-    faker: Faker, job_metadata_update: osparc.JobMetadataUpdate
-) -> osparc.JobMetadata:
-    return osparc.JobMetadata(
-        job_id=f"{faker.uuid4()}",
-        metadata=job_metadata_update.metadata,
-        url=faker.url(),
-    )
+def create_osparc_response_model(
+    osparc_openapi_specs: dict[str, Any],
+) -> Generator[Callable[[Type[T]], T], None, None]:
+    def _create_model(model_type: Type[T]) -> T:
+        schemas = osparc_openapi_specs.get("components", {}).get("schemas", {})
+        example_data = schemas.get(model_type.__name__, {}).get("example", {})
+        assert example_data, (
+            "Could not extract example data for",
+            " '{model_type.__name__}' from openapi specs",
+        )
+        return model_type.model_validate(example_data)
 
-
-@pytest.fixture
-def job_inputs(faker: Faker) -> osparc.JobInputs:
-    return osparc.JobInputs(
-        {
-            "File": osparc.File(id=f"{faker.uuid4()}", filename=faker.file_name()),
-            "bool": faker.boolean(),
-            "float": faker.pyfloat(),
-            "int": faker.pyint(),
-            "str": faker.text(),
-            "None": None,
-        }
-    )
-
-
-@pytest.fixture
-def job(faker: Faker) -> osparc.Job:
-    return osparc.Job(
-        id=f"{faker.uuid4()}",
-        name=faker.file_name(),
-        inputs_checksum=f"{faker.sha256()}",
-        created_at=faker.date_time(),
-        runner_name="runner1",  # must validate regexp, hence hardcoded
-        url=None,
-        runner_url=None,
-        outputs_url=None,
-    )
+    yield _create_model

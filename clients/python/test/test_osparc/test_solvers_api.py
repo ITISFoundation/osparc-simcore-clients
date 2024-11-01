@@ -3,6 +3,9 @@ from faker import Faker
 from typing import Callable, Generator
 from pydantic import BaseModel
 import pytest
+from typing import Type, TypeVar
+
+T = TypeVar("T", bound=BaseModel)
 
 
 @pytest.fixture
@@ -12,10 +15,12 @@ def solvers_api(api_client: ApiClient) -> Generator[SolversApi, None, None]:
 
 def test_create_job(
     create_server_mock: Callable[[int, BaseModel], None],
-    job_inputs: JobInputs,
-    job: Job,
+    create_osparc_response_model: Callable,
     solvers_api: SolversApi,
 ):
+    job_inputs = create_osparc_response_model(JobInputs)
+    job = create_osparc_response_model(Job)
+
     create_server_mock(201, job)
 
     _job = solvers_api.create_job(
@@ -26,10 +31,11 @@ def test_create_job(
 
 def test_get_job_custom_metadata(
     create_server_mock: Callable[[int, BaseModel], None],
-    job_metadata: JobMetadata,
+    create_osparc_response_model: Callable[[Type[JobMetadata]], JobMetadata],
     faker: Faker,
     solvers_api: SolversApi,
 ):
+    job_metadata = create_osparc_response_model(JobMetadata)
     create_server_mock(200, job_metadata)
 
     metadata = solvers_api.get_job_custom_metadata(
@@ -40,11 +46,12 @@ def test_get_job_custom_metadata(
 
 def test_replace_job_custom_metadata(
     create_server_mock: Callable[[int, BaseModel], None],
-    job_metadata: JobMetadata,
-    job_metadata_update: JobMetadataUpdate,
+    create_osparc_response_model: Callable,
     solvers_api: SolversApi,
     faker: Faker,
 ):
+    job_metadata = create_osparc_response_model(JobMetadata)
+    job_metadata_update = create_osparc_response_model(JobMetadataUpdate)
     create_server_mock(200, job_metadata)
 
     _job_metadata = solvers_api.replace_job_custom_metadata(
