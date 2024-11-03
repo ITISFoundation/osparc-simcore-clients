@@ -29,6 +29,8 @@ import warnings
 from tempfile import NamedTemporaryFile
 from pathlib import Path
 from pydantic import validate_call
+from pydantic import Field, StrictStr
+from typing import Annotated
 
 
 class SolversApi(_SolversApi):
@@ -118,15 +120,31 @@ class SolversApi(_SolversApi):
         kwargs = {**kwargs, **ParentProjectInfo().model_dump(exclude_none=True)}
         return super().create_job(solver_key, version, _job_inputs, **kwargs)
 
-    def get_job_output_logfile(self, *args, **kwargs):
-        data = super().get_job_output_logfile(*args, **kwargs)
+    def get_job_output_logfile(
+        self,
+        solver_key: Annotated[str, Field(strict=True)],
+        version: Annotated[str, Field(strict=True)],
+        job_id: StrictStr,
+        **kwargs,
+    ):
+        data = super().get_job_output_logfile(
+            solver_key=solver_key, version=version, job_id=job_id, **kwargs
+        )
         with NamedTemporaryFile(delete=False) as tmp_file:
             log_file = Path(tmp_file.name)
             log_file.write_bytes(data)
             return log_file
 
-    def get_job_outputs(self, *args, **kwargs) -> JobOutputs:
-        _osparc_client_outputs = super().get_job_outputs(*args, **kwargs)
+    def get_job_outputs(
+        self,
+        solver_key: Annotated[str, Field(strict=True)],
+        version: Annotated[str, Field(strict=True)],
+        job_id: StrictStr,
+        **kwargs,
+    ) -> JobOutputs:
+        _osparc_client_outputs = super().get_job_outputs(
+            solver_key=solver_key, version=version, job_id=job_id, **kwargs
+        )
         return JobOutputs.model_validate_json(_osparc_client_outputs.to_json())
 
     def get_job_custom_metadata(self, *args, **kwargs) -> JobMetadata:
