@@ -116,8 +116,7 @@ class SolversApi(_SolversApi):
         _job_inputs = _JobInputs.from_json(job_inputs.model_dump_json())
         assert _job_inputs is not None
         kwargs = {**kwargs, **ParentProjectInfo().model_dump(exclude_none=True)}
-        _job = super().create_job(solver_key, version, _job_inputs, **kwargs)
-        return Job.model_validate(_job.to_dict())
+        return super().create_job(solver_key, version, _job_inputs, **kwargs)
 
     def get_job_output_logfile(self, *args, **kwargs):
         data = super().get_job_output_logfile(*args, **kwargs)
