@@ -85,10 +85,10 @@ T = TypeVar("T", bound=BaseModel)
 @pytest.fixture
 def create_osparc_response_model(
     osparc_openapi_specs: dict[str, Any],
-) -> Callable[[str], BaseModel]:
+) -> Callable[[type[T]], T]:
     def _create_model(model_type: type[T]) -> T:
         schemas = osparc_openapi_specs.get("components", {}).get("schemas", {})
-        example_data = schemas.get(model_type.__name__, {}).get("example", {})
+        example_data = schemas.get(model_type.__name__, {}).get("example")
         error_msg = "Could not extract example data for"
         error_msg += f" '{model_type.__name__}' from openapi specs"
         assert example_data, error_msg
@@ -103,7 +103,7 @@ def create_server_mock(
     osparc_openapi_specs: dict[str, Any],
     all_server_paths: set[ServerPath],
     create_osparc_response_model: Callable[[str], BaseModel],
-) -> Callable[[int, BaseModel], None]:
+) -> Callable[[int], None]:
     def _mock_server(_status: int) -> None:
         def _sideeffect(
             method: str,
@@ -131,16 +131,16 @@ def create_server_mock(
                 .get(method.lower(), {})
                 .get("responses")
             )
-            assert (
-                responses is not None
-            ), f"status code {_status} is not a return code of {method.upper()} {matching_path}"
+            assert responses is not None
             schema = (
                 responses.get(f"{_status}", {})
                 .get("content", {})
                 .get("application/json", {})
                 .get("schema")
             )
-            assert schema is not None
+            assert (
+                schema is not None
+            ), f"probably status code {_status} is not a return code of {method.upper()} {matching_path}"
             response_model_type = getattr(osparc, schema.get("title"))
             response_model = create_osparc_response_model(response_model_type)
             response = HTTPResponse(
