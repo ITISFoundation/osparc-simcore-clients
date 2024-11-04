@@ -63,7 +63,7 @@ def test_get_job_custom_metadata(
 
 
 def test_replace_job_custom_metadata(
-    create_server_mock: Callable[[int, BaseModel], None],
+    create_server_mock: Callable[[int], None],
     create_osparc_response_model: Callable,
     solvers_api: SolversApi,
     faker: Faker,

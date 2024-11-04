@@ -80,8 +80,12 @@ class StudiesApi(_StudiesApi):
         kwargs = {**kwargs, **ParentProjectInfo().model_dump(exclude_none=True)}
         return super().create_study_job(study_id, _job_inputs, **kwargs)
 
-    def get_study_job_outputs(self, *args, **kwargs) -> JobOutputs:
-        _job_outputs = super().get_study_job_outputs(*args, **kwargs)
+    def get_study_job_outputs(
+        self, study_id: StrictStr, job_id: StrictStr, **kwargs
+    ) -> JobOutputs:
+        _job_outputs = super().get_study_job_outputs(
+            study_id=study_id, job_id=job_id, **kwargs
+        )
         return JobOutputs.model_validate_json(_job_outputs.to_json())
 
     def clone_study(self, study_id: str, **kwargs):
