@@ -23,7 +23,7 @@ MIN_VERSION_REQS: Dict[str, Version] = {
     "BasicTutorial_v0.5.0.ipynb": Version("0.5.0"),
     "BasicTutorial_v0.6.0.ipynb": Version("0.6.0"),
     "BasicTutorial_v0.8.0.ipynb": Version("0.8.0"),
-    "WalletTutorial_v0.8.0.ipynb": Version("0.8.3.post0.dev10"),
+    "WalletTutorial_v0.8.0.ipynb": Version("0.9.0"),
 }
 
 
