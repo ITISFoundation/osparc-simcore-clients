@@ -14,7 +14,7 @@ from prance import ResolvingParser
 import json
 from tempfile import NamedTemporaryFile
 from pathlib import Path
-from typing import Any, TypeVar, NamedTuple, Final
+from typing import Any, TypeVar, NamedTuple, Final, cast
 from urllib.parse import urlparse
 from parse import parse, with_pattern
 
@@ -41,6 +41,11 @@ def osparc_openapi_specs() -> Generator[dict[str, Any], None, None]:
 @pytest.fixture
 def api_client(cfg: osparc.Configuration) -> osparc.ApiClient:
     return osparc.ApiClient(configuration=cfg)
+
+
+@pytest.fixture
+def uuid(faker: Faker):
+    return cast(str, faker.uuid4())
 
 
 @pytest.fixture

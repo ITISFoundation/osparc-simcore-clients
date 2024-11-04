@@ -75,11 +75,11 @@ def test_dependencies(tmp_path: Path):
 
 @pytest.mark.parametrize("valid", [True, False])
 def test_parent_project_validation(
-    faker: Faker, monkeypatch: pytest.MonkeyPatch, valid: bool
+    faker: Faker, monkeypatch: pytest.MonkeyPatch, valid: bool, uuid: str
 ):
     if valid:
-        monkeypatch.setenv("OSPARC_STUDY_ID", faker.uuid4())
-        monkeypatch.setenv("OSPARC_NODE_ID", faker.uuid4())
+        monkeypatch.setenv("OSPARC_STUDY_ID", uuid)
+        monkeypatch.setenv("OSPARC_NODE_ID", uuid)
         parent_info = osparc._settings.ParentProjectInfo()
         assert parent_info.x_simcore_parent_project_uuid is not None
         assert parent_info.x_simcore_parent_node_id is not None
