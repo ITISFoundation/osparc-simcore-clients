@@ -11,7 +11,7 @@ from faker import Faker
 from typing import Callable, Generator
 from pydantic import BaseModel
 import pytest
-from typing import Type, TypeVar
+from typing import TypeVar
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -22,49 +22,44 @@ def solvers_api(api_client: ApiClient) -> Generator[SolversApi, None, None]:
 
 
 def test_create_job(
-    create_server_mock: Callable[[int, BaseModel], None],
+    create_server_mock: Callable[[int], None],
     create_osparc_response_model: Callable,
     solvers_api: SolversApi,
 ):
     job_inputs = create_osparc_response_model(JobInputs)
-    job = create_osparc_response_model(Job)
 
-    create_server_mock(201, job)
+    create_server_mock(201)
 
     _job = solvers_api.create_job(
         solver_key="mysolver", version="1.2.3", job_inputs=job_inputs
     )
-    assert _job == job
+    assert isinstance(_job, Job)
 
 
 def test_get_job_outputs(
-    create_server_mock: Callable[[int, BaseModel], None],
-    create_osparc_response_model: Callable,
+    create_server_mock: Callable[[int], None],
     solvers_api: SolversApi,
     faker: Faker,
 ):
-    job_outputs = create_osparc_response_model(JobOutputs)
-    create_server_mock(200, job_outputs)
+    create_server_mock(200)
 
     _job_outputs = solvers_api.get_job_outputs(
         solver_key="mysolver", version="1.2.3", job_id=faker.uuid4()
     )
-    assert _job_outputs == job_outputs
+    assert isinstance(_job_outputs, JobOutputs)
 
 
 def test_get_job_custom_metadata(
-    create_server_mock: Callable[[int, BaseModel], None],
-    create_osparc_response_model: Callable[[Type[JobMetadata]], JobMetadata],
+    create_server_mock: Callable[[int], None],
     faker: Faker,
     solvers_api: SolversApi,
 ):
-    job_metadata = create_osparc_response_model(JobMetadata)
-    create_server_mock(200, job_metadata)
+    create_server_mock(200)
 
     metadata = solvers_api.get_job_custom_metadata(
         solver_key="mysolver", version="1.2.3", job_id=f"{faker.uuid4()}"
     )
-    assert metadata == job_metadata
+    assert isinstance(metadata, JobMetadata)
 
 
 def test_replace_job_custom_metadata(
@@ -73,9 +68,8 @@ def test_replace_job_custom_metadata(
     solvers_api: SolversApi,
     faker: Faker,
 ):
-    job_metadata = create_osparc_response_model(JobMetadata)
     job_metadata_update = create_osparc_response_model(JobMetadataUpdate)
-    create_server_mock(200, job_metadata)
+    create_server_mock(200)
 
     _job_metadata = solvers_api.replace_job_custom_metadata(
         solver_key="mysolver",
@@ -83,4 +77,4 @@ def test_replace_job_custom_metadata(
         job_id=f"{faker.uuid4()}",
         job_metadata_update=job_metadata_update,
     )
-    assert _job_metadata == job_metadata
+    assert isinstance(_job_metadata, JobMetadata)

@@ -14,7 +14,9 @@ from prance import ResolvingParser
 import json
 from tempfile import NamedTemporaryFile
 from pathlib import Path
-from typing import Any, TypeVar
+from typing import Any, TypeVar, NamedTuple, Final
+from urllib.parse import urlparse
+from parse import parse, with_pattern
 
 
 @pytest.fixture
@@ -46,28 +48,35 @@ def dev_mode_enabled(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("OSPARC_DEV_FEATURES_ENABLED", "1")
 
 
+@with_pattern(pattern=r"[^/]+")
+def _path_segment(text):
+    return text
+
+
+class ServerPath(NamedTuple):
+    path: str
+    formatted_path: str
+
+
+_PATH_SEGMENT_CONVERTER: Final[str] = "path_segment"
+
+
 @pytest.fixture
-def create_server_mock(
-    mocker: MockerFixture,
-) -> Callable[[int, BaseModel], None]:
-    def _mock_server(_status: int, _body: BaseModel) -> None:
-        def _sideeffect(
-            method: str,
-            url: str,
-            body=None,
-            fields=None,
-            headers=None,
-            json=None,
-            **urlopen_kw,
-        ) -> HTTPResponse:
-            response = HTTPResponse(
-                status=_status, body=_body.model_dump_json().encode()
-            )
-            return response
-
-        mocker.patch("urllib3.PoolManager.request", side_effect=_sideeffect)
-
-    return _mock_server
+def all_server_paths(osparc_openapi_specs: dict[str, Any]) -> set[ServerPath]:
+    server_paths = set()
+    for path in osparc_openapi_specs["paths"]:
+        for method in osparc_openapi_specs["paths"][path]:
+            if params := osparc_openapi_specs["paths"][path][method].get("parameters"):
+                formatted_path = path
+                for p in params:
+                    pname = p.get("name")
+                    assert pname is not None
+                    formatted_path = formatted_path.replace(
+                        "{" + f"{pname}" + "}",
+                        "{" + f"{pname}:{_PATH_SEGMENT_CONVERTER}" + "}",
+                    )
+                server_paths.add(ServerPath(path=path, formatted_path=formatted_path))
+    return server_paths
 
 
 T = TypeVar("T", bound=BaseModel)
@@ -76,7 +85,7 @@ T = TypeVar("T", bound=BaseModel)
 @pytest.fixture
 def create_osparc_response_model(
     osparc_openapi_specs: dict[str, Any],
-) -> Callable[[type[T]], T]:
+) -> Callable[[str], BaseModel]:
     def _create_model(model_type: type[T]) -> T:
         schemas = osparc_openapi_specs.get("components", {}).get("schemas", {})
         example_data = schemas.get(model_type.__name__, {}).get("example", {})
@@ -86,3 +95,59 @@ def create_osparc_response_model(
         return model_type.model_validate(example_data)
 
     return _create_model
+
+
+@pytest.fixture
+def create_server_mock(
+    mocker: MockerFixture,
+    osparc_openapi_specs: dict[str, Any],
+    all_server_paths: set[ServerPath],
+    create_osparc_response_model: Callable[[str], BaseModel],
+) -> Callable[[int, BaseModel], None]:
+    def _mock_server(_status: int) -> None:
+        def _sideeffect(
+            method: str,
+            url: str,
+            body=None,
+            fields=None,
+            headers=None,
+            json=None,
+            **urlopen_kw,
+        ) -> HTTPResponse:
+            matching_paths = set(
+                p.path
+                for p in all_server_paths
+                if parse(
+                    p.formatted_path,
+                    urlparse(url=url).path,
+                    {_PATH_SEGMENT_CONVERTER: _path_segment},
+                )
+            )
+            assert len(matching_paths) == 1
+            matching_path = list(matching_paths)[0]
+            responses = (
+                osparc_openapi_specs["paths"]
+                .get(matching_path, {})
+                .get(method.lower(), {})
+                .get("responses")
+            )
+            assert (
+                responses is not None
+            ), f"status code {_status} is not a return code of {method.upper()} {matching_path}"
+            schema = (
+                responses.get(f"{_status}", {})
+                .get("content", {})
+                .get("application/json", {})
+                .get("schema")
+            )
+            assert schema is not None
+            response_model_type = getattr(osparc, schema.get("title"))
+            response_model = create_osparc_response_model(response_model_type)
+            response = HTTPResponse(
+                status=_status, body=response_model.model_dump_json().encode()
+            )
+            return response
+
+        mocker.patch("urllib3.PoolManager.request", side_effect=_sideeffect)
+
+    return _mock_server

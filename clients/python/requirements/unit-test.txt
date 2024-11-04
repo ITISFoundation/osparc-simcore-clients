@@ -2,6 +2,7 @@
 black
 faker
 openapi-spec-validator #installed as backend for prance
+parse
 pipdeptree
 pipreqs
 prance
