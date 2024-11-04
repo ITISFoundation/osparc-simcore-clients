@@ -53,6 +53,7 @@ def test_replace_study_job_custom_metadata(
     studies_api: StudiesApi,
     uuid: str,
 ):
+    create_server_mock(200)
     job_metadata_update: JobMetadataUpdate = create_osparc_response_model(
         JobMetadataUpdate
     )
