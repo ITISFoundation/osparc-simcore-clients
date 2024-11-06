@@ -14,7 +14,7 @@ from prance import ResolvingParser
 import json
 from tempfile import NamedTemporaryFile
 from pathlib import Path
-from typing import Any, TypeVar, NamedTuple, Final, cast
+from typing import Any, TypeVar, NamedTuple, Final, cast, Dict
 from urllib.parse import urlparse
 from parse import parse, with_pattern
 
@@ -29,7 +29,7 @@ def cfg(faker: Faker) -> osparc.Configuration:
 
 
 @pytest.fixture
-def osparc_openapi_specs() -> Generator[dict[str, Any], None, None]:
+def osparc_openapi_specs() -> Generator[Dict[str, Any], None, None]:
     with NamedTemporaryFile(suffix=".json") as file:
         file = Path(file.name)
         file.write_text(json.dumps(osparc.openapi()))
