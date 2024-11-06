@@ -14,7 +14,7 @@ from prance import ResolvingParser
 import json
 from tempfile import NamedTemporaryFile
 from pathlib import Path
-from typing import Any, TypeVar, NamedTuple, Final, cast, Dict, Type
+from typing import Any, TypeVar, NamedTuple, Final, cast, Dict, Type, Set
 from urllib.parse import urlparse
 from parse import parse, with_pattern
 
@@ -67,7 +67,7 @@ _PATH_SEGMENT_CONVERTER: Final[str] = "path_segment"
 
 
 @pytest.fixture
-def all_server_paths(osparc_openapi_specs: Dict[str, Any]) -> set[ServerPath]:
+def all_server_paths(osparc_openapi_specs: Dict[str, Any]) -> Set[ServerPath]:
     server_paths = set()
     for path in osparc_openapi_specs["paths"]:
         for method in osparc_openapi_specs["paths"][path]:
@@ -89,7 +89,7 @@ T = TypeVar("T", bound=BaseModel)
 
 @pytest.fixture
 def create_osparc_response_model(
-    osparc_openapi_specs: dict[str, Any],
+    osparc_openapi_specs: Dict[str, Any],
 ) -> Callable[[Type[T]], T]:
     def _create_model(model_type: type[T]) -> T:
         schemas = osparc_openapi_specs.get("components", {}).get("schemas", {})
@@ -105,8 +105,8 @@ def create_osparc_response_model(
 @pytest.fixture
 def create_server_mock(
     mocker: MockerFixture,
-    osparc_openapi_specs: dict[str, Any],
-    all_server_paths: set[ServerPath],
+    osparc_openapi_specs: Dict[str, Any],
+    all_server_paths: Set[ServerPath],
     create_osparc_response_model: Callable[[str], BaseModel],
 ) -> Callable[[int], None]:
     def _mock_server(_status: int) -> None:
