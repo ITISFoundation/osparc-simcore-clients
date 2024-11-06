@@ -29,8 +29,7 @@ import warnings
 from tempfile import NamedTemporaryFile
 from pathlib import Path
 from pydantic import validate_call
-from pydantic import Field, StrictStr
-from typing import Annotated
+from pydantic import StrictStr
 
 
 class SolversApi(_SolversApi):
@@ -122,8 +121,8 @@ class SolversApi(_SolversApi):
 
     def get_job_output_logfile(
         self,
-        solver_key: Annotated[str, Field(strict=True)],
-        version: Annotated[str, Field(strict=True)],
+        solver_key: str,
+        version: str,
         job_id: StrictStr,
         **kwargs,
     ):
@@ -137,8 +136,8 @@ class SolversApi(_SolversApi):
 
     def get_job_outputs(
         self,
-        solver_key: Annotated[str, Field(strict=True)],
-        version: Annotated[str, Field(strict=True)],
+        solver_key: str,
+        version: str,
         job_id: StrictStr,
         **kwargs,
     ) -> JobOutputs:
