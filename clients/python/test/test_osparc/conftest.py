@@ -67,7 +67,7 @@ _PATH_SEGMENT_CONVERTER: Final[str] = "path_segment"
 
 
 @pytest.fixture
-def all_server_paths(osparc_openapi_specs: dict[str, Any]) -> set[ServerPath]:
+def all_server_paths(osparc_openapi_specs: Dict[str, Any]) -> set[ServerPath]:
     server_paths = set()
     for path in osparc_openapi_specs["paths"]:
         for method in osparc_openapi_specs["paths"][path]:
