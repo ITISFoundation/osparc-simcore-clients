@@ -91,7 +91,7 @@ T = TypeVar("T", bound=BaseModel)
 def create_osparc_response_model(
     osparc_openapi_specs: Dict[str, Any],
 ) -> Callable[[Type[T]], T]:
-    def _create_model(model_type: type[T]) -> T:
+    def _create_model(model_type: Type[T]) -> T:
         schemas = osparc_openapi_specs.get("components", {}).get("schemas", {})
         example_data = schemas.get(model_type.__name__, {}).get("example")
         error_msg = "Could not extract example data for"
