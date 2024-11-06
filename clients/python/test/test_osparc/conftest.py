@@ -14,7 +14,7 @@ from prance import ResolvingParser
 import json
 from tempfile import NamedTemporaryFile
 from pathlib import Path
-from typing import Any, TypeVar, NamedTuple, Final, cast, Dict
+from typing import Any, TypeVar, NamedTuple, Final, cast, Dict, Type
 from urllib.parse import urlparse
 from parse import parse, with_pattern
 
@@ -90,7 +90,7 @@ T = TypeVar("T", bound=BaseModel)
 @pytest.fixture
 def create_osparc_response_model(
     osparc_openapi_specs: dict[str, Any],
-) -> Callable[[type[T]], T]:
+) -> Callable[[Type[T]], T]:
     def _create_model(model_type: type[T]) -> T:
         schemas = osparc_openapi_specs.get("components", {}).get("schemas", {})
         example_data = schemas.get(model_type.__name__, {}).get("example")
