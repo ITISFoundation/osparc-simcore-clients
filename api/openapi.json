@@ -3788,15 +3788,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "anyOf": [
-                    {
-                      "$ref": "#/components/schemas/WalletGetWithAvailableCredits"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ],
-                  "title": "Response Get Job Wallet V0 Solvers  Solver Key  Releases  Version  Jobs  Job Id  Wallet Get"
+                  "$ref": "#/components/schemas/WalletGetWithAvailableCredits"
                 }
               }
             }
@@ -3935,15 +3927,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "anyOf": [
-                    {
-                      "$ref": "#/components/schemas/PricingUnitGet"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ],
-                  "title": "Response Get Job Pricing Unit V0 Solvers  Solver Key  Releases  Version  Jobs  Job Id  Pricing Unit Get"
+                  "$ref": "#/components/schemas/PricingUnitGet"
                 }
               }
             }
@@ -5414,16 +5398,8 @@
             "description": "File name"
           },
           "filesize": {
-            "anyOf": [
-              {
-                "type": "string",
-                "pattern": "^\\s*(\\d*\\.?\\d+)\\s*(\\w+)?"
-              },
-              {
-                "type": "integer",
-                "minimum": 0
-              }
-            ],
+            "type": "integer",
+            "minimum": 0,
             "title": "Filesize",
             "description": "File size in bytes"
           },
@@ -5568,6 +5544,7 @@
           "urls": {
             "items": {
               "type": "string",
+              "maxLength": 65536,
               "minLength": 1,
               "format": "uri"
             },
@@ -5595,7 +5572,8 @@
           "usdPerCredit": {
             "anyOf": [
               {
-                "type": "string"
+                "type": "number",
+                "minimum": 0.0
               },
               {
                 "type": "null"
@@ -6181,6 +6159,7 @@
           },
           "download_link": {
             "type": "string",
+            "maxLength": 65536,
             "minLength": 1,
             "format": "uri",
             "title": "Download Link"
@@ -6222,12 +6201,14 @@
           },
           "docs_url": {
             "type": "string",
+            "maxLength": 65536,
             "minLength": 1,
             "format": "uri",
             "title": "Docs Url"
           },
           "docs_dev_url": {
             "type": "string",
+            "maxLength": 65536,
             "minLength": 1,
             "format": "uri",
             "title": "Docs Dev Url"
@@ -6506,11 +6487,10 @@
             "title": "Unitname"
           },
           "unitExtraInfo": {
-            "type": "object",
-            "title": "Unitextrainfo"
+            "$ref": "#/components/schemas/UnitExtraInfo"
           },
           "currentCostPerUnit": {
-            "type": "string",
+            "type": "number",
             "title": "Currentcostperunit"
           },
           "default": {
@@ -6911,9 +6891,37 @@
             "type": "integer",
             "x_unit": "second"
           },
-          "key": "input_2",
+          "key": "f763658f-a89a-4a90-ace4-c44631290f12",
           "kind": "input"
         }
+      },
+      "UnitExtraInfo": {
+        "properties": {
+          "CPU": {
+            "type": "integer",
+            "minimum": 0,
+            "title": "Cpu"
+          },
+          "RAM": {
+            "type": "integer",
+            "minimum": 0,
+            "title": "Ram"
+          },
+          "VRAM": {
+            "type": "integer",
+            "minimum": 0,
+            "title": "Vram"
+          }
+        },
+        "additionalProperties": true,
+        "type": "object",
+        "required": [
+          "CPU",
+          "RAM",
+          "VRAM"
+        ],
+        "title": "UnitExtraInfo",
+        "description": "Custom information that is propagated to the frontend. Defined fields are mandatory."
       },
       "UploadLinks": {
         "properties": {
