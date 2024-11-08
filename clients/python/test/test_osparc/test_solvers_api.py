@@ -53,13 +53,18 @@ def test_get_job_custom_metadata(
     create_server_mock: Callable[[int], None],
     faker: Faker,
     solvers_api: SolversApi,
+    create_osparc_response_model: Callable,
 ):
+    _job_metadata = create_osparc_response_model(JobMetadata)
     create_server_mock(200)
 
     metadata = solvers_api.get_job_custom_metadata(
         solver_key="mysolver", version="1.2.3", job_id=f"{faker.uuid4()}"
     )
     assert isinstance(metadata, JobMetadata)
+    assert (
+        _job_metadata == metadata
+    )  # check fix for https://github.com/ITISFoundation/osparc-simcore/issues/6556
 
 
 def test_replace_job_custom_metadata(
@@ -68,6 +73,7 @@ def test_replace_job_custom_metadata(
     solvers_api: SolversApi,
     faker: Faker,
 ):
+    job_metadata = create_osparc_response_model(JobMetadata)
     job_metadata_update = create_osparc_response_model(JobMetadataUpdate)
     create_server_mock(200)
 
@@ -78,3 +84,6 @@ def test_replace_job_custom_metadata(
         job_metadata_update=job_metadata_update,
     )
     assert isinstance(_job_metadata, JobMetadata)
+    assert (
+        _job_metadata == job_metadata
+    )  # check fix for https://github.com/ITISFoundation/osparc-simcore/issues/6556

@@ -40,11 +40,18 @@ def test_get_study_job_outputs(
 
 
 def test_get_study_job_custom_metadata(
-    create_server_mock: Callable[[int], None], studies_api: StudiesApi, uuid: str
+    create_osparc_response_model: Callable,
+    create_server_mock: Callable[[int], None],
+    studies_api: StudiesApi,
+    uuid: str,
 ):
+    _job_metadata: JobMetadata = create_osparc_response_model(JobMetadata)
     create_server_mock(200)
     metadata = studies_api.get_study_job_custom_metadata(study_id=uuid, job_id=uuid)
     assert isinstance(metadata, JobMetadata)
+    assert (
+        _job_metadata == metadata
+    )  # check fix for https://github.com/ITISFoundation/osparc-simcore/issues/6556
 
 
 def test_replace_study_job_custom_metadata(
@@ -54,6 +61,7 @@ def test_replace_study_job_custom_metadata(
     uuid: str,
 ):
     create_server_mock(200)
+    _job_metadata: JobMetadata = create_osparc_response_model(JobMetadata)
     job_metadata_update: JobMetadataUpdate = create_osparc_response_model(
         JobMetadataUpdate
     )
@@ -63,3 +71,6 @@ def test_replace_study_job_custom_metadata(
         job_metadata_update=job_metadata_update,
     )
     assert isinstance(job_metadata, JobMetadata)
+    assert (
+        _job_metadata == job_metadata
+    )  # check fix for https://github.com/ITISFoundation/osparc-simcore/issues/6556
