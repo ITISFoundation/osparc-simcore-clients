@@ -29,7 +29,7 @@ def fake_retry_state():
 def test_retry_strategy(cfg: osparc.Configuration, fake_retry_state):
     async_client = AsyncHttpClient(
         configuration=cfg,
-        request_type="get",
+        method="get",
         url="79ae41cc-0d89-4714-ac9d-c23ee1b110ce",
         body={},
     )
@@ -76,7 +76,7 @@ async def test_aexit(
     with pytest.raises(httpx.HTTPError):
         async with AsyncHttpClient(
             configuration=cfg,
-            request_type="post",
+            method="post",
             url=_exit_url,
             body=_body,
         ) as session:
