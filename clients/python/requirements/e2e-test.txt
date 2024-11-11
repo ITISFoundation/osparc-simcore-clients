@@ -5,6 +5,7 @@ ipykernel
 ipython
 jinja2
 matplotlib
+memory_profiler
 packaging
 pandas
 papermill
