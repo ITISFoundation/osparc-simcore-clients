@@ -4,9 +4,6 @@ import asyncio
 import json
 import logging
 import math
-import random
-import shutil
-import string
 from pathlib import Path
 from typing import Any, Iterator, List, Optional, Tuple, Union
 
@@ -28,6 +25,8 @@ from .models import (
     FileUploadData,
     UploadedPart,
 )
+from tempfile import NamedTemporaryFile
+from urllib.parse import urljoin
 from ._utils import (
     DEFAULT_TIMEOUT_SECONDS,
     PaginationGenerator,
@@ -65,24 +64,48 @@ class FilesApi(_FilesApi):
         return super().__getattribute__(name)
 
     def download_file(
-        self, file_id: str, *, destination_folder: Optional[Path] = None, **kwargs
+        self,
+        file_id: str,
+        *,
+        destination_folder: Optional[Path] = None,
+        timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
+        **kwargs,
+    ) -> str:
+        return asyncio.run(
+            self.download_file_async(
+                file_id=file_id,
+                destination_folder=destination_folder,
+                timeout_seconds=timeout_seconds,
+                **kwargs,
+            )
+        )
+
+    async def download_file_async(
+        self,
+        file_id: str,
+        *,
+        destination_folder: Optional[Path] = None,
+        timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
+        **kwargs,
     ) -> str:
         if destination_folder is not None and not destination_folder.is_dir():
             raise RuntimeError(
                 f"destination_folder: {destination_folder} must be a directory"
             )
-        downloaded_file: Path = Path(super().download_file(file_id, **kwargs))
-        if destination_folder is not None:
-            dest_file: Path = destination_folder / downloaded_file.name
-            while dest_file.is_file():
-                new_name = (
-                    downloaded_file.stem
-                    + "".join(random.choices(string.ascii_letters, k=8))
-                    + downloaded_file.suffix
-                )
-                dest_file = destination_folder / new_name
-            shutil.move(downloaded_file, dest_file)
-            downloaded_file = dest_file
+        downloaded_file = Path(
+            NamedTemporaryFile(dir=destination_folder, delete=False).name
+        )
+        async with AsyncHttpClient(
+            configuration=self.api_client.configuration, timeout=timeout_seconds
+        ) as session:
+            url = urljoin(
+                self.api_client.configuration.host, f"/v0/files/{file_id}/content"
+            )
+            with open(downloaded_file, mode="wb") as f:
+                async for chunk in session.stream(
+                    "GET", url=url, auth=self._auth, follow_redirects=True
+                ):
+                    f.write(chunk)
         return str(downloaded_file.resolve())
 
     def upload_file(
@@ -159,7 +182,7 @@ class FilesApi(_FilesApi):
             )
             async with AsyncHttpClient(
                 configuration=self.api_client.configuration,
-                request_type="post",
+                method="post",
                 url=links.abort_upload,
                 body=abort_body.to_dict(),
                 base_url=self.api_client.configuration.host,
