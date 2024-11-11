@@ -47,8 +47,8 @@ def test_upload_file(
     files_api: osparc.FilesApi = osparc.FilesApi(api_client=api_client)
     try:
         upload_ram_usage_in_mb, uploaded_file1 = memory_usage(
-            (files_api.upload_file, (tmp_file,)),
-            retval=True,  # type: ignore
+            (files_api.upload_file, (tmp_file,)),  # type: ignore
+            retval=True,
         )
         assert (
             max_diff(upload_ram_usage_in_mb) < _allowed_ram_usage_in_mb
