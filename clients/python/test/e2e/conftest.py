@@ -17,16 +17,12 @@ from httpx import AsyncClient, BasicAuth
 from numpy import random
 from packaging.version import Version
 from pydantic import ByteSize
+from typing import Callable
 
 try:
     from osparc._settings import ConfigurationEnvVars
 except ImportError:
     pass
-
-
-_KB: ByteSize = ByteSize(1024)  # in bytes
-_MB: ByteSize = ByteSize(_KB * 1024)  # in bytes
-_GB: ByteSize = ByteSize(_MB * 1024)  # in bytes
 
 
 # Dictionary to store start times of tests
@@ -133,20 +129,24 @@ def async_client() -> Iterable[AsyncClient]:
 
 
 @pytest.fixture
-def tmp_file(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> Path:
-    caplog.set_level(logging.INFO)
-    byte_size: ByteSize = 1 * _GB
-    tmp_file = tmp_path / "large_test_file.txt"
-    ss: random.SeedSequence = random.SeedSequence()
-    logging.info("Entropy used to generate random file: %s", f"{ss.entropy}")
-    rng: random.Generator = random.default_rng(ss)
-    tmp_file.write_bytes(rng.bytes(1000))
-    with open(tmp_file, "wb") as f:
-        f.truncate(byte_size)
-    assert (
-        tmp_file.stat().st_size == byte_size
-    ), f"Could not create file of size: {byte_size}"
-    return tmp_file
+def create_tmp_file(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> Callable[[ByteSize], Path]:
+    def _generate_file(file_size: ByteSize):
+        caplog.set_level(logging.INFO)
+        tmp_file = tmp_path / "large_test_file.txt"
+        ss: random.SeedSequence = random.SeedSequence()
+        logging.info("Entropy used to generate random file: %s", f"{ss.entropy}")
+        rng: random.Generator = random.default_rng(ss)
+        tmp_file.write_bytes(rng.bytes(1000))
+        with open(tmp_file, "wb") as f:
+            f.truncate(file_size)
+        assert (
+            tmp_file.stat().st_size == file_size
+        ), f"Could not create file of size: {file_size}"
+        return tmp_file
+
+    return _generate_file
 
 
 @pytest.fixture

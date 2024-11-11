@@ -10,9 +10,13 @@ from pathlib import Path
 import osparc
 import pytest
 from _utils import skip_if_no_dev_features
-from conftest import _KB
 from memory_profiler import memory_usage
-from typing import Final, List
+from typing import Final, List, Callable
+from pydantic import ByteSize
+
+_KB: ByteSize = ByteSize(1024)  # in bytes
+_MB: ByteSize = ByteSize(_KB * 1024)  # in bytes
+_GB: ByteSize = ByteSize(_MB * 1024)  # in bytes
 
 
 def _hash_file(file: Path) -> str:
@@ -27,10 +31,12 @@ def _hash_file(file: Path) -> str:
         return sha256.hexdigest()
 
 
-@skip_if_no_dev_features
-def test_upload_file(tmp_file: Path, api_client: osparc.ApiClient) -> None:
-    """Test that we can upload a file via the multipart upload"""
+def test_upload_file(
+    create_tmp_file: Callable[[ByteSize], Path], api_client: osparc.ApiClient
+) -> None:
+    """Test that we can upload a file via the multipart upload and download it again. Also check RAM usage of upload/download fcns"""
     _allowed_ram_usage_in_mb: Final[int] = 300  # 300MB
+    tmp_file = create_tmp_file(ByteSize(1 * _GB))
     assert (
         tmp_file.stat().st_size > _allowed_ram_usage_in_mb * 1024 * 1024
     ), "For this test to make sense, file size must be larger than allowed ram usage."
@@ -46,7 +52,7 @@ def test_upload_file(tmp_file: Path, api_client: osparc.ApiClient) -> None:
         )
         assert (
             max_diff(upload_ram_usage_in_mb) < _allowed_ram_usage_in_mb
-        ), f"Used more than {_allowed_ram_usage_in_mb=} to upload file of size {tmp_file.stat().st_size=}"
+        ), f"Used more than {_allowed_ram_usage_in_mb=} to upload file of size {create_tmp_file.stat().st_size=}"
         uploaded_file2: osparc.File = files_api.upload_file(tmp_file)
         assert (
             uploaded_file1.id == uploaded_file2.id
@@ -72,8 +78,12 @@ def test_upload_file(tmp_file: Path, api_client: osparc.ApiClient) -> None:
 @pytest.mark.parametrize("use_checksum", [True, False])
 @pytest.mark.parametrize("use_id", [True, False])
 def test_search_files(
-    tmp_file: Path, api_client: osparc.ApiClient, use_checksum: bool, use_id: bool
+    create_tmp_file: Callable[[ByteSize], Path],
+    api_client: osparc.ApiClient,
+    use_checksum: bool,
+    use_id: bool,
 ) -> None:
+    tmp_file = create_tmp_file(ByteSize(1 * _GB))
     checksum: str = _hash_file(tmp_file)
     results: osparc.PaginationGenerator
     files_api: osparc.FilesApi = osparc.FilesApi(api_client=api_client)
