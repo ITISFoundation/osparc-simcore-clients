@@ -9,7 +9,6 @@ from pathlib import Path
 
 import osparc
 import pytest
-from _utils import skip_if_no_dev_features
 from memory_profiler import memory_usage
 from typing import Final, List, Callable
 from pydantic import ByteSize
@@ -48,7 +47,8 @@ def test_upload_file(
     files_api: osparc.FilesApi = osparc.FilesApi(api_client=api_client)
     try:
         upload_ram_usage_in_mb, uploaded_file1 = memory_usage(
-            (files_api.upload_file, (tmp_file,)), retval=True
+            (files_api.upload_file, (tmp_file,)),
+            retval=True,  # type: ignore
         )
         assert (
             max_diff(upload_ram_usage_in_mb) < _allowed_ram_usage_in_mb
@@ -62,7 +62,7 @@ def test_upload_file(
                 files_api.download_file,
                 (uploaded_file1.id,),
                 {"destination_folder": tmp_path},
-            ),
+            ),  # type: ignore
             retval=True,
         )
         assert (
@@ -74,7 +74,6 @@ def test_upload_file(
         files_api.delete_file(uploaded_file1.id)
 
 
-@skip_if_no_dev_features
 @pytest.mark.parametrize("use_checksum", [True, False])
 @pytest.mark.parametrize("use_id", [True, False])
 def test_search_files(

@@ -7,14 +7,13 @@
 import json
 
 import osparc
-from _utils import skip_if_no_dev_features, skip_if_osparc_version
+from _utils import skip_if_osparc_version
 from httpx import AsyncClient
 from packaging.version import Version
 
 DEFAULT_TIMEOUT_SECONDS = 10 * 60  # 10 min
 
 
-@skip_if_no_dev_features
 def test_jobs(api_client: osparc.ApiClient, sleeper: osparc.Solver):
     """Test the jobs method
 
