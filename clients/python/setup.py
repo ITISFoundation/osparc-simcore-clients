@@ -30,6 +30,7 @@ REQUIRES = [
     "tenacity",
     "tqdm>=4.48.0",
     f"osparc_client=={VERSION}",
+    "aiofiles",
 ]
 
 SETUP = dict(

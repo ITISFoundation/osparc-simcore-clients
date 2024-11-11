@@ -16,7 +16,7 @@ from osparc_client import (
     Solver,
     Study,
 )
-
+import aiofiles
 from ._exceptions import RequestError
 
 _KB = 1024  # in bytes
@@ -87,15 +87,15 @@ async def file_chunk_generator(
     bytes_read: int = 0
     file_size: int = file.stat().st_size
     while bytes_read < file_size:
-        with open(file, "rb") as f:
-            f.seek(bytes_read)
+        async with aiofiles.open(file, "rb") as f:
+            await f.seek(bytes_read)
             nbytes = (
                 chunk_size
                 if (bytes_read + chunk_size <= file_size)
                 else (file_size - bytes_read)
             )
             assert nbytes > 0
-            chunk = await asyncio.get_event_loop().run_in_executor(None, f.read, nbytes)
+            chunk = await f.read(nbytes)
             yield chunk, nbytes
             bytes_read += nbytes
 
@@ -109,16 +109,16 @@ async def _fcn_to_coro(callback: Callable[..., S], *args) -> S:
     return result
 
 
-def compute_sha256(file: Path) -> str:
+async def compute_sha256(file: Path) -> str:
     assert file.is_file()
     sha256 = hashlib.sha256()
-    with open(file, "rb") as f:
+    async with aiofiles.open(file, "rb") as f:
         while True:
-            data = f.read(100 * _KB)
+            data = await f.read(100 * _KB)
             if not data:
                 break
             sha256.update(data)
-        return sha256.hexdigest()
+    return sha256.hexdigest()
 
 
 def dev_features_enabled() -> bool:

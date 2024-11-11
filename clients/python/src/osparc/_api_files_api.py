@@ -25,8 +25,8 @@ from .models import (
     FileUploadData,
     UploadedPart,
 )
-from tempfile import NamedTemporaryFile
 from urllib.parse import urljoin
+import aiofiles
 from ._utils import (
     DEFAULT_TIMEOUT_SECONDS,
     PaginationGenerator,
@@ -92,23 +92,26 @@ class FilesApi(_FilesApi):
             raise RuntimeError(
                 f"destination_folder: {destination_folder} must be a directory"
             )
-        downloaded_file = Path(
-            NamedTemporaryFile(dir=destination_folder, delete=False).name
-        )
-        async with AsyncHttpClient(
-            configuration=self.api_client.configuration, timeout=timeout_seconds
-        ) as session:
-            url = urljoin(
-                self.api_client.configuration.host, f"/v0/files/{file_id}/content"
-            )
-            async for response in await session.stream(
-                "GET", url=url, auth=self._auth, follow_redirects=True
-            ):
-                response.raise_for_status()
-                with open(downloaded_file, mode="wb") as f:
+        async with aiofiles.tempfile.NamedTemporaryFile(
+            mode="wb",
+            dir=f"{destination_folder.resolve()}"
+            if destination_folder is not None
+            else None,
+            delete=False,
+        ) as downloaded_file:
+            async with AsyncHttpClient(
+                configuration=self.api_client.configuration, timeout=timeout_seconds
+            ) as session:
+                url = urljoin(
+                    self.api_client.configuration.host, f"/v0/files/{file_id}/content"
+                )
+                async for response in await session.stream(
+                    "GET", url=url, auth=self._auth, follow_redirects=True
+                ):
+                    response.raise_for_status()
                     async for chunk in response.aiter_bytes():
-                        f.write(chunk)
-        return str(downloaded_file.resolve())
+                        await downloaded_file.write(chunk)
+            return f"{downloaded_file.name}"
 
     def upload_file(
         self,
@@ -130,7 +133,7 @@ class FilesApi(_FilesApi):
             file = Path(file)
         if not file.is_file():
             raise RuntimeError(f"{file} is not a file")
-        checksum: str = compute_sha256(file)
+        checksum: str = await compute_sha256(file)
         for file_result in self._search_files(
             sha256_checksum=checksum, timeout_seconds=timeout_seconds
         ):
