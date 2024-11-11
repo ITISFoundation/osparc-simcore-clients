@@ -27,6 +27,8 @@ from .models import (
 )
 from urllib.parse import urljoin
 import aiofiles
+from tempfile import NamedTemporaryFile
+import shutil
 from ._utils import (
     DEFAULT_TIMEOUT_SECONDS,
     PaginationGenerator,
@@ -94,9 +96,6 @@ class FilesApi(_FilesApi):
             )
         async with aiofiles.tempfile.NamedTemporaryFile(
             mode="wb",
-            dir=f"{destination_folder.resolve()}"
-            if destination_folder is not None
-            else None,
             delete=False,
         ) as downloaded_file:
             async with AsyncHttpClient(
@@ -111,7 +110,13 @@ class FilesApi(_FilesApi):
                     response.raise_for_status()
                     async for chunk in response.aiter_bytes():
                         await downloaded_file.write(chunk)
-            return f"{downloaded_file.name}"
+        dest_file = f"{downloaded_file.name}"
+        if destination_folder is not None:
+            dest_file = NamedTemporaryFile(dir=destination_folder, delete=False).name
+            shutil.move(
+                f"{downloaded_file.name}", dest_file
+            )  # aiofiles doesnt seem to have an async variant of this
+        return dest_file
 
     def upload_file(
         self,
