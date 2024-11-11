@@ -101,11 +101,13 @@ class FilesApi(_FilesApi):
             url = urljoin(
                 self.api_client.configuration.host, f"/v0/files/{file_id}/content"
             )
-            with open(downloaded_file, mode="wb") as f:
-                async for chunk in session.stream(
-                    "GET", url=url, auth=self._auth, follow_redirects=True
-                ):
-                    f.write(chunk)
+            async for response in await session.stream(
+                "GET", url=url, auth=self._auth, follow_redirects=True
+            ):
+                response.raise_for_status()
+                with open(downloaded_file, mode="wb") as f:
+                    async for chunk in response.aiter_bytes():
+                        f.write(chunk)
         return str(downloaded_file.resolve())
 
     def upload_file(

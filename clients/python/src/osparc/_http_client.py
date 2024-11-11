@@ -88,7 +88,7 @@ class AsyncHttpClient:
 
     async def _stream(
         self, method: Literal["GET"], url: str, *args, **kwargs
-    ) -> AsyncGenerator[bytes, None]:
+    ) -> AsyncGenerator[httpx.Response, None]:
         n_attempts = self.configuration.retries.total
         assert isinstance(n_attempts, int)
 
@@ -98,17 +98,15 @@ class AsyncHttpClient:
             stop=tenacity.stop_after_attempt(n_attempts),
             retry=tenacity.retry_if_exception_type(httpx.HTTPStatusError),
         )
-        async def _() -> AsyncGenerator[bytes, None]:
+        async def _() -> AsyncGenerator[httpx.Response, None]:
             async with self._client.stream(
                 method=method, url=url, *args, **kwargs
             ) as response:
                 if response.status_code in self.configuration.retries.status_forcelist:
                     response.raise_for_status()
-                async for chunk in response.aiter_bytes():
-                    yield chunk
+                yield response
 
-        async for chunk in _():
-            yield chunk
+        return _()
 
     async def put(self, *args, **kwargs) -> httpx.Response:
         return await self._request(self._client.put, *args, **kwargs)
@@ -127,9 +125,8 @@ class AsyncHttpClient:
 
     async def stream(
         self, method: Literal["GET"], url: str, *args, **kwargs
-    ) -> AsyncGenerator[bytes, None]:
-        async for chunk in self._stream(method=method, url=url, *args, **kwargs):
-            yield chunk
+    ) -> AsyncGenerator[httpx.Response, None]:
+        return await self._stream(method=method, url=url, *args, **kwargs)
 
     def _wait_callback(self, retry_state: tenacity.RetryCallState) -> int:
         assert retry_state.outcome is not None
