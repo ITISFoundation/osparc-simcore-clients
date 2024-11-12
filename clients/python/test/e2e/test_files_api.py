@@ -52,7 +52,7 @@ def test_upload_file(
         )
         assert (
             max_diff(upload_ram_usage_in_mb) < _allowed_ram_usage_in_mb
-        ), f"Used more than {_allowed_ram_usage_in_mb=} to upload file of size {create_tmp_file.stat().st_size=}"
+        ), f"Used more than {_allowed_ram_usage_in_mb=} to upload file of size {tmp_file.stat().st_size=}"
         uploaded_file2: osparc.File = files_api.upload_file(tmp_file)
         assert (
             uploaded_file1.id == uploaded_file2.id
