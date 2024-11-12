@@ -12,6 +12,8 @@ import pytest
 from memory_profiler import memory_usage
 from typing import Final, List, Callable
 from pydantic import ByteSize
+from _utils import skip_if_osparc_version
+from packaging.version import Version
 
 _KB: ByteSize = ByteSize(1024)  # in bytes
 _MB: ByteSize = ByteSize(_KB * 1024)  # in bytes
@@ -33,7 +35,30 @@ def _hash_file(file: Path) -> str:
 def test_upload_file(
     create_tmp_file: Callable[[ByteSize], Path], api_client: osparc.ApiClient
 ) -> None:
-    """Test that we can upload a file via the multipart upload and download it again. Also check RAM usage of upload/download fcns"""
+    """Test that we can upload a file via the multipart upload and download it again."""
+    tmp_file = create_tmp_file(ByteSize(1 * _GB))
+    tmp_path: Path = tmp_file.parent
+    files_api: osparc.FilesApi = osparc.FilesApi(api_client=api_client)
+    try:
+        uploaded_file1: osparc.File = files_api.upload_file(tmp_file)
+        uploaded_file2: osparc.File = files_api.upload_file(tmp_file)
+        assert (
+            uploaded_file1.id == uploaded_file2.id
+        ), "could not detect that file was already on server"
+        downloaded_file = files_api.download_file(
+            uploaded_file1.id, destination_folder=tmp_path, retval=True
+        )
+        assert Path(downloaded_file).parent == tmp_path
+        assert _hash_file(Path(downloaded_file)) == _hash_file(tmp_file)
+    finally:
+        files_api.delete_file(uploaded_file1.id)
+
+
+@skip_if_osparc_version(at_least=Version("0.8.3.post0.dev12"))
+def test_upload_download_file_ram_usage(
+    create_tmp_file: Callable[[ByteSize], Path], api_client: osparc.ApiClient
+) -> None:
+    """Check RAM usage of upload/download fcns"""
     _allowed_ram_usage_in_mb: Final[int] = 300  # 300MB
     tmp_file = create_tmp_file(ByteSize(1 * _GB))
     assert (
@@ -53,10 +78,6 @@ def test_upload_file(
         assert (
             max_diff(upload_ram_usage_in_mb) < _allowed_ram_usage_in_mb
         ), f"Used more than {_allowed_ram_usage_in_mb=} to upload file of size {tmp_file.stat().st_size=}"
-        uploaded_file2: osparc.File = files_api.upload_file(tmp_file)
-        assert (
-            uploaded_file1.id == uploaded_file2.id
-        ), "could not detect that file was already on server"
         download_ram_usage_in_mb, downloaded_file = memory_usage(
             (
                 files_api.download_file,
@@ -67,8 +88,7 @@ def test_upload_file(
         )
         assert (
             max_diff(download_ram_usage_in_mb) < _allowed_ram_usage_in_mb
-        ), f"Used more than {_allowed_ram_usage_in_mb=} to down file of size {Path(downloaded_file).stat().st_size=}"
-        assert Path(downloaded_file).parent == tmp_path
+        ), f"Used more than {_allowed_ram_usage_in_mb=} to download file of size {Path(downloaded_file).stat().st_size=}"
         assert _hash_file(Path(downloaded_file)) == _hash_file(tmp_file)
     finally:
         files_api.delete_file(uploaded_file1.id)
