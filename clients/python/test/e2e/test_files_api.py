@@ -32,6 +32,7 @@ def _hash_file(file: Path) -> str:
         return sha256.hexdigest()
 
 
+@skip_if_osparc_version(at_least=Version("0.8.0"))
 def test_upload_file(
     create_tmp_file: Callable[[ByteSize], Path], api_client: osparc.ApiClient
 ) -> None:
@@ -94,6 +95,7 @@ def test_upload_download_file_ram_usage(
         files_api.delete_file(uploaded_file1.id)
 
 
+@skip_if_osparc_version(at_least=Version("0.8.0"))
 @pytest.mark.parametrize("use_checksum", [True, False])
 @pytest.mark.parametrize("use_id", [True, False])
 def test_search_files(
