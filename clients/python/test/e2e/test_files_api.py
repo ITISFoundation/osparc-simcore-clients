@@ -46,7 +46,7 @@ def test_upload_file(
             uploaded_file1.id == uploaded_file2.id
         ), "could not detect that file was already on server"
         downloaded_file = files_api.download_file(
-            uploaded_file1.id, destination_folder=tmp_path, retval=True
+            uploaded_file1.id, destination_folder=tmp_path
         )
         assert Path(downloaded_file).parent == tmp_path
         assert _hash_file(Path(downloaded_file)) == _hash_file(tmp_file)
