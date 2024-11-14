@@ -1,6 +1,6 @@
 import configparser
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Final, Set
 
 import osparc
 from packaging.version import InvalidVersion, Version
@@ -38,18 +38,20 @@ def is_empty(v):
     return v is None or v == ""
 
 
+_CLIENT_VERSION_IDS: Final[Set[str]] = {"latest_release", "latest_master"}
+
+
 class ClientSettings(BaseSettings):
     """Holds data about client configuration.
     This data should uniquely determine how to install client
     """
 
     version: str
-    dev_features: bool = False
 
     @field_validator("version", mode="after")
     @classmethod
     def _validate_client(cls, v):
-        if v not in {"latest_release", "latest_master"}:
+        if v not in _CLIENT_VERSION_IDS:
             try:
                 version = Version(v)
                 assert version == Version(osparc.__version__)
@@ -62,21 +64,12 @@ class ClientSettings(BaseSettings):
     @property
     def ref(self) -> str:
         """Returns the reference for this client in the compatibility table"""
-        if self.dev_features:
-            return f"{osparc.__version__}+dev_features"
-        else:
-            return f"{osparc.__version__}-dev_features"
+        return f"{osparc.__version__}"
 
     @property
     def compatibility_ref(self) -> str:
         """Returns the reference for this client in the compatibility table"""
-        if self.version == "latest_master":
-            if self.dev_features:
-                return "master+dev_features"
-            else:
-                return "master-dev_features"
-        else:
-            return "production"
+        return "master" if self.version == "latest_master" else "production"
 
 
 class PytestConfig(BaseModel):
