@@ -1,6 +1,6 @@
 # Wraps osparc_client.api.solvers_api
 
-from typing import Any, List, Optional
+from typing import List, Optional
 
 import httpx
 from osparc_client.api.solvers_api import SolversApi as _SolversApi
@@ -12,8 +12,6 @@ from ._utils import (
     _DEFAULT_PAGINATION_LIMIT,
     _DEFAULT_PAGINATION_OFFSET,
     PaginationGenerator,
-    dev_feature,
-    dev_features_enabled,
 )
 
 import warnings
@@ -41,11 +39,6 @@ class SolversApi(_SolversApi):
             else None
         )
 
-    def __getattr__(self, name: str) -> Any:
-        if (name in SolversApi._dev_features) and (not dev_features_enabled()):
-            raise NotImplementedError(f"SolversApi.{name} is still under development")
-        return super().__getattribute__(name)
-
     def list_solver_ports(
         self, solver_key: str, version: str, **kwargs
     ) -> List[SolverPort]:
@@ -54,7 +47,6 @@ class SolversApi(_SolversApi):
         )
         return page.items if page.items else []
 
-    @dev_feature
     def iter_jobs(self, solver_key: str, version: str, **kwargs) -> PaginationGenerator:
         """Returns an iterator through which one can iterate over
         all Jobs submitted to the solver
@@ -87,7 +79,6 @@ class SolversApi(_SolversApi):
             auth=self._auth,
         )
 
-    @dev_feature
     def jobs(self, solver_key: str, version: str, **kwargs) -> PaginationGenerator:
         warnings.warn(
             "The 'jobs' method is deprecated and will be removed in a future version. "

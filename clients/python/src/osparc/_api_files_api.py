@@ -33,7 +33,6 @@ from ._utils import (
     DEFAULT_TIMEOUT_SECONDS,
     PaginationGenerator,
     compute_sha256,
-    dev_features_enabled,
     file_chunk_generator,
 )
 
@@ -59,11 +58,6 @@ class FilesApi(_FilesApi):
             if (user is not None and passwd is not None)
             else None
         )
-
-    def __getattr__(self, name: str) -> Any:
-        if (name in FilesApi._dev_features) and (not dev_features_enabled()):
-            raise NotImplementedError(f"FilesApi.{name} is still under development")
-        return super().__getattribute__(name)
 
     def download_file(
         self,

@@ -4,7 +4,7 @@ import asyncio
 import logging
 from pathlib import Path
 from tempfile import mkdtemp
-from typing import Any, Optional
+from typing import Optional
 
 import httpx
 from .models import JobInputs, JobLogsMap, PageStudy
@@ -18,7 +18,6 @@ from ._utils import (
     _DEFAULT_PAGINATION_LIMIT,
     _DEFAULT_PAGINATION_OFFSET,
     PaginationGenerator,
-    dev_features_enabled,
 )
 import warnings
 
@@ -57,11 +56,6 @@ class StudiesApi(_StudiesApi):
             if (user is not None and passwd is not None)
             else None
         )
-
-    def __getattr__(self, name: str) -> Any:
-        if (name in StudiesApi._dev_features) and (not dev_features_enabled()):
-            raise NotImplementedError(f"StudiesApi.{name} is still under development")
-        return super().__getattribute__(name)
 
     def create_study_job(self, study_id: str, job_inputs: JobInputs, **kwargs):
         kwargs = {**kwargs, **ParentProjectInfo().model_dump(exclude_none=True)}

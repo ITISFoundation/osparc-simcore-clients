@@ -1,7 +1,5 @@
 import asyncio
 import hashlib
-import os
-from functools import wraps
 from pathlib import Path
 from typing import AsyncGenerator, Callable, Generator, Optional, Tuple, TypeVar, Union
 
@@ -119,17 +117,3 @@ async def compute_sha256(file: Path) -> str:
                 break
             sha256.update(data)
     return sha256.hexdigest()
-
-
-def dev_features_enabled() -> bool:
-    return os.environ.get("OSPARC_DEV_FEATURES_ENABLED") == "1"
-
-
-def dev_feature(func: Callable):
-    @wraps(func)
-    def _wrapper(*args, **kwargs):
-        if not dev_features_enabled():
-            raise NotImplementedError(f"{func.__name__} is still under development")
-        return func(*args, **kwargs)
-
-    return _wrapper
