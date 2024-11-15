@@ -251,11 +251,15 @@ class FilesApi(_FilesApi):
         sha256_checksum: Optional[str] = None,
         timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
     ) -> PaginationGenerator:
+        kwargs = {
+            "file_id": file_id,
+            "sha256_checksum": sha256_checksum,
+            "timeout_seconds": timeout_seconds,
+        }
+
         def _pagination_method():
             return super(FilesApi, self).search_files_page(
-                file_id=file_id,
-                sha256_checksum=sha256_checksum,
-                _request_timeout=timeout_seconds,
+                {k: v for k, v in kwargs.items() if v is not None}
             )
 
         return PaginationGenerator(

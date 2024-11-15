@@ -99,7 +99,7 @@ def test_upload_download_file_ram_usage(
         files_api.delete_file(uploaded_file1.id)
 
 
-@skip_if_osparc_version(at_least=Version("0.8.0"))
+@skip_if_osparc_version(at_least=Version("0.8.3.post0.dev20"))
 @pytest.mark.parametrize("use_checksum", [True, False])
 @pytest.mark.parametrize("use_id", [True, False])
 def test_search_files(
