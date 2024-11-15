@@ -14,10 +14,8 @@ from typing import Final, List, Callable
 from pydantic import ByteSize
 from _utils import skip_if_osparc_version
 from packaging.version import Version
-
-_KB: ByteSize = ByteSize(1024)  # in bytes
-_MB: ByteSize = ByteSize(_KB * 1024)  # in bytes
-_GB: ByteSize = ByteSize(_MB * 1024)  # in bytes
+from conftest import ServerFile, _KB
+from faker import Faker
 
 
 def _hash_file(file: Path) -> str:
@@ -34,106 +32,80 @@ def _hash_file(file: Path) -> str:
 
 @skip_if_osparc_version(at_least=Version("0.8.0"), at_most=Version("0.8.3.post0.dev11"))
 def test_upload_file(
-    create_tmp_file: Callable[[ByteSize], Path], api_client: osparc.ApiClient
+    tmp_path: Path, large_server_file: ServerFile, files_api: osparc.FilesApi
 ) -> None:
     """Test that we can upload a file via the multipart upload and download it again."""
-    tmp_file = create_tmp_file(ByteSize(1 * _GB))
-    tmp_path: Path = tmp_file.parent
-    files_api: osparc.FilesApi = osparc.FilesApi(api_client=api_client)
-    try:
-        uploaded_file1: osparc.File = files_api.upload_file(tmp_file)
-        uploaded_file2: osparc.File = files_api.upload_file(tmp_file)
-        assert (
-            uploaded_file1.id == uploaded_file2.id
-        ), "could not detect that file was already on server"
-        downloaded_file = files_api.download_file(
-            uploaded_file1.id, destination_folder=tmp_path
-        )
-        assert Path(downloaded_file).parent == tmp_path
-        assert _hash_file(Path(downloaded_file)) == _hash_file(tmp_file)
-    finally:
-        files_api.delete_file(uploaded_file1.id)
+    uploaded_file: osparc.File = files_api.upload_file(large_server_file.local_file)
+    assert (
+        large_server_file.server_file.id == uploaded_file.id
+    ), "could not detect that file was already on server"
+    downloaded_file = files_api.download_file(
+        uploaded_file.id, destination_folder=tmp_path
+    )
+    assert Path(downloaded_file).parent == tmp_path
+    assert _hash_file(Path(downloaded_file)) == _hash_file(large_server_file.local_file)
 
 
 @skip_if_osparc_version(at_least=Version("0.8.3.post0.dev12"))
 def test_upload_download_file_ram_usage(
-    create_tmp_file: Callable[[ByteSize], Path], api_client: osparc.ApiClient
+    tmp_path: Path, large_server_file: ServerFile, files_api: osparc.FilesApi
 ) -> None:
     """Check RAM usage of upload/download fcns"""
     _allowed_ram_usage_in_mb: Final[int] = 300  # 300MB
-    tmp_file = create_tmp_file(ByteSize(1 * _GB))
     assert (
-        tmp_file.stat().st_size > _allowed_ram_usage_in_mb * 1024 * 1024
-    ), "For this test to make sense, file size must be larger than allowed ram usage."
+        large_server_file.local_file.stat().st_size
+        > _allowed_ram_usage_in_mb * 1024 * 1024
+    ), f"For this test to make sense, {large_server_file.local_file.stat().st_size=} must be larger than {_allowed_ram_usage_in_mb=}."
 
     def max_diff(data: List[int]) -> int:
         return max(data) - min(data)
 
-    tmp_path: Path = tmp_file.parent
-    files_api: osparc.FilesApi = osparc.FilesApi(api_client=api_client)
-    try:
-        upload_ram_usage_in_mb, uploaded_file1 = memory_usage(
-            (files_api.upload_file, (tmp_file,)),  # type: ignore
-            retval=True,
-        )
-        uploaded_file2: osparc.File = files_api.upload_file(tmp_file)
-        assert (
-            uploaded_file1.id == uploaded_file2.id
-        ), "could not detect that file was already on server"
-        assert (
-            max_diff(upload_ram_usage_in_mb) < _allowed_ram_usage_in_mb
-        ), f"Used more than {_allowed_ram_usage_in_mb=} to upload file of size {tmp_file.stat().st_size=}"
-        download_ram_usage_in_mb, downloaded_file = memory_usage(
-            (
-                files_api.download_file,
-                (uploaded_file1.id,),
-                {"destination_folder": tmp_path},
-            ),  # type: ignore
-            retval=True,
-        )
-        assert (
-            max_diff(download_ram_usage_in_mb) < _allowed_ram_usage_in_mb
-        ), f"Used more than {_allowed_ram_usage_in_mb=} to download file of size {Path(downloaded_file).stat().st_size=}"
-        assert _hash_file(Path(downloaded_file)) == _hash_file(tmp_file)
-    finally:
-        files_api.delete_file(uploaded_file1.id)
+    upload_ram_usage_in_mb, uploaded_file = memory_usage(
+        (files_api.upload_file, (large_server_file.local_file,)),  # type: ignore
+        retval=True,
+    )
+    assert (
+        large_server_file.server_file.id == uploaded_file.id
+    ), "could not detect that file was already on server"
+    assert (
+        max_diff(upload_ram_usage_in_mb) < _allowed_ram_usage_in_mb
+    ), f"Used more than {_allowed_ram_usage_in_mb=} to upload file of size {large_server_file.local_file.stat().st_size=}"
+    download_ram_usage_in_mb, downloaded_file = memory_usage(
+        (
+            files_api.download_file,
+            (uploaded_file.id,),
+            {"destination_folder": tmp_path},
+        ),  # type: ignore
+        retval=True,
+    )
+    assert Path(downloaded_file).parent == tmp_path
+    assert (
+        max_diff(download_ram_usage_in_mb) < _allowed_ram_usage_in_mb
+    ), f"Used more than {_allowed_ram_usage_in_mb=} to download file of size {Path(downloaded_file).stat().st_size=}"
+    assert _hash_file(Path(downloaded_file)) == _hash_file(large_server_file.local_file)
 
 
 @skip_if_osparc_version(at_least=Version("0.8.0"))
 @pytest.mark.parametrize("use_checksum", [True, False])
 @pytest.mark.parametrize("use_id", [True, False])
 def test_search_files(
-    create_tmp_file: Callable[[ByteSize], Path],
-    api_client: osparc.ApiClient,
+    large_server_file: Callable[[ByteSize], Path],
+    files_api: osparc.FilesApi,
     use_checksum: bool,
     use_id: bool,
+    faker: Faker,
 ) -> None:
-    tmp_file = create_tmp_file(ByteSize(1 * _GB))
-    checksum: str = _hash_file(tmp_file)
-    results: osparc.PaginationGenerator
-    files_api: osparc.FilesApi = osparc.FilesApi(api_client=api_client)
-    try:
-        results = files_api._search_files(sha256_checksum=checksum)
-        assert len(results) == 0, "Found file which shouldn't be there"
+    results: osparc.PaginationGenerator = files_api._search_files(
+        sha256_checksum=f"{faker.sha256()}"
+    )
+    assert len(results) == 0, "Found file which shouldn't be there"
 
-        uploaded_file: osparc.File = files_api.upload_file(tmp_file)
-        assert checksum == uploaded_file.checksum
-
-        results = files_api._search_files(
-            file_id=uploaded_file.id if use_id else None,
-            sha256_checksum=uploaded_file.checksum if use_checksum else None,
-        )
-        assert len(results) == 1, "Could not find file after it had been uploaded"
-
-        files_api.delete_file(uploaded_file.id)
-        results = files_api._search_files(
-            file_id=uploaded_file.id if use_id else None,
-            sha256_checksum=uploaded_file.checksum if use_checksum else None,
-        )
-        assert len(results) == 0, "Could find file on server after it had been deleted"
-
-    except Exception:
-        # clean up in case of failure
-        results = files_api._search_files(sha256_checksum=checksum)
-        for file in results:
-            files_api.delete_file(file.id)
+    results = files_api._search_files(
+        file_id=large_server_file.server_file.id if use_id else None,
+        sha256_checksum=large_server_file.server_file.checksum
+        if use_checksum
+        else None,
+    )
+    assert len(results) == 1, "Could not find file after it had been uploaded"
+    for file in results:
+        assert file.checksum == large_server_file.server_file.checksum
