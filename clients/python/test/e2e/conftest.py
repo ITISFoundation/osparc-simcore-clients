@@ -17,13 +17,17 @@ from httpx import AsyncClient, BasicAuth
 from numpy import random
 from packaging.version import Version
 from pydantic import ByteSize
-from typing import Callable
+from typing import NamedTuple, Final
 
 try:
     from osparc._settings import ConfigurationEnvVars
 except ImportError:
     pass
 
+
+_KB: ByteSize = ByteSize(1024)  # in bytes
+_MB: ByteSize = ByteSize(_KB * 1024)  # in bytes
+_GB: ByteSize = ByteSize(_MB * 1024)  # in bytes
 
 # Dictionary to store start times of tests
 _test_start_times = {}
@@ -90,7 +94,7 @@ def pytest_configure(config):
     config.pluginmanager.register(pytest_runtest_makereport, "osparc_makereport_plugin")
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def api_client() -> Iterable[osparc.ApiClient]:
     if Version(osparc.__version__) >= Version("8.0.0"):
         with osparc.ApiClient() as api_client:
@@ -105,6 +109,11 @@ def api_client() -> Iterable[osparc.ApiClient]:
         )
         with osparc.ApiClient(configuration=configuration) as api_client:
             yield api_client
+
+
+@pytest.fixture(scope="session")
+def files_api(api_client: osparc.ApiClient) -> osparc.FilesApi:
+    return osparc.FilesApi(api_client=api_client)
 
 
 @pytest.fixture
@@ -128,25 +137,34 @@ def async_client() -> Iterable[AsyncClient]:
     )  # type: ignore
 
 
-@pytest.fixture
-def create_tmp_file(
-    tmp_path: Path, caplog: pytest.LogCaptureFixture
-) -> Callable[[ByteSize], Path]:
-    def _generate_file(file_size: ByteSize):
-        caplog.set_level(logging.INFO)
-        tmp_file = tmp_path / "large_test_file.txt"
-        ss: random.SeedSequence = random.SeedSequence()
-        logging.info("Entropy used to generate random file: %s", f"{ss.entropy}")
-        rng: random.Generator = random.default_rng(ss)
-        tmp_file.write_bytes(rng.bytes(1000))
-        with open(tmp_file, "wb") as f:
-            f.truncate(file_size)
-        assert (
-            tmp_file.stat().st_size == file_size
-        ), f"Could not create file of size: {file_size}"
-        return tmp_file
+class ServerFile(NamedTuple):
+    server_file: osparc.File
+    local_file: Path
 
-    return _generate_file
+
+@pytest.fixture(scope="session")
+def large_server_file(
+    files_api: osparc.FilesApi, tmp_path_factory
+) -> Iterable[ServerFile]:
+    _file_size: Final[ByteSize] = ByteSize(1 * _GB)
+    tmp_file = (
+        tmp_path_factory.mktemp(basename=large_server_file.__name__)
+        / "large_test_file.txt"
+    )
+    ss: random.SeedSequence = random.SeedSequence()
+    logging.info("Entropy used to generate random file: %s", f"{ss.entropy}")
+    rng: random.Generator = random.default_rng(ss)
+    tmp_file.write_bytes(rng.bytes(1000))
+    with open(tmp_file, "wb") as f:
+        f.truncate(_file_size)
+    assert (
+        tmp_file.stat().st_size == _file_size
+    ), f"Could not create file of size: {_file_size}"
+    uploaded_file: osparc.File = files_api.upload_file(tmp_file)
+
+    yield ServerFile(local_file=tmp_file, server_file=uploaded_file)
+
+    files_api.delete_file(uploaded_file.id)
 
 
 @pytest.fixture
