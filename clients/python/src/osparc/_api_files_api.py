@@ -259,7 +259,7 @@ class FilesApi(_FilesApi):
 
         def _pagination_method():
             return super(FilesApi, self).search_files_page(
-                {k: v for k, v in kwargs.items() if v is not None}
+                **{k: v for k, v in kwargs.items() if v is not None}
             )
 
         return PaginationGenerator(
