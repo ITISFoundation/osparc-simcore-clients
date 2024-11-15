@@ -32,7 +32,7 @@ def _hash_file(file: Path) -> str:
         return sha256.hexdigest()
 
 
-@skip_if_osparc_version(at_least=Version("0.8.0"))
+@skip_if_osparc_version(at_least=Version("0.8.0"), at_most=Version("0.8.3.post0.dev11"))
 def test_upload_file(
     create_tmp_file: Callable[[ByteSize], Path], api_client: osparc.ApiClient
 ) -> None:
@@ -76,6 +76,10 @@ def test_upload_download_file_ram_usage(
             (files_api.upload_file, (tmp_file,)),  # type: ignore
             retval=True,
         )
+        uploaded_file2: osparc.File = files_api.upload_file(tmp_file)
+        assert (
+            uploaded_file1.id == uploaded_file2.id
+        ), "could not detect that file was already on server"
         assert (
             max_diff(upload_ram_usage_in_mb) < _allowed_ram_usage_in_mb
         ), f"Used more than {_allowed_ram_usage_in_mb=} to upload file of size {tmp_file.stat().st_size=}"
