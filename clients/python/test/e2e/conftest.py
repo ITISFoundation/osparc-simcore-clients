@@ -18,7 +18,6 @@ from numpy import random
 from packaging.version import Version
 from pydantic import ByteSize
 from typing import NamedTuple, Final
-from tempfile import TemporaryDirectory
 
 try:
     from osparc._settings import ConfigurationEnvVars
@@ -113,8 +112,8 @@ def api_client() -> Iterable[osparc.ApiClient]:
 
 
 @pytest.fixture(scope="session")
-def files_api(api_client: osparc.ApiClient) -> Iterable[osparc.FilesApi]:
-    yield osparc.FilesApi(api_client=api_client)
+def files_api(api_client: osparc.ApiClient) -> osparc.FilesApi:
+    return osparc.FilesApi(api_client=api_client)
 
 
 @pytest.fixture
@@ -144,25 +143,28 @@ class ServerFile(NamedTuple):
 
 
 @pytest.fixture(scope="session")
-def large_server_file(files_api: osparc.FilesApi) -> Iterable[ServerFile]:
+def large_server_file(
+    files_api: osparc.FilesApi, tmp_path_factory
+) -> Iterable[ServerFile]:
     _file_size: Final[ByteSize] = ByteSize(1 * _GB)
-    with TemporaryDirectory() as tmp_path:
-        tmp_path = Path(tmp_path)
-        tmp_file = tmp_path / "large_test_file.txt"
-        ss: random.SeedSequence = random.SeedSequence()
-        logging.info("Entropy used to generate random file: %s", f"{ss.entropy}")
-        rng: random.Generator = random.default_rng(ss)
-        tmp_file.write_bytes(rng.bytes(1000))
-        with open(tmp_file, "wb") as f:
-            f.truncate(_file_size)
-        assert (
-            tmp_file.stat().st_size == _file_size
-        ), f"Could not create file of size: {_file_size}"
-        uploaded_file: osparc.File = files_api.upload_file(tmp_file)
+    tmp_file = (
+        tmp_path_factory.mktemp(basename=large_server_file.__name__)
+        / "large_test_file.txt"
+    )
+    ss: random.SeedSequence = random.SeedSequence()
+    logging.info("Entropy used to generate random file: %s", f"{ss.entropy}")
+    rng: random.Generator = random.default_rng(ss)
+    tmp_file.write_bytes(rng.bytes(1000))
+    with open(tmp_file, "wb") as f:
+        f.truncate(_file_size)
+    assert (
+        tmp_file.stat().st_size == _file_size
+    ), f"Could not create file of size: {_file_size}"
+    uploaded_file: osparc.File = files_api.upload_file(tmp_file)
 
-        yield ServerFile(local_file=tmp_file, server_file=uploaded_file)
+    yield ServerFile(local_file=tmp_file, server_file=uploaded_file)
 
-        files_api.delete_file(uploaded_file.id)
+    files_api.delete_file(uploaded_file.id)
 
 
 @pytest.fixture
