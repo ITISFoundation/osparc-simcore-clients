@@ -129,3 +129,5 @@ def test_pagination_iterator(
 
         first_client_item = next(pagination_iterator)
         assert first_client_item == server_items[0]
+
+        assert len(pagination_iterator) == page_file.total
