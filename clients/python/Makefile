@@ -129,6 +129,10 @@ install-e2e-test: _check_venv_active guard-OSPARC_VERSION ## install packages fo
 	$(eval version := $(shell bash $(CLIENTS_PYTHON_DIR)/test/e2e/ci/bash/osparc_version.bash $(OSPARC_VERSION)))
 	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/e2e-test.txt osparc-client==$(version) osparc==$(version)
 
+.PHONY: install-e2e-test-local
+install-e2e-test-local: _check_venv_active python-client ## install packages for e2e testing with local (repo) client [e2e]
+	pip install -r $(CLIENTS_PYTHON_DIR)/requirements/e2e-test.txt --editable artifacts/client --editable .
+
 .PHONY: install-doc
 install-doc: _check_venv_active .install-dev-reqs ## install packages for generating documentation
 	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/doc.txt
