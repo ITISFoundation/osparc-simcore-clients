@@ -5,7 +5,7 @@ import json
 import logging
 import math
 from pathlib import Path
-from typing import Any, Iterator, List, Optional, Tuple, Union
+from typing import Any, Iterator, List, Optional, Tuple, Union, Set, Final
 
 import httpx
 from httpx import Response
@@ -37,6 +37,8 @@ from ._utils import (
 )
 
 _logger = logging.getLogger(__name__)
+
+_MAX_CONCURRENT_UPLOADS: Final[int] = 20
 
 
 class FilesApi(_FilesApi):
@@ -116,16 +118,23 @@ class FilesApi(_FilesApi):
         self,
         file: Union[str, Path],
         timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
+        max_concurrent_uploads: int = _MAX_CONCURRENT_UPLOADS,
         **kwargs,
     ):
         return asyncio.run(
-            self.upload_file_async(file=file, timeout_seconds=timeout_seconds, **kwargs)
+            self.upload_file_async(
+                file=file,
+                timeout_seconds=timeout_seconds,
+                max_concurrent_uploads=max_concurrent_uploads,
+                **kwargs,
+            )
         )
 
     async def upload_file_async(
         self,
         file: Union[str, Path],
         timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
+        max_concurrent_uploads: int = _MAX_CONCURRENT_UPLOADS,
         **kwargs,
     ) -> File:
         if isinstance(file, str):
@@ -159,29 +168,39 @@ class FilesApi(_FilesApi):
                 "Did not receive sufficient number of upload URLs from the server."
             )
 
-        upload_tasks: List[asyncio.Task] = []
+        upload_tasks: Set[asyncio.Task] = set()
+        uploaded_parts: List[UploadedPart] = []
         async with AsyncHttpClient(
             configuration=self.api_client.configuration, timeout=timeout_seconds
         ) as session:
             with logging_redirect_tqdm():
                 _logger.debug("Uploading %s in %i chunk(s)", file.name, n_urls)
-                async for chunck, size in tqdm(
+                async for chunck, size, is_final_chunk in tqdm(
                     file_chunk_generator(file, chunk_size),
                     total=n_urls,
                     disable=(not _logger.isEnabledFor(logging.DEBUG)),
                 ):
                     index, url = next(url_iter)
-                    upload_tasks.append(
-                        await self._upload_chunck(
-                            http_client=session,
-                            chunck=chunck,
-                            chunck_size=size,
-                            upload_link=url,
-                            index=index,
+                    upload_tasks.add(
+                        asyncio.create_task(
+                            self._upload_chunck(
+                                http_client=session,
+                                chunck=chunck,
+                                chunck_size=size,
+                                upload_link=url,
+                                index=index,
+                            )
                         )
                     )
+                    while (len(upload_tasks) > max_concurrent_uploads) or (
+                        is_final_chunk and len(upload_tasks) > 0
+                    ):
+                        done, upload_tasks = await asyncio.wait(
+                            upload_tasks, return_when=asyncio.FIRST_COMPLETED
+                        )
+                        for task in done:
+                            uploaded_parts.append(task.result())
 
-            uploaded_parts: list[UploadedPart] = []
             abort_body = BodyAbortMultipartUploadV0FilesFileIdAbortPost(
                 client_file=client_file
             )

@@ -77,7 +77,7 @@ class PaginationGenerator:
 
 async def file_chunk_generator(
     file: Path, chunk_size: int
-) -> AsyncGenerator[Tuple[bytes, int], None]:
+) -> AsyncGenerator[Tuple[bytes, int, bool], None]:
     if not file.is_file():
         raise RuntimeError(f"{file} must be a file")
     if chunk_size <= 0:
@@ -94,8 +94,8 @@ async def file_chunk_generator(
             )
             assert nbytes > 0
             chunk = await f.read(nbytes)
-            yield chunk, nbytes
             bytes_read += nbytes
+            yield chunk, nbytes, (bytes_read == file_size)
 
 
 S = TypeVar("S")
