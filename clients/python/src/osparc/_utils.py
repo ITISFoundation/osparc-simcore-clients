@@ -30,8 +30,9 @@ T = TypeVar("T", Job, File, Solver, Study)
 
 
 class PaginationIterator(Iterator):
-    """Class for wrapping paginated http methods as iterables. It supports two simple operations:
-    - for elm in pagination_iterable:
+    """Class for wrapping paginated http methods as iterables. It supports three simple operations:
+    - for elm in pagination_iterable
+    - elm = next(pagination_iterable)
     - len(pagination_iterable)"""
 
     def __init__(
