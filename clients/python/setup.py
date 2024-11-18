@@ -31,6 +31,7 @@ REQUIRES = [
     "tqdm>=4.48.0",
     f"osparc_client=={VERSION}",
     "urllib3",
+    "aiofiles",
 ]
 
 SETUP = dict(

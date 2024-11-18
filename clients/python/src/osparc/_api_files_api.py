@@ -4,9 +4,6 @@ import asyncio
 import json
 import logging
 import math
-import random
-import shutil
-import string
 from pathlib import Path
 from typing import Any, Iterator, List, Optional, Tuple, Union
 from tempfile import NamedTemporaryFile
@@ -29,11 +26,13 @@ from .models import (
     FileUploadData,
     UploadedPart,
 )
+from urllib.parse import urljoin
+import aiofiles
+import shutil
 from ._utils import (
     DEFAULT_TIMEOUT_SECONDS,
     PaginationGenerator,
     compute_sha256,
-    dev_features_enabled,
     file_chunk_generator,
 )
 
@@ -60,34 +59,58 @@ class FilesApi(_FilesApi):
             else None
         )
 
-    def __getattr__(self, name: str) -> Any:
-        if (name in FilesApi._dev_features) and (not dev_features_enabled()):
-            raise NotImplementedError(f"FilesApi.{name} is still under development")
-        return super().__getattribute__(name)
-
     def download_file(
-        self, file_id: str, *, destination_folder: Optional[Path] = None, **kwargs
+        self,
+        file_id: str,
+        *,
+        destination_folder: Optional[Path] = None,
+        timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
+        **kwargs,
+    ) -> str:
+        return asyncio.run(
+            self.download_file_async(
+                file_id=file_id,
+                destination_folder=destination_folder,
+                timeout_seconds=timeout_seconds,
+                **kwargs,
+            )
+        )
+
+    async def download_file_async(
+        self,
+        file_id: str,
+        *,
+        destination_folder: Optional[Path] = None,
+        timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
+        **kwargs,
     ) -> str:
         if destination_folder is not None and not destination_folder.is_dir():
             raise RuntimeError(
                 f"destination_folder: {destination_folder} must be a directory"
             )
-        with NamedTemporaryFile(delete=False) as tmp_file:
-            downloaded_file = Path(tmp_file.name)
-        data = super().download_file(file_id, **kwargs)
-        downloaded_file.write_bytes(data)
-        if destination_folder is not None:
-            dest_file: Path = destination_folder / downloaded_file.name
-            while dest_file.is_file():
-                new_name = (
-                    downloaded_file.stem
-                    + "".join(random.choices(string.ascii_letters, k=8))
-                    + downloaded_file.suffix
+        async with aiofiles.tempfile.NamedTemporaryFile(
+            mode="wb",
+            delete=False,
+        ) as downloaded_file:
+            async with AsyncHttpClient(
+                configuration=self.api_client.configuration, timeout=timeout_seconds
+            ) as session:
+                url = urljoin(
+                    self.api_client.configuration.host, f"/v0/files/{file_id}/content"
                 )
-                dest_file = destination_folder / new_name
-            shutil.move(downloaded_file, dest_file)
-            downloaded_file = dest_file
-        return str(downloaded_file.resolve())
+                async for response in await session.stream(
+                    "GET", url=url, auth=self._auth, follow_redirects=True
+                ):
+                    response.raise_for_status()
+                    async for chunk in response.aiter_bytes():
+                        await downloaded_file.write(chunk)
+        dest_file = f"{downloaded_file.name}"
+        if destination_folder is not None:
+            dest_file = NamedTemporaryFile(dir=destination_folder, delete=False).name
+            shutil.move(
+                f"{downloaded_file.name}", dest_file
+            )  # aiofiles doesnt seem to have an async variant of this
+        return dest_file
 
     def upload_file(
         self,
@@ -109,7 +132,7 @@ class FilesApi(_FilesApi):
             file = Path(file)
         if not file.is_file():
             raise RuntimeError(f"{file} is not a file")
-        checksum: str = compute_sha256(file)
+        checksum: str = await compute_sha256(file)
         for file_result in self._search_files(
             sha256_checksum=checksum, timeout_seconds=timeout_seconds
         ):
@@ -163,7 +186,7 @@ class FilesApi(_FilesApi):
             )
             async with AsyncHttpClient(
                 configuration=self.api_client.configuration,
-                request_type="post",
+                method="post",
                 url=links.abort_upload,
                 body=abort_body.to_dict(),
                 base_url=self.api_client.configuration.host,

@@ -1,4 +1,3 @@
-import os
 import subprocess
 from pathlib import Path
 from typing import Optional
@@ -9,10 +8,6 @@ from packaging.version import Version
 
 _clients_python_dir: Path = Path(__file__).parent.parent.parent
 assert _clients_python_dir.is_dir()
-
-
-def osparc_dev_features_enabled() -> bool:
-    return os.environ.get("OSPARC_DEV_FEATURES_ENABLED") == "1"
 
 
 def repo_version() -> Version:

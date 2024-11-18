@@ -14,6 +14,7 @@ from packaging.version import Version
 DEFAULT_TIMEOUT_SECONDS = 10 * 60  # 10 min
 
 
+@skip_if_osparc_version(at_least=Version("0.8.3.post0.dev20"))
 def test_jobs(api_client: osparc.ApiClient, sleeper: osparc.Solver):
     """Test the jobs method
 

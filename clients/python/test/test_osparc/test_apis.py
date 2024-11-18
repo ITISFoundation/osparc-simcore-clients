@@ -29,7 +29,6 @@ def test_create_jobs_parent_headers(
     mocker: MockerFixture,
     faker: Faker,
     create_parent_env: Callable,
-    dev_mode_enabled: None,
     parent_env: bool,
     api_client: ApiClient,
 ):

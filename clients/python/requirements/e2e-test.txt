@@ -1,10 +1,12 @@
 -r ../../../requirements.txt
 
 black
+faker
 ipykernel
 ipython
 jinja2
 matplotlib
+memory_profiler
 packaging
 pandas
 papermill

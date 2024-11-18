@@ -1,7 +1,16 @@
 from contextlib import suppress
 from datetime import datetime
 from email.utils import parsedate_to_datetime
-from typing import Any, Awaitable, Callable, Dict, Optional, Set
+from typing import (
+    Any,
+    Awaitable,
+    Callable,
+    Dict,
+    Optional,
+    Set,
+    Literal,
+    AsyncGenerator,
+)
 
 import httpx
 import tenacity
@@ -17,14 +26,14 @@ class AsyncHttpClient:
         self,
         *,
         configuration: Configuration,
-        request_type: Optional[str] = None,
+        method: Optional[str] = None,
         url: Optional[str] = None,
         body: Optional[Dict] = None,
         **httpx_async_client_kwargs,
     ):
         self.configuration = configuration
         self._client = httpx.AsyncClient(**httpx_async_client_kwargs)
-        self._callback = getattr(self._client, request_type) if request_type else None
+        self._callback = getattr(self._client, method) if method else None
         self._url = url
         self._body = body
         if self._callback is not None:
@@ -77,6 +86,28 @@ class AsyncHttpClient:
 
         return await _()
 
+    async def _stream(
+        self, method: Literal["GET"], url: str, *args, **kwargs
+    ) -> AsyncGenerator[httpx.Response, None]:
+        n_attempts = self.configuration.retries.total
+        assert isinstance(n_attempts, int)
+
+        @tenacity.retry(
+            reraise=True,
+            wait=self._wait_callback,
+            stop=tenacity.stop_after_attempt(n_attempts),
+            retry=tenacity.retry_if_exception_type(httpx.HTTPStatusError),
+        )
+        async def _() -> AsyncGenerator[httpx.Response, None]:
+            async with self._client.stream(
+                method=method, url=url, *args, **kwargs
+            ) as response:
+                if response.status_code in self.configuration.retries.status_forcelist:
+                    response.raise_for_status()
+                yield response
+
+        return _()
+
     async def put(self, *args, **kwargs) -> httpx.Response:
         return await self._request(self._client.put, *args, **kwargs)
 
@@ -91,6 +122,11 @@ class AsyncHttpClient:
 
     async def get(self, *args, **kwargs) -> httpx.Response:
         return await self._request(self._client.get, *args, **kwargs)
+
+    async def stream(
+        self, method: Literal["GET"], url: str, *args, **kwargs
+    ) -> AsyncGenerator[httpx.Response, None]:
+        return await self._stream(method=method, url=url, *args, **kwargs)
 
     def _wait_callback(self, retry_state: tenacity.RetryCallState) -> int:
         assert retry_state.outcome is not None
