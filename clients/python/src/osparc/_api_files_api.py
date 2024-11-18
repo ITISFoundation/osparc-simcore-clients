@@ -254,7 +254,7 @@ class FilesApi(_FilesApi):
         kwargs = {
             "file_id": file_id,
             "sha256_checksum": sha256_checksum,
-            "timeout_seconds": timeout_seconds,
+            "_request_timeout": timeout_seconds,
         }
 
         def _pagination_method():
