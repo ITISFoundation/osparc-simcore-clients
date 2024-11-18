@@ -168,52 +168,53 @@ class FilesApi(_FilesApi):
                 "Did not receive sufficient number of upload URLs from the server."
             )
 
+        abort_body = BodyAbortMultipartUploadV0FilesFileIdAbortPost(
+            client_file=client_file
+        )
         upload_tasks: Set[asyncio.Task] = set()
         uploaded_parts: List[UploadedPart] = []
+
         async with AsyncHttpClient(
-            configuration=self.api_client.configuration, timeout=timeout_seconds
-        ) as session:
-            with logging_redirect_tqdm():
-                _logger.debug("Uploading %s in %i chunk(s)", file.name, n_urls)
-                async for chunck, size, is_final_chunk in tqdm(
-                    file_chunk_generator(file, chunk_size),
-                    total=n_urls,
-                    disable=(not _logger.isEnabledFor(logging.DEBUG)),
-                ):
-                    index, url = next(url_iter)
-                    upload_tasks.add(
-                        asyncio.create_task(
-                            self._upload_chunck(
-                                http_client=session,
-                                chunck=chunck,
-                                chunck_size=size,
-                                upload_link=url,
-                                index=index,
+            configuration=self.api_client.configuration,
+            method="post",
+            url=links.abort_upload,
+            body=abort_body.to_dict(),
+            base_url=self.api_client.configuration.host,
+            follow_redirects=True,
+            auth=self._auth,
+            timeout=timeout_seconds,
+        ) as api_server_session:
+            async with AsyncHttpClient(
+                configuration=self.api_client.configuration, timeout=timeout_seconds
+            ) as s3_session:
+                with logging_redirect_tqdm():
+                    _logger.debug("Uploading %s in %i chunk(s)", file.name, n_urls)
+                    async for chunck, size, is_final_chunk in tqdm(
+                        file_chunk_generator(file, chunk_size),
+                        total=n_urls,
+                        disable=(not _logger.isEnabledFor(logging.DEBUG)),
+                    ):  # type: ignore
+                        index, url = next(url_iter)
+                        upload_tasks.add(
+                            asyncio.create_task(
+                                self._upload_chunck(
+                                    http_client=s3_session,
+                                    chunck=chunck,
+                                    chunck_size=size,
+                                    upload_link=url,
+                                    index=index,
+                                )
                             )
                         )
-                    )
-                    while (len(upload_tasks) > max_concurrent_uploads) or (
-                        is_final_chunk and len(upload_tasks) > 0
-                    ):
-                        done, upload_tasks = await asyncio.wait(
-                            upload_tasks, return_when=asyncio.FIRST_COMPLETED
-                        )
-                        for task in done:
-                            uploaded_parts.append(task.result())
+                        while (len(upload_tasks) > max_concurrent_uploads) or (
+                            is_final_chunk and len(upload_tasks) > 0
+                        ):
+                            done, upload_tasks = await asyncio.wait(
+                                upload_tasks, return_when=asyncio.FIRST_COMPLETED
+                            )
+                            for task in done:
+                                uploaded_parts.append(task.result())
 
-            abort_body = BodyAbortMultipartUploadV0FilesFileIdAbortPost(
-                client_file=client_file
-            )
-            async with AsyncHttpClient(
-                configuration=self.api_client.configuration,
-                method="post",
-                url=links.abort_upload,
-                body=abort_body.to_dict(),
-                base_url=self.api_client.configuration.host,
-                follow_redirects=True,
-                auth=self._auth,
-                timeout=timeout_seconds,
-            ) as session:
                 _logger.debug(
                     (
                         "Completing upload of %s "
@@ -222,7 +223,10 @@ class FilesApi(_FilesApi):
                     file.name,
                 )
                 server_file: File = await self._complete_multipart_upload(
-                    session, links.complete_upload, client_file, uploaded_parts
+                    api_server_session,
+                    links.complete_upload,
+                    client_file,
+                    uploaded_parts,
                 )
                 _logger.debug("File upload complete: %s", file.name)
                 return server_file
