@@ -38,7 +38,7 @@ def page_file(faker: Faker) -> osparc.PageFile:
 
     return osparc.PageFile(
         items=items,
-        total=faker.pyint(min_value=1, max_value=10) * len(items),
+        total=faker.pyint(min_value=len(items) + 1, max_value=len(items) + 100),
         limit=len(items),
         offset=faker.pyint(min_value=0),
         links=osparc.Links(next=faker.url()),

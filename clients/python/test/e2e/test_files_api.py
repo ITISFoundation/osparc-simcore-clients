@@ -8,6 +8,7 @@ import hashlib
 from pathlib import Path
 
 import osparc
+from osparc._utils import PaginationIterator
 import pytest
 from memory_profiler import memory_usage
 from typing import Final, List, Callable
@@ -96,7 +97,7 @@ def test_search_files(
     use_id: bool,
     faker: Faker,
 ) -> None:
-    results: osparc.PaginationGenerator = files_api._search_files(
+    results: PaginationIterator = files_api._search_files(
         sha256_checksum=f"{faker.sha256()}"
     )
     assert len(results) == 0, "Found file which shouldn't be there"
@@ -108,5 +109,5 @@ def test_search_files(
         else None,
     )
     assert len(results) == 1, "Could not find file after it had been uploaded"
-    for file in results:
-        assert file.checksum == large_server_file.server_file.checksum
+    file = next(results)
+    assert file.checksum == large_server_file.server_file.checksum

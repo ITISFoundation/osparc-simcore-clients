@@ -106,9 +106,10 @@ def test_pagination_iterator(
     )
 
     def _sideeffect(all_items: List, request: httpx.Request):
-        if len(all_items) > faker.pyint(min_value=10):
-            page_file.links.next = None
         all_items += page_file.items
+        if len(all_items) >= page_file.total:
+            all_items = all_items[: page_file.total]
+            page_file.links.next = None
         return httpx.Response(status_code=200, json=page_file.to_dict())
 
     with respx.mock(
