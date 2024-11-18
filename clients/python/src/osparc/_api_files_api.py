@@ -224,7 +224,7 @@ class FilesApi(_FilesApi):
                 )
                 server_file: File = await self._complete_multipart_upload(
                     api_server_session,
-                    links.complete_upload,
+                    links.complete_upload,  # type: ignore
                     client_file,
                     uploaded_parts,
                 )
