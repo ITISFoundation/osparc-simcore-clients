@@ -159,7 +159,7 @@ class FilesApi(_FilesApi):
                 "Did not receive sufficient number of upload URLs from the server."
             )
 
-        uploaded_parts: list[UploadedPart] = []
+        upload_tasks: List[asyncio.Task] = []
         async with AsyncHttpClient(
             configuration=self.api_client.configuration, timeout=timeout_seconds
         ) as session:
@@ -171,7 +171,7 @@ class FilesApi(_FilesApi):
                     disable=(not _logger.isEnabledFor(logging.DEBUG)),
                 ):
                     index, url = next(url_iter)
-                    uploaded_parts.append(
+                    upload_tasks.append(
                         await self._upload_chunck(
                             http_client=session,
                             chunck=chunck,
@@ -181,6 +181,7 @@ class FilesApi(_FilesApi):
                         )
                     )
 
+            uploaded_parts: list[UploadedPart] = []
             abort_body = BodyAbortMultipartUploadV0FilesFileIdAbortPost(
                 client_file=client_file
             )
