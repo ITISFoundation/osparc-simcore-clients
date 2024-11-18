@@ -215,21 +215,18 @@ class FilesApi(_FilesApi):
                             for task in done:
                                 uploaded_parts.append(task.result())
 
-                _logger.debug(
-                    (
-                        "Completing upload of %s "
-                        "(this might take a couple of minutes)..."
-                    ),
-                    file.name,
-                )
-                server_file: File = await self._complete_multipart_upload(
-                    api_server_session,
-                    links.complete_upload,  # type: ignore
-                    client_file,
-                    uploaded_parts,
-                )
-                _logger.debug("File upload complete: %s", file.name)
-                return server_file
+            _logger.debug(
+                ("Completing upload of %s " "(this might take a couple of minutes)..."),
+                file.name,
+            )
+            server_file: File = await self._complete_multipart_upload(
+                api_server_session,
+                links.complete_upload,  # type: ignore
+                client_file,
+                uploaded_parts,
+            )
+            _logger.debug("File upload complete: %s", file.name)
+            return server_file
 
     async def _complete_multipart_upload(
         self,
