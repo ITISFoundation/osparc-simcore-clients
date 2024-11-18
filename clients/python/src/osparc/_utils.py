@@ -2,7 +2,7 @@ import asyncio
 import hashlib
 from pathlib import Path
 from typing import AsyncGenerator, Callable, Generator, Optional, Tuple, TypeVar, Union
-
+from collections.abc import Iterable
 import httpx
 from osparc_client import (
     ApiClient,
@@ -30,8 +30,10 @@ Page = Union[PageJob, PageFile, PageStudy]
 T = TypeVar("T", Job, File, Solver, Study)
 
 
-class PaginationGenerator:
-    """Class for wrapping paginated http methods as generators"""
+class PaginationIterable(Iterable):
+    """Class for wrapping paginated http methods as iterables. It supports two simple operations:
+    - for elm in pagination_iterable:
+    - len(pagination_iterable)"""
 
     def __init__(
         self,

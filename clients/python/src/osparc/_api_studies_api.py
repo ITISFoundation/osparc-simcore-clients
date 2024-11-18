@@ -17,7 +17,7 @@ from ._settings import ParentProjectInfo
 from ._utils import (
     _DEFAULT_PAGINATION_LIMIT,
     _DEFAULT_PAGINATION_OFFSET,
-    PaginationGenerator,
+    PaginationIterable,
 )
 import warnings
 
@@ -65,7 +65,7 @@ class StudiesApi(_StudiesApi):
         kwargs = {**kwargs, **ParentProjectInfo().model_dump(exclude_none=True)}
         return super().clone_study(study_id, **kwargs)
 
-    def iter_studies(self, **kwargs) -> PaginationGenerator:
+    def iter_studies(self, **kwargs) -> PaginationIterable:
         def _pagination_method():
             page_study = self.list_studies(
                 limit=_DEFAULT_PAGINATION_LIMIT,
@@ -75,14 +75,14 @@ class StudiesApi(_StudiesApi):
             assert isinstance(page_study, PageStudy)  # nosec
             return page_study
 
-        return PaginationGenerator(
+        return PaginationIterable(
             first_page_callback=_pagination_method,
             api_client=self.api_client,
             base_url=self.api_client.configuration.host,
             auth=self._auth,
         )
 
-    def studies(self, **kwargs) -> PaginationGenerator:
+    def studies(self, **kwargs) -> PaginationIterable:
         warnings.warn(
             "The 'studies' method is deprecated and will be removed in a future version. "
             "Please use 'iter_studies' instead.",
