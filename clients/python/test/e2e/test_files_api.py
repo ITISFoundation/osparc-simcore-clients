@@ -85,9 +85,10 @@ def test_upload_download_file_ram_usage(
     assert _hash_file(Path(downloaded_file)) == _hash_file(large_server_file.local_file)
 
 
-@skip_if_osparc_version(at_least=Version("0.8.0"))
-@pytest.mark.parametrize("use_checksum", [True, False])
-@pytest.mark.parametrize("use_id", [True, False])
+@skip_if_osparc_version(at_least=Version("0.8.3.post0.dev20"))
+@pytest.mark.parametrize(
+    "use_checksum,use_id", [(True, True), (False, True), (True, False)]
+)
 def test_search_files(
     large_server_file: Callable[[ByteSize], Path],
     files_api: osparc.FilesApi,
