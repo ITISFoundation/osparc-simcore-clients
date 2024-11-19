@@ -8,8 +8,9 @@ from typing import (
     TypeVar,
     Union,
     NamedTuple,
+    Generator,
 )
-from collections.abc import Iterable, Generator, Sized
+from collections.abc import Iterable, Sized
 import httpx
 from osparc_client import (
     ApiClient,
