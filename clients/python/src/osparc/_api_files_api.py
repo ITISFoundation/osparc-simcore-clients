@@ -31,7 +31,7 @@ from tempfile import NamedTemporaryFile
 import shutil
 from ._utils import (
     DEFAULT_TIMEOUT_SECONDS,
-    PaginationIterator,
+    PaginationIterable,
     compute_sha256,
     file_chunk_generator,
     Chunk,
@@ -273,7 +273,7 @@ class FilesApi(_FilesApi):
         file_id: Optional[str] = None,
         sha256_checksum: Optional[str] = None,
         timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
-    ) -> PaginationIterator:
+    ) -> PaginationIterable:
         kwargs = {
             "file_id": file_id,
             "sha256_checksum": sha256_checksum,
@@ -285,7 +285,7 @@ class FilesApi(_FilesApi):
                 **{k: v for k, v in kwargs.items() if v is not None}
             )
 
-        return PaginationIterator(
+        return PaginationIterable(
             first_page_callback=_pagination_method,
             api_client=self.api_client,
             base_url=self.api_client.configuration.host,

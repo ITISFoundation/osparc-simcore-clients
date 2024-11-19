@@ -7,11 +7,9 @@ from typing import (
     Optional,
     TypeVar,
     Union,
-    cast,
-    List,
     NamedTuple,
 )
-from collections.abc import Iterator
+from collections.abc import Iterable, Generator, Sized
 import httpx
 from osparc_client import (
     ApiClient,
@@ -24,6 +22,7 @@ from osparc_client import (
     Study,
 )
 import aiofiles
+from .exceptions import RequestError
 
 _KB = 1024  # in bytes
 _MB = _KB * 1024  # in bytes
@@ -38,7 +37,7 @@ Page = Union[PageJob, PageFile, PageStudy]
 T = TypeVar("T", Job, File, Solver, Study)
 
 
-class PaginationIterator(Iterator):
+class PaginationIterable(Iterable, Sized):
     """Class for wrapping paginated http methods as iterables. It supports three simple operations:
     - for elm in pagination_iterable
     - elm = next(pagination_iterable)
@@ -53,46 +52,37 @@ class PaginationIterator(Iterator):
     ):
         self._first_page_callback: Callable[[], Page] = first_page_callback
         self._api_client: ApiClient = api_client
+        self._next_page_url: Optional[str] = None
         self._client: httpx.Client = httpx.Client(
             auth=auth, base_url=base_url, follow_redirects=True
         )
-        self._page: Optional[Page] = None
-        self._items_iterator: Optional[Iterator] = None
 
     def __del__(self):
         self._client.close()
 
-    def __next__(self):
-        if self._page is None:
-            self._page = self._first_page_callback()
-            self._items_iterator = iter(cast(List, self._page.items))
-            if self._items_iterator is None:
-                raise StopIteration
-        assert self._items_iterator is not None  # nosec
-        try:
-            return next(self._items_iterator)
-        except StopIteration as exc:
-            next_page_url = self._page.links.next
-            if next_page_url is None:
-                self._page = None
-                self._items_iterator = None
-                raise StopIteration from exc
-            response = self._client.get(next_page_url)
-            self._page = self._api_client._ApiClient__deserialize(
-                response.json(), type(self._page)
-            )
-            assert self._page is not None  # nosec
-            self._items_iterator = iter(cast(List, self._page.items))
-            return next(self._items_iterator)
-
     def __len__(self) -> int:
         """Number of elements which the iterator can produce"""
-        if self._page is not None:
-            return cast(int, self._page.total)
-        self._page = self._first_page_callback()
-        assert self._page is not None  # nosec
-        self._items_iterator = iter(cast(List, self._page.items))
-        return cast(int, self._page.total)
+        page: Page = self._first_page_callback()
+        assert isinstance(page.total, int)
+        return page.total
+
+    def __iter__(self) -> Generator[T, None, None]:
+        """Returns the generator"""
+        if len(self) == 0:
+            return
+        page: Page = self._first_page_callback()
+        while True:
+            assert page.items is not None
+            assert isinstance(page.total, int)
+            yield from page.items
+            if page.links.next is None:
+                return
+            response: httpx.Response = self._client.get(page.links.next)
+            try:
+                response.raise_for_status()
+            except httpx.HTTPStatusError as e:
+                raise RequestError(f"{e}") from e
+            page = self._api_client._ApiClient__deserialize(response.json(), type(page))
 
 
 class Chunk(NamedTuple):

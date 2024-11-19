@@ -12,7 +12,7 @@ import respx
 from faker import Faker
 import httpx
 from urllib.parse import urlparse
-from osparc._utils import PaginationIterator
+from osparc._utils import PaginationIterable
 from functools import partial
 from copy import deepcopy
 
@@ -124,14 +124,14 @@ def test_pagination_iterator(
             side_effect=partial(_sideeffect, server_items)
         )
 
-        pagination_iterator = PaginationIterator(
+        pagination_iterator = PaginationIterable(
             lambda: page_file, api_client=api_client, base_url=_base_url, auth=_auth
         )
         client_items = [item for item in pagination_iterator]
         assert len(server_items) > 0
         assert server_items == client_items
 
-        first_client_item = next(pagination_iterator)
+        first_client_item = next(iter(pagination_iterator))
         assert first_client_item == server_items[0]
 
         assert len(pagination_iterator) == page_file.total
