@@ -172,7 +172,10 @@ def large_server_file(
         upload_ram_usage=max(ram_statistics) - min(ram_statistics),
     )
 
-    files_api.delete_file(uploaded_file.id)
+    try:
+        files_api.delete_file(uploaded_file.id)
+    except osparc.ApiException:
+        pass
 
 
 @pytest.fixture
@@ -206,4 +209,7 @@ def file_with_number(
     server_file = files_api.upload_file(file)
     yield server_file
 
-    files_api.delete_file(server_file.id)
+    try:
+        files_api.delete_file(server_file.id)
+    except osparc.ApiException:
+        pass
