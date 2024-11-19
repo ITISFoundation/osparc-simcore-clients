@@ -1,7 +1,16 @@
 import asyncio
 import hashlib
 from pathlib import Path
-from typing import AsyncGenerator, Callable, Optional, Tuple, TypeVar, Union, cast, List
+from typing import (
+    AsyncGenerator,
+    Callable,
+    Optional,
+    TypeVar,
+    Union,
+    cast,
+    List,
+    NamedTuple,
+)
 from collections.abc import Iterator
 import httpx
 from osparc_client import (
@@ -57,6 +66,8 @@ class PaginationIterator(Iterator):
         if self._page is None:
             self._page = self._first_page_callback()
             self._items_iterator = iter(cast(List, self._page.items))
+            if self._items_iterator is None:
+                raise StopIteration
         assert self._items_iterator is not None  # nosec
         try:
             return next(self._items_iterator)
@@ -79,12 +90,20 @@ class PaginationIterator(Iterator):
         if self._page is not None:
             return cast(int, self._page.total)
         self._page = self._first_page_callback()
+        assert self._page is not None  # nosec
+        self._items_iterator = iter(cast(List, self._page.items))
         return cast(int, self._page.total)
+
+
+class Chunk(NamedTuple):
+    data: bytes
+    nbytes: int
+    is_last_chunk: bool
 
 
 async def file_chunk_generator(
     file: Path, chunk_size: int
-) -> AsyncGenerator[Tuple[bytes, int, bool], None]:
+) -> AsyncGenerator[Chunk, None]:
     if not file.is_file():
         raise RuntimeError(f"{file} must be a file")
     if chunk_size <= 0:
@@ -102,7 +121,9 @@ async def file_chunk_generator(
             assert nbytes > 0
             chunk = await f.read(nbytes)
             bytes_read += nbytes
-            yield chunk, nbytes, (bytes_read == file_size)
+            yield Chunk(
+                data=chunk, nbytes=nbytes, is_last_chunk=(bytes_read == file_size)
+            )
 
 
 S = TypeVar("S")

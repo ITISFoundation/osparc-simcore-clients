@@ -34,6 +34,7 @@ from ._utils import (
     PaginationIterator,
     compute_sha256,
     file_chunk_generator,
+    Chunk,
 )
 
 _logger = logging.getLogger(__name__)
@@ -189,25 +190,26 @@ class FilesApi(_FilesApi):
             ) as s3_session:
                 with logging_redirect_tqdm():
                     _logger.debug("Uploading %s in %i chunk(s)", file.name, n_urls)
-                    async for chunck, size, is_final_chunk in tqdm(
+                    async for chunk in tqdm(
                         file_chunk_generator(file, chunk_size),
                         total=n_urls,
                         disable=(not _logger.isEnabledFor(logging.DEBUG)),
                     ):  # type: ignore
+                        assert isinstance(chunk, Chunk)  # nosec
                         index, url = next(url_iter)
                         upload_tasks.add(
                             asyncio.create_task(
                                 self._upload_chunck(
                                     http_client=s3_session,
-                                    chunck=chunck,
-                                    chunck_size=size,
+                                    chunck=chunk.data,
+                                    chunck_size=chunk.nbytes,
                                     upload_link=url,
                                     index=index,
                                 )
                             )
                         )
                         while (len(upload_tasks) > max_concurrent_uploads) or (
-                            is_final_chunk and len(upload_tasks) > 0
+                            chunk.is_last_chunk and len(upload_tasks) > 0
                         ):
                             done, upload_tasks = await asyncio.wait(
                                 upload_tasks, return_when=asyncio.FIRST_COMPLETED
