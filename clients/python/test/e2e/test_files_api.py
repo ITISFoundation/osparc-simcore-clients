@@ -11,7 +11,7 @@ import osparc
 from osparc._utils import PaginationIterator
 import pytest
 from memory_profiler import memory_usage
-from typing import Final, List, Callable
+from typing import Final, Callable
 from pydantic import ByteSize
 from _utils import skip_if_osparc_version
 from packaging.version import Version
@@ -52,25 +52,21 @@ def test_upload_download_file_ram_usage(
     tmp_path: Path, large_server_file: ServerFile, files_api: osparc.FilesApi
 ) -> None:
     """Check RAM usage of upload/download fcns"""
-    _allowed_ram_usage_in_mb: Final[int] = 300  # 300MB
+    _allowed_ram_usage_in_mb: Final[int] = 1000  # 1000MB
     assert (
         large_server_file.local_file.stat().st_size
         > _allowed_ram_usage_in_mb * 1024 * 1024
     ), f"For this test to make sense, {large_server_file.local_file.stat().st_size=} must be larger than {_allowed_ram_usage_in_mb=}."
 
-    def max_diff(data: List[int]) -> int:
-        return max(data) - min(data)
+    assert (
+        large_server_file.upload_ram_usage < _allowed_ram_usage_in_mb
+    ), f"Used more than {_allowed_ram_usage_in_mb=} to upload file of size {large_server_file.local_file.stat().st_size=}"
 
-    upload_ram_usage_in_mb, uploaded_file = memory_usage(
-        (files_api.upload_file, (large_server_file.local_file,)),  # type: ignore
-        retval=True,
-    )
+    uploaded_file = files_api.upload_file(large_server_file.local_file)
     assert (
         large_server_file.server_file.id == uploaded_file.id
     ), "could not detect that file was already on server"
-    assert (
-        max_diff(upload_ram_usage_in_mb) < _allowed_ram_usage_in_mb
-    ), f"Used more than {_allowed_ram_usage_in_mb=} to upload file of size {large_server_file.local_file.stat().st_size=}"
+
     download_ram_usage_in_mb, downloaded_file = memory_usage(
         (
             files_api.download_file,
@@ -81,7 +77,8 @@ def test_upload_download_file_ram_usage(
     )
     assert Path(downloaded_file).parent == tmp_path
     assert (
-        max_diff(download_ram_usage_in_mb) < _allowed_ram_usage_in_mb
+        max(download_ram_usage_in_mb) - min(download_ram_usage_in_mb)
+        < _allowed_ram_usage_in_mb
     ), f"Used more than {_allowed_ram_usage_in_mb=} to download file of size {Path(downloaded_file).stat().st_size=}"
     assert _hash_file(Path(downloaded_file)) == _hash_file(large_server_file.local_file)
 

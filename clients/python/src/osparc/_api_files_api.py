@@ -208,7 +208,7 @@ class FilesApi(_FilesApi):
                                 )
                             )
                         )
-                        while (len(upload_tasks) > max_concurrent_uploads) or (
+                        while (len(upload_tasks) >= max_concurrent_uploads) or (
                             chunk.is_last_chunk and len(upload_tasks) > 0
                         ):
                             done, upload_tasks = await asyncio.wait(

@@ -18,6 +18,7 @@ from numpy import random
 from packaging.version import Version
 from pydantic import ByteSize
 from typing import NamedTuple, Final
+from memory_profiler import memory_usage
 
 try:
     from osparc._settings import ConfigurationEnvVars
@@ -140,6 +141,7 @@ def async_client() -> Iterable[AsyncClient]:
 class ServerFile(NamedTuple):
     server_file: osparc.File
     local_file: Path
+    upload_ram_usage: int
 
 
 @pytest.fixture(scope="session")
@@ -160,9 +162,15 @@ def large_server_file(
     assert (
         tmp_file.stat().st_size == _file_size
     ), f"Could not create file of size: {_file_size}"
-    uploaded_file: osparc.File = files_api.upload_file(tmp_file)
+    ram_statistics, uploaded_file = memory_usage(
+        (files_api.upload_file, (tmp_file,), {"max_concurrent_uploads": 5}), retval=True
+    )
 
-    yield ServerFile(local_file=tmp_file, server_file=uploaded_file)
+    yield ServerFile(
+        local_file=tmp_file,
+        server_file=uploaded_file,
+        upload_ram_usage=max(ram_statistics) - min(ram_statistics),
+    )
 
     files_api.delete_file(uploaded_file.id)
 
