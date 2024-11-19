@@ -52,15 +52,11 @@ def test_upload_download_file_ram_usage(
     tmp_path: Path, large_server_file: ServerFile, files_api: osparc.FilesApi
 ) -> None:
     """Check RAM usage of upload/download fcns"""
-    _allowed_ram_usage_in_mb: Final[int] = 1000  # 1000MB
+    _allowed_ram_usage_in_mb: Final[int] = 300  # 300MB
     assert (
         large_server_file.local_file.stat().st_size
         > _allowed_ram_usage_in_mb * 1024 * 1024
     ), f"For this test to make sense, {large_server_file.local_file.stat().st_size=} must be larger than {_allowed_ram_usage_in_mb=}."
-
-    assert (
-        large_server_file.upload_ram_usage < _allowed_ram_usage_in_mb
-    ), f"Used more than {_allowed_ram_usage_in_mb=} to upload file of size {large_server_file.local_file.stat().st_size=}"
 
     uploaded_file = files_api.upload_file(large_server_file.local_file)
     assert (

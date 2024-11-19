@@ -163,7 +163,7 @@ def large_server_file(
         tmp_file.stat().st_size == _file_size
     ), f"Could not create file of size: {_file_size}"
     ram_statistics, uploaded_file = memory_usage(
-        (files_api.upload_file, (tmp_file,), {"max_concurrent_uploads": 5}), retval=True
+        (files_api.upload_file, (tmp_file,)), retval=True
     )
 
     yield ServerFile(
