@@ -2,7 +2,7 @@ import json
 import os
 import subprocess
 from pathlib import Path
-from typing import Any, Dict, List, Set
+from typing import Any, Dict, List, Set, cast
 
 import osparc
 import osparc._settings
@@ -14,6 +14,7 @@ import httpx
 from urllib.parse import urlparse
 from osparc._utils import PaginationIterator
 from functools import partial
+from copy import deepcopy
 
 _CLIENTS_PYTHON_DIR: Path = Path(__file__).parent.parent.parent
 
@@ -106,17 +107,19 @@ def test_pagination_iterator(
     )
 
     def _sideeffect(all_items: List, request: httpx.Request):
-        all_items += page_file.items
-        if len(all_items) >= page_file.total:
-            all_items = all_items[: page_file.total]
+        n_remaining_items = cast(int, page_file.total) - len(all_items)
+        assert n_remaining_items >= 0
+        if len(page_file.items) >= n_remaining_items:
+            page_file.items = page_file.items[:n_remaining_items]
             page_file.links.next = None
+        all_items += page_file.items
         return httpx.Response(status_code=200, json=page_file.to_dict())
 
     with respx.mock(
         base_url=_base_url,
         assert_all_called=True,
     ) as respx_mock:
-        server_items: List[osparc.File] = page_file.items
+        server_items: List[osparc.File] = deepcopy(page_file.items)
         respx_mock.get(urlparse(page_file.links.next).path).mock(
             side_effect=partial(_sideeffect, server_items)
         )
@@ -126,7 +129,7 @@ def test_pagination_iterator(
         )
         client_items = [item for item in pagination_iterator]
         assert len(server_items) > 0
-        assert all(si == ci for si, ci in zip(server_items, client_items))
+        assert server_items == client_items
 
         first_client_item = next(pagination_iterator)
         assert first_client_item == server_items[0]
