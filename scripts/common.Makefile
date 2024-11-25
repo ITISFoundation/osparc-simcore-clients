@@ -13,9 +13,8 @@ NOW_TIMESTAMP := $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 APP_NAME      := $(notdir $(CURDIR))
 
 # Specify which openapi generator should be used to generate the clients in this repo
-# Build from modified fork https://github.com/ITISFoundation/openapi-generator/tree/openapi-generator-v4.2.3
-OPENAPI_GENERATOR_NAME  := itisfoundation/openapi-generator-cli-openapi-generator-v4.2.3
-OPENAPI_GENERATOR_TAG   := v0
+OPENAPI_GENERATOR_NAME  := openapitools/openapi-generator-cli
+OPENAPI_GENERATOR_TAG   := latest
 OPENAPI_GENERATOR_IMAGE := $(OPENAPI_GENERATOR_NAME):$(OPENAPI_GENERATOR_TAG)
 
 # openapi specification

@@ -1,15 +1,14 @@
 import json
-import os
 import subprocess
 from pathlib import Path
 from typing import Any, Dict, List, Set, cast
+from faker import Faker
 
 import osparc
 import osparc._settings
 import pydantic
 import pytest
 import respx
-from faker import Faker
 import httpx
 from urllib.parse import urlparse
 from osparc._utils import PaginationIterable
@@ -82,16 +81,18 @@ def test_dependencies(tmp_path: Path):
 
 
 @pytest.mark.parametrize("valid", [True, False])
-def test_parent_project_validation(faker, valid: bool):
+def test_parent_project_validation(
+    faker: Faker, monkeypatch: pytest.MonkeyPatch, valid: bool, uuid: str
+):
     if valid:
-        os.environ["OSPARC_STUDY_ID"] = f"{faker.uuid4()}"
-        os.environ["OSPARC_NODE_ID"] = f"{faker.uuid4()}"
+        monkeypatch.setenv("OSPARC_STUDY_ID", uuid)
+        monkeypatch.setenv("OSPARC_NODE_ID", uuid)
         parent_info = osparc._settings.ParentProjectInfo()
         assert parent_info.x_simcore_parent_project_uuid is not None
         assert parent_info.x_simcore_parent_node_id is not None
     else:
-        os.environ["OSPARC_STUDY_ID"] = f"{faker.text()}"
-        os.environ["OSPARC_NODE_ID"] = f"{faker.text()}"
+        monkeypatch.setenv("OSPARC_STUDY_ID", faker.text())
+        monkeypatch.setenv("OSPARC_NODE_ID", faker.text())
         with pytest.raises(pydantic.ValidationError):
             _ = osparc._settings.ParentProjectInfo()
 

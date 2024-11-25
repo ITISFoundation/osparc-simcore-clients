@@ -12,9 +12,6 @@ from osparc_client.models.body_abort_multipart_upload_v0_files_file_id_abort_pos
 from osparc_client.models.body_complete_multipart_upload_v0_files_file_id_complete_post import (
     BodyCompleteMultipartUploadV0FilesFileIdCompletePost as BodyCompleteMultipartUploadV0FilesFileIdCompletePost,
 )
-from osparc_client.models.body_upload_file_v0_files_content_put import (
-    BodyUploadFileV0FilesContentPut as BodyUploadFileV0FilesContentPut,
-)
 from osparc_client.models.client_file import ClientFile as ClientFile
 from osparc_client.models.client_file_upload_data import (
     ClientFileUploadData as ClientFileUploadData,
@@ -31,13 +28,8 @@ from osparc_client.models.http_validation_error import (
     HTTPValidationError as HTTPValidationError,
 )
 from osparc_client.models.job import Job as Job
-from osparc_client.models.job_inputs import JobInputs as JobInputs
 from osparc_client.models.job_logs_map import JobLogsMap as JobLogsMap
-from osparc_client.models.job_metadata import JobMetadata as JobMetadata
-from osparc_client.models.job_metadata_update import (
-    JobMetadataUpdate as JobMetadataUpdate,
-)
-from osparc_client.models.job_outputs import JobOutputs as JobOutputs
+from osparc_client.models.values_value import ValuesValue as ValuesValue
 from osparc_client.models.job_status import JobStatus as JobStatus
 from osparc_client.models.links import Links as Links
 from osparc_client.models.log_link import LogLink as LogLink
@@ -48,6 +40,7 @@ from osparc_client.models.one_page_solver_port import (
 from osparc_client.models.one_page_study_port import (
     OnePageStudyPort as OnePageStudyPort,
 )
+from osparc_client import MetadataValue as MetadataValue
 from osparc_client.models.page_file import PageFile as PageFile
 from osparc_client.models.page_job import PageJob as PageJob
 from osparc_client.models.page_study import PageStudy as PageStudy
@@ -75,6 +68,10 @@ from osparc_client.models.wallet_get_with_available_credits import (
 )
 from osparc_client.models.wallet_status import WalletStatus as WalletStatus
 
+from ._models import JobInputs as JobInputs
+from ._models import JobOutputs as JobOutputs
+from ._models import JobMetadata as JobMetadata
+from ._models import JobMetadataUpdate as JobMetadataUpdate
 
 # renames
 TaskStates = _RunningState

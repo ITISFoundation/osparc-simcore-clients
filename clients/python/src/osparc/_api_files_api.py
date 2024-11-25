@@ -5,7 +5,8 @@ import json
 import logging
 import math
 from pathlib import Path
-from typing import Any, Iterator, List, Optional, Tuple, Union, Set, Final
+from typing import Any, Iterator, List, Optional, Tuple, Union, Final, Set
+from tempfile import NamedTemporaryFile
 
 import httpx
 from httpx import Response
@@ -27,7 +28,6 @@ from .models import (
 )
 from urllib.parse import urljoin
 import aiofiles
-from tempfile import NamedTemporaryFile
 import shutil
 from ._utils import (
     DEFAULT_TIMEOUT_SECONDS,

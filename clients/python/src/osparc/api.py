@@ -4,7 +4,7 @@
 # NOTE: this is an interface. Keep it clean!
 
 
-from osparc_client.configuration import Configuration as Configuration
+from ._configuration import Configuration as Configuration
 from ._api_client import ApiClient as ApiClient
 
 

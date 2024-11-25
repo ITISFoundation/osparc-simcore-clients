@@ -8,7 +8,7 @@ from typing import Callable, Optional
 
 import pytest
 from faker import Faker
-from osparc import ApiClient, SolversApi, StudiesApi
+from osparc import ApiClient, SolversApi, StudiesApi, JobInputs
 from pytest_mock import MockerFixture
 
 
@@ -59,11 +59,13 @@ def test_create_jobs_parent_headers(
     )
 
     solvers_api = SolversApi(api_client=api_client)
-    solvers_api.create_job(solver_key="mysolver", version="1.2.3", job_inputs={})
+    solvers_api.create_job(
+        solver_key="mysolver", version="1.2.3", job_inputs=JobInputs({})
+    )
 
     studies_api = StudiesApi(api_client=api_client)
-    studies_api.create_study_job(study_id=faker.uuid4(), job_inputs={})
-    studies_api.clone_study(study_id=faker.uuid4())
+    studies_api.create_study_job(study_id=f"{faker.uuid4()}", job_inputs=JobInputs({}))
+    studies_api.clone_study(study_id=f"{faker.uuid4()}")
 
 
 @pytest.mark.parametrize(

@@ -7,8 +7,19 @@ from tempfile import mkdtemp
 from typing import Optional
 
 import httpx
-from .models import JobInputs, JobLogsMap, PageStudy
+from pydantic import StrictStr
+
+from .models import (
+    JobInputs,
+    JobLogsMap,
+    PageStudy,
+    JobOutputs,
+    JobMetadata,
+    JobMetadataUpdate,
+)
 from osparc_client.api.studies_api import StudiesApi as _StudiesApi
+from osparc_client import JobInputs as _JobInputs
+from osparc_client import JobMetadataUpdate as _JobMetadataUpdate
 from tqdm.asyncio import tqdm_asyncio
 
 from ._api_client import ApiClient
@@ -58,8 +69,18 @@ class StudiesApi(_StudiesApi):
         )
 
     def create_study_job(self, study_id: str, job_inputs: JobInputs, **kwargs):
+        _job_inputs = _JobInputs.from_json(job_inputs.model_dump_json())
+        assert _job_inputs is not None
         kwargs = {**kwargs, **ParentProjectInfo().model_dump(exclude_none=True)}
-        return super().create_study_job(study_id, job_inputs, **kwargs)
+        return super().create_study_job(study_id, _job_inputs, **kwargs)
+
+    def get_study_job_outputs(
+        self, study_id: StrictStr, job_id: StrictStr, **kwargs
+    ) -> JobOutputs:
+        _job_outputs = super().get_study_job_outputs(
+            study_id=study_id, job_id=job_id, **kwargs
+        )
+        return JobOutputs.model_validate_json(_job_outputs.to_json())
 
     def clone_study(self, study_id: str, **kwargs):
         kwargs = {**kwargs, **ParentProjectInfo().model_dump(exclude_none=True)}
@@ -140,3 +161,22 @@ class StudiesApi(_StudiesApi):
             )
 
         return folder
+
+    def get_study_job_custom_metadata(self, study_id: str, job_id: str) -> JobMetadata:
+        _job_metadata = super().get_study_job_custom_metadata(study_id, job_id)
+        return JobMetadata.model_validate_json(_job_metadata.to_json())
+
+    def replace_study_job_custom_metadata(
+        self,
+        study_id: StrictStr,
+        job_id: StrictStr,
+        job_metadata_update: JobMetadataUpdate,
+    ) -> JobMetadata:
+        _job_metadata_update = _JobMetadataUpdate.from_json(
+            job_metadata_update.model_dump_json()
+        )
+        assert _job_metadata_update is not None
+        _job_metadata = super().replace_study_job_custom_metadata(
+            study_id, job_id, _job_metadata_update
+        )
+        return JobMetadata.model_validate_json(_job_metadata.to_json())

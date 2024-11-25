@@ -116,8 +116,8 @@ _check_venv_active:
 
 .PHONY: install-dev
 install-dev: _check_venv_active .install-dev-reqs python-client  ## installs osparc_client and osparc in edit mode
-	uv pip install -e artifacts/client
-	uv pip install -e .
+	# for some reason this command refuses to run with uv. Looks related to https://github.com/astral-sh/uv/issues/1661
+	pip install --editable artifacts/client --editable .
 	uv pip list
 
 .PHONY: install-unit-test
@@ -128,6 +128,10 @@ install-unit-test: _check_venv_active ## install packages for unit testing clien
 install-e2e-test: _check_venv_active guard-OSPARC_VERSION ## install packages for e2e testing client [e2e]
 	$(eval version := $(shell bash $(CLIENTS_PYTHON_DIR)/test/e2e/ci/bash/osparc_version.bash $(OSPARC_VERSION)))
 	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/e2e-test.txt osparc-client==$(version) osparc==$(version)
+
+.PHONY: install-e2e-test-local
+install-e2e-test-local: _check_venv_active python-client ## install packages for e2e testing with local (repo) client [e2e]
+	pip install -r $(CLIENTS_PYTHON_DIR)/requirements/e2e-test.txt --editable artifacts/client --editable .
 
 .PHONY: install-doc
 install-doc: _check_venv_active .install-dev-reqs ## install packages for generating documentation
