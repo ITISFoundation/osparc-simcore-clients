@@ -5,7 +5,7 @@ import json
 import logging
 import math
 from pathlib import Path
-from typing import Any, Iterator, List, Optional, Tuple, Union
+from typing import Any, Iterator, List, Optional, Tuple, Union, Final, Set
 from tempfile import NamedTemporaryFile
 
 import httpx
@@ -31,12 +31,15 @@ import aiofiles
 import shutil
 from ._utils import (
     DEFAULT_TIMEOUT_SECONDS,
-    PaginationGenerator,
+    PaginationIterable,
     compute_sha256,
     file_chunk_generator,
+    Chunk,
 )
 
 _logger = logging.getLogger(__name__)
+
+_MAX_CONCURRENT_UPLOADS: Final[int] = 20
 
 
 class FilesApi(_FilesApi):
@@ -116,16 +119,23 @@ class FilesApi(_FilesApi):
         self,
         file: Union[str, Path],
         timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
+        max_concurrent_uploads: int = _MAX_CONCURRENT_UPLOADS,
         **kwargs,
     ):
         return asyncio.run(
-            self.upload_file_async(file=file, timeout_seconds=timeout_seconds, **kwargs)
+            self.upload_file_async(
+                file=file,
+                timeout_seconds=timeout_seconds,
+                max_concurrent_uploads=max_concurrent_uploads,
+                **kwargs,
+            )
         )
 
     async def upload_file_async(
         self,
         file: Union[str, Path],
         timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
+        max_concurrent_uploads: int = _MAX_CONCURRENT_UPLOADS,
         **kwargs,
     ) -> File:
         if isinstance(file, str):
@@ -159,53 +169,66 @@ class FilesApi(_FilesApi):
                 "Did not receive sufficient number of upload URLs from the server."
             )
 
-        uploaded_parts: list[UploadedPart] = []
-        async with AsyncHttpClient(
-            configuration=self.api_client.configuration, timeout=timeout_seconds
-        ) as session:
-            with logging_redirect_tqdm():
-                _logger.debug("Uploading %s in %i chunk(s)", file.name, n_urls)
-                async for chunck, size in tqdm(
-                    file_chunk_generator(file, chunk_size),
-                    total=n_urls,
-                    disable=(not _logger.isEnabledFor(logging.DEBUG)),
-                ):
-                    index, url = next(url_iter)
-                    uploaded_parts.append(
-                        await self._upload_chunck(
-                            http_client=session,
-                            chunck=chunck,
-                            chunck_size=size,
-                            upload_link=url,
-                            index=index,
-                        )
-                    )
+        abort_body = BodyAbortMultipartUploadV0FilesFileIdAbortPost(
+            client_file=client_file
+        )
+        upload_tasks: Set[asyncio.Task] = set()
+        uploaded_parts: List[UploadedPart] = []
 
-            abort_body = BodyAbortMultipartUploadV0FilesFileIdAbortPost(
-                client_file=client_file
-            )
+        async with AsyncHttpClient(
+            configuration=self.api_client.configuration,
+            method="post",
+            url=links.abort_upload,
+            body=abort_body.to_dict(),
+            base_url=self.api_client.configuration.host,
+            follow_redirects=True,
+            auth=self._auth,
+            timeout=timeout_seconds,
+        ) as api_server_session:
             async with AsyncHttpClient(
-                configuration=self.api_client.configuration,
-                method="post",
-                url=links.abort_upload,
-                body=abort_body.to_dict(),
-                base_url=self.api_client.configuration.host,
-                follow_redirects=True,
-                auth=self._auth,
-                timeout=timeout_seconds,
-            ) as session:
-                _logger.debug(
-                    (
-                        "Completing upload of %s "
-                        "(this might take a couple of minutes)..."
-                    ),
-                    file.name,
-                )
-                server_file: File = await self._complete_multipart_upload(
-                    session, links.complete_upload, client_file, uploaded_parts
-                )
-                _logger.debug("File upload complete: %s", file.name)
-                return server_file
+                configuration=self.api_client.configuration, timeout=timeout_seconds
+            ) as s3_session:
+                with logging_redirect_tqdm():
+                    _logger.debug("Uploading %s in %i chunk(s)", file.name, n_urls)
+                    async for chunk in tqdm(
+                        file_chunk_generator(file, chunk_size),
+                        total=n_urls,
+                        disable=(not _logger.isEnabledFor(logging.DEBUG)),
+                    ):  # type: ignore
+                        assert isinstance(chunk, Chunk)  # nosec
+                        index, url = next(url_iter)
+                        upload_tasks.add(
+                            asyncio.create_task(
+                                self._upload_chunck(
+                                    http_client=s3_session,
+                                    chunck=chunk.data,
+                                    chunck_size=chunk.nbytes,
+                                    upload_link=url,
+                                    index=index,
+                                )
+                            )
+                        )
+                        while (len(upload_tasks) >= max_concurrent_uploads) or (
+                            chunk.is_last_chunk and len(upload_tasks) > 0
+                        ):
+                            done, upload_tasks = await asyncio.wait(
+                                upload_tasks, return_when=asyncio.FIRST_COMPLETED
+                            )
+                            for task in done:
+                                uploaded_parts.append(task.result())
+
+            _logger.debug(
+                ("Completing upload of %s " "(this might take a couple of minutes)..."),
+                file.name,
+            )
+            server_file: File = await self._complete_multipart_upload(
+                api_server_session,
+                links.complete_upload,  # type: ignore
+                client_file,
+                uploaded_parts,
+            )
+            _logger.debug("File upload complete: %s", file.name)
+            return server_file
 
     async def _complete_multipart_upload(
         self,
@@ -250,15 +273,19 @@ class FilesApi(_FilesApi):
         file_id: Optional[str] = None,
         sha256_checksum: Optional[str] = None,
         timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
-    ) -> PaginationGenerator:
+    ) -> PaginationIterable:
+        kwargs = {
+            "file_id": file_id,
+            "sha256_checksum": sha256_checksum,
+            "_request_timeout": timeout_seconds,
+        }
+
         def _pagination_method():
             return super(FilesApi, self).search_files_page(
-                file_id=file_id,
-                sha256_checksum=sha256_checksum,
-                _request_timeout=timeout_seconds,
+                **{k: v for k, v in kwargs.items() if v is not None}
             )
 
-        return PaginationGenerator(
+        return PaginationIterable(
             first_page_callback=_pagination_method,
             api_client=self.api_client,
             base_url=self.api_client.configuration.host,

@@ -21,7 +21,7 @@ from ._settings import ParentProjectInfo
 from ._utils import (
     _DEFAULT_PAGINATION_LIMIT,
     _DEFAULT_PAGINATION_OFFSET,
-    PaginationGenerator,
+    PaginationIterable,
 )
 import warnings
 from tempfile import NamedTemporaryFile
@@ -60,7 +60,7 @@ class SolversApi(_SolversApi):
         )
         return page.items if page.items else []
 
-    def iter_jobs(self, solver_key: str, version: str, **kwargs) -> PaginationGenerator:
+    def iter_jobs(self, solver_key: str, version: str, **kwargs) -> PaginationIterable:
         """Returns an iterator through which one can iterate over
         all Jobs submitted to the solver
 
@@ -85,14 +85,14 @@ class SolversApi(_SolversApi):
                 **kwargs,
             )
 
-        return PaginationGenerator(
+        return PaginationIterable(
             first_page_callback=_pagination_method,
             api_client=self.api_client,
             base_url=self.api_client.configuration.host,
             auth=self._auth,
         )
 
-    def jobs(self, solver_key: str, version: str, **kwargs) -> PaginationGenerator:
+    def jobs(self, solver_key: str, version: str, **kwargs) -> PaginationIterable:
         warnings.warn(
             "The 'jobs' method is deprecated and will be removed in a future version. "
             "Please use 'iter_jobs' instead.",

@@ -1,12 +1,19 @@
 import json
 import subprocess
 from pathlib import Path
-from typing import Any, Dict, List, Set
+from typing import Any, Dict, List, Set, cast
 from faker import Faker
+
 import osparc
 import osparc._settings
 import pydantic
 import pytest
+import respx
+import httpx
+from urllib.parse import urlparse
+from osparc._utils import PaginationIterable
+from functools import partial
+from copy import deepcopy
 
 _CLIENTS_PYTHON_DIR: Path = Path(__file__).parent.parent.parent
 
@@ -88,3 +95,44 @@ def test_parent_project_validation(
         monkeypatch.setenv("OSPARC_NODE_ID", faker.text())
         with pytest.raises(pydantic.ValidationError):
             _ = osparc._settings.ParentProjectInfo()
+
+
+def test_pagination_iterator(
+    faker: Faker, page_file: osparc.PageFile, api_client: osparc.ApiClient
+):
+    next_page_url = urlparse(page_file.links.next)
+    _base_url = f"{next_page_url.scheme}://{next_page_url.netloc}"
+    _auth = httpx.BasicAuth(
+        username=api_client.configuration.username,
+        password=api_client.configuration.password,
+    )
+
+    def _sideeffect(all_items: List, request: httpx.Request):
+        n_remaining_items = cast(int, page_file.total) - len(all_items)
+        assert n_remaining_items >= 0
+        if len(page_file.items) >= n_remaining_items:
+            page_file.items = page_file.items[:n_remaining_items]
+            page_file.links.next = None
+        all_items += page_file.items
+        return httpx.Response(status_code=200, json=page_file.to_dict())
+
+    with respx.mock(
+        base_url=_base_url,
+        assert_all_called=True,
+    ) as respx_mock:
+        server_items: List[osparc.File] = deepcopy(page_file.items)
+        respx_mock.get(urlparse(page_file.links.next).path).mock(
+            side_effect=partial(_sideeffect, server_items)
+        )
+
+        pagination_iterator = PaginationIterable(
+            lambda: page_file, api_client=api_client, base_url=_base_url, auth=_auth
+        )
+        client_items = [item for item in pagination_iterator]
+        assert len(server_items) > 0
+        assert server_items == client_items
+
+        first_client_item = next(iter(pagination_iterator))
+        assert first_client_item == server_items[0]
+
+        assert len(pagination_iterator) == page_file.total

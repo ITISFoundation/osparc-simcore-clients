@@ -18,6 +18,7 @@ from numpy import random
 from packaging.version import Version
 from pydantic import ByteSize
 from typing import NamedTuple, Final
+from memory_profiler import memory_usage
 
 try:
     from osparc._settings import ConfigurationEnvVars
@@ -28,6 +29,8 @@ except ImportError:
 _KB: ByteSize = ByteSize(1024)  # in bytes
 _MB: ByteSize = ByteSize(_KB * 1024)  # in bytes
 _GB: ByteSize = ByteSize(_MB * 1024)  # in bytes
+
+_logger = logging.getLogger(__name__)
 
 # Dictionary to store start times of tests
 _test_start_times = {}
@@ -140,6 +143,7 @@ def async_client() -> Iterable[AsyncClient]:
 class ServerFile(NamedTuple):
     server_file: osparc.File
     local_file: Path
+    upload_ram_usage: int
 
 
 @pytest.fixture(scope="session")
@@ -160,11 +164,23 @@ def large_server_file(
     assert (
         tmp_file.stat().st_size == _file_size
     ), f"Could not create file of size: {_file_size}"
-    uploaded_file: osparc.File = files_api.upload_file(tmp_file)
+    ram_statistics, uploaded_file = memory_usage(
+        (files_api.upload_file, (tmp_file,)), retval=True
+    )
 
-    yield ServerFile(local_file=tmp_file, server_file=uploaded_file)
+    yield ServerFile(
+        local_file=tmp_file,
+        server_file=uploaded_file,
+        upload_ram_usage=max(ram_statistics) - min(ram_statistics),
+    )
 
-    files_api.delete_file(uploaded_file.id)
+    try:
+        files_api.delete_file(uploaded_file.id)
+    except osparc.ApiException:
+        _logger.warning(
+            f"Could not delete file on server in {file_with_number.__name__}",
+            exc_info=True,
+        )
 
 
 @pytest.fixture
@@ -198,4 +214,10 @@ def file_with_number(
     server_file = files_api.upload_file(file)
     yield server_file
 
-    files_api.delete_file(server_file.id)
+    try:
+        files_api.delete_file(server_file.id)
+    except osparc.ApiException:
+        _logger.warning(
+            f"Could not delete file on server in {file_with_number.__name__}",
+            exc_info=True,
+        )

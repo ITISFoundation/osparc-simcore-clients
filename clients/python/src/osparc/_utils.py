@@ -1,8 +1,16 @@
 import asyncio
 import hashlib
 from pathlib import Path
-from typing import AsyncGenerator, Callable, Generator, Optional, Tuple, TypeVar, Union
-
+from typing import (
+    AsyncGenerator,
+    Callable,
+    Optional,
+    TypeVar,
+    Union,
+    NamedTuple,
+    Generator,
+)
+from collections.abc import Iterable, Sized
 import httpx
 from osparc_client import (
     ApiClient,
@@ -15,7 +23,7 @@ from osparc_client import (
     Study,
 )
 import aiofiles
-from ._exceptions import RequestError
+from .exceptions import RequestError
 
 _KB = 1024  # in bytes
 _MB = _KB * 1024  # in bytes
@@ -30,8 +38,11 @@ Page = Union[PageJob, PageFile, PageStudy]
 T = TypeVar("T", Job, File, Solver, Study)
 
 
-class PaginationGenerator:
-    """Class for wrapping paginated http methods as generators"""
+class PaginationIterable(Iterable, Sized):
+    """Class for wrapping paginated http methods as iterables. It supports three simple operations:
+    - for elm in pagination_iterable
+    - elm = next(pagination_iterable)
+    - len(pagination_iterable)"""
 
     def __init__(
         self,
@@ -75,9 +86,15 @@ class PaginationGenerator:
             page = self._api_client._ApiClient__deserialize(response.json(), type(page))
 
 
+class Chunk(NamedTuple):
+    data: bytes
+    nbytes: int
+    is_last_chunk: bool
+
+
 async def file_chunk_generator(
     file: Path, chunk_size: int
-) -> AsyncGenerator[Tuple[bytes, int], None]:
+) -> AsyncGenerator[Chunk, None]:
     if not file.is_file():
         raise RuntimeError(f"{file} must be a file")
     if chunk_size <= 0:
@@ -94,8 +111,10 @@ async def file_chunk_generator(
             )
             assert nbytes > 0
             chunk = await f.read(nbytes)
-            yield chunk, nbytes
             bytes_read += nbytes
+            yield Chunk(
+                data=chunk, nbytes=nbytes, is_last_chunk=(bytes_read == file_size)
+            )
 
 
 S = TypeVar("S")
