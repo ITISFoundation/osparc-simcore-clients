@@ -22,7 +22,6 @@ from osparc_client.models.file_upload_completion_body import (
     FileUploadCompletionBody as FileUploadCompletionBody,
 )
 from osparc_client.models.file_upload_data import FileUploadData as FileUploadData
-from osparc_client.models.get_credit_price import GetCreditPrice as GetCreditPrice
 from osparc_client.models.groups import Groups as Groups
 from osparc_client.models.http_validation_error import (
     HTTPValidationError as HTTPValidationError,
@@ -47,13 +46,9 @@ from osparc_client.models.page_study import PageStudy as PageStudy
 from osparc_client.models.pricing_plan_classification import (
     PricingPlanClassification as PricingPlanClassification,
 )
-from osparc_client.models.pricing_unit_get import PricingUnitGet as PricingUnitGet
 from osparc_client.models.profile import Profile as Profile
 from osparc_client.models.profile_update import ProfileUpdate as ProfileUpdate
 from osparc_client.models.running_state import RunningState as _RunningState
-from osparc_client.models.service_pricing_plan_get import (
-    ServicePricingPlanGet as ServicePricingPlanGet,
-)
 from osparc_client.models.solver import Solver as Solver
 from osparc_client.models.solver_port import SolverPort as SolverPort
 from osparc_client.models.study import Study as Study
@@ -63,9 +58,6 @@ from osparc_client.models.uploaded_part import UploadedPart as UploadedPart
 from osparc_client.models.user_role_enum import UserRoleEnum as UserRoleEnum
 from osparc_client.models.users_group import UsersGroup as UsersGroup
 from osparc_client.models.validation_error import ValidationError as ValidationError
-from osparc_client.models.wallet_get_with_available_credits import (
-    WalletGetWithAvailableCredits as WalletGetWithAvailableCredits,
-)
 from osparc_client.models.wallet_status import WalletStatus as WalletStatus
 
 from ._models import JobInputs as JobInputs
