@@ -158,6 +158,7 @@ def create_server_mock(
     return _mock_server
 
 
+@pytest.fixture
 def page_file(faker: Faker) -> osparc.PageFile:
     items = []
     for _ in range(5):
@@ -176,5 +177,11 @@ def page_file(faker: Faker) -> osparc.PageFile:
         total=faker.pyint(min_value=len(items) + 1, max_value=len(items) + 100),
         limit=len(items),
         offset=faker.pyint(min_value=0),
-        links=osparc.Links(next=faker.url()),
+        links=osparc.Links(
+            first=faker.url(),
+            last=faker.url(),
+            next=faker.url(),
+            prev=faker.url(),
+            self=faker.url(),
+        ),
     )
