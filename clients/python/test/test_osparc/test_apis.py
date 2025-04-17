@@ -44,7 +44,7 @@ def test_create_jobs_parent_headers(
             )
 
     mocker.patch(
-        "osparc_client.SolversApi.create_job",
+        "osparc_client.SolversApi.create_solver_job",
         side_effect=lambda solver_key, version, job_inpus, **kwargs: check_headers(
             **kwargs
         ),

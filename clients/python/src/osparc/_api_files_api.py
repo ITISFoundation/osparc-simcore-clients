@@ -25,6 +25,8 @@ from .models import (
     FileUploadCompletionBody,
     FileUploadData,
     UploadedPart,
+    UserFileToProgramJob,
+    UserFile,
 )
 from urllib.parse import urljoin
 import aiofiles
@@ -115,13 +117,75 @@ class FilesApi(_FilesApi):
             )  # aiofiles doesnt seem to have an async variant of this
         return dest_file
 
+    def upload_file_to_program_job(
+        self,
+        file: Union[str, Path],
+        program_key: str,
+        program_version: str,
+        job_id: str,
+        workspace_path: str,
+        timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
+        max_concurrent_uploads: int = _MAX_CONCURRENT_UPLOADS,
+        **kwargs,
+    ):
+        return asyncio.run(
+            self.upload_file_to_program_job_async(
+                file=file,
+                program_key=program_key,
+                program_version=program_version,
+                job_id=job_id,
+                workspace_path=workspace_path,
+                timeout_seconds=timeout_seconds,
+                max_concurrent_uploads=max_concurrent_uploads,
+                **kwargs,
+            )
+        )
+
+    async def upload_file_to_program_job_async(
+        self,
+        file: Union[str, Path],
+        program_key: str,
+        program_version: str,
+        job_id: str,
+        workspace_path: str,
+        timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
+        max_concurrent_uploads: int = _MAX_CONCURRENT_UPLOADS,
+        **kwargs,
+    ) -> File:
+        if isinstance(file, str):
+            file = Path(file)
+        if not file.is_file():
+            raise RuntimeError(f"{file} is not a file")
+        checksum: str = await compute_sha256(file)
+        for file_result in self._search_files(
+            sha256_checksum=checksum, timeout_seconds=timeout_seconds
+        ):
+            if file_result.filename == file.name:
+                # if a file has the same sha256 checksum
+                # and name they are considered equal
+                return file_result
+        user_file = ClientFile(
+            UserFileToProgramJob(
+                filename=file.name,
+                filesize=file.stat().st_size,
+                sha256_checksum=checksum,
+                program_key=program_key,
+                program_version=program_version,
+                job_id=job_id,
+                workspace_path=workspace_path,
+            )
+        )
+        return await self._upload_user_file(
+            user_file, file, timeout_seconds, max_concurrent_uploads, **kwargs
+        )
+
     def upload_file(
         self,
         file: Union[str, Path],
         timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
         max_concurrent_uploads: int = _MAX_CONCURRENT_UPLOADS,
         **kwargs,
-    ):
+    ) -> File:
         return asyncio.run(
             self.upload_file_async(
                 file=file,
@@ -150,11 +214,26 @@ class FilesApi(_FilesApi):
                 # if a file has the same sha256 checksum
                 # and name they are considered equal
                 return file_result
-        client_file: ClientFile = ClientFile(
-            filename=file.name,
-            filesize=file.stat().st_size,
-            sha256_checksum=checksum,
+        user_file = ClientFile(
+            UserFile(
+                filename=file.name,
+                filesize=file.stat().st_size,
+                sha256_checksum=checksum,
+            )
         )
+        return await self._upload_user_file(
+            user_file, file, timeout_seconds, max_concurrent_uploads, **kwargs
+        )
+
+    async def _upload_user_file(
+        self,
+        client_file: ClientFile,
+        file: Path,
+        timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
+        max_concurrent_uploads: int = _MAX_CONCURRENT_UPLOADS,
+        **kwargs,
+    ) -> File:
+        assert file.is_file()  # nosec
         client_upload_schema: ClientFileUploadData = super().get_upload_links(
             client_file=client_file, _request_timeout=timeout_seconds, **kwargs
         )
@@ -164,7 +243,7 @@ class FilesApi(_FilesApi):
             iter(client_upload_schema.upload_schema.urls), start=1
         )
         n_urls: int = len(client_upload_schema.upload_schema.urls)
-        if n_urls < math.ceil(file.stat().st_size / chunk_size):
+        if n_urls < math.ceil(client_file.actual_instance.filesize / chunk_size):
             raise RuntimeError(
                 "Did not receive sufficient number of upload URLs from the server."
             )

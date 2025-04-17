@@ -13,6 +13,10 @@ from osparc_client.models.body_complete_multipart_upload_v0_files_file_id_comple
     BodyCompleteMultipartUploadV0FilesFileIdCompletePost as BodyCompleteMultipartUploadV0FilesFileIdCompletePost,
 )
 from osparc_client.models.client_file import ClientFile as ClientFile
+from osparc_client.models.user_file_to_program_job import (
+    UserFileToProgramJob as UserFileToProgramJob,
+)
+from osparc_client.models.user_file import UserFile as UserFile
 from osparc_client.models.client_file_upload_data import (
     ClientFileUploadData as ClientFileUploadData,
 )

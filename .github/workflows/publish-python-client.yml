@@ -25,7 +25,7 @@ jobs:
         run: |
           make devenv
       - name: Download wheels
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: osparc_python_wheels
           path: osparc_python_wheels/
