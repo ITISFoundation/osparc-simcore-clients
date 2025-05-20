@@ -3,7 +3,7 @@
   "info": {
     "title": "osparc.io public API",
     "description": "osparc-simcore public API specifications",
-    "version": "0.7.0"
+    "version": "0.8.0"
   },
   "paths": {
     "/v0/meta": {
@@ -223,7 +223,7 @@
           "files"
         ],
         "summary": "List Files",
-        "description": "Lists all files stored in the system\n\nSEE `get_files_page` for a paginated version of this function",
+        "description": "\ud83d\udea8 **Deprecated**: This endpoint is deprecated and will be removed in a future release.\nPlease use `GET /v0/files/page` instead.\n\n\n\nLists all files stored in the system\n\nAdded in *version 0.5*: \n\nRemoved in *version 0.7*: This endpoint is deprecated and will be removed in a future version",
         "operationId": "list_files",
         "responses": {
           "200": {
@@ -449,7 +449,15 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ClientFile"
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/UserFileToProgramJob"
+                  },
+                  {
+                    "$ref": "#/components/schemas/UserFile"
+                  }
+                ],
+                "title": "Client File"
               }
             }
           }
@@ -805,9 +813,9 @@
             "required": false,
             "schema": {
               "type": "integer",
-              "maximum": 100,
+              "maximum": 50,
               "minimum": 1,
-              "default": 50,
+              "default": 20,
               "title": "Limit"
             }
           },
@@ -1248,13 +1256,174 @@
         }
       }
     },
+    "/v0/programs/{program_key}/releases/{version}": {
+      "get": {
+        "tags": [
+          "programs"
+        ],
+        "summary": "Get Program Release",
+        "description": "Gets a specific release of a solver",
+        "operationId": "get_program_release",
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "program_key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^simcore/services/dynamic/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
+              "title": "Program Key"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
+              "title": "Version"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Program"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/programs/{program_key}/releases/{version}/jobs": {
+      "post": {
+        "tags": [
+          "programs"
+        ],
+        "summary": "Create Program Job",
+        "description": "Creates a program job",
+        "operationId": "create_program_job",
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "program_key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^simcore/services/dynamic/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
+              "title": "Program Key"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
+              "title": "Version"
+            }
+          },
+          {
+            "name": "x-simcore-parent-project-uuid",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Simcore-Parent-Project-Uuid"
+            }
+          },
+          {
+            "name": "x-simcore-parent-node-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Simcore-Parent-Node-Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_create_program_job_v0_programs__program_key__releases__version__jobs_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v0/solvers": {
       "get": {
         "tags": [
           "solvers"
         ],
         "summary": "List Solvers",
-        "description": "Lists all available solvers (latest version)\n\nSEE get_solvers_page for paginated version of this function",
+        "description": "\ud83d\udea8 **Deprecated**: This endpoint is deprecated and will be removed in a future release.\nPlease use `GET /v0/solvers/page` instead.\n\n\n\nLists all available solvers (latest version)\n\nNew in *version 0.5.0*",
         "operationId": "list_solvers",
         "responses": {
           "200": {
@@ -1345,7 +1514,7 @@
           "solvers"
         ],
         "summary": "Lists All Releases",
-        "description": "Lists all released solvers i.e. all released versions\n\nSEE get_solvers_releases_page for a paginated version of this function",
+        "description": "\ud83d\udea8 **Deprecated**: This endpoint is deprecated and will be removed in a future release.\nPlease use `GET /v0/solvers/{solver_key}/releases/page` instead.\n\n\n\nLists all released solvers (not just latest version)\n\nNew in *version 0.5.0*",
         "operationId": "list_solvers_releases",
         "responses": {
           "200": {
@@ -1435,8 +1604,8 @@
         "tags": [
           "solvers"
         ],
-        "summary": "Get Latest Release of a Solver",
-        "description": "Gets latest release of a solver",
+        "summary": "Get Solver",
+        "description": "Gets latest release of a solver\n\nAdded in *version 0.7.1*: `version_display` field in the response",
         "operationId": "get_solver",
         "security": [
           {
@@ -1545,7 +1714,7 @@
           "solvers"
         ],
         "summary": "List Solver Releases",
-        "description": "Lists all releases of a given (one) solver\n\nSEE get_solver_releases_page for a paginated version of this function",
+        "description": "Lists all releases of a given (one) solver\n\nAdded in *version 0.7.1*: `version_display` field in the response",
         "operationId": "list_solver_releases",
         "security": [
           {
@@ -1658,7 +1827,7 @@
           "solvers"
         ],
         "summary": "Get Solver Release",
-        "description": "Gets a specific release of a solver",
+        "description": "Gets a specific release of a solver\n\nAdded in *version 0.7.1*: `version_display` field in the response",
         "operationId": "get_solver_release",
         "security": [
           {
@@ -1777,7 +1946,7 @@
           "solvers"
         ],
         "summary": "List Solver Ports",
-        "description": "Lists inputs and outputs of a given solver\n\nNew in *version 0.5.0*",
+        "description": "Lists inputs and outputs of a given solver\n\nNew in *version 0.5.0*\n\nAdded in *version 0.7.1*: `version_display` field in the response",
         "operationId": "list_solver_ports",
         "security": [
           {
@@ -1896,7 +2065,7 @@
           "solvers"
         ],
         "summary": "Get Solver Pricing Plan",
-        "description": "Gets solver pricing plan\n\nNew in *version 0.7*",
+        "description": "Gets solver pricing plan\n\nNew in *version 0.7*\n\nAdded in *version 0.7.1*: `version_display` field in the response",
         "operationId": "get_solver_pricing_plan",
         "security": [
           {
@@ -2014,9 +2183,9 @@
         "tags": [
           "solvers"
         ],
-        "summary": "Create Job",
+        "summary": "Create Solver Job",
         "description": "Creates a job in a specific release with given inputs.\n\nNOTE: This operation does **not** start the job",
-        "operationId": "create_job",
+        "operationId": "create_solver_job",
         "security": [
           {
             "HTTPBasic": []
@@ -2196,7 +2365,7 @@
           "solvers"
         ],
         "summary": "List Jobs",
-        "description": "List of jobs in a specific released solver (limited to 20 jobs)\n\n- DEPRECATION: This implementation and returned values are deprecated and the will be replaced by that of get_jobs_page\n- SEE `get_jobs_page` for paginated version of this function",
+        "description": "\ud83d\udea8 **Deprecated**: This endpoint is deprecated and will be removed in a future release.\nPlease use `GET /{solver_key}/releases/{version}/jobs/page` instead.\n\n\n\nList of jobs in a specific released solver (limited to 20 jobs)\n\nNew in *version 0.5*\n\nRemoved in *version 0.7*: This endpoint is deprecated and will be removed in a future version",
         "operationId": "list_jobs",
         "security": [
           {
@@ -3352,9 +3521,9 @@
             "required": false,
             "schema": {
               "type": "integer",
-              "maximum": 100,
+              "maximum": 50,
               "minimum": 1,
-              "default": 50,
+              "default": 20,
               "title": "Limit"
             }
           },
@@ -4164,9 +4333,9 @@
             "required": false,
             "schema": {
               "type": "integer",
-              "maximum": 100,
+              "maximum": 50,
               "minimum": 1,
-              "default": 50,
+              "default": 20,
               "title": "Limit"
             }
           },
@@ -5107,6 +5276,726 @@
         }
       }
     },
+    "/v0/function_jobs": {
+      "get": {
+        "tags": [
+          "function_jobs"
+        ],
+        "summary": "List Function Jobs",
+        "description": "List function jobs\n\nNew in *version 0.8.0*",
+        "operationId": "list_function_jobs",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_Annotated_Union_RegisteredProjectFunctionJob__RegisteredPythonCodeFunctionJob__RegisteredSolverFunctionJob___FieldInfo_annotation_NoneType__required_True__discriminator__function_class____"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "function_jobs"
+        ],
+        "summary": "Register Function Job",
+        "description": "Create function job\n\nNew in *version 0.8.0*",
+        "operationId": "register_function_job",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/ProjectFunctionJob"
+                  },
+                  {
+                    "$ref": "#/components/schemas/PythonCodeFunctionJob"
+                  },
+                  {
+                    "$ref": "#/components/schemas/SolverFunctionJob"
+                  }
+                ],
+                "discriminator": {
+                  "propertyName": "function_class",
+                  "mapping": {
+                    "PROJECT": "#/components/schemas/ProjectFunctionJob",
+                    "PYTHON_CODE": "#/components/schemas/PythonCodeFunctionJob",
+                    "SOLVER": "#/components/schemas/SolverFunctionJob"
+                  }
+                },
+                "title": "Function Job"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/RegisteredProjectFunctionJob"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RegisteredPythonCodeFunctionJob"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RegisteredSolverFunctionJob"
+                    }
+                  ],
+                  "discriminator": {
+                    "propertyName": "function_class",
+                    "mapping": {
+                      "PROJECT": "#/components/schemas/RegisteredProjectFunctionJob",
+                      "PYTHON_CODE": "#/components/schemas/RegisteredPythonCodeFunctionJob",
+                      "SOLVER": "#/components/schemas/RegisteredSolverFunctionJob"
+                    }
+                  },
+                  "title": "Response Register Function Job V0 Function Jobs Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/function_jobs/{function_job_id}": {
+      "get": {
+        "tags": [
+          "function_jobs"
+        ],
+        "summary": "Get Function Job",
+        "description": "Get function job\n\nNew in *version 0.8.0*",
+        "operationId": "get_function_job",
+        "parameters": [
+          {
+            "name": "function_job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Function Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/RegisteredProjectFunctionJob"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RegisteredPythonCodeFunctionJob"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RegisteredSolverFunctionJob"
+                    }
+                  ],
+                  "discriminator": {
+                    "propertyName": "function_class",
+                    "mapping": {
+                      "PROJECT": "#/components/schemas/RegisteredProjectFunctionJob",
+                      "PYTHON_CODE": "#/components/schemas/RegisteredPythonCodeFunctionJob",
+                      "SOLVER": "#/components/schemas/RegisteredSolverFunctionJob"
+                    }
+                  },
+                  "title": "Response Get Function Job V0 Function Jobs  Function Job Id  Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Function job not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "function_jobs"
+        ],
+        "summary": "Delete Function Job",
+        "description": "Delete function job\n\nNew in *version 0.8.0*",
+        "operationId": "delete_function_job",
+        "parameters": [
+          {
+            "name": "function_job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Function Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "404": {
+            "description": "Function job not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/function_jobs/{function_job_id}/status": {
+      "get": {
+        "tags": [
+          "function_jobs"
+        ],
+        "summary": "Function Job Status",
+        "description": "Get function job status\n\nNew in *version 0.8.0*",
+        "operationId": "function_job_status",
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "function_job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Function Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FunctionJobStatus"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Function job not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/function_jobs/{function_job_id}/outputs": {
+      "get": {
+        "tags": [
+          "function_jobs"
+        ],
+        "summary": "Function Job Outputs",
+        "description": "Get function job outputs\n\nNew in *version 0.8.0*",
+        "operationId": "function_job_outputs",
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "function_job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Function Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "type": "object"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Response Function Job Outputs V0 Function Jobs  Function Job Id  Outputs Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Function job not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/function_job_collections": {
+      "get": {
+        "tags": [
+          "function_job_collections"
+        ],
+        "summary": "List Function Job Collections",
+        "description": "List function job collections\n\nNew in *version 0.8.0*",
+        "operationId": "list_function_job_collections",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_RegisteredFunctionJobCollection_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "function_job_collections"
+        ],
+        "summary": "Register Function Job Collection",
+        "description": "Register function job collection\n\nNew in *version 0.8.0*",
+        "operationId": "register_function_job_collection",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FunctionJobCollection"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisteredFunctionJobCollection"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/function_job_collections/{function_job_collection_id}": {
+      "get": {
+        "tags": [
+          "function_job_collections"
+        ],
+        "summary": "Get Function Job Collection",
+        "description": "Get function job collection\n\nNew in *version 0.8.0*",
+        "operationId": "get_function_job_collection",
+        "parameters": [
+          {
+            "name": "function_job_collection_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Function Job Collection Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisteredFunctionJobCollection"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Function job collection not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "function_job_collections"
+        ],
+        "summary": "Delete Function Job Collection",
+        "description": "Delete function job collection\n\nNew in *version 0.8.0*",
+        "operationId": "delete_function_job_collection",
+        "parameters": [
+          {
+            "name": "function_job_collection_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Function Job Collection Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "404": {
+            "description": "Function job collection not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/function_job_collections/{function_job_collection_id}/function_jobs": {
+      "get": {
+        "tags": [
+          "function_job_collections"
+        ],
+        "summary": "Function Job Collection List Function Jobs",
+        "description": "Get the function jobs in function job collection\n\nNew in *version 0.8.0*",
+        "operationId": "function_job_collection_list_function_jobs",
+        "parameters": [
+          {
+            "name": "function_job_collection_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Function Job Collection Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "oneOf": [
+                      {
+                        "$ref": "#/components/schemas/RegisteredProjectFunctionJob"
+                      },
+                      {
+                        "$ref": "#/components/schemas/RegisteredPythonCodeFunctionJob"
+                      },
+                      {
+                        "$ref": "#/components/schemas/RegisteredSolverFunctionJob"
+                      }
+                    ],
+                    "discriminator": {
+                      "propertyName": "function_class",
+                      "mapping": {
+                        "PROJECT": "#/components/schemas/RegisteredProjectFunctionJob",
+                        "PYTHON_CODE": "#/components/schemas/RegisteredPythonCodeFunctionJob",
+                        "SOLVER": "#/components/schemas/RegisteredSolverFunctionJob"
+                      }
+                    }
+                  },
+                  "title": "Response Function Job Collection List Function Jobs V0 Function Job Collections  Function Job Collection Id  Function Jobs Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Function job collection not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/function_job_collections/{function_job_collection_id}/status": {
+      "get": {
+        "tags": [
+          "function_job_collections"
+        ],
+        "summary": "Function Job Collection Status",
+        "description": "Get function job collection status\n\nNew in *version 0.8.0*",
+        "operationId": "function_job_collection_status",
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "function_job_collection_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Function Job Collection Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FunctionJobCollectionStatus"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Function job collection not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v0/wallets/default": {
       "get": {
         "tags": [
@@ -5322,6 +6211,285 @@
         }
       }
     },
+    "/v0/wallets/{wallet_id}/licensed-items": {
+      "get": {
+        "tags": [
+          "wallets"
+        ],
+        "summary": "Get Available Licensed Items For Wallet",
+        "description": "Get all available licensed items for a given wallet",
+        "operationId": "get_available_licensed_items_for_wallet",
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "wallet_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Wallet Id"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_LicensedItemGet_"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Wallet not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access to wallet is not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Unexpected error when communicating with backend service",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Request to a backend service timed out.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/wallets/{wallet_id}/licensed-items/{licensed_item_id}/checkout": {
+      "post": {
+        "tags": [
+          "wallets"
+        ],
+        "summary": "Checkout Licensed Item",
+        "description": "Checkout licensed item",
+        "operationId": "checkout_licensed_item",
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "wallet_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Wallet Id"
+            }
+          },
+          {
+            "name": "licensed_item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Licensed Item Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LicensedItemCheckoutData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LicensedItemCheckoutGet"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Wallet not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access to wallet is not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Unexpected error when communicating with backend service",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Request to a backend service timed out.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v0/credits/price": {
       "get": {
         "tags": [
@@ -5348,6 +6516,1111 @@
           }
         ]
       }
+    },
+    "/v0/licensed-items": {
+      "get": {
+        "tags": [
+          "licensed-items"
+        ],
+        "summary": "Get Licensed Items",
+        "description": "Get all licensed items",
+        "operationId": "get_licensed_items",
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_LicensedItemGet_"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Unexpected error when communicating with backend service",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Request to a backend service timed out.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/licensed-items/{licensed_item_id}/checked-out-items/{licensed_item_checkout_id}/release": {
+      "post": {
+        "tags": [
+          "licensed-items"
+        ],
+        "summary": "Release Licensed Item",
+        "description": "Release previously checked out licensed item",
+        "operationId": "release_licensed_item",
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "licensed_item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Licensed Item Id"
+            }
+          },
+          {
+            "name": "licensed_item_checkout_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Licensed Item Checkout Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LicensedItemCheckoutGet"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Unexpected error when communicating with backend service",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Request to a backend service timed out.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/functions": {
+      "post": {
+        "tags": [
+          "functions"
+        ],
+        "summary": "Register Function",
+        "description": "Create function\n\nNew in *version 0.8.0*",
+        "operationId": "register_function",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/ProjectFunction"
+                  },
+                  {
+                    "$ref": "#/components/schemas/PythonCodeFunction"
+                  },
+                  {
+                    "$ref": "#/components/schemas/SolverFunction"
+                  }
+                ],
+                "discriminator": {
+                  "propertyName": "function_class",
+                  "mapping": {
+                    "PROJECT": "#/components/schemas/ProjectFunction",
+                    "PYTHON_CODE": "#/components/schemas/PythonCodeFunction",
+                    "SOLVER": "#/components/schemas/SolverFunction"
+                  }
+                },
+                "title": "Function"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/RegisteredProjectFunction"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RegisteredPythonCodeFunction"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RegisteredSolverFunction"
+                    }
+                  ],
+                  "discriminator": {
+                    "propertyName": "function_class",
+                    "mapping": {
+                      "PROJECT": "#/components/schemas/RegisteredProjectFunction",
+                      "PYTHON_CODE": "#/components/schemas/RegisteredPythonCodeFunction",
+                      "SOLVER": "#/components/schemas/RegisteredSolverFunction"
+                    }
+                  },
+                  "title": "Response Register Function V0 Functions Post"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Function not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "functions"
+        ],
+        "summary": "List Functions",
+        "description": "List functions\n\nNew in *version 0.8.0*",
+        "operationId": "list_functions",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_Annotated_Union_RegisteredProjectFunction__RegisteredPythonCodeFunction__RegisteredSolverFunction___FieldInfo_annotation_NoneType__required_True__discriminator__function_class____"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/functions/{function_id}": {
+      "get": {
+        "tags": [
+          "functions"
+        ],
+        "summary": "Get Function",
+        "description": "Get function\n\nNew in *version 0.8.0*",
+        "operationId": "get_function",
+        "parameters": [
+          {
+            "name": "function_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Function Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/RegisteredProjectFunction"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RegisteredPythonCodeFunction"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RegisteredSolverFunction"
+                    }
+                  ],
+                  "discriminator": {
+                    "propertyName": "function_class",
+                    "mapping": {
+                      "PROJECT": "#/components/schemas/RegisteredProjectFunction",
+                      "PYTHON_CODE": "#/components/schemas/RegisteredPythonCodeFunction",
+                      "SOLVER": "#/components/schemas/RegisteredSolverFunction"
+                    }
+                  },
+                  "title": "Response Get Function V0 Functions  Function Id  Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Function not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "functions"
+        ],
+        "summary": "Delete Function",
+        "description": "Delete function\n\nNew in *version 0.8.0*",
+        "operationId": "delete_function",
+        "parameters": [
+          {
+            "name": "function_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Function Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "404": {
+            "description": "Function not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/functions/{function_id}/jobs": {
+      "get": {
+        "tags": [
+          "functions"
+        ],
+        "summary": "List Function Jobs For Functionid",
+        "description": "List function jobs for a function\n\nNew in *version 0.8.0*",
+        "operationId": "list_function_jobs_for_functionid",
+        "parameters": [
+          {
+            "name": "function_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Function Id"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_Annotated_Union_RegisteredProjectFunctionJob__RegisteredPythonCodeFunctionJob__RegisteredSolverFunctionJob___FieldInfo_annotation_NoneType__required_True__discriminator__function_class____"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/functions/{function_id}/title": {
+      "patch": {
+        "tags": [
+          "functions"
+        ],
+        "summary": "Update Function Title",
+        "description": "Update function\n\nNew in *version 0.8.0*",
+        "operationId": "update_function_title",
+        "parameters": [
+          {
+            "name": "function_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Function Id"
+            }
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Title"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/RegisteredProjectFunction"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RegisteredPythonCodeFunction"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RegisteredSolverFunction"
+                    }
+                  ],
+                  "discriminator": {
+                    "propertyName": "function_class",
+                    "mapping": {
+                      "PROJECT": "#/components/schemas/RegisteredProjectFunction",
+                      "PYTHON_CODE": "#/components/schemas/RegisteredPythonCodeFunction",
+                      "SOLVER": "#/components/schemas/RegisteredSolverFunction"
+                    }
+                  },
+                  "title": "Response Update Function Title V0 Functions  Function Id  Title Patch"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Function not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/functions/{function_id}/description": {
+      "patch": {
+        "tags": [
+          "functions"
+        ],
+        "summary": "Update Function Description",
+        "description": "Update function\n\nNew in *version 0.8.0*",
+        "operationId": "update_function_description",
+        "parameters": [
+          {
+            "name": "function_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Function Id"
+            }
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Description"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/RegisteredProjectFunction"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RegisteredPythonCodeFunction"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RegisteredSolverFunction"
+                    }
+                  ],
+                  "discriminator": {
+                    "propertyName": "function_class",
+                    "mapping": {
+                      "PROJECT": "#/components/schemas/RegisteredProjectFunction",
+                      "PYTHON_CODE": "#/components/schemas/RegisteredPythonCodeFunction",
+                      "SOLVER": "#/components/schemas/RegisteredSolverFunction"
+                    }
+                  },
+                  "title": "Response Update Function Description V0 Functions  Function Id  Description Patch"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Function not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/functions/{function_id}/input_schema": {
+      "get": {
+        "tags": [
+          "functions"
+        ],
+        "summary": "Get Function Inputschema",
+        "description": "Get function input schema\n\nNew in *version 0.8.0*",
+        "operationId": "get_function_inputschema",
+        "parameters": [
+          {
+            "name": "function_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Function Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/JSONFunctionInputSchema"
+                    }
+                  ],
+                  "discriminator": {
+                    "propertyName": "schema_class",
+                    "mapping": {
+                      "application/schema+json": "#/components/schemas/JSONFunctionInputSchema"
+                    }
+                  },
+                  "title": "Response Get Function Inputschema V0 Functions  Function Id  Input Schema Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Function not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/functions/{function_id}/output_schema": {
+      "get": {
+        "tags": [
+          "functions"
+        ],
+        "summary": "Get Function Outputschema",
+        "description": "Get function output schema\n\nNew in *version 0.8.0*",
+        "operationId": "get_function_outputschema",
+        "parameters": [
+          {
+            "name": "function_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Function Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/JSONFunctionInputSchema"
+                    }
+                  ],
+                  "discriminator": {
+                    "propertyName": "schema_class",
+                    "mapping": {
+                      "application/schema+json": "#/components/schemas/JSONFunctionInputSchema"
+                    }
+                  },
+                  "title": "Response Get Function Outputschema V0 Functions  Function Id  Output Schema Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Function not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/functions/{function_id}:validate_inputs": {
+      "post": {
+        "tags": [
+          "functions"
+        ],
+        "summary": "Validate Function Inputs",
+        "description": "Validate inputs against the function's input schema\n\nNew in *version 0.8.0*",
+        "operationId": "validate_function_inputs",
+        "parameters": [
+          {
+            "name": "function_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Function Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "object"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Inputs"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "boolean"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ],
+                  "minItems": 2,
+                  "maxItems": 2,
+                  "title": "Response Validate Function Inputs V0 Functions  Function Id  Validate Inputs Post"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid inputs"
+          },
+          "404": {
+            "description": "Function not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/functions/{function_id}:run": {
+      "post": {
+        "tags": [
+          "functions"
+        ],
+        "summary": "Run Function",
+        "description": "Run function\n\nNew in *version 0.8.0*",
+        "operationId": "run_function",
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "function_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Function Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "object"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Function Inputs"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/RegisteredProjectFunctionJob"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RegisteredPythonCodeFunctionJob"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RegisteredSolverFunctionJob"
+                    }
+                  ],
+                  "discriminator": {
+                    "propertyName": "function_class",
+                    "mapping": {
+                      "PROJECT": "#/components/schemas/RegisteredProjectFunctionJob",
+                      "PYTHON_CODE": "#/components/schemas/RegisteredPythonCodeFunctionJob",
+                      "SOLVER": "#/components/schemas/RegisteredSolverFunctionJob"
+                    }
+                  },
+                  "title": "Response Run Function V0 Functions  Function Id  Run Post"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Function not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v0/functions/{function_id}:map": {
+      "post": {
+        "tags": [
+          "functions"
+        ],
+        "summary": "Map Function",
+        "description": "Map function over input parameters\n\nNew in *version 0.8.0*",
+        "operationId": "map_function",
+        "security": [
+          {
+            "HTTPBasic": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "function_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Function Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "object"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "title": "Function Inputs List"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisteredFunctionJobCollection"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Function not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorGet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -5355,7 +7628,15 @@
       "Body_abort_multipart_upload_v0_files__file_id__abort_post": {
         "properties": {
           "client_file": {
-            "$ref": "#/components/schemas/ClientFile"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserFileToProgramJob"
+              },
+              {
+                "$ref": "#/components/schemas/UserFile"
+              }
+            ],
+            "title": "Client File"
           }
         },
         "type": "object",
@@ -5367,7 +7648,15 @@
       "Body_complete_multipart_upload_v0_files__file_id__complete_post": {
         "properties": {
           "client_file": {
-            "$ref": "#/components/schemas/ClientFile"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserFileToProgramJob"
+              },
+              {
+                "$ref": "#/components/schemas/UserFile"
+              }
+            ],
+            "title": "Client File"
           },
           "uploaded_parts": {
             "$ref": "#/components/schemas/FileUploadCompletionBody"
@@ -5379,6 +7668,36 @@
           "uploaded_parts"
         ],
         "title": "Body_complete_multipart_upload_v0_files__file_id__complete_post"
+      },
+      "Body_create_program_job_v0_programs__program_key__releases__version__jobs_post": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "title": "Body_create_program_job_v0_programs__program_key__releases__version__jobs_post"
       },
       "Body_upload_file_v0_files_content_put": {
         "properties": {
@@ -5393,35 +7712,6 @@
           "file"
         ],
         "title": "Body_upload_file_v0_files_content_put"
-      },
-      "ClientFile": {
-        "properties": {
-          "filename": {
-            "type": "string",
-            "title": "Filename",
-            "description": "File name"
-          },
-          "filesize": {
-            "type": "integer",
-            "minimum": 0,
-            "title": "Filesize",
-            "description": "File size in bytes"
-          },
-          "sha256_checksum": {
-            "type": "string",
-            "pattern": "^[a-fA-F0-9]{64}$",
-            "title": "Sha256 Checksum",
-            "description": "SHA256 checksum"
-          }
-        },
-        "type": "object",
-        "required": [
-          "filename",
-          "filesize",
-          "sha256_checksum"
-        ],
-        "title": "ClientFile",
-        "description": "Represents a file stored on the client side"
       },
       "ClientFileUploadData": {
         "properties": {
@@ -5566,6 +7856,61 @@
         ],
         "title": "FileUploadData"
       },
+      "FunctionJobCollection": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "default": ""
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "default": ""
+          },
+          "job_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "title": "Job Ids",
+            "default": []
+          }
+        },
+        "type": "object",
+        "title": "FunctionJobCollection",
+        "description": "Model for a collection of function jobs"
+      },
+      "FunctionJobCollectionStatus": {
+        "properties": {
+          "status": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "FunctionJobCollectionStatus"
+      },
+      "FunctionJobStatus": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "FunctionJobStatus"
+      },
       "GetCreditPriceLegacy": {
         "properties": {
           "productName": {
@@ -5650,6 +7995,42 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "JSONFunctionInputSchema": {
+        "properties": {
+          "schema_content": {
+            "type": "object",
+            "title": "JSON Schema",
+            "description": "JSON Schema",
+            "default": {}
+          },
+          "schema_class": {
+            "type": "string",
+            "const": "application/schema+json",
+            "title": "Schema Class",
+            "default": "application/schema+json"
+          }
+        },
+        "type": "object",
+        "title": "JSONFunctionInputSchema"
+      },
+      "JSONFunctionOutputSchema": {
+        "properties": {
+          "schema_content": {
+            "type": "object",
+            "title": "JSON Schema",
+            "description": "JSON Schema",
+            "default": {}
+          },
+          "schema_class": {
+            "type": "string",
+            "const": "application/schema+json",
+            "title": "Schema Class",
+            "default": "application/schema+json"
+          }
+        },
+        "type": "object",
+        "title": "JSONFunctionOutputSchema"
       },
       "Job": {
         "properties": {
@@ -6086,6 +8467,335 @@
           "submitted_at": "2021-04-01 07:15:54.631007"
         }
       },
+      "LicensedItemCheckoutData": {
+        "properties": {
+          "number_of_seats": {
+            "type": "integer",
+            "exclusiveMinimum": true,
+            "title": "Number Of Seats",
+            "minimum": 0
+          },
+          "service_run_id": {
+            "type": "string",
+            "title": "Service Run Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "number_of_seats",
+          "service_run_id"
+        ],
+        "title": "LicensedItemCheckoutData"
+      },
+      "LicensedItemCheckoutGet": {
+        "properties": {
+          "licensed_item_checkout_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Licensed Item Checkout Id"
+          },
+          "licensed_item_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Licensed Item Id"
+          },
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^\\d+\\.\\d+\\.\\d+$",
+            "title": "Version"
+          },
+          "wallet_id": {
+            "type": "integer",
+            "exclusiveMinimum": true,
+            "title": "Wallet Id",
+            "minimum": 0
+          },
+          "user_id": {
+            "type": "integer",
+            "exclusiveMinimum": true,
+            "title": "User Id",
+            "minimum": 0
+          },
+          "product_name": {
+            "type": "string",
+            "title": "Product Name"
+          },
+          "started_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Started At"
+          },
+          "stopped_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stopped At"
+          },
+          "num_of_seats": {
+            "type": "integer",
+            "title": "Num Of Seats"
+          }
+        },
+        "type": "object",
+        "required": [
+          "licensed_item_checkout_id",
+          "licensed_item_id",
+          "key",
+          "version",
+          "wallet_id",
+          "user_id",
+          "product_name",
+          "started_at",
+          "stopped_at",
+          "num_of_seats"
+        ],
+        "title": "LicensedItemCheckoutGet"
+      },
+      "LicensedItemGet": {
+        "properties": {
+          "licensed_item_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Licensed Item Id"
+          },
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^\\d+\\.\\d+\\.\\d+$",
+            "title": "Version"
+          },
+          "display_name": {
+            "type": "string",
+            "title": "Display Name"
+          },
+          "licensed_resource_type": {
+            "$ref": "#/components/schemas/LicensedResourceType"
+          },
+          "licensed_resources": {
+            "items": {
+              "$ref": "#/components/schemas/LicensedResource"
+            },
+            "type": "array",
+            "title": "Licensed Resources"
+          },
+          "pricing_plan_id": {
+            "type": "integer",
+            "exclusiveMinimum": true,
+            "title": "Pricing Plan Id",
+            "minimum": 0
+          },
+          "is_hidden_on_market": {
+            "type": "boolean",
+            "title": "Is Hidden On Market"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "modified_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Modified At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "licensed_item_id",
+          "key",
+          "version",
+          "display_name",
+          "licensed_resource_type",
+          "licensed_resources",
+          "pricing_plan_id",
+          "is_hidden_on_market",
+          "created_at",
+          "modified_at"
+        ],
+        "title": "LicensedItemGet"
+      },
+      "LicensedResource": {
+        "properties": {
+          "source": {
+            "$ref": "#/components/schemas/LicensedResourceSource"
+          },
+          "category_id": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Category Id"
+          },
+          "category_display": {
+            "type": "string",
+            "title": "Category Display"
+          },
+          "terms_of_use_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2083,
+                "minLength": 1,
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Terms Of Use Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "source",
+          "category_id",
+          "category_display",
+          "terms_of_use_url"
+        ],
+        "title": "LicensedResource"
+      },
+      "LicensedResourceSource": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "thumbnail": {
+            "type": "string",
+            "title": "Thumbnail"
+          },
+          "features": {
+            "$ref": "#/components/schemas/LicensedResourceSourceFeaturesDict"
+          },
+          "doi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Doi"
+          },
+          "license_key": {
+            "type": "string",
+            "title": "License Key"
+          },
+          "license_version": {
+            "type": "string",
+            "title": "License Version"
+          },
+          "protection": {
+            "type": "string",
+            "enum": [
+              "Code",
+              "PayPal"
+            ],
+            "title": "Protection"
+          },
+          "available_from_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2083,
+                "minLength": 1,
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Available From Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "description",
+          "thumbnail",
+          "features",
+          "doi",
+          "license_key",
+          "license_version",
+          "protection",
+          "available_from_url"
+        ],
+        "title": "LicensedResourceSource"
+      },
+      "LicensedResourceSourceFeaturesDict": {
+        "properties": {
+          "age": {
+            "type": "string",
+            "title": "Age"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date"
+          },
+          "ethnicity": {
+            "type": "string",
+            "title": "Ethnicity"
+          },
+          "functionality": {
+            "type": "string",
+            "title": "Functionality"
+          },
+          "height": {
+            "type": "string",
+            "title": "Height"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "sex": {
+            "type": "string",
+            "title": "Sex"
+          },
+          "species": {
+            "type": "string",
+            "title": "Species"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "weight": {
+            "type": "string",
+            "title": "Weight"
+          }
+        },
+        "type": "object",
+        "required": [
+          "date"
+        ],
+        "title": "LicensedResourceSourceFeaturesDict"
+      },
+      "LicensedResourceType": {
+        "type": "string",
+        "enum": [
+          "VIP_MODEL"
+        ],
+        "title": "LicensedResourceType"
+      },
       "Links": {
         "properties": {
           "first": {
@@ -6291,6 +9001,160 @@
         ],
         "title": "OnePage[StudyPort]"
       },
+      "Page_Annotated_Union_RegisteredProjectFunctionJob__RegisteredPythonCodeFunctionJob__RegisteredSolverFunctionJob___FieldInfo_annotation_NoneType__required_True__discriminator__function_class____": {
+        "properties": {
+          "items": {
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/RegisteredProjectFunctionJob"
+                },
+                {
+                  "$ref": "#/components/schemas/RegisteredPythonCodeFunctionJob"
+                },
+                {
+                  "$ref": "#/components/schemas/RegisteredSolverFunctionJob"
+                }
+              ],
+              "discriminator": {
+                "propertyName": "function_class",
+                "mapping": {
+                  "PROJECT": "#/components/schemas/RegisteredProjectFunctionJob",
+                  "PYTHON_CODE": "#/components/schemas/RegisteredPythonCodeFunctionJob",
+                  "SOLVER": "#/components/schemas/RegisteredSolverFunctionJob"
+                }
+              }
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total"
+          },
+          "limit": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Limit"
+          },
+          "offset": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Offset"
+          },
+          "links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset",
+          "links"
+        ],
+        "title": "Page[Annotated[Union[RegisteredProjectFunctionJob, RegisteredPythonCodeFunctionJob, RegisteredSolverFunctionJob], FieldInfo(annotation=NoneType, required=True, discriminator='function_class')]]"
+      },
+      "Page_Annotated_Union_RegisteredProjectFunction__RegisteredPythonCodeFunction__RegisteredSolverFunction___FieldInfo_annotation_NoneType__required_True__discriminator__function_class____": {
+        "properties": {
+          "items": {
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/RegisteredProjectFunction"
+                },
+                {
+                  "$ref": "#/components/schemas/RegisteredPythonCodeFunction"
+                },
+                {
+                  "$ref": "#/components/schemas/RegisteredSolverFunction"
+                }
+              ],
+              "discriminator": {
+                "propertyName": "function_class",
+                "mapping": {
+                  "PROJECT": "#/components/schemas/RegisteredProjectFunction",
+                  "PYTHON_CODE": "#/components/schemas/RegisteredPythonCodeFunction",
+                  "SOLVER": "#/components/schemas/RegisteredSolverFunction"
+                }
+              }
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total"
+          },
+          "limit": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Limit"
+          },
+          "offset": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Offset"
+          },
+          "links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset",
+          "links"
+        ],
+        "title": "Page[Annotated[Union[RegisteredProjectFunction, RegisteredPythonCodeFunction, RegisteredSolverFunction], FieldInfo(annotation=NoneType, required=True, discriminator='function_class')]]"
+      },
       "Page_File_": {
         "properties": {
           "items": {
@@ -6409,6 +9273,124 @@
         ],
         "title": "Page[Job]"
       },
+      "Page_LicensedItemGet_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/LicensedItemGet"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total"
+          },
+          "limit": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Limit"
+          },
+          "offset": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Offset"
+          },
+          "links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset",
+          "links"
+        ],
+        "title": "Page[LicensedItemGet]"
+      },
+      "Page_RegisteredFunctionJobCollection_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/RegisteredFunctionJobCollection"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total"
+          },
+          "limit": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Limit"
+          },
+          "offset": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Offset"
+          },
+          "links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset",
+          "links"
+        ],
+        "title": "Page[RegisteredFunctionJobCollection]"
+      },
       "Page_Study_": {
         "properties": {
           "items": {
@@ -6489,7 +9471,7 @@
             "title": "Unitname"
           },
           "unitExtraInfo": {
-            "$ref": "#/components/schemas/UnitExtraInfo"
+            "$ref": "#/components/schemas/UnitExtraInfoTier"
           },
           "currentCostPerUnit": {
             "type": "number",
@@ -6634,6 +9616,806 @@
         "type": "object",
         "title": "ProfileUpdate"
       },
+      "Program": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "Resource identifier"
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
+            "title": "Version",
+            "description": "Semantic version number of the resource"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "Title",
+            "description": "Human readable name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "description": "Description of the resource"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2083,
+                "minLength": 1,
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url",
+            "description": "Link to get this resource"
+          },
+          "version_display": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Version Display"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "version",
+          "title",
+          "url",
+          "version_display"
+        ],
+        "title": "Program",
+        "description": "A released program with a specific version",
+        "example": {
+          "description": "Simulation framework",
+          "id": "simcore/services/dynamic/sim4life",
+          "maintainer": "info@itis.swiss",
+          "title": "Sim4life",
+          "url": "https://api.osparc.io/v0/solvers/simcore%2Fservices%2Fdynamic%2Fsim4life/releases/8.0.0",
+          "version": "8.0.0",
+          "version_display": "8.0.0"
+        }
+      },
+      "ProjectFunction": {
+        "properties": {
+          "function_class": {
+            "type": "string",
+            "const": "PROJECT",
+            "title": "Function Class",
+            "default": "PROJECT"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "default": ""
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "default": ""
+          },
+          "input_schema": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/JSONFunctionInputSchema"
+              }
+            ],
+            "title": "Input Schema",
+            "discriminator": {
+              "propertyName": "schema_class",
+              "mapping": {
+                "application/schema+json": "#/components/schemas/JSONFunctionInputSchema"
+              }
+            }
+          },
+          "output_schema": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/JSONFunctionOutputSchema"
+              }
+            ],
+            "title": "Output Schema",
+            "discriminator": {
+              "propertyName": "schema_class",
+              "mapping": {
+                "application/schema+json": "#/components/schemas/JSONFunctionOutputSchema"
+              }
+            }
+          },
+          "default_inputs": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Default Inputs"
+          },
+          "project_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Project Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "input_schema",
+          "output_schema",
+          "default_inputs",
+          "project_id"
+        ],
+        "title": "ProjectFunction"
+      },
+      "ProjectFunctionJob": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "default": ""
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "default": ""
+          },
+          "function_uid": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Function Uid"
+          },
+          "inputs": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Inputs"
+          },
+          "outputs": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outputs"
+          },
+          "function_class": {
+            "type": "string",
+            "const": "PROJECT",
+            "title": "Function Class",
+            "default": "PROJECT"
+          },
+          "project_job_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Project Job Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "function_uid",
+          "inputs",
+          "outputs",
+          "project_job_id"
+        ],
+        "title": "ProjectFunctionJob"
+      },
+      "PythonCodeFunction": {
+        "properties": {
+          "function_class": {
+            "type": "string",
+            "const": "PYTHON_CODE",
+            "title": "Function Class",
+            "default": "PYTHON_CODE"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "default": ""
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "default": ""
+          },
+          "input_schema": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/JSONFunctionInputSchema"
+              }
+            ],
+            "title": "Input Schema",
+            "discriminator": {
+              "propertyName": "schema_class",
+              "mapping": {
+                "application/schema+json": "#/components/schemas/JSONFunctionInputSchema"
+              }
+            }
+          },
+          "output_schema": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/JSONFunctionOutputSchema"
+              }
+            ],
+            "title": "Output Schema",
+            "discriminator": {
+              "propertyName": "schema_class",
+              "mapping": {
+                "application/schema+json": "#/components/schemas/JSONFunctionOutputSchema"
+              }
+            }
+          },
+          "default_inputs": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Default Inputs"
+          },
+          "code_url": {
+            "type": "string",
+            "title": "Code Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "input_schema",
+          "output_schema",
+          "default_inputs",
+          "code_url"
+        ],
+        "title": "PythonCodeFunction"
+      },
+      "PythonCodeFunctionJob": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "default": ""
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "default": ""
+          },
+          "function_uid": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Function Uid"
+          },
+          "inputs": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Inputs"
+          },
+          "outputs": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outputs"
+          },
+          "function_class": {
+            "type": "string",
+            "const": "PYTHON_CODE",
+            "title": "Function Class",
+            "default": "PYTHON_CODE"
+          }
+        },
+        "type": "object",
+        "required": [
+          "function_uid",
+          "inputs",
+          "outputs"
+        ],
+        "title": "PythonCodeFunctionJob"
+      },
+      "RegisteredFunctionJobCollection": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "default": ""
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "default": ""
+          },
+          "job_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "title": "Job Ids",
+            "default": []
+          },
+          "uid": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Uid"
+          }
+        },
+        "type": "object",
+        "required": [
+          "uid"
+        ],
+        "title": "RegisteredFunctionJobCollection"
+      },
+      "RegisteredProjectFunction": {
+        "properties": {
+          "function_class": {
+            "type": "string",
+            "const": "PROJECT",
+            "title": "Function Class",
+            "default": "PROJECT"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "default": ""
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "default": ""
+          },
+          "input_schema": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/JSONFunctionInputSchema"
+              }
+            ],
+            "title": "Input Schema",
+            "discriminator": {
+              "propertyName": "schema_class",
+              "mapping": {
+                "application/schema+json": "#/components/schemas/JSONFunctionInputSchema"
+              }
+            }
+          },
+          "output_schema": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/JSONFunctionOutputSchema"
+              }
+            ],
+            "title": "Output Schema",
+            "discriminator": {
+              "propertyName": "schema_class",
+              "mapping": {
+                "application/schema+json": "#/components/schemas/JSONFunctionOutputSchema"
+              }
+            }
+          },
+          "default_inputs": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Default Inputs"
+          },
+          "uid": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Uid"
+          },
+          "project_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Project Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "input_schema",
+          "output_schema",
+          "default_inputs",
+          "uid",
+          "project_id"
+        ],
+        "title": "RegisteredProjectFunction"
+      },
+      "RegisteredProjectFunctionJob": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "default": ""
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "default": ""
+          },
+          "function_uid": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Function Uid"
+          },
+          "inputs": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Inputs"
+          },
+          "outputs": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outputs"
+          },
+          "function_class": {
+            "type": "string",
+            "const": "PROJECT",
+            "title": "Function Class",
+            "default": "PROJECT"
+          },
+          "uid": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Uid"
+          },
+          "project_job_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Project Job Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "function_uid",
+          "inputs",
+          "outputs",
+          "uid",
+          "project_job_id"
+        ],
+        "title": "RegisteredProjectFunctionJob"
+      },
+      "RegisteredPythonCodeFunction": {
+        "properties": {
+          "function_class": {
+            "type": "string",
+            "const": "PYTHON_CODE",
+            "title": "Function Class",
+            "default": "PYTHON_CODE"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "default": ""
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "default": ""
+          },
+          "input_schema": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/JSONFunctionInputSchema"
+              }
+            ],
+            "title": "Input Schema",
+            "discriminator": {
+              "propertyName": "schema_class",
+              "mapping": {
+                "application/schema+json": "#/components/schemas/JSONFunctionInputSchema"
+              }
+            }
+          },
+          "output_schema": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/JSONFunctionOutputSchema"
+              }
+            ],
+            "title": "Output Schema",
+            "discriminator": {
+              "propertyName": "schema_class",
+              "mapping": {
+                "application/schema+json": "#/components/schemas/JSONFunctionOutputSchema"
+              }
+            }
+          },
+          "default_inputs": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Default Inputs"
+          },
+          "uid": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Uid"
+          },
+          "code_url": {
+            "type": "string",
+            "title": "Code Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "input_schema",
+          "output_schema",
+          "default_inputs",
+          "uid",
+          "code_url"
+        ],
+        "title": "RegisteredPythonCodeFunction"
+      },
+      "RegisteredPythonCodeFunctionJob": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "default": ""
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "default": ""
+          },
+          "function_uid": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Function Uid"
+          },
+          "inputs": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Inputs"
+          },
+          "outputs": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outputs"
+          },
+          "function_class": {
+            "type": "string",
+            "const": "PYTHON_CODE",
+            "title": "Function Class",
+            "default": "PYTHON_CODE"
+          },
+          "uid": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Uid"
+          }
+        },
+        "type": "object",
+        "required": [
+          "function_uid",
+          "inputs",
+          "outputs",
+          "uid"
+        ],
+        "title": "RegisteredPythonCodeFunctionJob"
+      },
+      "RegisteredSolverFunction": {
+        "properties": {
+          "function_class": {
+            "type": "string",
+            "const": "SOLVER",
+            "title": "Function Class",
+            "default": "SOLVER"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "default": ""
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "default": ""
+          },
+          "input_schema": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/JSONFunctionInputSchema"
+              }
+            ],
+            "title": "Input Schema",
+            "discriminator": {
+              "propertyName": "schema_class",
+              "mapping": {
+                "application/schema+json": "#/components/schemas/JSONFunctionInputSchema"
+              }
+            }
+          },
+          "output_schema": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/JSONFunctionOutputSchema"
+              }
+            ],
+            "title": "Output Schema",
+            "discriminator": {
+              "propertyName": "schema_class",
+              "mapping": {
+                "application/schema+json": "#/components/schemas/JSONFunctionOutputSchema"
+              }
+            }
+          },
+          "default_inputs": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Default Inputs"
+          },
+          "uid": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Uid"
+          },
+          "solver_key": {
+            "type": "string",
+            "pattern": "^simcore/services/((comp|dynamic|frontend))/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
+            "title": "Solver Key"
+          },
+          "solver_version": {
+            "type": "string",
+            "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
+            "title": "Solver Version"
+          }
+        },
+        "type": "object",
+        "required": [
+          "input_schema",
+          "output_schema",
+          "default_inputs",
+          "uid",
+          "solver_key",
+          "solver_version"
+        ],
+        "title": "RegisteredSolverFunction"
+      },
+      "RegisteredSolverFunctionJob": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "default": ""
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "default": ""
+          },
+          "function_uid": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Function Uid"
+          },
+          "inputs": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Inputs"
+          },
+          "outputs": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outputs"
+          },
+          "function_class": {
+            "type": "string",
+            "const": "SOLVER",
+            "title": "Function Class",
+            "default": "SOLVER"
+          },
+          "uid": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Uid"
+          },
+          "solver_job_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Solver Job Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "function_uid",
+          "inputs",
+          "outputs",
+          "uid",
+          "solver_job_id"
+        ],
+        "title": "RegisteredSolverFunctionJob"
+      },
       "RunningState": {
         "type": "string",
         "enum": [
@@ -6703,35 +10485,33 @@
         "properties": {
           "id": {
             "type": "string",
-            "pattern": "^simcore/services/comp/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
             "title": "Id",
-            "description": "Solver identifier"
+            "description": "Resource identifier"
           },
           "version": {
             "type": "string",
             "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
             "title": "Version",
-            "description": "semantic version number of the node"
+            "description": "Semantic version number of the resource"
           },
           "title": {
             "type": "string",
+            "maxLength": 100,
             "title": "Title",
             "description": "Human readable name"
           },
           "description": {
             "anyOf": [
               {
-                "type": "string"
+                "type": "string",
+                "maxLength": 1000
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Description"
-          },
-          "maintainer": {
-            "type": "string",
-            "title": "Maintainer"
+            "title": "Description",
+            "description": "Description of the resource"
           },
           "url": {
             "anyOf": [
@@ -6747,6 +10527,23 @@
             ],
             "title": "Url",
             "description": "Link to get this resource"
+          },
+          "maintainer": {
+            "type": "string",
+            "title": "Maintainer",
+            "description": "Maintainer of the solver"
+          },
+          "version_display": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Version Display",
+            "description": "A user-friendly or marketing name for the release."
           }
         },
         "type": "object",
@@ -6754,8 +10551,8 @@
           "id",
           "version",
           "title",
-          "maintainer",
-          "url"
+          "url",
+          "maintainer"
         ],
         "title": "Solver",
         "description": "A released solver with a specific version",
@@ -6765,8 +10562,147 @@
           "maintainer": "info@itis.swiss",
           "title": "iSolve",
           "url": "https://api.osparc.io/v0/solvers/simcore%2Fservices%2Fcomp%2Fisolve/releases/2.1.1",
-          "version": "2.1.1"
+          "version": "2.1.1",
+          "version_display": "2.1.1-2023-10-01"
         }
+      },
+      "SolverFunction": {
+        "properties": {
+          "function_class": {
+            "type": "string",
+            "const": "SOLVER",
+            "title": "Function Class",
+            "default": "SOLVER"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "default": ""
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "default": ""
+          },
+          "input_schema": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/JSONFunctionInputSchema"
+              }
+            ],
+            "title": "Input Schema",
+            "discriminator": {
+              "propertyName": "schema_class",
+              "mapping": {
+                "application/schema+json": "#/components/schemas/JSONFunctionInputSchema"
+              }
+            }
+          },
+          "output_schema": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/JSONFunctionOutputSchema"
+              }
+            ],
+            "title": "Output Schema",
+            "discriminator": {
+              "propertyName": "schema_class",
+              "mapping": {
+                "application/schema+json": "#/components/schemas/JSONFunctionOutputSchema"
+              }
+            }
+          },
+          "default_inputs": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Default Inputs"
+          },
+          "solver_key": {
+            "type": "string",
+            "pattern": "^simcore/services/((comp|dynamic|frontend))/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
+            "title": "Solver Key"
+          },
+          "solver_version": {
+            "type": "string",
+            "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
+            "title": "Solver Version"
+          }
+        },
+        "type": "object",
+        "required": [
+          "input_schema",
+          "output_schema",
+          "default_inputs",
+          "solver_key",
+          "solver_version"
+        ],
+        "title": "SolverFunction"
+      },
+      "SolverFunctionJob": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "default": ""
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "default": ""
+          },
+          "function_uid": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Function Uid"
+          },
+          "inputs": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Inputs"
+          },
+          "outputs": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outputs"
+          },
+          "function_class": {
+            "type": "string",
+            "const": "SOLVER",
+            "title": "Function Class",
+            "default": "SOLVER"
+          },
+          "solver_job_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Solver Job Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "function_uid",
+          "inputs",
+          "outputs",
+          "solver_job_id"
+        ],
+        "title": "SolverFunctionJob"
       },
       "SolverPort": {
         "properties": {
@@ -6898,7 +10834,7 @@
           "kind": "input"
         }
       },
-      "UnitExtraInfo": {
+      "UnitExtraInfoTier": {
         "properties": {
           "CPU": {
             "type": "integer",
@@ -6923,7 +10859,7 @@
           "RAM",
           "VRAM"
         ],
-        "title": "UnitExtraInfo",
+        "title": "UnitExtraInfoTier",
         "description": "Custom information that is propagated to the frontend. Defined fields are mandatory."
       },
       "UploadLinks": {
@@ -6963,6 +10899,93 @@
           "e_tag"
         ],
         "title": "UploadedPart"
+      },
+      "UserFile": {
+        "properties": {
+          "filename": {
+            "type": "string",
+            "title": "Filename",
+            "description": "File name"
+          },
+          "filesize": {
+            "type": "integer",
+            "minimum": 0,
+            "title": "Filesize",
+            "description": "File size in bytes"
+          },
+          "sha256_checksum": {
+            "type": "string",
+            "pattern": "^[a-fA-F0-9]{64}$",
+            "title": "Sha256 Checksum",
+            "description": "SHA256 checksum"
+          }
+        },
+        "type": "object",
+        "required": [
+          "filename",
+          "filesize",
+          "sha256_checksum"
+        ],
+        "title": "UserFile",
+        "description": "Represents a file stored on the client side"
+      },
+      "UserFileToProgramJob": {
+        "properties": {
+          "filename": {
+            "type": "string",
+            "pattern": ".+",
+            "title": "Filename",
+            "description": "File name"
+          },
+          "filesize": {
+            "type": "integer",
+            "minimum": 0,
+            "title": "Filesize",
+            "description": "File size in bytes"
+          },
+          "sha256_checksum": {
+            "type": "string",
+            "pattern": "^[a-fA-F0-9]{64}$",
+            "title": "Sha256 Checksum",
+            "description": "SHA256 checksum"
+          },
+          "program_key": {
+            "type": "string",
+            "pattern": "^simcore/services/dynamic/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
+            "title": "Program Key",
+            "description": "Program identifier"
+          },
+          "program_version": {
+            "type": "string",
+            "pattern": "^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*)){2}(-(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*)(\\.(0|[1-9]\\d*|\\d*[-a-zA-Z][-\\da-zA-Z]*))*)?(\\+[-\\da-zA-Z]+(\\.[-\\da-zA-Z-]+)*)?$",
+            "title": "Program Version",
+            "description": "Program version"
+          },
+          "job_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Job Id",
+            "description": "Job identifier"
+          },
+          "workspace_path": {
+            "type": "string",
+            "pattern": "^workspace/.*",
+            "format": "path",
+            "title": "Workspace Path",
+            "description": "The file's relative path within the job's workspace directory. E.g. 'workspace/myfile.txt'"
+          }
+        },
+        "type": "object",
+        "required": [
+          "filename",
+          "filesize",
+          "sha256_checksum",
+          "program_key",
+          "program_version",
+          "job_id",
+          "workspace_path"
+        ],
+        "title": "UserFileToProgramJob"
       },
       "UserRoleEnum": {
         "type": "string",
