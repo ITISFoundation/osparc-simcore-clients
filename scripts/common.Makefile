@@ -14,7 +14,7 @@ APP_NAME      := $(notdir $(CURDIR))
 
 # Specify which openapi generator should be used to generate the clients in this repo
 OPENAPI_GENERATOR_NAME  := openapitools/openapi-generator-cli
-OPENAPI_GENERATOR_TAG   := latest
+OPENAPI_GENERATOR_TAG   := latest-release
 OPENAPI_GENERATOR_IMAGE := $(OPENAPI_GENERATOR_NAME):$(OPENAPI_GENERATOR_TAG)
 
 # openapi specification
