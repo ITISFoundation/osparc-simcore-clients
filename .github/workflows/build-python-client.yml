@@ -52,7 +52,7 @@ jobs:
           echo "github.workflow.id: ${{github.workflow.id}}"
           echo "github.run_id: ${{github.run_id}}"
       - name: Upload wheels
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: osparc_python_wheels
           path: clients/python/artifacts/dist/
