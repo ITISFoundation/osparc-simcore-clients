@@ -29,3 +29,8 @@ openapi-master-diff.json: ## Diffs against newer openapi-dev.json and checks bac
 .PHONY: openapi-deploy-diff.json
 openapi-deploy-diff.json: ## Diffs against newer openapi-dev.json and checks backwards compatibility
 	$(call openapi_diff, https://api.osparc.io/api/v0/openapi.json,$@)
+
+
+.PHONY: openapi-osparc-simore-master-branch
+openapi-osparc-simore-master-branch: ## recover form osparc-smicore repo master branch
+	$(call download_openapi, https://raw.githubusercontent.com/ITISFoundation/osparc-simcore/refs/heads/master/services/api-server/openapi.json,openapi.json)
