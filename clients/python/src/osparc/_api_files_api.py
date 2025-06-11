@@ -25,6 +25,7 @@ from .models import (
     FileUploadCompletionBody,
     FileUploadData,
     UploadedPart,
+    UserFile,
 )
 from urllib.parse import urljoin
 import aiofiles
@@ -150,11 +151,12 @@ class FilesApi(_FilesApi):
                 # if a file has the same sha256 checksum
                 # and name they are considered equal
                 return file_result
-        client_file: ClientFile = ClientFile(
+        user_file = UserFile(
             filename=file.name,
             filesize=file.stat().st_size,
             sha256_checksum=checksum,
         )
+        client_file = ClientFile(user_file)
         client_upload_schema: ClientFileUploadData = super().get_upload_links(
             client_file=client_file, _request_timeout=timeout_seconds, **kwargs
         )

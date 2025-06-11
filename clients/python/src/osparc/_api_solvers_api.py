@@ -77,7 +77,7 @@ class SolversApi(_SolversApi):
         """
 
         def _pagination_method():
-            return super(SolversApi, self).get_jobs_page(
+            return super(SolversApi, self).list_jobs_paginated(
                 solver_key=solver_key,
                 version=version,
                 limit=_DEFAULT_PAGINATION_LIMIT,

@@ -59,7 +59,7 @@ from osparc_client.models.user_role_enum import UserRoleEnum as UserRoleEnum
 from osparc_client.models.users_group import UsersGroup as UsersGroup
 from osparc_client.models.validation_error import ValidationError as ValidationError
 from osparc_client.models.wallet_status import WalletStatus as WalletStatus
-
+from osparc_client.models.user_file import UserFile as UserFile
 from ._models import JobInputs as JobInputs
 from ._models import JobOutputs as JobOutputs
 from ._models import JobMetadata as JobMetadata
