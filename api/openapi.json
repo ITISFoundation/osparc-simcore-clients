@@ -3,7 +3,7 @@
   "info": {
     "title": "osparc.io public API",
     "description": "osparc-simcore public API specifications",
-    "version": "0.8.0"
+    "version": "0.9.0"
   },
   "paths": {
     "/v0/meta": {
@@ -4460,6 +4460,16 @@
             }
           },
           {
+            "name": "hidden",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Hidden"
+            }
+          },
+          {
             "name": "x-simcore-parent-project-uuid",
             "in": "header",
             "required": false,
@@ -4494,6 +4504,15 @@
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_clone_study_v0_studies__study_id__clone_post"
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": "Successful Response",
@@ -5286,7 +5305,7 @@
           "function_jobs"
         ],
         "summary": "List Function Jobs",
-        "description": "List function jobs\n\nNew in *version 0.8.0*",
+        "description": "List function jobs\n\nNew in *version 0.8.0*\n\nAdded in *version 0.9.0*: add `created_at` field in the registered function-related objects",
         "operationId": "list_function_jobs",
         "security": [
           {
@@ -5346,7 +5365,7 @@
           "function_jobs"
         ],
         "summary": "Register Function Job",
-        "description": "Create function job\n\nNew in *version 0.8.0*",
+        "description": "Create function job\n\nNew in *version 0.8.0*\n\nAdded in *version 0.9.0*: add `created_at` field in the registered function-related objects",
         "operationId": "register_function_job",
         "security": [
           {
@@ -5431,7 +5450,7 @@
           "function_jobs"
         ],
         "summary": "Get Function Job",
-        "description": "Get function job\n\nNew in *version 0.8.0*",
+        "description": "Get function job\n\nNew in *version 0.8.0*\n\nAdded in *version 0.9.0*: add `created_at` field in the registered function-related objects",
         "operationId": "get_function_job",
         "security": [
           {
@@ -6810,7 +6829,7 @@
           "functions"
         ],
         "summary": "Register Function",
-        "description": "Create function\n\nNew in *version 0.8.0*",
+        "description": "Create function\n\nNew in *version 0.8.0*\n\nAdded in *version 0.9.0*: add `created_at` field in the registered function-related objects",
         "operationId": "register_function",
         "security": [
           {
@@ -6903,7 +6922,7 @@
           "functions"
         ],
         "summary": "List Functions",
-        "description": "List functions\n\nNew in *version 0.8.0*",
+        "description": "List functions\n\nNew in *version 0.8.0*\n\nAdded in *version 0.9.0*: add `created_at` field in the registered function-related objects",
         "operationId": "list_functions",
         "security": [
           {
@@ -6965,7 +6984,7 @@
           "functions"
         ],
         "summary": "Get Function",
-        "description": "Get function\n\nNew in *version 0.8.0*",
+        "description": "Get function\n\nNew in *version 0.8.0*\n\nAdded in *version 0.9.0*: add `created_at` field in the registered function-related objects",
         "operationId": "get_function",
         "security": [
           {
@@ -7098,7 +7117,7 @@
           "functions"
         ],
         "summary": "List Function Jobs For Functionid",
-        "description": "List function jobs for a function\n\nNew in *version 0.8.0*",
+        "description": "List function jobs for a function\n\nNew in *version 0.8.0*\n\nAdded in *version 0.9.0*: add `created_at` field in the registered function-related objects",
         "operationId": "list_function_jobs_for_functionid",
         "security": [
           {
@@ -7170,7 +7189,7 @@
           "functions"
         ],
         "summary": "Update Function Title",
-        "description": "Update function\n\nNew in *version 0.8.0*",
+        "description": "Update function\n\nNew in *version 0.8.0*\n\nAdded in *version 0.9.0*: add `created_at` field in the registered function-related objects",
         "operationId": "update_function_title",
         "security": [
           {
@@ -7257,7 +7276,7 @@
           "functions"
         ],
         "summary": "Update Function Description",
-        "description": "Update function\n\nNew in *version 0.8.0*",
+        "description": "Update function\n\nNew in *version 0.8.0*\n\nAdded in *version 0.9.0*: add `created_at` field in the registered function-related objects",
         "operationId": "update_function_description",
         "security": [
           {
@@ -7568,7 +7587,7 @@
           "functions"
         ],
         "summary": "Run Function",
-        "description": "Run function\n\nNew in *version 0.8.0*",
+        "description": "Run function\n\nNew in *version 0.8.0*\n\nAdded in *version 0.9.0*: add `created_at` field in the registered function-related objects",
         "operationId": "run_function",
         "security": [
           {
@@ -7584,6 +7603,42 @@
               "type": "string",
               "format": "uuid",
               "title": "Function Id"
+            }
+          },
+          {
+            "name": "x-simcore-parent-project-uuid",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "const": "null",
+                  "type": "string"
+                }
+              ],
+              "title": "X-Simcore-Parent-Project-Uuid"
+            }
+          },
+          {
+            "name": "x-simcore-parent-node-id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "const": "null",
+                  "type": "string"
+                }
+              ],
+              "title": "X-Simcore-Parent-Node-Id"
             }
           }
         ],
@@ -7664,7 +7719,7 @@
           "functions"
         ],
         "summary": "Map Function",
-        "description": "Map function over input parameters\n\nNew in *version 0.8.0*",
+        "description": "Map function over input parameters\n\nNew in *version 0.8.0*\n\nAdded in *version 0.9.0*: add `created_at` field in the registered function-related objects",
         "operationId": "map_function",
         "security": [
           {
@@ -7680,6 +7735,42 @@
               "type": "string",
               "format": "uuid",
               "title": "Function Id"
+            }
+          },
+          {
+            "name": "x-simcore-parent-project-uuid",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "const": "null",
+                  "type": "string"
+                }
+              ],
+              "title": "X-Simcore-Parent-Project-Uuid"
+            }
+          },
+          {
+            "name": "x-simcore-parent-node-id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "const": "null",
+                  "type": "string"
+                }
+              ],
+              "title": "X-Simcore-Parent-Node-Id"
             }
           }
         ],
@@ -7699,6 +7790,7 @@
                     }
                   ]
                 },
+                "maxItems": 50,
                 "title": "Function Inputs List"
               }
             }
@@ -7760,6 +7852,36 @@
           "client_file"
         ],
         "title": "Body_abort_multipart_upload_v0_files__file_id__abort_post"
+      },
+      "Body_clone_study_v0_studies__study_id__clone_post": {
+        "properties": {
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title",
+            "empty": true
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "empty": true
+          }
+        },
+        "type": "object",
+        "title": "Body_clone_study_v0_studies__study_id__clone_post"
       },
       "Body_complete_multipart_upload_v0_files__file_id__complete_post": {
         "properties": {
@@ -10093,11 +10215,17 @@
             "type": "string",
             "format": "uuid",
             "title": "Uid"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
           }
         },
         "type": "object",
         "required": [
-          "uid"
+          "uid",
+          "created_at"
         ],
         "title": "RegisteredFunctionJobCollection"
       },
@@ -10163,6 +10291,11 @@
             "format": "uuid",
             "title": "Uid"
           },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
           "project_id": {
             "type": "string",
             "format": "uuid",
@@ -10175,6 +10308,7 @@
           "output_schema",
           "default_inputs",
           "uid",
+          "created_at",
           "project_id"
         ],
         "title": "RegisteredProjectFunction"
@@ -10229,6 +10363,11 @@
             "format": "uuid",
             "title": "Uid"
           },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
           "project_job_id": {
             "type": "string",
             "format": "uuid",
@@ -10241,6 +10380,7 @@
           "inputs",
           "outputs",
           "uid",
+          "created_at",
           "project_job_id"
         ],
         "title": "RegisteredProjectFunctionJob"
@@ -10307,6 +10447,11 @@
             "format": "uuid",
             "title": "Uid"
           },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
           "code_url": {
             "type": "string",
             "title": "Code Url"
@@ -10318,6 +10463,7 @@
           "output_schema",
           "default_inputs",
           "uid",
+          "created_at",
           "code_url"
         ],
         "title": "RegisteredPythonCodeFunction"
@@ -10371,6 +10517,11 @@
             "type": "string",
             "format": "uuid",
             "title": "Uid"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
           }
         },
         "type": "object",
@@ -10378,7 +10529,8 @@
           "function_uid",
           "inputs",
           "outputs",
-          "uid"
+          "uid",
+          "created_at"
         ],
         "title": "RegisteredPythonCodeFunctionJob"
       },
@@ -10444,6 +10596,11 @@
             "format": "uuid",
             "title": "Uid"
           },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
           "solver_key": {
             "type": "string",
             "pattern": "^simcore/services/((comp|dynamic|frontend))/([a-z0-9][a-z0-9_.-]*/)*([a-z0-9-_]+[a-z0-9])$",
@@ -10461,6 +10618,7 @@
           "output_schema",
           "default_inputs",
           "uid",
+          "created_at",
           "solver_key",
           "solver_version"
         ],
@@ -10516,6 +10674,11 @@
             "format": "uuid",
             "title": "Uid"
           },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
           "solver_job_id": {
             "type": "string",
             "format": "uuid",
@@ -10528,6 +10691,7 @@
           "inputs",
           "outputs",
           "uid",
+          "created_at",
           "solver_job_id"
         ],
         "title": "RegisteredSolverFunctionJob"
