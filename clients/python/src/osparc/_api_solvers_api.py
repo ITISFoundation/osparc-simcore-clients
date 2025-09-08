@@ -135,11 +135,11 @@ class SolversApi(_SolversApi):
         _osparc_client_outputs = super().get_job_outputs(
             solver_key=solver_key, version=version, job_id=job_id, **kwargs
         )
-        return JobOutputs.model_validate_json(_osparc_client_outputs.to_json())
+        return JobOutputs.model_validate(_osparc_client_outputs.to_dict())
 
     def get_job_custom_metadata(self, *args, **kwargs) -> JobMetadata:
         metadata = super().get_job_custom_metadata(*args, **kwargs)
-        return JobMetadata.model_validate_json(metadata.to_json())
+        return JobMetadata.model_validate(metadata.to_dict())
 
     @validate_call
     def replace_job_custom_metadata(
@@ -156,4 +156,4 @@ class SolversApi(_SolversApi):
         _job_custom_metadata = super().replace_job_custom_metadata(
             solver_key, version, job_id, _job_metadata_update
         )
-        return JobMetadata.model_validate_json(_job_custom_metadata.to_json())
+        return JobMetadata.model_validate(_job_custom_metadata.to_dict())

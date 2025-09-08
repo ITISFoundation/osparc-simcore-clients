@@ -80,7 +80,7 @@ class StudiesApi(_StudiesApi):
         _job_outputs = super().get_study_job_outputs(
             study_id=study_id, job_id=job_id, **kwargs
         )
-        return JobOutputs.model_validate_json(_job_outputs.to_json())
+        return JobOutputs.model_validate(_job_outputs.to_dict())
 
     def clone_study(self, study_id: str, **kwargs):
         kwargs = {**kwargs, **ParentProjectInfo().model_dump(exclude_none=True)}
@@ -164,7 +164,7 @@ class StudiesApi(_StudiesApi):
 
     def get_study_job_custom_metadata(self, study_id: str, job_id: str) -> JobMetadata:
         _job_metadata = super().get_study_job_custom_metadata(study_id, job_id)
-        return JobMetadata.model_validate_json(_job_metadata.to_json())
+        return JobMetadata.model_validate(_job_metadata.to_dict())
 
     def replace_study_job_custom_metadata(
         self,
@@ -179,4 +179,4 @@ class StudiesApi(_StudiesApi):
         _job_metadata = super().replace_study_job_custom_metadata(
             study_id, job_id, _job_metadata_update
         )
-        return JobMetadata.model_validate_json(_job_metadata.to_json())
+        return JobMetadata.model_validate(_job_metadata.to_dict())
