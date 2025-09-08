@@ -9,7 +9,7 @@ from uuid import UUID
 from typing import Annotated
 
 
-def _ensure_str(v: UUID | str) -> str:
+def _ensure_str(v: Union[UUID, str]) -> str:
     if isinstance(v, UUID):
         v = f"{v}"
     return v
