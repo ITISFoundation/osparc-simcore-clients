@@ -114,7 +114,7 @@ def test_pagination_iterator(
             page_file.items = page_file.items[:n_remaining_items]
             page_file.links.next = None
         all_items += page_file.items
-        return httpx.Response(status_code=200, json=page_file.to_dict())
+        return httpx.Response(status_code=200, content=page_file.model_dump_json())
 
     with respx.mock(
         base_url=_base_url,
