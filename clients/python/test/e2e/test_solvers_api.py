@@ -10,6 +10,7 @@ import osparc
 from _utils import skip_if_osparc_version
 from httpx import AsyncClient
 from packaging.version import Version
+from uuid import UUID
 
 DEFAULT_TIMEOUT_SECONDS = 10 * 60  # 10 min
 
@@ -80,7 +81,9 @@ async def test_logstreaming(
             log = json.loads(line)
             job_id = log.get("job_id")
             assert job_id
-            assert job_id == job.id
+            assert job_id == (
+                f"{job.id}" if isinstance(job.id, UUID) else job.id
+            )  # keep test backwards compatible
             nloglines += 1
             print("\n".join(log.get("messages")))
             if nloglines > 10:  # dont wait too long

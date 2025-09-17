@@ -200,7 +200,9 @@ def sleeper_study_id(api_client: osparc.ApiClient) -> UUID:
     study_api = osparc.StudiesApi(api_client=api_client)
     for study in study_api.iter_studies():
         if study.title == _test_study_title:
-            return UUID(study.uid)
+            return (
+                study.uid if isinstance(study.uid, UUID) else UUID(study.uid)
+            )  # keep test backwards compatible
     pytest.fail(f"Could not find {_test_study_title} study")
 
 
