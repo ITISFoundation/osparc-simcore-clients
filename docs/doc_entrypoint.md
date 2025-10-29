@@ -77,6 +77,7 @@ For more in-depth usage, refer to the following resources:
   - [Version 0.5](clients/python/docs/v0.5.0/README.md)
 - [Community-Contributed Scripts](https://github.com/topics/osparc-python)
   - ✨ [gh:newton1985/osparc_api_example](https://github.com/newton1985/osparc_api_example): A repository containing a "standalone" sample project that illustrates the use of the osparc API
+  - ✨ [gh:rwydaegh/goliat](https://github.com/rwydaegh/goliat): Repository for the GOLIAT simulation source code and framework.
 
 >💡 If you want your scripts to be listed here, just create a github repository and [tag it with the  `osparc-python` topic](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/classifying-your-repository-with-topics).
 
