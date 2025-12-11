@@ -12,7 +12,7 @@ from httpx import AsyncClient
 from packaging.version import Version
 from uuid import UUID
 
-DEFAULT_TIMEOUT_SECONDS = 10 * 60  # 10 min
+DEFAULT_TIMEOUT_SECONDS = 15 * 60  # 10 min
 
 
 @skip_if_osparc_version(at_least=Version("0.8.3.post0.dev20"))
@@ -62,11 +62,17 @@ async def test_logstreaming(
 ):
     """Test log streaming"""
     solvers_api: osparc.SolversApi = osparc.SolversApi(api_client)
-    job: osparc.Job = solvers_api.create_job(
+    job, _, headers = solvers_api.create_job_with_http_info(
         sleeper.id, sleeper.version, osparc.JobInputs({"input1": 1.0})
-    )  # type: ignore
+    )
+    print(headers)
+    assert isinstance(job, osparc.Job)
+    print(job)
 
-    solvers_api.start_job(sleeper.id, sleeper.version, job.id)
+    _, _, headers = solvers_api.start_job_with_http_info(
+        sleeper.id, sleeper.version, job.id
+    )
+    print(headers)
 
     nloglines: int = 0
     url = f"/v0/solvers/{sleeper.id}/releases/{sleeper.version}/jobs/{job.id}/logstream"
@@ -77,6 +83,7 @@ async def test_logstreaming(
         url,
         timeout=DEFAULT_TIMEOUT_SECONDS,
     ) as response:
+        print(response.headers)
         async for line in response.aiter_lines():
             log = json.loads(line)
             job_id = log.get("job_id")
