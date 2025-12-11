@@ -93,9 +93,8 @@ async def test_logstreaming(
             )  # keep test backwards compatible
             nloglines += 1
             print("\n".join(log.get("messages")))
-            if nloglines > 10:  # dont wait too long
-                await response.aclose()
-                break
+            await response.aclose()
+            break
 
     assert nloglines > 0, f"Could not stream log for {sleeper.id=}, \
         {sleeper.version=} and {job.id=}"  # type: ignore
