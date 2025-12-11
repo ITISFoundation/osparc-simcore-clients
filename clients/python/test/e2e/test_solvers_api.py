@@ -62,17 +62,13 @@ async def test_logstreaming(
 ):
     """Test log streaming"""
     solvers_api: osparc.SolversApi = osparc.SolversApi(api_client)
-    job, _, headers = solvers_api.create_job_with_http_info(
+    job = solvers_api.create_job(
         sleeper.id, sleeper.version, osparc.JobInputs({"input1": 1.0})
     )
-    print(headers)
     assert isinstance(job, osparc.Job)
-    print(job)
+    print(job.to_str())
 
-    _, _, headers = solvers_api.start_job_with_http_info(
-        sleeper.id, sleeper.version, job.id
-    )
-    print(headers)
+    solvers_api.start_job(sleeper.id, sleeper.version, job.id)
 
     nloglines: int = 0
     url = f"/v0/solvers/{sleeper.id}/releases/{sleeper.version}/jobs/{job.id}/logstream"
