@@ -15,7 +15,7 @@ import tenacity
 from _utils import skip_if_osparc_version
 from packaging.version import Version
 
-_WAIT_TIMEOUT = timedelta(minutes=15)  # 15 min
+_WAIT_TIMEOUT = timedelta(minutes=15)
 
 
 @skip_if_osparc_version(at_least=Version("0.6.6.post7"))
