@@ -29,14 +29,14 @@ def create_sleeper_jobs(
     def sleeper_jobs(n_jobs: int = 1) -> Iterator[Set[UUID | str]]:
         job_ids = set()
         solvers_api = osparc.SolversApi(api_client=api_client)
-        for _ in range(n_jobs):
-            job = solvers_api.create_job(
-                sleeper.id, sleeper.version, osparc.JobInputs({"input1": 1.0})
-            )
-            assert isinstance(job, osparc.Job)
-            print(job.to_str())
-            job_ids.add(job.id)
         try:
+            for _ in range(n_jobs):
+                job = solvers_api.create_job(
+                    sleeper.id, sleeper.version, osparc.JobInputs({"input1": 1.0})
+                )
+                assert isinstance(job, osparc.Job)
+                print(job.to_str())
+                job_ids.add(job.id)
             yield job_ids
         finally:
             for job_id in job_ids:
