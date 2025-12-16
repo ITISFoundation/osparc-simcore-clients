@@ -17,7 +17,7 @@ from contextlib import contextmanager
 from typing import Callable, Iterator, Set
 from tenacity import Retrying
 
-DEFAULT_TIMEOUT_SECONDS = 15 * 60  # 10 min
+DEFAULT_TIMEOUT_SECONDS = 15 * 60  # 15 min
 
 
 @pytest.fixture
