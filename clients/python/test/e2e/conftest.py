@@ -19,12 +19,12 @@ from packaging.version import Version
 from pydantic import ByteSize
 from typing import NamedTuple, Final
 from memory_profiler import memory_usage
+import http.client
 
 try:
     from osparc._settings import ConfigurationEnvVars
 except ImportError:
     pass
-
 
 _KB: ByteSize = ByteSize(1024)  # in bytes
 _MB: ByteSize = ByteSize(_KB * 1024)  # in bytes
@@ -99,6 +99,7 @@ def pytest_configure(config):
 
 @pytest.fixture(scope="session")
 def api_client() -> Iterable[osparc.ApiClient]:
+    http.client.HTTPConnection.debuglevel = 1
     if Version(osparc.__version__) >= Version("0.8.0"):
         with osparc.ApiClient() as api_client:
             yield api_client
