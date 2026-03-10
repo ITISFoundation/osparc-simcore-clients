@@ -9,10 +9,17 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, Final, List
 
+import nbformat
 import osparc
 import papermill as pm
 import pytest
 from packaging.version import Version
+
+_HTTP_LOGGING_SETUP_CODE: Final[str] = """\
+# Injected by test runner to enable HTTP request logging
+import http.client
+http.client.HTTPConnection.debuglevel = 1
+"""
 
 _NOTEBOOK_EXECUTION_TIMEOUT_SECONDS: Final[int] = 60 * 20  # 20min
 _docs_dir: Path = Path(__file__).parent.parent.parent / "docs"
@@ -25,6 +32,14 @@ MIN_VERSION_REQS: Dict[str, Version] = {
     "BasicTutorial_v0.8.0.ipynb": Version("0.8.0"),
     "WalletTutorial_v0.8.0.ipynb": Version("0.9.0"),
 }
+
+
+def _inject_http_logging_setup_cell(notebook_path: Path) -> None:
+    # Inject HTTP logging setup cell at the beginning of the notebook to ensure osparc http request data is logged (mainly to log trace ids for easier debugging of test failures)
+    nb = nbformat.read(notebook_path, as_version=4)
+    setup_cell = nbformat.v4.new_code_cell(source=_HTTP_LOGGING_SETUP_CODE)
+    nb.cells.insert(0, setup_cell)
+    nbformat.write(nb, notebook_path)
 
 
 def _papermill_execute_notebook(
@@ -44,6 +59,9 @@ def _papermill_execute_notebook(
     tmp_nb = tmp_path / notebook.name
     shutil.copy(notebook, tmp_nb)
     assert tmp_nb.is_file(), "Did not succeed in copying notebook"
+
+    _inject_http_logging_setup_cell(tmp_nb)
+
     output: Path = tmp_path / (tmp_nb.stem + "_output.ipynb")
 
     pm.execute_notebook(
@@ -52,6 +70,9 @@ def _papermill_execute_notebook(
         kernel_name="python3",
         parameters=parameters,
         execution_timeout=_NOTEBOOK_EXECUTION_TIMEOUT_SECONDS,
+        log_output=True,
+        stdout_file=sys.stdout,
+        stderr_file=sys.stderr,
     )
     return output
 

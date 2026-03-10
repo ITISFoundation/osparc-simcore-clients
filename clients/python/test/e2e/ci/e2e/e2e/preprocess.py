@@ -65,6 +65,7 @@ def generate_ini(
     )
     junit_prefix: str = f"{client_cfg.ref}+{host_netloc}"
     add_opts: str = (
+        "--capture=tee-sys "
         f"--html={html_log} --self-contained-html "
         f"--junitxml={junit_xml} --junit-prefix={junit_prefix}"
     )
@@ -73,6 +74,7 @@ def generate_ini(
         required_plugins="pytest-env pytest-html pytest-asyncio",
         addopts=add_opts,
         asyncio_mode="auto",
+        junit_logging="all",
     )
 
     config: PytestIniFile = PytestIniFile(
