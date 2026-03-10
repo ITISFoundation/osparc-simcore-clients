@@ -2880,6 +2880,9 @@
               }
             }
           },
+          "409": {
+            "description": "Job not finished yet"
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -8317,7 +8320,7 @@
         ]
       }
     },
-    "/v0/tasks/{task_id}": {
+    "/v0/tasks/{task_uuid}": {
       "get": {
         "tags": [
           "tasks"
@@ -8332,13 +8335,11 @@
         ],
         "parameters": [
           {
-            "name": "task_id",
+            "name": "task_uuid",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "Task Id"
+              "$ref": "#/components/schemas/AsyncJobId"
             }
           }
         ],
@@ -8376,7 +8377,7 @@
         }
       }
     },
-    "/v0/tasks/{task_id}:cancel": {
+    "/v0/tasks/{task_uuid}:cancel": {
       "post": {
         "tags": [
           "tasks"
@@ -8391,13 +8392,11 @@
         ],
         "parameters": [
           {
-            "name": "task_id",
+            "name": "task_uuid",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "Task Id"
+              "$ref": "#/components/schemas/AsyncJobId"
             }
           }
         ],
@@ -8428,7 +8427,7 @@
         }
       }
     },
-    "/v0/tasks/{task_id}/result": {
+    "/v0/tasks/{task_uuid}/result": {
       "get": {
         "tags": [
           "tasks"
@@ -8443,13 +8442,11 @@
         ],
         "parameters": [
           {
-            "name": "task_id",
+            "name": "task_uuid",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "Task Id"
+              "$ref": "#/components/schemas/AsyncJobId"
             }
           }
         ],
@@ -8466,16 +8463,6 @@
           },
           "404": {
             "description": "Task result not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorGet"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Task is cancelled",
             "content": {
               "application/json": {
                 "schema": {
@@ -8525,6 +8512,10 @@
           "data"
         ],
         "title": "ApiServerEnvelope[list[TaskGet]]"
+      },
+      "AsyncJobId": {
+        "type": "string",
+        "format": "uuid"
       },
       "Body_abort_multipart_upload_v0_files__file_id__abort_post": {
         "properties": {
@@ -9146,12 +9137,11 @@
             "title": "Node Id"
           },
           "log_level": {
-            "type": "integer",
-            "title": "Log Level"
+            "$ref": "#/components/schemas/LogLevelInt"
           },
           "messages": {
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/LogMessageStr"
             },
             "type": "array",
             "title": "Messages"
@@ -9416,9 +9406,8 @@
         "properties": {
           "number_of_seats": {
             "type": "integer",
-            "exclusiveMinimum": true,
-            "title": "Number Of Seats",
-            "minimum": 0
+            "exclusiveMinimum": 0,
+            "title": "Number Of Seats"
           },
           "service_run_id": {
             "type": "string",
@@ -9455,15 +9444,13 @@
           },
           "wallet_id": {
             "type": "integer",
-            "exclusiveMinimum": true,
-            "title": "Wallet Id",
-            "minimum": 0
+            "exclusiveMinimum": 0,
+            "title": "Wallet Id"
           },
           "user_id": {
             "type": "integer",
-            "exclusiveMinimum": true,
-            "title": "User Id",
-            "minimum": 0
+            "exclusiveMinimum": 0,
+            "title": "User Id"
           },
           "product_name": {
             "type": "string",
@@ -9538,9 +9525,8 @@
           },
           "pricing_plan_id": {
             "type": "integer",
-            "exclusiveMinimum": true,
-            "title": "Pricing Plan Id",
-            "minimum": 0
+            "exclusiveMinimum": 0,
+            "title": "Pricing Plan Id"
           },
           "is_hidden_on_market": {
             "type": "boolean",
@@ -9809,6 +9795,9 @@
         ],
         "title": "Links"
       },
+      "LogLevelInt": {
+        "type": "integer"
+      },
       "LogLink": {
         "properties": {
           "node_name": {
@@ -9828,6 +9817,13 @@
           "download_link"
         ],
         "title": "LogLink"
+      },
+      "LogMessageStr": {
+        "type": "string"
+      },
+      "LowerCaseEmailStr": {
+        "type": "string",
+        "format": "email"
       },
       "Meta": {
         "properties": {
@@ -10509,9 +10505,8 @@
         "properties": {
           "pricingUnitId": {
             "type": "integer",
-            "exclusiveMinimum": true,
-            "title": "Pricingunitid",
-            "minimum": 0
+            "exclusiveMinimum": 0,
+            "title": "Pricingunitid"
           },
           "unitName": {
             "type": "string",
@@ -10568,14 +10563,11 @@
           },
           "id": {
             "type": "integer",
-            "exclusiveMinimum": true,
-            "title": "Id",
-            "minimum": 0
+            "exclusiveMinimum": 0,
+            "title": "Id"
           },
           "login": {
-            "type": "string",
-            "format": "email",
-            "title": "Login"
+            "$ref": "#/components/schemas/LowerCaseEmailStr"
           },
           "role": {
             "$ref": "#/components/schemas/UserRoleEnum"
@@ -11882,9 +11874,8 @@
         "properties": {
           "pricingPlanId": {
             "type": "integer",
-            "exclusiveMinimum": true,
-            "title": "Pricingplanid",
-            "minimum": 0
+            "exclusiveMinimum": 0,
+            "title": "Pricingplanid"
           },
           "displayName": {
             "type": "string",
@@ -12261,7 +12252,7 @@
             "type": "string",
             "format": "uuid",
             "title": "Key name",
-            "description": "port identifier name.Correponds to the UUID of the parameter/probe node in the study"
+            "description": "port identifier name.Corresponds to the UUID of the parameter/probe node in the study"
           },
           "kind": {
             "type": "string",
@@ -12317,20 +12308,37 @@
             "type": "string",
             "title": "Status Href"
           },
-          "result_href": {
-            "type": "string",
-            "title": "Result Href"
-          },
           "abort_href": {
             "type": "string",
             "title": "Abort Href"
+          },
+          "result_href": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Result Href"
+          },
+          "stream_href": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stream Href"
           }
         },
         "type": "object",
         "required": [
           "task_id",
           "status_href",
-          "result_href",
           "abort_href"
         ],
         "title": "TaskGet"
@@ -12473,9 +12481,8 @@
         "properties": {
           "number": {
             "type": "integer",
-            "exclusiveMinimum": true,
-            "title": "Number",
-            "minimum": 0
+            "exclusiveMinimum": 0,
+            "title": "Number"
           },
           "e_tag": {
             "type": "string",
@@ -12653,9 +12660,8 @@
         "properties": {
           "walletId": {
             "type": "integer",
-            "exclusiveMinimum": true,
-            "title": "Walletid",
-            "minimum": 0
+            "exclusiveMinimum": 0,
+            "title": "Walletid"
           },
           "name": {
             "type": "string",
@@ -12676,9 +12682,8 @@
           },
           "owner": {
             "type": "integer",
-            "exclusiveMinimum": true,
-            "title": "Owner",
-            "minimum": 0
+            "exclusiveMinimum": 0,
+            "title": "Owner"
           },
           "thumbnail": {
             "anyOf": [
