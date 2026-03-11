@@ -80,14 +80,16 @@ def _papermill_execute_notebook(
 
     output: Path = tmp_path / (tmp_nb.stem + "_output.ipynb")
 
-    pm.execute_notebook(
-        input_path=tmp_nb,
-        output_path=output,
-        kernel_name="python3",
-        parameters=parameters,
-        execution_timeout=_NOTEBOOK_EXECUTION_TIMEOUT_SECONDS,
-    )
-    _pretty_print_cell_outputs(output)
+    try:
+        pm.execute_notebook(
+            input_path=tmp_nb,
+            output_path=output,
+            kernel_name="python3",
+            parameters=parameters,
+            execution_timeout=_NOTEBOOK_EXECUTION_TIMEOUT_SECONDS,
+        )
+    finally:
+        _pretty_print_cell_outputs(output)
     return output
 
 
