@@ -23,6 +23,9 @@ _HTTP_LOGGING_SETUP_CODE: Final[str] = """
 # Injected by test runner to enable HTTP request logging
 import http.client
 http.client.HTTPConnection.debuglevel = 1
+
+import logging
+logging.getLogger("osparc").setLevel(logging.DEBUG)
 """
 
 _NOTEBOOK_EXECUTION_TIMEOUT_SECONDS: Final[int] = 60 * 20  # 20min

@@ -21,10 +21,13 @@ from typing import NamedTuple, Final
 from memory_profiler import memory_usage
 import http.client
 
+
 try:
     from osparc._settings import ConfigurationEnvVars
 except ImportError:
     pass
+
+logging.getLogger("osparc").setLevel(logging.DEBUG)
 
 _KB: ByteSize = ByteSize(1024)  # in bytes
 _MB: ByteSize = ByteSize(_KB * 1024)  # in bytes

@@ -28,6 +28,9 @@ from tempfile import NamedTemporaryFile
 from pathlib import Path
 from pydantic import validate_call
 from pydantic import StrictStr
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class SolversApi(_SolversApi):
@@ -157,3 +160,10 @@ class SolversApi(_SolversApi):
             solver_key, version, job_id, _job_metadata_update
         )
         return JobMetadata.model_validate(_job_custom_metadata.to_dict())
+
+    def delete_job(self, solver_key: str, version: str, job_id: StrictStr, **kwargs):
+        _logger.debug(
+            f"Deleting job with id {job_id} for solver {solver_key} version {version}",
+            stack_info=True,
+        )
+        return super().delete_job(solver_key, version, job_id, **kwargs)
