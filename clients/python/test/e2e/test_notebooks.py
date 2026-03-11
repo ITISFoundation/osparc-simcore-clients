@@ -20,12 +20,13 @@ from rich.markdown import Markdown
 from rich.panel import Panel
 
 _HTTP_LOGGING_SETUP_CODE: Final[str] = """
-# Injected by test runner to enable HTTP request logging
-import http.client
-http.client.HTTPConnection.debuglevel = 1
-
-import logging
-logging.getLogger("osparc").setLevel(logging.DEBUG)
+# Injected by test runner: force debug=True on every osparc_client Configuration
+import osparc_client
+_orig_init = osparc_client.Configuration.__init__
+def _init_with_debug(self, *a, **kw):
+    _orig_init(self, *a, **kw)
+    self.debug = True
+osparc_client.Configuration.__init__ = _init_with_debug
 """
 
 _NOTEBOOK_EXECUTION_TIMEOUT_SECONDS: Final[int] = 60 * 20  # 20min
@@ -54,7 +55,10 @@ def _pretty_print_cell_outputs(notebook_path: Path) -> None:
 
 
 def _inject_http_logging_setup_cell(notebook_path: Path) -> None:
-    # Inject HTTP logging setup cell at the beginning of the notebook to ensure osparc http request data is logged (mainly to log trace ids for easier debugging of test failures)
+    # Inject HTTP logging setup cell at the beginning of the notebook to ensure
+    # osparc http request data is logged (mainly to log trace ids for easier
+    # debugging of test failures). Uses a spy on osparc_client.rest to print
+    # response headers for every HTTP request.
     nb = nbformat.read(notebook_path, as_version=4)
     setup_cell = nbformat.v4.new_code_cell(source=_HTTP_LOGGING_SETUP_CODE)
     nb.cells.insert(0, setup_cell)

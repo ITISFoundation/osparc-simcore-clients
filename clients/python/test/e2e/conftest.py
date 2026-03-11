@@ -19,7 +19,6 @@ from packaging.version import Version
 from pydantic import ByteSize
 from typing import NamedTuple, Final
 from memory_profiler import memory_usage
-import http.client
 
 
 try:
@@ -102,9 +101,9 @@ def pytest_configure(config):
 
 @pytest.fixture(scope="session")
 def api_client() -> Iterable[osparc.ApiClient]:
-    http.client.HTTPConnection.debuglevel = 1
     if Version(osparc.__version__) >= Version("0.8.0"):
         with osparc.ApiClient() as api_client:
+            api_client.configuration.debug = True
             yield api_client
     else:
         host = os.environ.get("OSPARC_API_HOST")
@@ -114,6 +113,7 @@ def api_client() -> Iterable[osparc.ApiClient]:
         configuration = osparc.Configuration(
             host=host, username=username, password=password
         )
+        configuration.debug = True
         with osparc.ApiClient(configuration=configuration) as api_client:
             yield api_client
 
