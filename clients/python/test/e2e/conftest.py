@@ -26,6 +26,7 @@ try:
 except ImportError:
     pass
 
+# ensure osparc logs are visible in test output
 logging.getLogger("osparc").setLevel(logging.DEBUG)
 
 _KB: ByteSize = ByteSize(1024)  # in bytes

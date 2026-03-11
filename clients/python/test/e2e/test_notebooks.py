@@ -22,6 +22,9 @@ from rich.panel import Panel
 _HTTP_LOGGING_SETUP_CODE: Final[str] = """
 # Injected by test runner: force debug=True on every osparc_client Configuration
 import osparc_client
+import logging
+
+logging.getLogger("osparc").setLevel(logging.DEBUG)
 _orig_init = osparc_client.Configuration.__init__
 def _init_with_debug(self, *a, **kw):
     _orig_init(self, *a, **kw)
