@@ -9,7 +9,9 @@ matplotlib
 memory_profiler
 packaging
 pandas
+nbconvert
 papermill
+rich
 pydantic
 pytest
 pytest-asyncio
