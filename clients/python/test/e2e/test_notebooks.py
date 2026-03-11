@@ -13,9 +13,13 @@ import nbformat
 import osparc
 import papermill as pm
 import pytest
+from nbconvert.exporters import MarkdownExporter
 from packaging.version import Version
+from rich.console import Console
+from rich.markdown import Markdown
+from rich.panel import Panel
 
-_HTTP_LOGGING_SETUP_CODE: Final[str] = """\
+_HTTP_LOGGING_SETUP_CODE: Final[str] = """
 # Injected by test runner to enable HTTP request logging
 import http.client
 http.client.HTTPConnection.debuglevel = 1
@@ -32,6 +36,18 @@ MIN_VERSION_REQS: Dict[str, Version] = {
     "BasicTutorial_v0.8.0.ipynb": Version("0.8.0"),
     "WalletTutorial_v0.8.0.ipynb": Version("0.9.0"),
 }
+
+
+def _pretty_print_cell_outputs(notebook_path: Path) -> None:
+    """Pretty print the outputs of each cell in the executed notebook."""
+    exporter = MarkdownExporter()
+    body, _ = exporter.from_filename(str(notebook_path))
+    console = Console()
+    console.print(
+        Panel(
+            title=f"Executed notebook {notebook_path.name}", renderable=Markdown(body)
+        )
+    )
 
 
 def _inject_http_logging_setup_cell(notebook_path: Path) -> None:
@@ -70,10 +86,8 @@ def _papermill_execute_notebook(
         kernel_name="python3",
         parameters=parameters,
         execution_timeout=_NOTEBOOK_EXECUTION_TIMEOUT_SECONDS,
-        log_output=True,
-        stdout_file=sys.stdout,
-        stderr_file=sys.stderr,
     )
+    _pretty_print_cell_outputs(output)
     return output
 
 
