@@ -82,6 +82,7 @@ class PytestConfig(BaseModel):
     addopts: str
     asyncio_mode: str
     junit_logging: str
+    junit_log_passing_tests: str
 
 
 class Artifacts(BaseModel):

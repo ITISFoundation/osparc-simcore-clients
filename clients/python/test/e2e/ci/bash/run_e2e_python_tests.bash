@@ -56,7 +56,7 @@ do
     fi
     (
       # run in subshell to ensure env doesnt survive
-      python -m pytest -c pytest.ini > /dev/null
+      python -m pytest -c pytest.ini > /dev/null 2>&1
       if ! e2e postprocess single-testrun $?; then
         exit 1
       fi

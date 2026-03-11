@@ -75,6 +75,7 @@ def generate_ini(
         addopts=add_opts,
         asyncio_mode="auto",
         junit_logging="all",
+        junit_log_passing_tests="True",
     )
 
     config: PytestIniFile = PytestIniFile(
