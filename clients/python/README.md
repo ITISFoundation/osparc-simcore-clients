@@ -40,3 +40,13 @@ Hence, it is important to be able quickly modify the [templates](https://github.
 ## Upcoming Deprecations
 
 `osparc.models` and `osparc.api` modules have been (now) deprecated and will be retired/removed in the next version, please used `osparc` to import all the functions instead
+
+
+## Client e2e testing
+The client e2e tests log all trace data when running. It can be useful to debug these using the copilot to anylize issues. This can be done by using the Grafana MCP server.
+
+```console
+docker run --rm -p 8000:8000 -e GRAFANA_URL=https://monitoring.osparc-master.speag.com/grafana/ -e GRAFANA_SERVICE_ACCOUNT_TOKEN=<token> grafana/mcp-grafana
+```
+
+while also giving the copilot access to the tests in this repository and the logs of the failing tests.
