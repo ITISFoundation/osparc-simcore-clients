@@ -148,3 +148,8 @@ Key signals to look for:
 - **Event loop saturation**: Asyncio lag >10ms (ID 19) — causes the service to stop responding
 - **5xx spike**: HTTP status panel (ID 4) showing a burst of 500/502/503 errors
 - **Request pile-up**: In-progress requests (ID 8) climbing without draining
+
+
+## Step 5:
+If you cannot determine the cause of the failure from logs and metrics and there is a specific request which is failing, consider trying to reproduce the issue by making a request to that endpoint.
+In order to do so you might need to ask the user for credentials to access the api-server.
