@@ -22,6 +22,10 @@ Use the Grafana MCP tools to query Loki. First discover the Loki datasource UID:
 1. Call `list_datasources` with `type=loki`
 2. Use the returned `uid` for all subsequent Loki queries
 
+### Services
+
+Focus on simcore services. These are characterized by having `simcore` in their `service_name`.
+
 ### Key container names
 
 The relevant services are:
@@ -29,6 +33,7 @@ The relevant services are:
 - `*wb-api-server*` — the webserver backend that handles project/study operations
 - `*webserver*` — another webserver instance
 - `*director-v2*` — orchestrates computational pipelines
+- `*catalog*` — handles data storage and retrieval
 
 ### JSON log fields available for filtering
 
@@ -49,6 +54,11 @@ Loki logs are JSON-structured. After `| json` in a LogQL query, these fields are
 
 ### Recommended LogQL queries
 
+**Find errors for a specific trace ID across all simcore services:**
+```logql
+{service_name=~".*simcore.*"} | json | log_trace_id = `<TRACE_ID>` | log_level =~ `ERROR`
+```
+
 **Find errors for a specific trace ID across all api-server containers:**
 ```logql
 {container_name=~".*api-server.*"} | json | log_trace_id = `<TRACE_ID>` | log_level = `ERROR`
@@ -67,6 +77,11 @@ Loki logs are JSON-structured. After `| json` in a LogQL query, these fields are
 **Search for crashes, OOM kills, or restarts:**
 ```logql
 {container_name=~".*wb-api-server.*"} |= `error` or `killed` or `OOM` or `SIGTERM` or `SIGKILL`
+```
+
+**Search for errors in catalog service:**
+```logql
+{container_name=~".*catalog.*"} | json | log_level =~ `ERROR|CRITICAL`
 ```
 
 ### Query workflow
@@ -92,8 +107,8 @@ Find the dashboard dynamically:
 4. Call `get_dashboard_summary` to confirm panels and variables
 
 This dashboard has two template variables:
-- **`service`** — the simcore service to inspect. Relevant values for e2e debugging: `api-server`, `wb-api-server`, `webserver`, `director-v2`
-- **`deployment`** — `staging`, `production`, or `master`
+- **`service`** — the simcore service to inspect. Relevant values for e2e debugging: `api-server`, `wb-api-server`, `webserver`, `director-v2`, `catalog`
+- **`deployment`** — `staging`, `production`, or `master` (this must match the environment where the test ran - ask the user if unsure which value to use)
 
 ### Available panels
 
