@@ -56,7 +56,7 @@ Loki logs are JSON-structured. After `| json` in a LogQL query, these fields are
 
 **Find errors for a specific trace ID across all simcore services:**
 ```logql
-{service_name=~".*simcore.*"} | json | log_trace_id = `<TRACE_ID>` | log_level =~ `ERROR`
+{service_name=~".*simcore.*"} | json | log_trace_id = `<TRACE_ID>` | log_level = `ERROR`
 ```
 
 **Find errors for a specific trace ID across all api-server containers:**
