@@ -1,6 +1,7 @@
 ---
 name: debug-e2e-tests
 description: Debug failing e2e tests by analyzing pytest error logs and querying Grafana Loki for server-side logs
+argument-hint: Paste the pytest failure output directly, including HTTP status code, response body, trace ID, and timestamp.
 ---
 
 # Debug Failing E2E Tests
