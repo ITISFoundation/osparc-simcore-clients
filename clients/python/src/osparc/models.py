@@ -45,6 +45,8 @@ from osparc_client.models.page_study import PageStudy as PageStudy
 from osparc_client.models.pricing_plan_classification import (
     PricingPlanClassification as PricingPlanClassification,
 )
+from osparc_client.models.meta_value_type import MetaValueType as MetaValueType
+
 from osparc_client.models.profile import Profile as Profile
 from osparc_client.models.profile_update import ProfileUpdate as ProfileUpdate
 from osparc_client.models.running_state import RunningState as _RunningState
@@ -66,3 +68,4 @@ from ._models import JobMetadataUpdate as JobMetadataUpdate
 
 # renames
 TaskStates = _RunningState
+MetadataValue = MetaValueType  # backwards compatibility https://github.com/ITISFoundation/osparc-simcore-clients/pull/248
