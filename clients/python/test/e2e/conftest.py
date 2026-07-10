@@ -203,12 +203,17 @@ def sleeper_study_id(api_client: osparc.ApiClient) -> UUID:
     as input a single file containing a single integer"""
     _test_study_title = "sleeper_test_study"
     study_api = osparc.StudiesApi(api_client=api_client)
-    for study in study_api.iter_studies():
-        if study.title == _test_study_title:
-            return (
-                study.uid if isinstance(study.uid, UUID) else UUID(study.uid)
-            )  # keep test backwards compatible
-    pytest.fail(f"Could not find {_test_study_title} study")
+
+    def _ensure_uid(study):
+        return study.uid if isinstance(study.uid, UUID) else UUID(study.uid)
+
+    study_ids = [_ensure_uid(study) for study in study_api.iter_studies()]
+    assert len(study_ids) == 1, (
+        f"Found multiple {_test_study_title} studies"
+        if len(study_ids) > 1
+        else f"Could not find {_test_study_title} study"
+    )
+    return study_ids[0]
 
 
 @pytest.fixture
