@@ -207,7 +207,11 @@ def sleeper_study_id(api_client: osparc.ApiClient) -> UUID:
     def _ensure_uid(study):
         return study.uid if isinstance(study.uid, UUID) else UUID(study.uid)
 
-    study_ids = [_ensure_uid(study) for study in study_api.iter_studies()]
+    study_ids = [
+        _ensure_uid(study)
+        for study in study_api.iter_studies()
+        if study.title == _test_study_title
+    ]
     assert len(study_ids) == 1, (
         f"Found multiple {_test_study_title} studies"
         if len(study_ids) > 1
