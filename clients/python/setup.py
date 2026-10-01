@@ -23,7 +23,7 @@ VERSION = VERSION_FILE.read_text().strip()
 
 REQUIRES = [
     "httpx",
-    "nest_asyncio",
+    "nest_asyncio2",
     "packaging",
     "pydantic-settings",
     "pydantic",
