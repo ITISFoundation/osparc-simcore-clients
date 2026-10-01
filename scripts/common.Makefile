@@ -13,8 +13,14 @@ NOW_TIMESTAMP := $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 APP_NAME      := $(notdir $(CURDIR))
 
 # Specify which openapi generator should be used to generate the clients in this repo
+#
+# NOTE: pinned to the last release generating a python client with
+# 'requires-python >= 3.9' (v7.24.0+ require >= 3.10, see
+# https://github.com/OpenAPITools/openapi-generator/pull/22926).
+# Bumping this tag MUST stay in sync with the python-version matrix in
+# .github/workflows/build-python-client.yml
 OPENAPI_GENERATOR_NAME  := openapitools/openapi-generator-cli
-OPENAPI_GENERATOR_TAG   := latest-release
+OPENAPI_GENERATOR_TAG   := v7.23.0
 OPENAPI_GENERATOR_IMAGE := $(OPENAPI_GENERATOR_NAME):$(OPENAPI_GENERATOR_TAG)
 
 # openapi specification
