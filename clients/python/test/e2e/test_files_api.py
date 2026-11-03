@@ -5,6 +5,7 @@
 # pylint: disable=unused-variable
 
 import hashlib
+import logging
 from pathlib import Path
 
 import osparc
@@ -17,9 +18,16 @@ from packaging.version import Version
 from conftest import ServerFile, _KB
 from faker import Faker
 
-_LAST_VERSION_WITH_UPLOAD_DEDUP: Final[Version] = Version(
-    "0.8.5"
-)  # SEE https://github.com/ITISFoundation/osparc-issues/issues/2045
+_logger = logging.getLogger(__name__)
+
+# NOTE: this repo uses post-release versioning (see scripts/compute_version.bash), so
+# unreleased master builds are tagged `0.8.5.post0.devN`, which compares *greater* than
+# `0.8.5` and therefore takes the "no dedup" branch below. Those builds only exist on master
+# between the 0.8.5 tag and the merge of the dedup removal, and the e2e CI matrix only runs
+# released versions plus `latest_master` (which contains the fix), so the gate is exact for
+# every client version it actually tests.
+# SEE https://github.com/ITISFoundation/osparc-issues/issues/2045
+_LAST_VERSION_WITH_UPLOAD_DEDUP: Final[Version] = Version("0.8.5")
 
 
 def _assert_upload_identity_semantics(
@@ -47,7 +55,10 @@ def _delete_duplicate_upload(
         try:
             files_api.delete_file(uploaded_file.id)
         except osparc.ApiException:
-            pass
+            _logger.warning(
+                f"Could not delete duplicate upload in {__name__}",
+                exc_info=True,
+            )
 
 
 def _hash_file(file: Path) -> str:
@@ -68,8 +79,10 @@ def test_upload_file(
 ) -> None:
     """Test that we can upload a file via the multipart upload and download it again."""
     uploaded_file: osparc.File = files_api.upload_file(large_server_file.local_file)
-    _assert_upload_identity_semantics(large_server_file, uploaded_file)
     try:
+        # NOTE: the assertion must run inside the try so the duplicate upload gets
+        # cleaned up even when the identity semantics check fails
+        _assert_upload_identity_semantics(large_server_file, uploaded_file)
         downloaded_file = files_api.download_file(
             uploaded_file.id, destination_folder=tmp_path
         )
@@ -93,8 +106,10 @@ def test_upload_download_file_ram_usage(
     ), f"For this test to make sense, {large_server_file.local_file.stat().st_size=} must be larger than {_allowed_ram_usage_in_mb=}."
 
     uploaded_file = files_api.upload_file(large_server_file.local_file)
-    _assert_upload_identity_semantics(large_server_file, uploaded_file)
     try:
+        # NOTE: the assertion must run inside the try so the duplicate upload gets
+        # cleaned up even when the identity semantics check fails
+        _assert_upload_identity_semantics(large_server_file, uploaded_file)
         download_ram_usage_in_mb, downloaded_file = memory_usage(
             (
                 files_api.download_file,
