@@ -59,3 +59,12 @@ repos:
           - clients/python/src/osparc
         files: ^clients/python/src/osparc/.*\.py$
         pass_filenames: false
+
+      # The floor is also written down in ruff.toml, in the hook above, in the CI matrix
+      # and in the classifiers, and nothing keeps those in sync but this script.
+      - id: python-floor-agrees
+        name: the declared Python floor agrees everywhere it is written down
+        language: system
+        entry: scripts/check-python-floor.bash
+        files: ^(clients/python/setup\.py|ruff\.toml|\.pre-commit-config\.yaml|\.github/workflows/build-python-client\.yml)$
+        pass_filenames: false
