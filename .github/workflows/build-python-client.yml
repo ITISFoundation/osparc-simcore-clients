@@ -10,16 +10,18 @@ jobs:
       osparc: ${{ steps.variables.outputs.osparc-wheel }}
       osparc_client: ${{ steps.variables.outputs.osparc_client-wheel }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.event.client_payload.ref }}
           fetch-depth: 0
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
-          python-version: 3.10.14
+          python-version: "3.10"
       - name: install uv
-        uses: yezz123/setup-uv@v4
+        # python-version is unset: setup-python above already provides the interpreter, and
+        # setting it here would install Python twice. uv's cache ("auto") replaces the pip cache.
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
       - name: Setup Python environment
         run: |
           git status
@@ -52,7 +54,7 @@ jobs:
           echo "github.workflow.id: ${{github.workflow.id}}"
           echo "github.run_id: ${{github.run_id}}"
       - name: Upload wheels
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: osparc_python_wheels
           path: clients/python/artifacts/dist/
@@ -65,24 +67,17 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: ["3.9", "3.10.14", "3.11", "3.12", "3.13", "3.14"]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14", "3.15"]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: ${{ matrix.python-version }}
       - name: install uv
-        uses: yezz123/setup-uv@v4
-      - name: Pip cache
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-{{ matrix.python-version }}
-          restore-keys: |
-            ${{ runner.os }}-pip
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
       - name: Download wheels
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: osparc_python_wheels
           path: clients/python/artifacts/dist/
