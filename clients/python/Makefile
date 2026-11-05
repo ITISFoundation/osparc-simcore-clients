@@ -145,7 +145,7 @@ pylint: _check_venv_active ## runs linter (only to check errors. SEE .pylintrc e
 	pylint --rcfile "$(CLIENTS_PYTHON_DIR)/.pylintrc" -v src/osparc
 
 .PHONY: mypy
-mypy: $(SCRIPTS_DIR)/mypy.bash $(CLIENTS_PYTHON_DIR)/mypy.ini ## runs mypy python static type-checker on this services's code. Use AFTER make install-*
+mypy: $(SCRIPTS_DIR)/mypy.bash $(CLIENTS_PYTHON_DIR)/pyproject.toml ## runs mypy python static type-checker on this services's code. Use AFTER make install-*
 	@$(SCRIPTS_DIR)/mypy.bash src/osparc
 
 
@@ -203,7 +203,9 @@ e2e-shell: guard-GH_TOKEN ## shell for running e2e tests
 		-it \
 		itisfoundation/osparc_python_tutorial_testing:v1 \
 		-c "python -m venv /tmp/venv && source /tmp/venv/bin/activate && cd clients/python \
-		&& make install-test && cd test/e2e && python ci/install_osparc_python_client.py && exec /bin/bash"
+		&& pip install -r requirements/e2e-test.txt \
+		&& echo 'Now install the client under test, e.g. make python-client && pip install -e .' \
+		&& cd test/e2e && exec /bin/bash"
 
 
 ## DOCKER -------------------------------------------------------------------------------

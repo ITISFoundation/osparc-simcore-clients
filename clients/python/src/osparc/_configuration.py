@@ -1,3 +1,4 @@
+from collections.abc import Collection
 from typing import Final, Optional, Set
 
 from osparc_client import Configuration as _Configuration
@@ -35,10 +36,10 @@ class Configuration(_Configuration):
         retry_status_codes: Optional[Set[int]] = None,
         retry_backoff_factor=4.0,
     ):
-        retry_methods = (
+        methods: Collection[str] = (
             _DEFAULT_RETRY_METHODS if retry_methods is None else retry_methods
         )
-        retry_status_codes = (
+        status_codes: Collection[int] = (
             _DEFAULT_RETRY_STATUS_CODES
             if retry_status_codes is None
             else retry_status_codes
@@ -46,8 +47,8 @@ class Configuration(_Configuration):
         retries = Retry(
             total=retry_max_count,
             backoff_factor=retry_backoff_factor,
-            status_forcelist=retry_status_codes,
-            allowed_methods=retry_methods,
+            status_forcelist=status_codes,
+            allowed_methods=methods,
             respect_retry_after_header=True,
             raise_on_status=True,
         )

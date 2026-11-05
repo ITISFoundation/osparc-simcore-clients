@@ -1,9 +1,10 @@
 {
   "reportInvalidStringEscapeSequence": false,
-    "include": [
-      "client/osparc",
-    ],
-    "exclude":[
-      "artifacts/client/osparc_client/test/*"
-    ]
-  }
+  "include": [
+    // paths are relative to this file, i.e. to clients/python
+    "src/osparc"
+  ],
+  "exclude": [
+    "artifacts/client/osparc_client/test/*"
+  ]
+}

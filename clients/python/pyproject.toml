@@ -9,7 +9,7 @@ follow_imports = "silent"
 ignore_missing_imports = true
 namespace_packages = true
 no_implicit_reexport = true
-plugins = ["pydantic.mypy", "sqlalchemy.ext.mypy.plugin"]
+plugins = ["pydantic.mypy"]
 # NOTE: this is the tooling interpreter, not the supported floor (3.9, SEE
 # python_requires in setup.py and clients/python/README.md#supported-python-versions).
 # Lowering it to "3.9" makes mypy fail inside site-packages: it parses the inline types of
