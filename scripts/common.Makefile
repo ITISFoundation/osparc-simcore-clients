@@ -17,6 +17,7 @@ APP_NAME      := $(notdir $(CURDIR))
 # NOTE: pinned to the last release generating a python client with
 # 'requires-python >= 3.9' (v7.24.0+ require >= 3.10, see
 # https://github.com/OpenAPITools/openapi-generator/pull/22926).
+# The floor this pin protects: clients/python/README.md#supported-python-versions
 # Bumping this tag MUST stay in sync with the python-version matrix in
 # .github/workflows/build-python-client.yml
 OPENAPI_GENERATOR_NAME  := openapitools/openapi-generator-cli
