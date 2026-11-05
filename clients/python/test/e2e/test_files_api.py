@@ -5,6 +5,7 @@
 # pylint: disable=unused-variable
 
 import hashlib
+import logging
 from pathlib import Path
 
 import osparc
@@ -16,6 +17,42 @@ from _utils import skip_if_osparc_version
 from packaging.version import Version
 from conftest import ServerFile, _KB
 from faker import Faker
+
+_logger = logging.getLogger(__name__)
+
+# SEE https://github.com/ITISFoundation/osparc-issues/issues/2045
+_LAST_VERSION_WITH_UPLOAD_DEDUP: Final[Version] = Version("0.8.5")
+
+
+def _assert_upload_identity_semantics(
+    server_file: ServerFile, uploaded_file: osparc.File
+) -> None:
+    """Up to _LAST_VERSION_WITH_UPLOAD_DEDUP, the client searched for an identical file
+    (same sha256 + filename) and returned the already-uploaded file instead of uploading again.
+    Newer clients always upload and thus always receive a new file id."""
+    if Version(osparc.__version__) <= _LAST_VERSION_WITH_UPLOAD_DEDUP:
+        assert (
+            server_file.server_file.id == uploaded_file.id
+        ), "could not detect that file was already on server"
+    else:
+        assert (
+            server_file.server_file.id != uploaded_file.id
+        ), "client-side dedup was removed, a re-upload must create a new file"
+
+
+def _delete_duplicate_upload(
+    files_api: osparc.FilesApi, server_file: ServerFile, uploaded_file: osparc.File
+) -> None:
+    """Delete the file created by a re-upload (new clients no longer dedup, so the
+    re-upload creates a real second file on the server which must be cleaned up)."""
+    if uploaded_file.id != server_file.server_file.id:
+        try:
+            files_api.delete_file(uploaded_file.id)
+        except osparc.ApiException:
+            _logger.warning(
+                f"Could not delete duplicate upload in {__name__}",
+                exc_info=True,
+            )
 
 
 def _hash_file(file: Path) -> str:
@@ -36,14 +73,17 @@ def test_upload_file(
 ) -> None:
     """Test that we can upload a file via the multipart upload and download it again."""
     uploaded_file: osparc.File = files_api.upload_file(large_server_file.local_file)
-    assert (
-        large_server_file.server_file.id == uploaded_file.id
-    ), "could not detect that file was already on server"
-    downloaded_file = files_api.download_file(
-        uploaded_file.id, destination_folder=tmp_path
-    )
-    assert Path(downloaded_file).parent == tmp_path
-    assert _hash_file(Path(downloaded_file)) == _hash_file(large_server_file.local_file)
+    try:
+        _assert_upload_identity_semantics(large_server_file, uploaded_file)
+        downloaded_file = files_api.download_file(
+            uploaded_file.id, destination_folder=tmp_path
+        )
+        assert Path(downloaded_file).parent == tmp_path
+        assert _hash_file(Path(downloaded_file)) == _hash_file(
+            large_server_file.local_file
+        )
+    finally:
+        _delete_duplicate_upload(files_api, large_server_file, uploaded_file)
 
 
 @skip_if_osparc_version(at_least=Version("0.8.3.post0.dev12"))
@@ -58,24 +98,26 @@ def test_upload_download_file_ram_usage(
     ), f"For this test to make sense, {large_server_file.local_file.stat().st_size=} must be larger than {_allowed_ram_usage_in_mb=}."
 
     uploaded_file = files_api.upload_file(large_server_file.local_file)
-    assert (
-        large_server_file.server_file.id == uploaded_file.id
-    ), "could not detect that file was already on server"
-
-    download_ram_usage_in_mb, downloaded_file = memory_usage(
-        (
-            files_api.download_file,
-            (uploaded_file.id,),
-            {"destination_folder": tmp_path},
-        ),  # type: ignore
-        retval=True,
-    )
-    assert Path(downloaded_file).parent == tmp_path
-    assert (
-        max(download_ram_usage_in_mb) - min(download_ram_usage_in_mb)
-        < _allowed_ram_usage_in_mb
-    ), f"Used more than {_allowed_ram_usage_in_mb=} to download file of size {Path(downloaded_file).stat().st_size=}"
-    assert _hash_file(Path(downloaded_file)) == _hash_file(large_server_file.local_file)
+    try:
+        _assert_upload_identity_semantics(large_server_file, uploaded_file)
+        download_ram_usage_in_mb, downloaded_file = memory_usage(
+            (
+                files_api.download_file,
+                (uploaded_file.id,),
+                {"destination_folder": tmp_path},
+            ),  # type: ignore
+            retval=True,
+        )
+        assert Path(downloaded_file).parent == tmp_path
+        assert (
+            max(download_ram_usage_in_mb) - min(download_ram_usage_in_mb)
+            < _allowed_ram_usage_in_mb
+        ), f"Used more than {_allowed_ram_usage_in_mb=} to download file of size {Path(downloaded_file).stat().st_size=}"
+        assert _hash_file(Path(downloaded_file)) == _hash_file(
+            large_server_file.local_file
+        )
+    finally:
+        _delete_duplicate_upload(files_api, large_server_file, uploaded_file)
 
 
 @skip_if_osparc_version(at_least=Version("0.8.3.post0.dev20"))
@@ -94,9 +136,9 @@ def test_search_files(
 
     results = files_api._search_files(
         file_id=large_server_file.server_file.id if use_id else None,
-        sha256_checksum=large_server_file.server_file.checksum
-        if use_checksum
-        else None,
+        sha256_checksum=(
+            large_server_file.server_file.checksum if use_checksum else None
+        ),
     )
     assert len(results) == 1, "Could not find file after it had been uploaded"
     file = next(iter(results))

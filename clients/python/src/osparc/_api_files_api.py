@@ -143,14 +143,8 @@ class FilesApi(_FilesApi):
             file = Path(file)
         if not file.is_file():
             raise RuntimeError(f"{file} is not a file")
+        # SEE https://github.com/ITISFoundation/osparc-issues/issues/2045
         checksum: str = await compute_sha256(file)
-        for file_result in self._search_files(
-            sha256_checksum=checksum, timeout_seconds=timeout_seconds
-        ):
-            if file_result.filename == file.name:
-                # if a file has the same sha256 checksum
-                # and name they are considered equal
-                return file_result
         user_file = UserFile(
             filename=file.name,
             filesize=file.stat().st_size,
