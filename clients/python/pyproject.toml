@@ -25,10 +25,11 @@ warn_unused_ignores = true
 
 [tool.pydantic-mypy]
 # SEE https://docs.pydantic.dev/mypy_plugin/#plugin-settings
+# Only the option names pydantic 2 knows: mypy warns about unrecognized ones.
+# `warn_untyped_fields` was the pydantic 1 name and is not replaced by anything here.
 init_forbid_extra = true
 init_typed = true
 warn_required_dynamic_aliases = true
-warn_untyped_fields = true
 
 
 [tool.pytest.ini_options]
