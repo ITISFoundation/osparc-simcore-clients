@@ -17,6 +17,12 @@
 You can install `osparc` directly from PyPI:
 
 ```bash
+uv pip install osparc
+```
+
+With pip:
+
+```bash
 pip install osparc
 ```
 

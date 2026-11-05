@@ -1,10 +1,22 @@
-FROM itisfoundation/e2e-python:3.9.12-1
-RUN type -p curl >/dev/null || (apt-get update && apt-get install curl -y)
-RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
-    && chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
-    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-    && apt-get update -y
-RUN apt-get install -y \
-    gh \
-    jq
+# Python 3.9 is the client's declared floor (`python_requires` in clients/python/setup.py),
+# so the e2e suite keeps exercising it. The previous base, itisfoundation/e2e-python:3.9.12-1,
+# is Debian buster: its suites left deb.debian.org, `apt-get update` 404s, and the image
+# cannot be built. Bookworm is supported to 2028.
+FROM python:3.9-slim-bookworm
+
+# uv, so the e2e setup does not bootstrap itself with pip. Bump it together with
+# IMAGE_VERSION in build-n-publish.bash.
+COPY --from=ghcr.io/astral-sh/uv:0.13.7 /uv /usr/local/bin/uv
+
+# git and make: the GitLab CI using this image clones the client repository and installs
+# through `make install-e2e-test`. curl fetches a deployment's configuration, jq parses it
+# and pip's installation report.
+RUN apt-get update -y \
+    && apt-get install -y --no-install-recommends \
+        curl \
+        git \
+        jq \
+        make \
+    && rm -rf /var/lib/apt/lists/*
+
 CMD [ "/bin/bash" ]

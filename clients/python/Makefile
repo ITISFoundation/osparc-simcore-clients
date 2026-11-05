@@ -200,8 +200,8 @@ e2e-shell: guard-GH_TOKEN ## shell for running e2e tests
 		--workdir $(E2E_SHELL_DIR) \
 		--entrypoint /bin/bash \
 		-it \
-		itisfoundation/osparc_python_tutorial_testing:v1 \
-		-c "python -m venv /tmp/venv && source /tmp/venv/bin/activate && cd clients/python \
-		&& pip install -r requirements/e2e-test.txt \
+		itisfoundation/osparc_python_tutorial_testing:v2 \
+		-c "uv venv /tmp/venv && source /tmp/venv/bin/activate && cd clients/python \
+		&& uv pip install -r requirements/e2e-test.txt \
 		&& echo 'To test the client from this repo: on the host, run make install-e2e-test-local from clients/python' \
 		&& cd test/e2e && exec /bin/bash"

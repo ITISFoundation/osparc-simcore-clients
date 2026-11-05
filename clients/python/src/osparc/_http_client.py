@@ -84,7 +84,10 @@ class AsyncHttpClient:
                 response.raise_for_status()
             return response
 
-        return await _()
+        # tenacity's decorator erases the wrapped function's annotations
+        resp = await _()
+        assert isinstance(resp, httpx.Response)
+        return resp
 
     async def _stream(
         self, method: Literal["GET"], url: str, *args, **kwargs
@@ -126,10 +129,11 @@ class AsyncHttpClient:
     ) -> AsyncGenerator[httpx.Response, None]:
         return await self._stream(method, url, *args, **kwargs)
 
-    def _wait_callback(self, retry_state: tenacity.RetryCallState) -> int:
+    def _wait_callback(self, retry_state: tenacity.RetryCallState) -> float:
         assert retry_state.outcome is not None
-        if retry_state.outcome and retry_state.outcome.exception():
-            response: httpx.Response = retry_state.outcome.exception().response
+        exception = retry_state.outcome.exception()
+        if isinstance(exception, httpx.HTTPStatusError):
+            response = exception.response
             if response.status_code in _RETRY_AFTER_STATUS_CODES:
                 retry_after = response.headers.get("Retry-After")
                 if retry_after is not None:
@@ -143,6 +147,11 @@ class AsyncHttpClient:
                     with suppress(ValueError):
                         return int(retry_after)
         # https://urllib3.readthedocs.io/en/stable/reference/urllib3.util.html#utilities
-        return self.configuration.retries.backoff_factor * (
-            2**retry_state.attempt_number
-        )
+        # urllib3 accepts an int or a float here, so narrowing to float alone would
+        # reject a configuration that works
+        backoff_factor = self.configuration.retries.backoff_factor
+        assert isinstance(backoff_factor, (int, float))
+        # mypy types `int ** int` as Any
+        n_backoffs = 2**retry_state.attempt_number
+        assert isinstance(n_backoffs, int)
+        return backoff_factor * n_backoffs

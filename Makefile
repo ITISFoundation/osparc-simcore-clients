@@ -41,7 +41,9 @@ info-tools: ## info on tooling
 
 info-pip: ## info index versions
 	# Pypi ------------------
-	@pip index versions \
+	# `uv pip` has no `index versions`. The floor stops uv from reusing an older pip
+	# already in the host interpreter.
+	@uv run --no-project --quiet --with "pip>=22.2" pip index versions \
 		osparc \
 		--pre \
 		--index-url https://test.pypi.org/simple/ \
@@ -54,13 +56,7 @@ info: info-api info-envs info-tools info-pip ## all infos
 # the interpreter comes from `.python-version`, which uv picks up by itself
 .venv: .check-uv-installed
 	@uv venv $@
-	## upgrading tools to latest version in $(shell python3 --version)
-	@uv pip --quiet install --upgrade \
-		pip~=24.0 \
-		wheel \
-		setuptools \
-		uv
-	@uv pip list
+	@uv pip --quiet list
 
 
 .PHONY: devenv

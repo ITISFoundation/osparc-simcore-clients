@@ -60,7 +60,8 @@ class SolversApi(_SolversApi):
         page: OnePageSolverPort = super().list_solver_ports(
             solver_key=solver_key, version=version, **kwargs
         )
-        return page.items if page.items else []
+        ports: List[SolverPort] = page.items if page.items else []
+        return ports
 
     def iter_jobs(self, solver_key: str, version: str, **kwargs) -> PaginationIterable:
         """Returns an iterator through which one can iterate over
