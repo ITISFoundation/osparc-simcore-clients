@@ -32,7 +32,7 @@ python-client-generator-help: ## help on client-api generator
 
 .PHONY: _postprocess_osparc_client_artifacts
 _postprocess_osparc_client_artifacts:
-	black $(ARTIFACTS_DIR)/client/*.py
+	ruff format $(ARTIFACTS_DIR)/client/*.py
 	@-rm -f $(ARTIFACTS_DIR)/client/README.md
 	@echo "Please visit our [website](https://itisfoundation.github.io/osparc-simcore-clients/#/) for documentation" > $(ARTIFACTS_DIR)/client/README.md
 	@-rm -rf $(CLIENTS_PYTHON_DIR)/src/osparc/data/
