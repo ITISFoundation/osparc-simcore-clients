@@ -20,6 +20,9 @@ You can install `osparc` directly from PyPI:
 pip install osparc
 ```
 
+The package requires Python 3.9 or newer. The tested range is the CI matrix of
+[`.github/workflows/build-python-client.yml`](https://github.com/ITISFoundation/osparc-simcore-clients/blob/master/.github/workflows/build-python-client.yml).
+
 ## Getting Started with `osparc`
 
 ### API Key/Secret Setup
