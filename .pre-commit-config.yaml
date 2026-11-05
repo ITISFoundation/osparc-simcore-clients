@@ -1,15 +1,15 @@
 # See https://pre-commit.com/hooks.html for more hooks
 #
-# Every hook is pinned to a commit SHA, with its tag in the comment above it.
-# `pre-commit autoupdate` still bumps them: it reads the tag from those comments.
+# Every hook is pinned to a commit SHA, with its tag in a trailing `frozen:` comment.
+# Update with `pre-commit autoupdate --freeze`, which moves the SHA and rewrites that
+# comment. Plain `pre-commit autoupdate` replaces the SHA with a tag instead.
 exclude: "^.venv$|^.cache$|^.pytest_cache$"
 # No `default_language_version` on purpose: pinning it makes every hook environment
 # require that literal interpreter on PATH, which `make devenv` does not guarantee.
 # The pinned revisions above already pin the tools they install.
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    # v6.0.0
-    rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c
+    rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # frozen: v6.0.0
     hooks:
       - id: check-added-large-files
         args: ["--maxkb=1024"]
@@ -21,8 +21,7 @@ repos:
       - id: check-executables-have-shebangs
       - id: check-shebang-scripts-are-executable
   - repo: https://github.com/roy-ht/pre-commit-jupyter
-    # v1.2.1
-    rev: 551ab39ffcb92404c78593515520b05ec1dab9e3
+    rev: 551ab39ffcb92404c78593515520b05ec1dab9e3  # frozen: v1.2.1
     hooks:
       - id: jupyter-notebook-cleanup
         language: python
@@ -36,8 +35,7 @@ repos:
         files: ^clients/python/test/e2e/.*[.]ipynb$
         types: ["file"]
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    # v0.17.3
-    rev: 25bcf95026b96e2dd3c0aec3090c3d6ef6ca2e6c
+    rev: 25bcf95026b96e2dd3c0aec3090c3d6ef6ca2e6c  # frozen: v0.17.3
     hooks:
       # Rule selection and formatting settings live in `ruff.toml` at the repo root.
       - id: ruff

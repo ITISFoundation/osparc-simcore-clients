@@ -204,7 +204,7 @@ e2e-shell: guard-GH_TOKEN ## shell for running e2e tests
 		itisfoundation/osparc_python_tutorial_testing:v1 \
 		-c "python -m venv /tmp/venv && source /tmp/venv/bin/activate && cd clients/python \
 		&& pip install -r requirements/e2e-test.txt \
-		&& echo 'Now install the client under test, e.g. make python-client && pip install -e .' \
+		&& echo 'To test the client from this repo: run make python-client on the host, then cd ../.. && pip install -r requirements/e2e-test.txt --editable artifacts/client --editable .' \
 		&& cd test/e2e && exec /bin/bash"
 
 
