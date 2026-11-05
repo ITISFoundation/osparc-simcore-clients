@@ -3,6 +3,10 @@ on:
   workflow_dispatch:
   push:
   pull_request:
+# Nothing here writes to the repository: the hooks read the checkout and install tools from
+# PyPI. Without this block the token inherits the repository's default permissions.
+permissions:
+  contents: read
 jobs:
   # Runs the hooks in .pre-commit-config.yaml, which are opt-in on a developer machine.
   pre-commit:
