@@ -1,17 +1,17 @@
-from osparc import (
-    JobMetadata,
-    ApiClient,
-    SolversApi,
-    JobMetadataUpdate,
-    JobInputs,
-    Job,
-    JobOutputs,
-)
-from faker import Faker
-from typing import Callable, Generator
-from pydantic import BaseModel
+from typing import Callable, Generator, TypeVar
+
 import pytest
-from typing import TypeVar
+from faker import Faker
+from osparc import (
+    ApiClient,
+    Job,
+    JobInputs,
+    JobMetadata,
+    JobMetadataUpdate,
+    JobOutputs,
+    SolversApi,
+)
+from pydantic import BaseModel
 
 T = TypeVar("T", bound=BaseModel)
 

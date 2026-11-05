@@ -3,20 +3,31 @@
 # pylint: disable=unused-variable
 # pylint: disable=too-many-arguments
 
+import json
+from pathlib import Path
+from tempfile import NamedTemporaryFile
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Final,
+    Generator,
+    NamedTuple,
+    Set,
+    Type,
+    TypeVar,
+    cast,
+)
+from urllib.parse import urlparse
+
 import osparc
 import pytest
 from faker import Faker
+from parse import parse, with_pattern
+from prance import ResolvingParser
+from pydantic import BaseModel
 from pytest_mock import MockerFixture
 from urllib3 import HTTPResponse
-from pydantic import BaseModel
-from typing import Callable, Generator
-from prance import ResolvingParser
-import json
-from tempfile import NamedTemporaryFile
-from pathlib import Path
-from typing import Any, TypeVar, NamedTuple, Final, cast, Dict, Type, Set
-from urllib.parse import urlparse
-from parse import parse, with_pattern
 
 
 @pytest.fixture
@@ -119,7 +130,7 @@ def create_server_mock(
             json=None,
             **urlopen_kw,
         ) -> HTTPResponse:
-            matching_paths = set(
+            matching_paths = {
                 p.path
                 for p in all_server_paths
                 if parse(
@@ -127,7 +138,7 @@ def create_server_mock(
                     urlparse(url=url).path,
                     {_PATH_SEGMENT_CONVERTER: _path_segment},
                 )
-            )
+            }
             assert len(matching_paths) == 1
             matching_path = list(matching_paths)[0]
             responses = (
@@ -143,9 +154,9 @@ def create_server_mock(
                 .get("application/json", {})
                 .get("schema")
             )
-            assert (
-                schema is not None
-            ), f"probably status code {_status} is not a return code of {method.upper()} {matching_path}"
+            assert schema is not None, (
+                f"probably status code {_status} is not a return code of {method.upper()} {matching_path}"
+            )
             response_model_type = getattr(osparc, schema.get("title"))
             response_model = create_osparc_response_model(response_model_type)
             response = HTTPResponse(

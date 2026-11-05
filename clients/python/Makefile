@@ -32,7 +32,7 @@ python-client-generator-help: ## help on client-api generator
 
 .PHONY: _postprocess_osparc_client_artifacts
 _postprocess_osparc_client_artifacts:
-	black $(ARTIFACTS_DIR)/client/*.py
+	ruff format $(ARTIFACTS_DIR)/client/*.py
 	@-rm -f $(ARTIFACTS_DIR)/client/README.md
 	@echo "Please visit our [website](https://itisfoundation.github.io/osparc-simcore-clients/#/) for documentation" > $(ARTIFACTS_DIR)/client/README.md
 	@-rm -rf $(CLIENTS_PYTHON_DIR)/src/osparc/data/
@@ -116,8 +116,7 @@ _check_venv_active:
 
 .PHONY: install-dev
 install-dev: _check_venv_active .install-dev-reqs python-client  ## installs osparc_client and osparc in edit mode
-	# for some reason this command refuses to run with uv. Looks related to https://github.com/astral-sh/uv/issues/1661
-	pip install --editable artifacts/client --editable .
+	uv pip install --editable artifacts/client --editable .
 	uv pip list
 
 .PHONY: install-unit-test
@@ -131,7 +130,7 @@ install-e2e-test: _check_venv_active guard-OSPARC_VERSION ## install packages fo
 
 .PHONY: install-e2e-test-local
 install-e2e-test-local: _check_venv_active python-client ## install packages for e2e testing with local (repo) client [e2e]
-	pip install -r $(CLIENTS_PYTHON_DIR)/requirements/e2e-test.txt --editable artifacts/client --editable .
+	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/e2e-test.txt --editable artifacts/client --editable .
 
 .PHONY: install-doc
 install-doc: _check_venv_active .install-dev-reqs ## install packages for generating documentation
@@ -145,7 +144,7 @@ pylint: _check_venv_active ## runs linter (only to check errors. SEE .pylintrc e
 	pylint --rcfile "$(CLIENTS_PYTHON_DIR)/.pylintrc" -v src/osparc
 
 .PHONY: mypy
-mypy: $(SCRIPTS_DIR)/mypy.bash $(CLIENTS_PYTHON_DIR)/mypy.ini ## runs mypy python static type-checker on this services's code. Use AFTER make install-*
+mypy: $(SCRIPTS_DIR)/mypy.bash $(CLIENTS_PYTHON_DIR)/pyproject.toml ## runs mypy python static type-checker on this services's code. Use AFTER make install-*
 	@$(SCRIPTS_DIR)/mypy.bash src/osparc
 
 
@@ -203,20 +202,6 @@ e2e-shell: guard-GH_TOKEN ## shell for running e2e tests
 		-it \
 		itisfoundation/osparc_python_tutorial_testing:v1 \
 		-c "python -m venv /tmp/venv && source /tmp/venv/bin/activate && cd clients/python \
-		&& make install-test && cd test/e2e && python ci/install_osparc_python_client.py && exec /bin/bash"
-
-
-## DOCKER -------------------------------------------------------------------------------
-
-.env: .env-template ## creates .env file from defaults in .env-devel
-	$(if $(wildcard $@), \
-	@echo "WARNING #####  $< is newer than $@ ####"; diff -uN $@ $<; false;,\
-	@echo "WARNING ##### $@ does not exist, cloning $< as $@ ############"; cp $< $@)
-
-.PHONY: image
-image: VERSION ## builds image $(APP_NAME):version
-	docker build -f docker/Dockerfile -t $(APP_NAME):$(shell cat $(VERSION_FILE)) $(CURDIR)
-
-.PHONY: shell
-shell: VERSION ## runs container and opens bash shell
-	docker run -it $(APP_NAME):$(shell cat $(VERSION_FILE)) /bin/bash
+		&& pip install -r requirements/e2e-test.txt \
+		&& echo 'To test the client from this repo: on the host, run make install-e2e-test-local from clients/python' \
+		&& cd test/e2e && exec /bin/bash"

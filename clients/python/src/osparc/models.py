@@ -28,11 +28,11 @@ from osparc_client.models.http_validation_error import (
 )
 from osparc_client.models.job import Job as Job
 from osparc_client.models.job_logs_map import JobLogsMap as JobLogsMap
-from osparc_client.models.values_value import ValuesValue as ValuesValue
 from osparc_client.models.job_status import JobStatus as JobStatus
 from osparc_client.models.links import Links as Links
 from osparc_client.models.log_link import LogLink as LogLink
 from osparc_client.models.meta import Meta as Meta
+from osparc_client.models.meta_value_type import MetaValueType as MetaValueType
 from osparc_client.models.one_page_solver_port import (
     OnePageSolverPort as OnePageSolverPort,
 )
@@ -45,8 +45,6 @@ from osparc_client.models.page_study import PageStudy as PageStudy
 from osparc_client.models.pricing_plan_classification import (
     PricingPlanClassification as PricingPlanClassification,
 )
-from osparc_client.models.meta_value_type import MetaValueType as MetaValueType
-
 from osparc_client.models.profile import Profile as Profile
 from osparc_client.models.profile_update import ProfileUpdate as ProfileUpdate
 from osparc_client.models.running_state import RunningState as _RunningState
@@ -56,15 +54,17 @@ from osparc_client.models.study import Study as Study
 from osparc_client.models.study_port import StudyPort as StudyPort
 from osparc_client.models.upload_links import UploadLinks as UploadLinks
 from osparc_client.models.uploaded_part import UploadedPart as UploadedPart
+from osparc_client.models.user_file import UserFile as UserFile
 from osparc_client.models.user_role_enum import UserRoleEnum as UserRoleEnum
 from osparc_client.models.users_group import UsersGroup as UsersGroup
 from osparc_client.models.validation_error import ValidationError as ValidationError
+from osparc_client.models.values_value import ValuesValue as ValuesValue
 from osparc_client.models.wallet_status import WalletStatus as WalletStatus
-from osparc_client.models.user_file import UserFile as UserFile
+
 from ._models import JobInputs as JobInputs
-from ._models import JobOutputs as JobOutputs
 from ._models import JobMetadata as JobMetadata
 from ._models import JobMetadataUpdate as JobMetadataUpdate
+from ._models import JobOutputs as JobOutputs
 
 # renames
 TaskStates = _RunningState

@@ -51,10 +51,9 @@ info-pip: ## info index versions
 info: info-api info-envs info-tools info-pip ## all infos
 
 
+# the interpreter comes from `.python-version`, which uv picks up by itself
 .venv: .check-uv-installed
-	@uv venv \
-		--python 3.10 \
-		$@
+	@uv venv $@
 	## upgrading tools to latest version in $(shell python3 --version)
 	@uv pip --quiet install --upgrade \
 		pip~=24.0 \

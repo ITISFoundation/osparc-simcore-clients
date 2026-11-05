@@ -1,0 +1,12 @@
+version: 2
+updates:
+  # The actions in .github/workflows are pinned to a commit SHA. Dependabot still updates
+  # those, but only when the pin carries its version as a trailing comment (`@<sha> # v9.0.0`),
+  # which is the format every pin here uses.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: "⬆️ chore(ci)"
+    open-pull-requests-limit: 5

@@ -1,16 +1,18 @@
 import asyncio
 import hashlib
+from collections.abc import Iterable, Sized
 from pathlib import Path
 from typing import (
     AsyncGenerator,
     Callable,
+    Generator,
+    NamedTuple,
     Optional,
     TypeVar,
     Union,
-    NamedTuple,
-    Generator,
 )
-from collections.abc import Iterable, Sized
+
+import aiofiles
 import httpx
 from osparc_client import (
     ApiClient,
@@ -22,7 +24,7 @@ from osparc_client import (
     Solver,
     Study,
 )
-import aiofiles
+
 from .exceptions import RequestError
 
 _KB = 1024  # in bytes

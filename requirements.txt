@@ -1,4 +1,4 @@
-black
+ruff
 pre-commit
 semver
 typer

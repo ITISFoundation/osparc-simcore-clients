@@ -39,33 +39,31 @@ def pytest_runtest_makereport(item, call):
     """
     Hook to add extra information when a test fails.
     """
-    if call.when == "call":
+    # only report on a failed test call
+    if call.when == "call" and call.excinfo is not None:
+        test_name = item.name
+        test_location = item.location
+        api_host = os.environ.get("OSPARC_API_HOST", "")
 
-        # Check if the test failed
-        if call.excinfo is not None:
-            test_name = item.name
-            test_location = item.location
-            api_host = os.environ.get("OSPARC_API_HOST", "")
+        diagnostics = {
+            "test_name": test_name,
+            "test_location": test_location,
+            "api_host": api_host,
+        }
 
-            diagnostics = {
-                "test_name": test_name,
-                "test_location": test_location,
-                "api_host": api_host,
-            }
+        # Get the start and end times of the test
+        start_time = _test_start_times.get(test_name)
+        end_time = _utc_now()
 
-            # Get the start and end times of the test
-            start_time = _test_start_times.get(test_name)
-            end_time = _utc_now()
+        if start_time:
+            diagnostics["graylog_url"] = _construct_graylog_url(
+                api_host, start_time, end_time
+            )
 
-            if start_time:
-                diagnostics["graylog_url"] = _construct_graylog_url(
-                    api_host, start_time, end_time
-                )
-
-            # Print the diagnostics
-            print(f"\nDiagnostics for {test_name}:")
-            for key, value in diagnostics.items():
-                print("  ", key, ":", value)
+        # Print the diagnostics
+        print(f"\nDiagnostics for {test_name}:")
+        for key, value in diagnostics.items():
+            print("  ", key, ":", value)
 
 
 @pytest.hookimpl(tryfirst=True)

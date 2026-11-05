@@ -39,12 +39,9 @@ class E2eExitCodes(IntEnum):
     INVALID_JSON_DATA = 102
 
 
-assert (
-    set(e.value for e in E2eExitCodes).intersection(
-        set(e.value for e in pytest.ExitCode)
-    )
-    == set()
-)
+assert {e.value for e in E2eExitCodes}.intersection(
+    {e.value for e in pytest.ExitCode}
+) == set()
 
 
 def handle_validation_error(func):
@@ -54,6 +51,6 @@ def handle_validation_error(func):
             return func(*args, **kwargs)
         except (ValidationError, ValueError) as e:
             typer.echo(f"{e}", err=True)
-            raise typer.Exit(code=E2eExitCodes.INVALID_JSON_DATA)
+            raise typer.Exit(code=E2eExitCodes.INVALID_JSON_DATA) from e
 
     return wrapper

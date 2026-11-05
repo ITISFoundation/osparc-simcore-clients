@@ -353,6 +353,9 @@ indent-after-paren=4
 indent-string='    '
 
 # Maximum number of characters on a single line.
+# Deliberately larger than the formatter width (88, SEE ruff.toml at the repo
+# root): the formatter already wraps what it can, so this only catches single
+# tokens that cannot be wrapped, like long URLs or literal strings.
 max-line-length=150
 
 # Maximum number of lines in a module.

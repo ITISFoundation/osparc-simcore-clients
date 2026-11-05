@@ -4,10 +4,13 @@ import asyncio
 import json
 import logging
 import math
+import shutil
 from pathlib import Path
-from typing import Any, Iterator, List, Optional, Tuple, Union, Final, Set
 from tempfile import NamedTemporaryFile
+from typing import Any, Final, Iterator, List, Optional, Set, Tuple, Union
+from urllib.parse import urljoin
 
+import aiofiles
 import httpx
 from httpx import Response
 from osparc_client.api.files_api import FilesApi as _FilesApi
@@ -16,6 +19,13 @@ from tqdm.contrib.logging import logging_redirect_tqdm
 
 from ._api_client import ApiClient
 from ._http_client import AsyncHttpClient
+from ._utils import (
+    DEFAULT_TIMEOUT_SECONDS,
+    Chunk,
+    PaginationIterable,
+    compute_sha256,
+    file_chunk_generator,
+)
 from .models import (
     BodyAbortMultipartUploadV0FilesFileIdAbortPost,
     BodyCompleteMultipartUploadV0FilesFileIdCompletePost,
@@ -26,16 +36,6 @@ from .models import (
     FileUploadData,
     UploadedPart,
     UserFile,
-)
-from urllib.parse import urljoin
-import aiofiles
-import shutil
-from ._utils import (
-    DEFAULT_TIMEOUT_SECONDS,
-    PaginationIterable,
-    compute_sha256,
-    file_chunk_generator,
-    Chunk,
 )
 
 _logger = logging.getLogger(__name__)
@@ -92,25 +92,28 @@ class FilesApi(_FilesApi):
             raise RuntimeError(
                 f"destination_folder: {destination_folder} must be a directory"
             )
-        async with aiofiles.tempfile.NamedTemporaryFile(
-            mode="wb",
-            delete=False,
-        ) as downloaded_file:
-            async with AsyncHttpClient(
+        async with (
+            aiofiles.tempfile.NamedTemporaryFile(
+                mode="wb",
+                delete=False,
+            ) as downloaded_file,
+            AsyncHttpClient(
                 configuration=self.api_client.configuration, timeout=timeout_seconds
-            ) as session:
-                url = urljoin(
-                    self.api_client.configuration.host, f"/v0/files/{file_id}/content"
-                )
-                async for response in await session.stream(
-                    "GET", url=url, auth=self._auth, follow_redirects=True
-                ):
-                    response.raise_for_status()
-                    async for chunk in response.aiter_bytes():
-                        await downloaded_file.write(chunk)
+            ) as session,
+        ):
+            url = urljoin(
+                self.api_client.configuration.host, f"/v0/files/{file_id}/content"
+            )
+            async for response in await session.stream(
+                "GET", url=url, auth=self._auth, follow_redirects=True
+            ):
+                response.raise_for_status()
+                async for chunk in response.aiter_bytes():
+                    await downloaded_file.write(chunk)
         dest_file = f"{downloaded_file.name}"
         if destination_folder is not None:
-            dest_file = NamedTemporaryFile(dir=destination_folder, delete=False).name
+            with NamedTemporaryFile(dir=destination_folder, delete=False) as tmp:
+                dest_file = tmp.name
             shutil.move(
                 f"{downloaded_file.name}", dest_file
             )  # aiofiles doesnt seem to have an async variant of this
@@ -214,7 +217,7 @@ class FilesApi(_FilesApi):
                                 uploaded_parts.append(task.result())
 
             _logger.debug(
-                ("Completing upload of %s " "(this might take a couple of minutes)..."),
+                ("Completing upload of %s (this might take a couple of minutes)..."),
                 file.name,
             )
             server_file: File = await self._complete_multipart_upload(

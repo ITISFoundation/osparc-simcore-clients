@@ -1,14 +1,15 @@
+from typing import Callable
+
 import pytest
 from osparc import (
     ApiClient,
-    StudiesApi,
-    JobInputs,
     Job,
-    JobOutputs,
+    JobInputs,
     JobMetadata,
     JobMetadataUpdate,
+    JobOutputs,
+    StudiesApi,
 )
-from typing import Callable
 
 
 @pytest.fixture

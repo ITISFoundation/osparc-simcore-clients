@@ -4,27 +4,24 @@
 # pylint: disable=unused-argument
 # pylint: disable=unused-variable
 
+import contextlib
 import datetime
 import logging
 import os
 from pathlib import Path
-from typing import Iterable
+from typing import Final, Iterable, NamedTuple
 from uuid import UUID
 
 import osparc
 import pytest
 from httpx import AsyncClient, BasicAuth
+from memory_profiler import memory_usage
 from numpy import random
 from packaging.version import Version
 from pydantic import ByteSize
-from typing import NamedTuple, Final
-from memory_profiler import memory_usage
 
-
-try:
+with contextlib.suppress(ImportError):
     from osparc._settings import ConfigurationEnvVars
-except ImportError:
-    pass
 
 # ensure osparc logs are visible in test output
 logging.getLogger("osparc").setLevel(logging.DEBUG)
@@ -66,32 +63,31 @@ def pytest_runtest_makereport(item, call):
     """
     Hook to add extra information when a test fails.
     """
-    if call.when == "call":
-        # Check if the test failed
-        if call.excinfo is not None:
-            test_name = item.name
-            test_location = item.location
-            api_host = os.environ.get("OSPARC_API_HOST", "")
+    # only report on a failed test call
+    if call.when == "call" and call.excinfo is not None:
+        test_name = item.name
+        test_location = item.location
+        api_host = os.environ.get("OSPARC_API_HOST", "")
 
-            diagnostics = {
-                "test_name": test_name,
-                "test_location": test_location,
-                "api_host": api_host,
-            }
+        diagnostics = {
+            "test_name": test_name,
+            "test_location": test_location,
+            "api_host": api_host,
+        }
 
-            # Get the start and end times of the test
-            start_time = _test_start_times.get(test_name)
-            end_time = _utc_now()
+        # Get the start and end times of the test
+        start_time = _test_start_times.get(test_name)
+        end_time = _utc_now()
 
-            if start_time:
-                diagnostics["graylog_url"] = _construct_graylog_url(
-                    api_host, start_time, end_time
-                )
+        if start_time:
+            diagnostics["graylog_url"] = _construct_graylog_url(
+                api_host, start_time, end_time
+            )
 
-            # Print the diagnostics
-            print(f"\nDiagnostics for {test_name}:")
-            for key, value in diagnostics.items():
-                print("  ", key, ":", value)
+        # Print the diagnostics
+        print(f"\nDiagnostics for {test_name}:")
+        for key, value in diagnostics.items():
+            print("  ", key, ":", value)
 
 
 @pytest.hookimpl(tryfirst=True)
@@ -166,9 +162,9 @@ def large_server_file(
     tmp_file.write_bytes(rng.bytes(1000))
     with open(tmp_file, "wb") as f:
         f.truncate(_file_size)
-    assert (
-        tmp_file.stat().st_size == _file_size
-    ), f"Could not create file of size: {_file_size}"
+    assert tmp_file.stat().st_size == _file_size, (
+        f"Could not create file of size: {_file_size}"
+    )
     ram_statistics, uploaded_file = memory_usage(
         (files_api.upload_file, (tmp_file,)), retval=True
     )

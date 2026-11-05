@@ -5,16 +5,16 @@
 # pylint: disable=unused-variable
 
 import json
+from contextlib import contextmanager
+from typing import Callable, Iterator, Set, Union
+from uuid import UUID
 
 import osparc
+import pytest
 import tenacity
 from _utils import skip_if_osparc_version
 from httpx import AsyncClient
 from packaging.version import Version
-from uuid import UUID
-import pytest
-from contextlib import contextmanager
-from typing import Callable, Iterator, Set, Union
 from tenacity import Retrying
 
 DEFAULT_TIMEOUT_SECONDS = 15 * 60  # 15 min
@@ -76,9 +76,9 @@ def test_jobs(
         solvers_api.iter_jobs(sleeper.id, sleeper.version)
         final_iter = solvers_api.iter_jobs(sleeper.id, sleeper.version)
         assert len(final_iter) > 0, "No jobs were available"
-        assert n_init_iter + n_jobs == len(
-            final_iter
-        ), "An incorrect number of jobs was recorded"
+        assert n_init_iter + n_jobs == len(final_iter), (
+            "An incorrect number of jobs was recorded"
+        )
 
         for ii, elm in enumerate(tmp_iter):
             assert isinstance(elm, osparc.Job)
@@ -122,5 +122,7 @@ async def test_logstreaming(
                 await response.aclose()
                 break
 
-        assert nloglines > 0, f"Could not stream log for {sleeper.id=}, \
-            {sleeper.version=} and {job_id=}"  # type: ignore
+        assert nloglines > 0, (
+            f"Could not stream log for {sleeper.id=}, \
+            {sleeper.version=} and {job_id=}"
+        )  # type: ignore

@@ -8,7 +8,7 @@ from typing import Callable, Optional
 
 import pytest
 from faker import Faker
-from osparc import ApiClient, SolversApi, StudiesApi, JobInputs
+from osparc import ApiClient, JobInputs, SolversApi, StudiesApi
 from pytest_mock import MockerFixture
 
 

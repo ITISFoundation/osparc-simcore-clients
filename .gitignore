@@ -45,7 +45,8 @@ coverage.xml
 .hypothesis/
 venv/
 .venv/
-.python-version
+# `.python-version` is deliberately not ignored: it is the source of the interpreter that
+# `make devenv` and the workflows use.
 .pytest_cache
 
 # Translations

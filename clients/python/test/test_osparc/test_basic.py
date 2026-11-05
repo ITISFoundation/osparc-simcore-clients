@@ -1,19 +1,19 @@
 import json
 import subprocess
+from copy import deepcopy
+from functools import partial
 from pathlib import Path
 from typing import Any, Dict, List, Set, cast
-from faker import Faker
+from urllib.parse import urlparse
 
+import httpx
 import osparc
 import osparc._settings
 import pydantic
 import pytest
 import respx
-import httpx
-from urllib.parse import urlparse
+from faker import Faker
 from osparc._utils import PaginationIterable
-from functools import partial
-from copy import deepcopy
 
 _CLIENTS_PYTHON_DIR: Path = Path(__file__).parent.parent.parent
 
@@ -41,13 +41,12 @@ def test_dependencies(tmp_path: Path):
             "no-pin",
         ],
         cwd=source_package,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
+        capture_output=True,
         check=True,
     )
-    import_dependencies: Set[str] = set(
+    import_dependencies: Set[str] = {
         _.replace(".egg", "") for _ in import_file.read_text().splitlines()
-    )
+    }
 
     # generate requirements file based on installed osparc
     output = subprocess.run(
@@ -57,8 +56,7 @@ def test_dependencies(tmp_path: Path):
             "osparc",
             "--json",
         ],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
+        capture_output=True,
         check=False,
     )
     assert output.returncode == 0
@@ -128,7 +126,7 @@ def test_pagination_iterator(
         pagination_iterator = PaginationIterable(
             lambda: page_file, api_client=api_client, base_url=_base_url, auth=_auth
         )
-        client_items = [item for item in pagination_iterator]
+        client_items = list(pagination_iterator)
         assert len(server_items) > 0
         assert server_items == client_items
 

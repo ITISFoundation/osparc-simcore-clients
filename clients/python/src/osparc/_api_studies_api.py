@@ -2,24 +2,16 @@
 
 import asyncio
 import logging
+import warnings
 from pathlib import Path
 from tempfile import mkdtemp
 from typing import Optional
 
 import httpx
-from pydantic import StrictStr
-
-from .models import (
-    JobInputs,
-    JobLogsMap,
-    PageStudy,
-    JobOutputs,
-    JobMetadata,
-    JobMetadataUpdate,
-)
-from osparc_client.api.studies_api import StudiesApi as _StudiesApi
 from osparc_client import JobInputs as _JobInputs
 from osparc_client import JobMetadataUpdate as _JobMetadataUpdate
+from osparc_client.api.studies_api import StudiesApi as _StudiesApi
+from pydantic import StrictStr
 from tqdm.asyncio import tqdm_asyncio
 
 from ._api_client import ApiClient
@@ -30,7 +22,14 @@ from ._utils import (
     _DEFAULT_PAGINATION_OFFSET,
     PaginationIterable,
 )
-import warnings
+from .models import (
+    JobInputs,
+    JobLogsMap,
+    JobMetadata,
+    JobMetadataUpdate,
+    JobOutputs,
+    PageStudy,
+)
 
 _logger = logging.getLogger(__name__)
 

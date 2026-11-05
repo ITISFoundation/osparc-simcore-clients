@@ -1,20 +1,16 @@
 # Wraps osparc_client.api.solvers_api
 
+import logging
+import warnings
+from pathlib import Path
+from tempfile import NamedTemporaryFile
 from typing import List, Optional
 
 import httpx
-from osparc_client.api.solvers_api import SolversApi as _SolversApi
-from .models import (
-    JobInputs,
-    OnePageSolverPort,
-    SolverPort,
-    Job,
-    JobOutputs,
-    JobMetadata,
-    JobMetadataUpdate,
-)
 from osparc_client import JobInputs as _JobInputs
 from osparc_client import JobMetadataUpdate as _JobMetadataUpdate
+from osparc_client.api.solvers_api import SolversApi as _SolversApi
+from pydantic import StrictStr, validate_call
 
 from ._api_client import ApiClient
 from ._settings import ParentProjectInfo
@@ -23,12 +19,15 @@ from ._utils import (
     _DEFAULT_PAGINATION_OFFSET,
     PaginationIterable,
 )
-import warnings
-from tempfile import NamedTemporaryFile
-from pathlib import Path
-from pydantic import validate_call
-from pydantic import StrictStr
-import logging
+from .models import (
+    Job,
+    JobInputs,
+    JobMetadata,
+    JobMetadataUpdate,
+    JobOutputs,
+    OnePageSolverPort,
+    SolverPort,
+)
 
 _logger = logging.getLogger(__name__)
 

@@ -1,0 +1,30 @@
+name: lint
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+# Nothing here writes to the repository: the hooks read the checkout and install tools from
+# PyPI. Without this block the token inherits the repository's default permissions.
+permissions:
+  contents: read
+jobs:
+  # Runs the hooks in .pre-commit-config.yaml, which are opt-in on a developer machine.
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          # the interpreter `make devenv` creates, from `.python-version`
+          python-version-file: .python-version
+      - name: Set up uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+      - name: Cache pre-commit environments
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ runner.os }}-${{ hashFiles('.pre-commit-config.yaml') }}
+      - name: Install the dev tools
+        run: make devenv
+      - run: .venv/bin/pre-commit run --all-files --show-diff-on-failure

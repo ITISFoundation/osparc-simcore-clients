@@ -26,4 +26,6 @@ RUN \
   && uv pip install -r requirements.txt \
   && uv pip list
 
-ENTRYPOINT ["mypy", "--config-file", "/config/mypy.ini", "--warn-unused-configs"]
+# NOTE: `--config-file` is passed by scripts/mypy.bash because the config has
+# to keep its own file name for mypy to pick the right parser (TOML vs INI)
+ENTRYPOINT ["mypy", "--warn-unused-configs"]

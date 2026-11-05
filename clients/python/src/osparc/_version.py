@@ -1,10 +1,10 @@
 import warnings
 from platform import python_version
-from packaging.version import Version
-from ._exceptions import VisibleDeprecationWarning
 
 from osparc_client import __version__ as __version__
+from packaging.version import Version
 
+from ._exceptions import VisibleDeprecationWarning
 
 _PYTHON_VERSION_RETIRED = Version("3.8.0")
 _PYTHON_VERSION_DEPRECATED = Version("3.8.0")
@@ -23,4 +23,4 @@ if Version(python_version()) < _PYTHON_VERSION_DEPRECATED:
         "Please upgrade to "
         f"Python version >= {_PYTHON_VERSION_DEPRECATED}."
     )
-    warnings.warn(warning_msg, VisibleDeprecationWarning)
+    warnings.warn(warning_msg, VisibleDeprecationWarning, stacklevel=2)

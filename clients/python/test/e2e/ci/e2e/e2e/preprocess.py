@@ -113,7 +113,7 @@ def check_compatibility() -> None:
         is_compatible: bool = df["is_compatible"].loc[df.index[0]]
     except Exception as exc:
         typer.echo(f"{exc}", err=True)
-        raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE)
+        raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE) from exc
 
     if not is_compatible:
         raise typer.Exit(code=E2eExitCodes.SKIPPING_TESTS)
