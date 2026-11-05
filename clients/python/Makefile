@@ -206,19 +206,3 @@ e2e-shell: guard-GH_TOKEN ## shell for running e2e tests
 		&& pip install -r requirements/e2e-test.txt \
 		&& echo 'To test the client from this repo: run make python-client on the host, then cd ../.. && pip install -r requirements/e2e-test.txt --editable artifacts/client --editable .' \
 		&& cd test/e2e && exec /bin/bash"
-
-
-## DOCKER -------------------------------------------------------------------------------
-
-.env: .env-template ## creates .env file from defaults in .env-devel
-	$(if $(wildcard $@), \
-	@echo "WARNING #####  $< is newer than $@ ####"; diff -uN $@ $<; false;,\
-	@echo "WARNING ##### $@ does not exist, cloning $< as $@ ############"; cp $< $@)
-
-.PHONY: image
-image: VERSION ## builds image $(APP_NAME):version
-	docker build -f docker/Dockerfile -t $(APP_NAME):$(shell cat $(VERSION_FILE)) $(CURDIR)
-
-.PHONY: shell
-shell: VERSION ## runs container and opens bash shell
-	docker run -it $(APP_NAME):$(shell cat $(VERSION_FILE)) /bin/bash
