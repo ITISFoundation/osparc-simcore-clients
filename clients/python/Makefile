@@ -116,8 +116,7 @@ _check_venv_active:
 
 .PHONY: install-dev
 install-dev: _check_venv_active .install-dev-reqs python-client  ## installs osparc_client and osparc in edit mode
-	# for some reason this command refuses to run with uv. Looks related to https://github.com/astral-sh/uv/issues/1661
-	pip install --editable artifacts/client --editable .
+	uv pip install --editable artifacts/client --editable .
 	uv pip list
 
 .PHONY: install-unit-test
@@ -131,7 +130,7 @@ install-e2e-test: _check_venv_active guard-OSPARC_VERSION ## install packages fo
 
 .PHONY: install-e2e-test-local
 install-e2e-test-local: _check_venv_active python-client ## install packages for e2e testing with local (repo) client [e2e]
-	pip install -r $(CLIENTS_PYTHON_DIR)/requirements/e2e-test.txt --editable artifacts/client --editable .
+	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/e2e-test.txt --editable artifacts/client --editable .
 
 .PHONY: install-doc
 install-doc: _check_venv_active .install-dev-reqs ## install packages for generating documentation
@@ -204,5 +203,5 @@ e2e-shell: guard-GH_TOKEN ## shell for running e2e tests
 		itisfoundation/osparc_python_tutorial_testing:v1 \
 		-c "python -m venv /tmp/venv && source /tmp/venv/bin/activate && cd clients/python \
 		&& pip install -r requirements/e2e-test.txt \
-		&& echo 'To test the client from this repo: run make python-client on the host, then cd ../.. && pip install -r requirements/e2e-test.txt --editable artifacts/client --editable .' \
+		&& echo 'To test the client from this repo: on the host, run make install-e2e-test-local from clients/python' \
 		&& cd test/e2e && exec /bin/bash"
