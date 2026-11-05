@@ -34,31 +34,31 @@ REQUIRES = [
     "aiofiles",
 ]
 
-SETUP = dict(
-    name=NAME,
-    version=VERSION,
-    description="osparc.io web API",
-    author="pcrespov, bisgaard-itis",
-    author_email="support@osparc.io",
-    url="https://itisfoundation.github.io/osparc-simcore-clients/",
-    install_requires=REQUIRES,
-    include_package_data=True,
-    packages=find_packages(where="src"),
-    package_dir={"": "src"},
-    package_data={
+SETUP = {
+    "name": NAME,
+    "version": VERSION,
+    "description": "osparc.io web API",
+    "author": "pcrespov, bisgaard-itis",
+    "author_email": "support@osparc.io",
+    "url": "https://itisfoundation.github.io/osparc-simcore-clients/",
+    "install_requires": REQUIRES,
+    "include_package_data": True,
+    "packages": find_packages(where="src"),
+    "package_dir": {"": "src"},
+    "package_data": {
         "": [
             "data/openapi.json",
         ]
     },
-    long_description=(
+    "long_description": (
         "Please visit our "
         "[website](https://itisfoundation.github.io/osparc-simcore-clients/#/) "
         "for documentation."
     ),
-    long_description_content_type="text/markdown",
-    license="MIT",
-    python_requires=">=3.9",
-    classifiers=[
+    "long_description_content_type": "text/markdown",
+    "license": "MIT",
+    "python_requires": ">=3.9",
+    "classifiers": [
         "Development Status :: 3 - Alpha",
         "License :: OSI Approved :: MIT License",
         "Natural Language :: English",
@@ -72,7 +72,7 @@ SETUP = dict(
         "Programming Language :: Python :: 3.14",
         "Programming Language :: Python :: 3.15",
     ],
-)
+}
 
 
 if __name__ == "__main__":

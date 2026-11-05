@@ -71,16 +71,16 @@ def _inject_http_logging_setup_cell(notebook_path: Path) -> None:
 def _papermill_execute_notebook(
     tmp_path: Path, notebook: Path, parameters: dict[str, Any]
 ) -> Path:
-    assert (
-        notebook.is_file()
-    ), f"{notebook.name} is not a file (full path: {notebook.resolve()})"
+    assert notebook.is_file(), (
+        f"{notebook.name} is not a file (full path: {notebook.resolve()})"
+    )
 
-    if min_version := MIN_VERSION_REQS.get(notebook.name):
-        if Version(osparc.__version__) < min_version:
-            pytest.skip(
-                f"Skipping {notebook.name} because "
-                f"{osparc.__version__=} < {min_version=}"
-            )
+    if (min_version := MIN_VERSION_REQS.get(notebook.name)) and (
+        Version(osparc.__version__) < min_version
+    ):
+        pytest.skip(
+            f"Skipping {notebook.name} because {osparc.__version__=} < {min_version=}"
+        )
 
     tmp_nb = tmp_path / notebook.name
     shutil.copy(notebook, tmp_nb)
@@ -118,9 +118,9 @@ def test_notebook_config(tmp_path: Path):
     )
     assert len(all_notebooks) > 0, f"Did not find any notebooks in {_docs_dir}"
     min_keys: set = set(MIN_VERSION_REQS.keys())
-    notebook_names: set = set(pth.name for pth in all_notebooks)
+    notebook_names: set = {pth.name for pth in all_notebooks}
     msg: str = (
-        f"Must specify max version for: {notebook_names-min_keys}."
+        f"Must specify max version for: {notebook_names - min_keys}."
         f" The following keys can be deleted: {min_keys - notebook_names}"
     )
     assert min_keys == notebook_names, msg

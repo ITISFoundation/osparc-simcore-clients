@@ -4,8 +4,8 @@
 # pylint: disable=unused-argument
 # pylint: disable=unused-variable
 
-from contextlib import contextmanager
 import shutil
+from contextlib import contextmanager
 from datetime import timedelta
 from pathlib import Path
 from typing import Iterator

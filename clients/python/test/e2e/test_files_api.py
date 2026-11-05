@@ -7,16 +7,16 @@
 import hashlib
 import logging
 from pathlib import Path
+from typing import Callable, Final
 
 import osparc
 import pytest
-from memory_profiler import memory_usage
-from typing import Final, Callable
-from pydantic import ByteSize
 from _utils import skip_if_osparc_version
-from packaging.version import Version
-from conftest import ServerFile, _KB
+from conftest import _KB, ServerFile
 from faker import Faker
+from memory_profiler import memory_usage
+from packaging.version import Version
+from pydantic import ByteSize
 
 _logger = logging.getLogger(__name__)
 
@@ -31,13 +31,13 @@ def _assert_upload_identity_semantics(
     (same sha256 + filename) and returned the already-uploaded file instead of uploading again.
     Newer clients always upload and thus always receive a new file id."""
     if Version(osparc.__version__) <= _LAST_VERSION_WITH_UPLOAD_DEDUP:
-        assert (
-            server_file.server_file.id == uploaded_file.id
-        ), "could not detect that file was already on server"
+        assert server_file.server_file.id == uploaded_file.id, (
+            "could not detect that file was already on server"
+        )
     else:
-        assert (
-            server_file.server_file.id != uploaded_file.id
-        ), "client-side dedup was removed, a re-upload must create a new file"
+        assert server_file.server_file.id != uploaded_file.id, (
+            "client-side dedup was removed, a re-upload must create a new file"
+        )
 
 
 def _delete_duplicate_upload(
@@ -95,7 +95,9 @@ def test_upload_download_file_ram_usage(
     assert (
         large_server_file.local_file.stat().st_size
         > _allowed_ram_usage_in_mb * 1024 * 1024
-    ), f"For this test to make sense, {large_server_file.local_file.stat().st_size=} must be larger than {_allowed_ram_usage_in_mb=}."
+    ), (
+        f"For this test to make sense, {large_server_file.local_file.stat().st_size=} must be larger than {_allowed_ram_usage_in_mb=}."
+    )
 
     uploaded_file = files_api.upload_file(large_server_file.local_file)
     try:
@@ -112,7 +114,9 @@ def test_upload_download_file_ram_usage(
         assert (
             max(download_ram_usage_in_mb) - min(download_ram_usage_in_mb)
             < _allowed_ram_usage_in_mb
-        ), f"Used more than {_allowed_ram_usage_in_mb=} to download file of size {Path(downloaded_file).stat().st_size=}"
+        ), (
+            f"Used more than {_allowed_ram_usage_in_mb=} to download file of size {Path(downloaded_file).stat().st_size=}"
+        )
         assert _hash_file(Path(downloaded_file)) == _hash_file(
             large_server_file.local_file
         )

@@ -1,6 +1,24 @@
+from typing import Final, Optional, Set
+
 from osparc_client import Configuration as _Configuration
-from typing import Set
 from urllib3 import Retry
+
+# NOTE: module-level constants because a default set literal is created once and
+# would then be shared (and mutable) across all instances
+_DEFAULT_RETRY_METHODS: Final = frozenset(
+    {
+        "DELETE",
+        "GET",
+        "HEAD",
+        "OPTIONS",
+        "PUT",
+        "TRACE",
+        "POST",
+        "PATCH",
+        "CONNECT",
+    }
+)
+_DEFAULT_RETRY_STATUS_CODES: Final = frozenset({429, 503, 504})
 
 
 class Configuration(_Configuration):
@@ -13,20 +31,18 @@ class Configuration(_Configuration):
         password=None,
         *,
         retry_max_count: int = 4,
-        retry_methods: Set[str] = {
-            "DELETE",
-            "GET",
-            "HEAD",
-            "OPTIONS",
-            "PUT",
-            "TRACE",
-            "POST",
-            "PATCH",
-            "CONNECT",
-        },
-        retry_status_codes: Set[int] = {429, 503, 504},
+        retry_methods: Optional[Set[str]] = None,
+        retry_status_codes: Optional[Set[int]] = None,
         retry_backoff_factor=4.0,
     ):
+        retry_methods = (
+            _DEFAULT_RETRY_METHODS if retry_methods is None else retry_methods
+        )
+        retry_status_codes = (
+            _DEFAULT_RETRY_STATUS_CODES
+            if retry_status_codes is None
+            else retry_status_codes
+        )
         retries = Retry(
             total=retry_max_count,
             backoff_factor=retry_backoff_factor,

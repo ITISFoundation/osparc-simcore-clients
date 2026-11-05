@@ -1,7 +1,8 @@
-import pytest
-import sys
 import re
+import sys
 from pathlib import Path
+
+import pytest
 
 _CURRENT_DIR = (
     Path(sys.argv[0] if __name__ == "__main__" else __file__).resolve().parent
@@ -35,6 +36,6 @@ def test_markdown_links(md_file: Path, link_text: str, file_link: str):
     # NOTE: that current doc only support relative to repo!
     relative_to_repo = (_REPO_DIR / file_link).resolve()
 
-    assert (
-        relative_to_repo.exists()
-    ), f"Broken link found: [{link_text}]({file_link}) in {md_file}"
+    assert relative_to_repo.exists(), (
+        f"Broken link found: [{link_text}]({file_link}) in {md_file}"
+    )

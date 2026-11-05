@@ -3,8 +3,6 @@
 from functools import wraps
 
 from httpx import HTTPStatusError
-
-
 from osparc_client.exceptions import ApiException as ApiException
 
 

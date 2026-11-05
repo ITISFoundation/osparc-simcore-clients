@@ -28,11 +28,11 @@ def skip_if_osparc_version(
     def _wrapper(test):
         osparc_version = Version(osparc.__version__)
         if at_least and osparc_version < at_least:
-            return pytest.mark.skip((f"{osparc_version=}<{at_least}"))(test)
+            return pytest.mark.skip(f"{osparc_version=}<{at_least}")(test)
         if at_most and osparc_version > at_most:
-            return pytest.mark.skip((f"{osparc_version=}>{at_most}"))(test)
+            return pytest.mark.skip(f"{osparc_version=}>{at_most}")(test)
         if exactly and osparc_version != exactly:
-            return pytest.mark.skip((f"{osparc_version=}!={exactly}"))(test)
+            return pytest.mark.skip(f"{osparc_version=}!={exactly}")(test)
         return test
 
     return _wrapper

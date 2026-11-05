@@ -3,13 +3,13 @@ from datetime import datetime
 from email.utils import parsedate_to_datetime
 from typing import (
     Any,
+    AsyncGenerator,
     Awaitable,
     Callable,
     Dict,
+    Literal,
     Optional,
     Set,
-    Literal,
-    AsyncGenerator,
 )
 
 import httpx
@@ -99,9 +99,7 @@ class AsyncHttpClient:
             retry=tenacity.retry_if_exception_type(httpx.HTTPStatusError),
         )
         async def _() -> AsyncGenerator[httpx.Response, None]:
-            async with self._client.stream(
-                method=method, url=url, *args, **kwargs
-            ) as response:
+            async with self._client.stream(method, url, *args, **kwargs) as response:
                 if response.status_code in self.configuration.retries.status_forcelist:
                     response.raise_for_status()
                 yield response
@@ -126,7 +124,7 @@ class AsyncHttpClient:
     async def stream(
         self, method: Literal["GET"], url: str, *args, **kwargs
     ) -> AsyncGenerator[httpx.Response, None]:
-        return await self._stream(method=method, url=url, *args, **kwargs)
+        return await self._stream(method, url, *args, **kwargs)
 
     def _wait_callback(self, retry_state: tenacity.RetryCallState) -> int:
         assert retry_state.outcome is not None

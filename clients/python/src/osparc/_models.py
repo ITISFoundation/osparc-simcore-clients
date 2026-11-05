@@ -1,12 +1,13 @@
+from typing import Annotated, Dict, List, Optional, Union
+from uuid import UUID
+
 from osparc_client import JobInputs as _JobInputs
-from osparc_client import JobOutputs as _JobOutputs
 from osparc_client import JobMetadata as _JobMetadata
 from osparc_client import JobMetadataUpdate as _JobMetadataUpdate
+from osparc_client import JobOutputs as _JobOutputs
+from pydantic import BaseModel, BeforeValidator, Field, StrictStr
+
 from .models import File
-from typing import Dict, Union, List, Optional
-from pydantic import BaseModel, StrictStr, Field, BeforeValidator
-from uuid import UUID
-from typing import Annotated
 
 
 def _ensure_str(v: Union[UUID, str]) -> str:
