@@ -4,13 +4,10 @@ on:
   push:
   pull_request:
 jobs:
-  # The hooks in `.pre-commit-config.yaml` are only ever run by whoever remembers
-  # to install them, so nothing prevented drift: formatting, lint findings and the
-  # Python 3.9 floor check are enforced here instead.
+  # Runs the hooks in .pre-commit-config.yaml, which are opt-in on a developer machine.
   pre-commit:
     runs-on: ubuntu-latest
     steps:
-      # Actions are pinned to commit SHAs, SEE .github/workflows/build-python-client.yml
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Set up Python
         uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0

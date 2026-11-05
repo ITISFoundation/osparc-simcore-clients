@@ -4,8 +4,8 @@ from typing import Final, Optional, Set
 from osparc_client import Configuration as _Configuration
 from urllib3 import Retry
 
-# NOTE: module-level constants because a default set literal is created once and
-# would then be shared (and mutable) across all instances
+# Module-level: a default set literal is created once and would be shared, and
+# mutated, across all instances
 _DEFAULT_RETRY_METHODS: Final = frozenset(
     {
         "DELETE",

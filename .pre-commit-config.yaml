@@ -1,15 +1,11 @@
 # See https://pre-commit.com/hooks.html for more hooks
 #
-# NOTE: every hook is pinned to a commit SHA, with the tag it points to in the
-# comment above it, so a force-push or a retagged release cannot silently change
-# what runs here. `pre-commit autoupdate` still bumps them since it reads the tag
-# from those comments.
+# Every hook is pinned to a commit SHA, with its tag in the comment above it.
+# `pre-commit autoupdate` still bumps them: it reads the tag from those comments.
 exclude: "^.venv$|^.cache$|^.pytest_cache$"
-# NOTE: no `default_language_version` on purpose. Pinning it to e.g. python3.10
-# makes every hook environment require a literal `python3.10` on PATH, which is
-# not guaranteed when git runs the hook installed by `make devenv`. The hook
-# revisions above already pin the tools they install, so the interpreter here is
-# only an implementation detail.
+# No `default_language_version` on purpose: pinning it makes every hook environment
+# require that literal interpreter on PATH, which `make devenv` does not guarantee.
+# The pinned revisions above already pin the tools they install.
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     # v6.0.0
@@ -35,18 +31,15 @@ repos:
           - --remove-kernel-metadata
           - --pin-patterns
           - "[pin];[donotremove]"
-        # Only the notebook that the e2e configuration test produces: the
-        # tutorials under clients/python/docs are shipped *with* their outputs
-        # because they are the rendered documentation.
+        # Scoped to the e2e notebooks. The tutorials under clients/python/docs are
+        # committed with their outputs because they are the rendered documentation.
         files: ^clients/python/test/e2e/.*[.]ipynb$
         types: ["file"]
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # v0.17.3
     rev: 25bcf95026b96e2dd3c0aec3090c3d6ef6ca2e6c
     hooks:
-      # `ruff.toml` at the repo root holds the rule selection and the formatting
-      # settings. Keep its `target-version` at the lowest supported Python, SEE
-      # clients/python/setup.py `python_requires`.
+      # Rule selection and formatting settings live in `ruff.toml` at the repo root.
       - id: ruff
         args:
           - --fix
@@ -54,11 +47,9 @@ repos:
       - id: ruff-format
   - repo: local
     hooks:
-      # Static guard for the interpreter floor that clients/python/setup.py declares.
-      # Nothing else can catch it: the package is built on every supported version,
-      # but a newer-only construct (PEP 604 unions, `match`, `asyncio.timeout`, ...)
-      # surfaces at *runtime* on the oldest interpreter, and mypy cannot target 3.9
-      # here, SEE clients/python/pyproject.toml.
+      # Guards the interpreter floor that clients/python/setup.py declares: a
+      # newer-only construct only fails at runtime on the oldest interpreter, and mypy
+      # cannot target 3.9 here (SEE clients/python/pyproject.toml).
       - id: vermin-python-floor
         name: vermin (clients/python must run on Python 3.9)
         language: python
