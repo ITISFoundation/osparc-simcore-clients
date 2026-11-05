@@ -143,13 +143,7 @@ class FilesApi(_FilesApi):
             file = Path(file)
         if not file.is_file():
             raise RuntimeError(f"{file} is not a file")
-        # NOTE: the checksum is only computed to fulfill the upload-schema requirements
-        # (UserFile.sha256_checksum). It is deliberately NOT used to search for an
-        # already-uploaded identical file: re-using an existing file_id across studies/jobs
-        # allowed one user's cleanup to delete a file still in use by another
-        # (SEE https://github.com/ITISFoundation/osparc-issues/issues/2045).
-        # Any deduplication must be implemented server-side (e.g. content-addressed storage
-        # with reference-counted objects), not by sharing file ids on the client.
+        # SEE https://github.com/ITISFoundation/osparc-issues/issues/2045
         checksum: str = await compute_sha256(file)
         user_file = UserFile(
             filename=file.name,
