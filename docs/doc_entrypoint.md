@@ -14,9 +14,12 @@
 
 ## Installation
 
-You can install `osparc` directly from PyPI:
+You can install `osparc` directly from PyPI. With [uv](https://docs.astral.sh/uv/),
+create a virtual environment first — `uv pip` only installs into one:
 
 ```bash
+uv venv
+source .venv/bin/activate
 uv pip install osparc
 ```
 
