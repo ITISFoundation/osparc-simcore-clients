@@ -66,7 +66,7 @@ class PaginationIterable(Iterable, Sized):
     def __len__(self) -> int:
         """Number of elements which the iterator can produce"""
         page: Page = self._first_page_callback()
-        assert isinstance(page.total, int)
+        assert isinstance(page.total, int)  # nosec
         return page.total
 
     def __iter__(self) -> Generator[T, None, None]:
@@ -75,8 +75,8 @@ class PaginationIterable(Iterable, Sized):
             return
         page: Page = self._first_page_callback()
         while True:
-            assert page.items is not None
-            assert isinstance(page.total, int)
+            assert page.items is not None  # nosec
+            assert isinstance(page.total, int)  # nosec
             yield from page.items
             if page.links.next is None:
                 return
@@ -111,7 +111,7 @@ async def file_chunk_generator(
                 if (bytes_read + chunk_size <= file_size)
                 else (file_size - bytes_read)
             )
-            assert nbytes > 0
+            assert nbytes > 0  # nosec
             chunk = await f.read(nbytes)
             bytes_read += nbytes
             yield Chunk(
@@ -129,7 +129,7 @@ async def _fcn_to_coro(callback: Callable[..., S], *args) -> S:
 
 
 async def compute_sha256(file: Path) -> str:
-    assert file.is_file()
+    assert file.is_file()  # nosec
     sha256 = hashlib.sha256()
     async with aiofiles.open(file, "rb") as f:
         while True:

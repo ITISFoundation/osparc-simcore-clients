@@ -69,7 +69,7 @@ class StudiesApi(_StudiesApi):
 
     def create_study_job(self, study_id: str, job_inputs: JobInputs, **kwargs):
         _job_inputs = _JobInputs.from_json(job_inputs.model_dump_json())
-        assert _job_inputs is not None
+        assert _job_inputs is not None  # nosec
         kwargs = {**kwargs, **ParentProjectInfo().model_dump(exclude_none=True)}
         return super().create_study_job(study_id, _job_inputs, **kwargs)
 
@@ -174,7 +174,7 @@ class StudiesApi(_StudiesApi):
         _job_metadata_update = _JobMetadataUpdate.from_json(
             job_metadata_update.model_dump_json()
         )
-        assert _job_metadata_update is not None
+        assert _job_metadata_update is not None  # nosec
         _job_metadata = super().replace_study_job_custom_metadata(
             study_id, job_id, _job_metadata_update
         )

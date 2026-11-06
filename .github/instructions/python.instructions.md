@@ -97,6 +97,9 @@ of Python 3.9.
 
 ## Suppressions
 
+- Use `assert` only for dev-time invariants and type narrowing, never as part of
+  a logic workflow. In package code under `src/`, mark every `assert` with
+  `# nosec` to acknowledge bandit's assert plugin; test assertions need none.
 - Use `# type: ignore[code]` only for a narrow typing limitation, with the most
   specific code and a reason when non-obvious.
 - Use `# noqa: <RULE>` only for a specific rule, never `# noqa: E999`-style

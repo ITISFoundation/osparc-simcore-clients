@@ -109,7 +109,7 @@ class SolversApi(_SolversApi):
         self, solver_key: str, version: str, job_inputs: JobInputs, **kwargs
     ) -> Job:
         _job_inputs = _JobInputs.from_json(job_inputs.model_dump_json())
-        assert _job_inputs is not None
+        assert _job_inputs is not None  # nosec
         kwargs = {**kwargs, **ParentProjectInfo().model_dump(exclude_none=True)}
         return super().create_solver_job(solver_key, version, _job_inputs, **kwargs)
 
@@ -155,7 +155,7 @@ class SolversApi(_SolversApi):
         _job_metadata_update = _JobMetadataUpdate.from_json(
             job_metadata_update.model_dump_json()
         )
-        assert _job_metadata_update is not None
+        assert _job_metadata_update is not None  # nosec
         _job_custom_metadata = super().replace_job_custom_metadata(
             solver_key, version, job_id, _job_metadata_update
         )
