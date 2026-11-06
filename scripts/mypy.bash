@@ -7,53 +7,58 @@ set -o pipefail
 IFS=$'\n\t'
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
-IMAGE_NAME="local/scripts-$(basename "$0"):latest"
-WORKDIR="$(pwd)"
 
-# mypy only reads `[tool.mypy]` from a file named `pyproject.toml` (it picks the
-# parser from the file name), so the config has to keep its name when it is
-# mounted into the container.
+# mypy picks the parser from the file name, so `[tool.mypy]` has to stay in a pyproject.toml.
 DEFAULT_MYPY_CONFIG="$(git rev-parse --show-toplevel)/clients/python/pyproject.toml"
 MYPY_CONFIG=$(realpath "${MYPY_CONFIG:-${DEFAULT_MYPY_CONFIG}}")
-MYPY_CONFIG_BASENAME="$(basename "${MYPY_CONFIG}")"
 
-build() {
-  echo Building image "$IMAGE_NAME"
-  #
-  docker buildx build \
-    --load \
-    --quiet \
-    --tag "$IMAGE_NAME" \
-    "$SCRIPT_DIR/mypy"
+# Pinned here rather than taken from the environment. Why the interpreter is 3.10 and not
+# the 3.9 floor is recorded in clients/python/pyproject.toml; the package versions are in
+# scripts/mypy/requirements.txt.
+MYPY_PYTHON_VERSION="3.10"
+MYPY_REQUIREMENTS="${SCRIPT_DIR}/mypy/requirements.txt"
+
+uv_mypy() {
+  uv run \
+    --no-project \
+    --python "${MYPY_PYTHON_VERSION}" \
+    --with-requirements "${MYPY_REQUIREMENTS}" \
+    mypy \
+    --warn-unused-configs \
+    --config-file "${MYPY_CONFIG}" \
+    "$@"
 }
 
 echo_requirements() {
   echo "Installed :"
-  docker run \
-    --interactive \
-    --rm \
-    --user="$(id --user "$USER")":"$(id --group "$USER")" \
-    --entrypoint="uv" \
-    "$IMAGE_NAME" \
-    --no-cache-dir pip freeze
+  # Resolved versions of what scripts/mypy/requirements.txt asks for, read inside the
+  # environment mypy runs in.
+  uv run \
+    --no-project \
+    --python "${MYPY_PYTHON_VERSION}" \
+    --with-requirements "${MYPY_REQUIREMENTS}" \
+    python -c '
+import re
+import sys
+from importlib import metadata
+
+print(sys.version)
+for line in open(sys.argv[1]):
+    name = re.split(r"[<>=!~;\[ ]", line.strip(), maxsplit=1)[0].strip()
+    if not name or name.startswith("#"):
+        continue
+    try:
+        print(f"{name}=={metadata.version(name)}")
+    except metadata.PackageNotFoundError:
+        print(f"{name}: not found")
+' "${MYPY_REQUIREMENTS}"
 }
 
 run() {
-  echo Using "$(docker run --rm "$IMAGE_NAME" --version)"
-  echo "Mypy config ${MYPY_CONFIG} mounted as /config/${MYPY_CONFIG_BASENAME}"
+  echo Using "$(uv_mypy --version)"
+  echo "Mypy config ${MYPY_CONFIG}"
   echo Mypying "$(realpath "$@")":
-  #
-  docker run \
-    --rm \
-    --volume="/etc/group:/etc/group:ro" \
-    --volume="/etc/passwd:/etc/passwd:ro" \
-    --user="$(id --user "$USER")":"$(id --group "$USER")" \
-    --volume "$MYPY_CONFIG":"/config/${MYPY_CONFIG_BASENAME}" \
-    --volume "$WORKDIR":/src \
-    --workdir=/src \
-    "$IMAGE_NAME" \
-    --config-file "/config/${MYPY_CONFIG_BASENAME}" \
-    "$@"
+  uv_mypy "$@"
 }
 
 # ----------------------------------------------------------------------
@@ -62,7 +67,6 @@ run() {
 # USAGE
 #    ./scripts/mypy.bash <path>...                    # uses clients/python/pyproject.toml
 #    MYPY_CONFIG=<file> ./scripts/mypy.bash <path>... # any `mypy.ini` or `pyproject.toml`
-build
 echo_requirements
 run "$@"
 echo "DONE"

@@ -110,12 +110,16 @@ class FilesApi(_FilesApi):
                 response.raise_for_status()
                 async for chunk in response.aiter_bytes():
                     await downloaded_file.write(chunk)
-        dest_file = f"{downloaded_file.name}"
+        # aiofiles types `name` as `int | str | bytes | PathLike`; a NamedTemporaryFile
+        # always names a path
+        src_file = downloaded_file.name
+        assert isinstance(src_file, str)  # nosec
+        dest_file = src_file
         if destination_folder is not None:
             with NamedTemporaryFile(dir=destination_folder, delete=False) as tmp:
                 dest_file = tmp.name
             shutil.move(
-                f"{downloaded_file.name}", dest_file
+                src_file, dest_file
             )  # aiofiles doesnt seem to have an async variant of this
         return dest_file
 
@@ -193,7 +197,7 @@ class FilesApi(_FilesApi):
                         file_chunk_generator(file, chunk_size),
                         total=n_urls,
                         disable=(not _logger.isEnabledFor(logging.DEBUG)),
-                    ):  # type: ignore
+                    ):
                         assert isinstance(chunk, Chunk)  # nosec
                         index, url = next(url_iter)
                         upload_tasks.add(
@@ -222,7 +226,7 @@ class FilesApi(_FilesApi):
             )
             server_file: File = await self._complete_multipart_upload(
                 api_server_session,
-                links.complete_upload,  # type: ignore
+                links.complete_upload,
                 client_file,
                 uploaded_parts,
             )

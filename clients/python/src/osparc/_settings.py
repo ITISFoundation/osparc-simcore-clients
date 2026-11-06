@@ -28,8 +28,10 @@ class ParentProjectInfo(BaseSettings):
 class ConfigurationEnvVars(BaseSettings):
     """Model for capturing env vars which should go into the Configuration"""
 
-    # Service side: https://github.com/ITISFoundation/osparc-simcore/pull/5966
-    OSPARC_API_HOST: AnyHttpUrl = Field(
+    # OSPARC_API_BASE_URL is the service-side name from
+    # https://github.com/ITISFoundation/osparc-simcore/pull/5966, OSPARC_API_HOST the name
+    # used before it. The ignore is for pydantic's mypy plugin rejecting a runtime alias.
+    OSPARC_API_HOST: AnyHttpUrl = Field(  # type: ignore[pydantic-alias]
         default=...,
         validation_alias=AliasChoices("OSPARC_API_BASE_URL", "OSPARC_API_HOST"),
         description="OSPARC api url",

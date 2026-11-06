@@ -11,12 +11,17 @@ from osparc._http_client import AsyncHttpClient
 @pytest.fixture
 def fake_retry_state():
     def _(r: httpx.Response):
-        class Exc:
-            response = r
+        # _request retries HTTPStatusError only, so the state tenacity passes to the
+        # callback always carries one
+        exception = httpx.HTTPStatusError(
+            message="retry",
+            request=httpx.Request(method="GET", url="https://test.com"),
+            response=r,
+        )
 
         class Outcome:
             def exception(self):
-                return Exc()
+                return exception
 
         class FakeRetryCallState:
             outcome = Outcome()

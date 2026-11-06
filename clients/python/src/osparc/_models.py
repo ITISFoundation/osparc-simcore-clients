@@ -25,7 +25,7 @@ class JobInputs(BaseModel):
         super().__init__(values=values)
 
 
-assert set(_JobInputs.model_fields.keys()) == set(JobInputs.model_fields.keys())
+assert set(_JobInputs.model_fields.keys()) == set(JobInputs.model_fields.keys())  # nosec
 
 
 class JobOutputs(BaseModel):
@@ -37,7 +37,7 @@ class JobOutputs(BaseModel):
     results: Dict[str, Union[File, List[object], bool, float, int, str, None]]
 
 
-assert set(_JobOutputs.model_fields.keys()) == set(JobOutputs.model_fields.keys())
+assert set(_JobOutputs.model_fields.keys()) == set(JobOutputs.model_fields.keys())  # nosec
 
 
 class JobMetadata(BaseModel):
@@ -46,7 +46,7 @@ class JobMetadata(BaseModel):
     url: Optional[str]
 
 
-assert set(_JobMetadata.model_fields.keys()) == set(JobMetadata.model_fields.keys())
+assert set(_JobMetadata.model_fields.keys()) == set(JobMetadata.model_fields.keys())  # nosec
 
 
 class JobMetadataUpdate(BaseModel):
@@ -55,4 +55,4 @@ class JobMetadataUpdate(BaseModel):
 
 assert set(_JobMetadataUpdate.model_fields.keys()) == set(
     JobMetadataUpdate.model_fields.keys()
-)
+)  # nosec

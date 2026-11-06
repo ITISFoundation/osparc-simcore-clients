@@ -17,6 +17,22 @@ version. Apply all instruction files whose `applyTo` patterns match the file you
 are editing. Where matching instructions conflict, prefer the rule specific to
 that file over a general rule.
 
+## Tooling
+
+- Set up Python environments and run Python tools with `uv`, not `pip`. Where uv
+  has no equivalent - `pip index versions`, `pip install --dry-run --report` -
+  run pip through `uv run --no-project --with "pip>=22.2" pip ...` instead of
+  installing it into the environment.
+- `jq` and `git` are host requirements of the `Makefile` targets and the helpers
+  in [`scripts/`](../../scripts/). A script that needs a host tool checks for it
+  with `command -v` and names the tool to install when it is missing.
+- A container image is the right tool when it carries setup worth pinning - an
+  interpreter, a dependency set, a tool chain. It is the wrong tool when it only
+  stands in for a tool the caller already needs on the host.
+- Type checking runs through `scripts/mypy.bash` (`make -C clients/python mypy`),
+  which uv resolves from `scripts/mypy/requirements.txt` on the interpreter that
+  file pins. The `lint` workflow runs it, so it gates a pull request.
+
 ## Change discipline
 
 - Keep changes focused on the requested behavior. Avoid unrelated refactors,
