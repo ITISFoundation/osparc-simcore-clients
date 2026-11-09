@@ -4,7 +4,7 @@
 # pylint: disable=too-many-arguments
 
 import os
-from typing import Callable, Optional
+from typing import Callable
 
 import pytest
 from faker import Faker
@@ -78,10 +78,10 @@ def test_create_jobs_parent_headers(
 @pytest.mark.parametrize("OSPARC_API_SECRET", ["secret", None])
 def test_api_client_constructor(
     monkeypatch: pytest.MonkeyPatch,
-    OSPARC_API_HOST: Optional[str],
-    OSPARC_API_BASE_URL: Optional[str],
-    OSPARC_API_KEY: Optional[str],
-    OSPARC_API_SECRET: Optional[str],
+    OSPARC_API_HOST: str | None,
+    OSPARC_API_BASE_URL: str | None,
+    OSPARC_API_KEY: str | None,
+    OSPARC_API_SECRET: str | None,
 ):
     with monkeypatch.context() as patch:
         patch.delenv("OSPARC_API_HOST", raising=False)

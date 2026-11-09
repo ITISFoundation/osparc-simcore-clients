@@ -2,7 +2,6 @@ import configparser
 import warnings
 from datetime import timedelta
 from pathlib import Path
-from typing import Optional
 from urllib.parse import urlparse
 
 import osparc
@@ -190,7 +189,7 @@ def generate_html_table(e2e_artifacts_dir: str) -> None:
 
 
 @cli.command()
-def log_dir(pytest_ini: Optional[Path] = None):
+def log_dir(pytest_ini: Path | None = None):
     ini = (
         PytestIniFile.create_from_file(pytest_ini)
         if pytest_ini
@@ -200,7 +199,7 @@ def log_dir(pytest_ini: Optional[Path] = None):
 
 
 @cli.command()
-def clean_up_jobs(artifacts_dir: Path, retry_minutes: Optional[PositiveInt] = None):
+def clean_up_jobs(artifacts_dir: Path, retry_minutes: PositiveInt | None = None):
     """Loop through all users defined in pytest.ini files
     in artifacts_dir and stop+delete all jobs.
     """

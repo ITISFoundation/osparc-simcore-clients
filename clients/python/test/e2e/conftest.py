@@ -37,7 +37,7 @@ _test_start_times = {}
 
 
 def _utc_now():
-    return datetime.datetime.now(tz=datetime.timezone.utc)
+    return datetime.datetime.now(tz=datetime.UTC)
 
 
 def _construct_graylog_url(api_host, start_time, end_time):
