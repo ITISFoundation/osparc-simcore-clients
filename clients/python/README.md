@@ -17,9 +17,9 @@ Changes to the client should not be performed within the generated python code, 
 *Please do not manually `git commit` auto generated code into this repository*
 
 ### Supported Python versions
-The client supports Python 3.9 up to the newest interpreter in the `test-latest` matrix of `.github/workflows/build-python-client.yml`. The floor is declared by `python_requires` in `setup.py`.
+The client supports Python 3.11 up to the newest interpreter in the `test-latest` matrix of `.github/workflows/build-python-client.yml`. The floor is declared by `python_requires` in `setup.py`.
 
-`OPENAPI_GENERATOR_TAG` is pinned to `v7.23.0` in `scripts/common.Makefile` because newer generators emit code that requires Python 3.10+. Dropping 3.9 means: bumping that tag and regenerating the client, removing `3.9` from the CI matrix, rebuilding `docker/osparc_python_tutorial_testing` off a newer base, and releasing it as a compatibility change (SEE `VERSIONING.md`).
+`OPENAPI_GENERATOR_TAG` is pinned to `v7.23.0` in `scripts/common.Makefile`, the last generator whose client declared `requires-python >= 3.9`. With a 3.11 floor that constraint no longer holds the tag, and raising it means regenerating the client, which is a change on its own.
 
 # Testing
 Tests are located in `PYDIR/test_osparc` and `PYDIR/test_osparc_client`. They can be run by executing the following commands from PYDIR:

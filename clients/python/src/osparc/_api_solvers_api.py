@@ -4,7 +4,7 @@ import logging
 import warnings
 from pathlib import Path
 from tempfile import NamedTemporaryFile
-from typing import List, Optional
+from typing import List
 
 import httpx
 from osparc_client import JobInputs as _JobInputs
@@ -46,9 +46,9 @@ class SolversApi(_SolversApi):
             api_client (ApiClient, optinal): osparc.ApiClient object
         """
         super().__init__(api_client)
-        user: Optional[str] = self.api_client.configuration.username
-        passwd: Optional[str] = self.api_client.configuration.password
-        self._auth: Optional[httpx.BasicAuth] = (
+        user: str | None = self.api_client.configuration.username
+        passwd: str | None = self.api_client.configuration.password
+        self._auth: httpx.BasicAuth | None = (
             httpx.BasicAuth(username=user, password=passwd)
             if (user is not None and passwd is not None)
             else None

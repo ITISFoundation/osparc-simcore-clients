@@ -2,15 +2,7 @@ import asyncio
 import hashlib
 from collections.abc import Iterable, Sized
 from pathlib import Path
-from typing import (
-    AsyncGenerator,
-    Callable,
-    Generator,
-    NamedTuple,
-    Optional,
-    TypeVar,
-    Union,
-)
+from typing import AsyncGenerator, Callable, Generator, NamedTuple, TypeAlias, TypeVar
 
 import aiofiles
 import httpx
@@ -36,7 +28,7 @@ _DEFAULT_PAGINATION_OFFSET: int = 0
 
 DEFAULT_TIMEOUT_SECONDS: int = 30 * 60
 
-Page = Union[PageJob, PageFile, PageStudy]
+Page: TypeAlias = PageJob | PageFile | PageStudy
 T = TypeVar("T", Job, File, Solver, Study)
 
 
@@ -51,11 +43,11 @@ class PaginationIterable(Iterable, Sized):
         first_page_callback: Callable[[], Page],
         api_client: ApiClient,
         base_url: str,
-        auth: Optional[httpx.BasicAuth],
+        auth: httpx.BasicAuth | None,
     ):
         self._first_page_callback: Callable[[], Page] = first_page_callback
         self._api_client: ApiClient = api_client
-        self._next_page_url: Optional[str] = None
+        self._next_page_url: str | None = None
         self._client: httpx.Client = httpx.Client(
             auth=auth, base_url=base_url, follow_redirects=True
         )

@@ -10,7 +10,7 @@ cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
 IMAGE_NAME="itisfoundation/osparc_python_tutorial_testing"
 # NOTE: publish new tags, never republish v1 in place: the e2e-portal GitLab CI
 # pins itisfoundation/osparc_python_tutorial_testing:v1 and must keep working.
-IMAGE_VERSION="v2"
+IMAGE_VERSION="v3"
 
 docker build --tag "${IMAGE_NAME}:${IMAGE_VERSION}" .
 docker push "${IMAGE_NAME}:${IMAGE_VERSION}"

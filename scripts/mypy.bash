@@ -12,10 +12,10 @@ SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 DEFAULT_MYPY_CONFIG="$(git rev-parse --show-toplevel)/clients/python/pyproject.toml"
 MYPY_CONFIG=$(realpath "${MYPY_CONFIG:-${DEFAULT_MYPY_CONFIG}}")
 
-# Pinned here rather than taken from the environment. Why the interpreter is 3.10 and not
-# the 3.9 floor is recorded in clients/python/pyproject.toml; the package versions are in
+# Pinned here rather than taken from the environment, and kept at the supported floor that
+# clients/python/pyproject.toml checks against; the package versions are in
 # scripts/mypy/requirements.txt.
-MYPY_PYTHON_VERSION="3.10"
+MYPY_PYTHON_VERSION="3.11"
 MYPY_REQUIREMENTS="${SCRIPT_DIR}/mypy/requirements.txt"
 
 uv_mypy() {

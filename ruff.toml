@@ -8,8 +8,8 @@ line-length = 88
 # Keep this at the lowest supported interpreter, SEE clients/python/setup.py
 # (`python_requires`). Pinning it to the floor is what prevents the linter from
 # suggesting or auto-fixing to syntax the oldest supported Python cannot parse
-# (PEP 604 unions need 3.10, `match` needs 3.10, `asyncio.timeout` needs 3.11).
-target-version = "py39"
+# (PEP 695 generics and `type` aliases need 3.12, `TypeVar` defaults need 3.13).
+target-version = "py311"
 
 [lint]
 select = [

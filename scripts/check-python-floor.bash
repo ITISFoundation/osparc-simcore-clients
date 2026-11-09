@@ -2,8 +2,9 @@
 # Fails when the Python floor this repo declares stops agreeing with itself.
 #
 # None of these tools can read a shared declaration: ruff wants `target-version`, vermin
-# wants `--target`, setuptools wants `python_requires`, and CI lists what it actually tests.
-# The floor therefore lives in four places, and this checks they still say the same thing.
+# wants `--target`, setuptools wants `python_requires`, mypy wants `python_version`, and CI
+# lists what it actually tests. The floor therefore lives in several places, and this checks
+# they still say the same thing.
 # The lowest `Programming Language :: Python :: 3.X` classifier is included because it is
 # what the package advertises to pip and PyPI.
 set -euo pipefail
@@ -29,6 +30,8 @@ declare_value "target-version in ruff.toml" \
     "$(sed -nE 's/target-version = "py3([0-9]+)".*/\1/p' ruff.toml)"
 declare_value "--target of the vermin hook in .pre-commit-config.yaml" \
     "$(sed -nE 's/.*--target=3\.([0-9]+)-.*/\1/p' .pre-commit-config.yaml | head -1)"
+declare_value "python_version in clients/python/pyproject.toml" \
+    "$(sed -nE 's/^python_version = "3\.([0-9]+)".*/\1/p' clients/python/pyproject.toml)"
 declare_value "lowest entry of the test matrix in .github/workflows/build-python-client.yml" \
     "$(sed -nE 's/.*python-version: \[(.*)\].*/\1/p' .github/workflows/build-python-client.yml |
         tr -d '"' | tr ',' '\n' | grep -oE '3\.[0-9]+' | cut -d. -f2 | sort -n | head -1)"

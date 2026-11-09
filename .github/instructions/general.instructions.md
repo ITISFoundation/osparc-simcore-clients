@@ -12,7 +12,7 @@ specification they are generated from in
 
 Use the Python version in the CI matrix of
 [`build-python-client.yml`](../workflows/build-python-client.yml). The floor is
-Python 3.9: do not use syntax or standard-library features unavailable in that
+Python 3.11: do not use syntax or standard-library features unavailable in that
 version. Apply all instruction files whose `applyTo` patterns match the file you
 are editing. Where matching instructions conflict, prefer the rule specific to
 that file over a general rule.

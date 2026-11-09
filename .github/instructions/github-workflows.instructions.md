@@ -42,7 +42,7 @@ the site.
   pip through uv (`uv run --no-project --with pip pip ...`) rather than
   installing pip into the environment.
 - Keep the `python-version` matrix in sync with the versions the package
-  supports. The floor is Python 3.9 until a release raises it, and raising it
+  supports. The floor is Python 3.11 until a release raises it, and raising it
   means changing the matrix in the same pull request. Adding a version to the
   matrix means the code must import and pass the unit tests on it.
 - A workflow step that duplicates a `make` target should call the target, so the
