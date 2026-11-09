@@ -21,6 +21,11 @@ The client supports Python 3.11 up to the newest interpreter in the `test-latest
 
 `OPENAPI_GENERATOR_TAG` is pinned to `v7.23.0` in `scripts/common.Makefile`, the last generator whose client declared `requires-python >= 3.9`. With a 3.11 floor that constraint no longer holds the tag, and raising it means regenerating the client, which is a change on its own.
 
+### Interpreter end of life
+`clients/python/src/osparc/_python_eol.py` holds the end-of-life date of each supported interpreter. At import it warns when the running interpreter is within three months of that date, or already past it; set `OSPARC_DISABLE_PYTHON_EOL_WARNING=1` to silence the warning.
+
+The dates are a copy of [endoflife.date](https://endoflife.date/python), and a copy drifts: `scripts/check-python-eol-dates.bash --check` compares it against the API and runs in the `lint` workflow, `--write` rewrites it. The table is embedded instead of fetched at import, which would add a network call to every `import osparc`, including on deployments without internet access.
+
 # Testing
 Tests are located in `PYDIR/test_osparc` and `PYDIR/test_osparc_client`. They can be run by executing the following commands from PYDIR:
 ```bash
