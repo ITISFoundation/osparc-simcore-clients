@@ -4,7 +4,7 @@ import os
 import sys
 import warnings
 from datetime import date
-from typing import Dict, Final
+from typing import Dict, Final, FrozenSet
 
 from ._exceptions import VisibleDeprecationWarning
 
@@ -25,7 +25,7 @@ _WARNING_WINDOW_MONTHS: Final[int] = 3
 # Read from the environment directly, not through the pydantic-settings models in
 # `_settings.py`: this runs while `import osparc` is still executing.
 _DISABLE_WARNING_ENV_VAR: Final[str] = "OSPARC_DISABLE_PYTHON_EOL_WARNING"
-_DISABLED_VALUES: Final[frozenset[str]] = frozenset({"1", "true", "yes"})
+_DISABLED_VALUES: Final[FrozenSet[str]] = frozenset({"1", "true", "yes"})
 
 
 def _add_months(when: date, months: int) -> date:

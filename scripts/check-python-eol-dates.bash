@@ -72,12 +72,24 @@ if [ "$MODE" = "--write" ]; then
         echo "check-python-eol-dates: the API has no cycle at or above 3.$floor" >&2
         exit 1
     fi
-    # Replaces the dict body between its opening brace and the line closing it.
-    awk -v body="$body" '
-        /_PYTHON_EOL_DATES: Final\[Dict\[str, str\]\] = \{/ { print; in_body = 1; print body; next }
+    # Replaces the dict body between its opening brace and the line closing it. The
+    # anchor is the symbol at the start of the declaration: matching the annotation as
+    # well would let a rewrite of that line replace nothing while still reporting a
+    # rewrite. The character after the identifier must be whitespace or ':' (an
+    # annotation), so a longer name like _PYTHON_EOL_DATES_BACKUP is not a match, and
+    # anchoring at the line start keeps commented-out declarations out.
+    if ! awk -v body="$body" '
+        !replaced && /^[[:space:]]*_PYTHON_EOL_DATES([[:space:]]|:).*=[[:space:]]*\{[[:space:]]*$/ {
+            print; in_body = 1; replaced = 1; print body; next
+        }
         in_body && /^\}/ { in_body = 0 }
         !in_body { print }
-    ' "$MODULE_PATH" >"$MODULE_PATH.new"
+        END { if (!replaced) exit 1 }
+    ' "$MODULE_PATH" >"$MODULE_PATH.new"; then
+        rm -f "$MODULE_PATH.new"
+        echo "check-python-eol-dates: no _PYTHON_EOL_DATES table found in $MODULE_PATH" >&2
+        exit 1
+    fi
     mv "$MODULE_PATH.new" "$MODULE_PATH"
     echo "check-python-eol-dates: rewrote the table in $MODULE_PATH"
     exit 0
