@@ -73,10 +73,15 @@ if [ "$MODE" = "--write" ]; then
         exit 1
     fi
     # Replaces the dict body between its opening brace and the line closing it. The
-    # anchor is the symbol alone: matching the annotation as well would let a rewrite
-    # of that line replace nothing while still reporting a rewrite.
+    # anchor is the symbol at the start of the declaration: matching the annotation as
+    # well would let a rewrite of that line replace nothing while still reporting a
+    # rewrite. The character after the identifier must be whitespace or ':' (an
+    # annotation), so a longer name like _PYTHON_EOL_DATES_BACKUP is not a match, and
+    # anchoring at the line start keeps commented-out declarations out.
     if ! awk -v body="$body" '
-        !replaced && /_PYTHON_EOL_DATES[^=]*= *\{/ { print; in_body = 1; replaced = 1; print body; next }
+        !replaced && /^[[:space:]]*_PYTHON_EOL_DATES([[:space:]]|:).*=[[:space:]]*\{[[:space:]]*$/ {
+            print; in_body = 1; replaced = 1; print body; next
+        }
         in_body && /^\}/ { in_body = 0 }
         !in_body { print }
         END { if (!replaced) exit 1 }
