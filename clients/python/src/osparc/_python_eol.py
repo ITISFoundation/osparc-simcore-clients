@@ -1,4 +1,5 @@
 import calendar
+import contextlib
 import os
 import sys
 import warnings
@@ -98,4 +99,8 @@ def check_python_eol(*, version: str | None = None, today: date | None = None) -
     else:
         return
 
-    warnings.warn(message, VisibleDeprecationWarning, stacklevel=2)
+    # PYTHONWARNINGS=error, or a warnings filter set to "error", turns `warn` into
+    # a raise. This runs while `import osparc` is still executing, so the raise
+    # would surface as an ImportError on an interpreter that still works.
+    with contextlib.suppress(VisibleDeprecationWarning):
+        warnings.warn(message, VisibleDeprecationWarning, stacklevel=2)
