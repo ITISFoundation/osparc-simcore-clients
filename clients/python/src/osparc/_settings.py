@@ -1,4 +1,3 @@
-from typing import Final
 from uuid import UUID
 
 from pydantic import AliasChoices, AnyHttpUrl, Field, field_validator
@@ -39,12 +38,6 @@ class ConfigurationEnvVars(BaseSettings):
     OSPARC_API_SECRET: str = Field(default=..., description="OSPARC api secret")
 
 
-_HOST_ENV_NAME: Final[str] = "OSPARC_API_HOST"
-_BASE_URL_ENV_NAME: Final[str] = "OSPARC_API_BASE_URL"
-_KEY_ENV_NAME: Final[str] = "OSPARC_API_KEY"
-_SECRET_ENV_NAME: Final[str] = "OSPARC_API_SECRET"
-
-
 class OptionalConfigurationEnvVars(BaseSettings):
     """Per-field fallbacks for `Configuration` arguments left unset.
 
@@ -58,18 +51,18 @@ class OptionalConfigurationEnvVars(BaseSettings):
     # used before it. The ignore is for pydantic's mypy plugin rejecting a runtime alias.
     OSPARC_API_HOST: AnyHttpUrl | None = Field(  # type: ignore[pydantic-alias]
         default=None,
-        validation_alias=AliasChoices(_BASE_URL_ENV_NAME, _HOST_ENV_NAME),
+        validation_alias=AliasChoices("OSPARC_API_BASE_URL", "OSPARC_API_HOST"),
         description="OSPARC api url",
         examples=["https://api.osparc-master.speag.com/"],
     )
     OSPARC_API_KEY: str | None = Field(
         default=None,
-        validation_alias=_KEY_ENV_NAME,
+        validation_alias="OSPARC_API_KEY",
         description="OSPARC api key",
     )
     OSPARC_API_SECRET: str | None = Field(
         default=None,
-        validation_alias=_SECRET_ENV_NAME,
+        validation_alias="OSPARC_API_SECRET",
         description="OSPARC api secret",
     )
 
