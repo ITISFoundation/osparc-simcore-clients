@@ -1,9 +1,10 @@
-import os
 from collections.abc import Collection
 from typing import Final
 
 from osparc_client import Configuration as _Configuration
 from urllib3 import Retry
+
+from ._settings import OptionalConfigurationEnvVars
 
 # Module-level: a default set literal is created once and would be shared, and
 # mutated, across all instances
@@ -22,46 +23,40 @@ _DEFAULT_RETRY_METHODS: Final = frozenset(
 )
 _DEFAULT_RETRY_STATUS_CODES: Final = frozenset({429, 503, 504})
 
-DEFAULT_HOST: Final = "https://api.osparc.io"
-
-# Same names as ConfigurationEnvVars in _settings.py: OSPARC_API_BASE_URL is
-# the service-side name from osparc-simcore#5966, OSPARC_API_HOST the legacy one.
-_HOST_ENV_NAMES: Final = ("OSPARC_API_BASE_URL", "OSPARC_API_HOST")
-_USERNAME_ENV_NAME: Final = "OSPARC_API_KEY"
-_PASSWORD_ENV_NAME: Final = "OSPARC_API_SECRET"
-
-
-def _first_env(names: Collection[str]) -> str | None:
-    for name in names:
-        if value := os.environ.get(name):
-            return value
-    return None
+DEFAULT_HOST: Final[str] = "https://api.osparc.io"
 
 
 class Configuration(_Configuration):
     def __init__(
         self,
         host: str | None = None,
-        api_key=None,
-        api_key_prefix=None,
-        username=None,
-        password=None,
+        api_key: dict[str, str] | str | None = None,
+        api_key_prefix: dict[str, str] | None = None,
+        username: str | None = None,
+        password: str | None = None,
         *,
         retry_max_count: int = 4,
         retry_methods: set[str] | None = None,
         retry_status_codes: set[int] | None = None,
-        retry_backoff_factor=4.0,
-    ):
-        # osparc injects OSPARC_* env vars when starting a service (e.g.
-        # jupyter-math); use them as per-field fallbacks so Configuration()
-        # works there without arguments, while explicit arguments win.
+        retry_backoff_factor: float = 4.0,
+    ) -> None:
+        """Arguments left unset fall back, per field, to the OSPARC_* env vars
+        osparc injects into services; an unset host without env falls back to
+        `DEFAULT_HOST`.
+        """
+        env_vars = OptionalConfigurationEnvVars()
         if host is None:
-            env_host = _first_env(_HOST_ENV_NAMES)
-            host = env_host.rstrip("/") if env_host else DEFAULT_HOST
+            # str(AnyHttpUrl) may keep a trailing slash, see
+            # https://github.com/pydantic/pydantic/issues/7186
+            host = (
+                f"{env_vars.OSPARC_API_HOST}".rstrip("/")
+                if env_vars.OSPARC_API_HOST
+                else DEFAULT_HOST
+            )
         if username is None:
-            username = _first_env((_USERNAME_ENV_NAME,))
+            username = env_vars.OSPARC_API_KEY
         if password is None:
-            password = _first_env((_PASSWORD_ENV_NAME,))
+            password = env_vars.OSPARC_API_SECRET
 
         methods: Collection[str] = (
             _DEFAULT_RETRY_METHODS if retry_methods is None else retry_methods
