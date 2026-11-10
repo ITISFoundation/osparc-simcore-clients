@@ -19,12 +19,14 @@ APP_NAME      := $(notdir $(CURDIR))
 # (>=3.9 through v7.24.0, >=3.10 from v7.25.0, >=3.11 from v7.27.0, see
 # https://github.com/OpenAPITools/openapi-generator/pull/22926). Documented floor:
 # clients/python/README.md#supported-python-versions
-# Bumping this tag regenerates the client, so review the diff: v7.27.0 stops emitting anyOf
-# models, which drops osparc_client.models.values_value that clients/python/src/osparc uses.
+# Bumping this tag regenerates the client, so read the diff before merging it. v7.27.0
+# already sends headers case-insensitively, reads proxies out of the environment in
+# Configuration, requires urllib3 >= 2.7 and inlines anyOf unions as Any, which dropped
+# osparc_client.models.values_value.
 # Bumping this tag MUST stay in sync with the python-version matrix in
 # .github/workflows/build-python-client.yml
 OPENAPI_GENERATOR_NAME  := openapitools/openapi-generator-cli
-OPENAPI_GENERATOR_TAG   := v7.23.0
+OPENAPI_GENERATOR_TAG   := v7.27.0
 OPENAPI_GENERATOR_IMAGE := $(OPENAPI_GENERATOR_NAME):$(OPENAPI_GENERATOR_TAG)
 
 # openapi specification
