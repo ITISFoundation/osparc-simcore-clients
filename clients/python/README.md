@@ -19,7 +19,7 @@ Changes to the client should not be performed within the generated python code, 
 ### Supported Python versions
 The client supports Python 3.11 up to the newest interpreter in the `test-latest` matrix of `.github/workflows/build-python-client.yml`. The floor is declared by `python_requires` in `setup.py`.
 
-`OPENAPI_GENERATOR_TAG` is pinned to `v7.23.0` in `scripts/common.Makefile`, the last generator whose client declared `requires-python >= 3.9`. With a 3.11 floor that constraint no longer holds the tag, and raising it means regenerating the client, which is a change on its own.
+`OPENAPI_GENERATOR_TAG` in `scripts/common.Makefile` pins the generator image. Whatever `requires-python` the generated package declares gets overwritten with `python_requires` from `setup.py` during generation, so the pin never decides the supported floor. Bumping the tag regenerates the client, and the diff has to be reviewed: v7.27.0, for instance, stopped emitting a model per `anyOf` union.
 
 ### Interpreter end of life
 `clients/python/src/osparc/_python_eol.py` holds the end-of-life date of each supported interpreter. At import it warns when the running interpreter is within three months of that date, or already past it; set `OSPARC_DISABLE_PYTHON_EOL_WARNING=1` to silence the warning.
