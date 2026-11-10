@@ -36,6 +36,11 @@ fetch_api() {
             .[]
             | select(.cycle | startswith("3."))
             | select(.eol | type == "string")
+            # A cycle is only supported once it has shipped: the API already
+            # carries a planned end-of-life date for interpreters that have not
+            # been released, and those must not be demanded of the table.
+            | select(.releaseDate | type == "string")
+            | select(.releaseDate <= (now | strftime("%Y-%m-%d")))
             | "\(.cycle | split(".") | .[1] | tonumber) \(.cycle) \(.eol)"
         ' |
         sort --numeric-sort --key=1,1
