@@ -23,13 +23,6 @@ select = [
     "SIM", # redundant code shapes
     "UP", # modern Python, bounded by target-version above
 ]
-ignore = [
-    # The hand-written code mirrors the `typing.Dict`/`typing.List` style that the
-    # pinned openapi-generator emits, so builtin-generic rewrites would fight
-    # regenerated code.
-    "UP006",
-    "UP035",
-]
 
 [lint.per-file-ignores]
 # Public API shims: the star-import / `import x as x` re-export shape is intended.

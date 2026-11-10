@@ -5,9 +5,10 @@ import json
 import logging
 import math
 import shutil
+from collections.abc import Iterator
 from pathlib import Path
 from tempfile import NamedTemporaryFile
-from typing import Any, Final, Iterator, List, Set, Tuple
+from typing import Any, Final
 from urllib.parse import urljoin
 
 import aiofiles
@@ -163,7 +164,7 @@ class FilesApi(_FilesApi):
         )
         chunk_size: int = client_upload_schema.upload_schema.chunk_size
         links: FileUploadData = client_upload_schema.upload_schema.links
-        url_iter: Iterator[Tuple[int, str]] = enumerate(
+        url_iter: Iterator[tuple[int, str]] = enumerate(
             iter(client_upload_schema.upload_schema.urls), start=1
         )
         n_urls: int = len(client_upload_schema.upload_schema.urls)
@@ -175,8 +176,8 @@ class FilesApi(_FilesApi):
         abort_body = BodyAbortMultipartUploadV0FilesFileIdAbortPost(
             client_file=client_file
         )
-        upload_tasks: Set[asyncio.Task] = set()
-        uploaded_parts: List[UploadedPart] = []
+        upload_tasks: set[asyncio.Task] = set()
+        uploaded_parts: list[UploadedPart] = []
 
         async with AsyncHttpClient(
             configuration=self.api_client.configuration,
@@ -238,7 +239,7 @@ class FilesApi(_FilesApi):
         http_client: AsyncHttpClient,
         complete_link: str,
         client_file: ClientFile,
-        uploaded_parts: List[UploadedPart],
+        uploaded_parts: list[UploadedPart],
     ) -> File:
         complete_payload = BodyCompleteMultipartUploadV0FilesFileIdCompletePost(
             client_file=client_file,

@@ -6,8 +6,9 @@
 
 import hashlib
 import logging
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable, Final
+from typing import Final
 
 import osparc
 import pytest

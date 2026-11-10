@@ -8,8 +8,9 @@ import contextlib
 import datetime
 import logging
 import os
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Final, Iterable, NamedTuple
+from typing import Final, NamedTuple
 from uuid import UUID
 
 import osparc

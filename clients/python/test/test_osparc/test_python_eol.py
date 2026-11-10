@@ -8,7 +8,7 @@ import warnings
 from datetime import date, timedelta
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Any, Final, List
+from typing import Any, Final
 
 import osparc._python_eol as _python_eol
 import osparc._version as _version
@@ -39,7 +39,7 @@ class _DateFrozenAtEndOfLife(date):
         return _EOL
 
 
-def _emit(**kwargs: Any) -> List[warnings.WarningMessage]:
+def _emit(**kwargs: Any) -> list[warnings.WarningMessage]:
     """Runs the check with warnings captured rather than printed."""
     with warnings.catch_warnings(record=True) as caught:
         warnings.simplefilter("always")

@@ -3,7 +3,7 @@ import subprocess
 from copy import deepcopy
 from functools import partial
 from pathlib import Path
-from typing import Any, Dict, List, Set, cast
+from typing import Any, cast
 from urllib.parse import urlparse
 
 import httpx
@@ -44,7 +44,7 @@ def test_dependencies(tmp_path: Path):
         capture_output=True,
         check=True,
     )
-    import_dependencies: Set[str] = {
+    import_dependencies: set[str] = {
         _.replace(".egg", "") for _ in import_file.read_text().splitlines()
     }
 
@@ -60,12 +60,12 @@ def test_dependencies(tmp_path: Path):
         check=False,
     )
     assert output.returncode == 0
-    dependency_tree: List[Dict[str, Any]] = json.loads(output.stdout)
+    dependency_tree: list[dict[str, Any]] = json.loads(output.stdout)
     dependency_tree = [
         node for node in dependency_tree if node["package"]["key"] == "osparc"
     ]
     assert len(dependency_tree) == 1
-    install_dependencies: Set[str] = {
+    install_dependencies: set[str] = {
         dep["package_name"].replace("-", "_")
         for dep in dependency_tree[0]["dependencies"]
     }
@@ -105,7 +105,7 @@ def test_pagination_iterator(
         password=api_client.configuration.password,
     )
 
-    def _sideeffect(all_items: List, request: httpx.Request):
+    def _sideeffect(all_items: list, request: httpx.Request):
         n_remaining_items = cast(int, page_file.total) - len(all_items)
         assert n_remaining_items >= 0
         if len(page_file.items) >= n_remaining_items:
@@ -118,7 +118,7 @@ def test_pagination_iterator(
         base_url=_base_url,
         assert_all_called=True,
     ) as respx_mock:
-        server_items: List[osparc.File] = deepcopy(page_file.items)
+        server_items: list[osparc.File] = deepcopy(page_file.items)
         respx_mock.get(urlparse(page_file.links.next).path).mock(
             side_effect=partial(_sideeffect, server_items)
         )

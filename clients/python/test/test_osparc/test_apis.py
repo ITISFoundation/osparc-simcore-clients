@@ -4,7 +4,7 @@
 # pylint: disable=too-many-arguments
 
 import os
-from typing import Callable
+from collections.abc import Callable
 
 import pytest
 from faker import Faker

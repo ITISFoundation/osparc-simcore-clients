@@ -5,8 +5,8 @@
 # pylint: disable=unused-variable
 
 import json
+from collections.abc import Callable, Iterator
 from contextlib import contextmanager
-from typing import Callable, Iterator, Set
 from uuid import UUID
 
 import osparc
@@ -24,9 +24,9 @@ DEFAULT_TIMEOUT_SECONDS = 15 * 60  # 15 min
 def create_sleeper_jobs(
     api_client: osparc.ApiClient,
     sleeper: osparc.Solver,
-) -> Callable[[int], Iterator[Set[UUID | str]]]:
+) -> Callable[[int], Iterator[set[UUID | str]]]:
     @contextmanager
-    def sleeper_jobs(n_jobs: int = 1) -> Iterator[Set[UUID | str]]:
+    def sleeper_jobs(n_jobs: int = 1) -> Iterator[set[UUID | str]]:
         job_ids = set()
         solvers_api = osparc.SolversApi(api_client=api_client)
         try:
@@ -55,7 +55,7 @@ def create_sleeper_jobs(
 @skip_if_osparc_version(at_least=Version("0.8.3.post0.dev20"))
 def test_jobs(
     api_client: osparc.ApiClient,
-    create_sleeper_jobs: Callable[[int], Iterator[Set[UUID | str]]],
+    create_sleeper_jobs: Callable[[int], Iterator[set[UUID | str]]],
     sleeper: osparc.Solver,
 ):
     """Test the jobs method
@@ -90,7 +90,7 @@ def test_jobs(
 async def test_logstreaming(
     api_client: osparc.ApiClient,
     sleeper: osparc.Solver,
-    create_sleeper_jobs: Callable[[int], Iterator[Set[UUID | str]]],
+    create_sleeper_jobs: Callable[[int], Iterator[set[UUID | str]]],
     async_client: AsyncClient,
 ):
     """Test log streaming"""

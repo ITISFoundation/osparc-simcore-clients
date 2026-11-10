@@ -1,6 +1,6 @@
 import configparser
 from pathlib import Path
-from typing import Dict, Final, Set
+from typing import Final
 
 import osparc
 from packaging.version import InvalidVersion, Version
@@ -38,7 +38,7 @@ def is_empty(v):
     return v is None or v == ""
 
 
-_CLIENT_VERSION_IDS: Final[Set[str]] = {"latest_release", "latest_master"}
+_CLIENT_VERSION_IDS: Final[set[str]] = {"latest_release", "latest_master"}
 
 
 class ClientSettings(BaseSettings):
@@ -106,7 +106,7 @@ class PytestIniFile(BaseModel):
             raise ValueError(f"pth: {pth} must point to a pytest.ini file")
         obj = configparser.ConfigParser()
         obj.read(pth)
-        config: Dict = {s: dict(obj.items(s)) for s in obj.sections()}
+        config: dict = {s: dict(obj.items(s)) for s in obj.sections()}
         return PytestIniFile(**config)
 
     def write_to_file(self, pth: Path = Path() / "pytest.ini") -> None:
