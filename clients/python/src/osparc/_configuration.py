@@ -46,10 +46,9 @@ class Configuration(_Configuration):
         """
         env_vars = OptionalConfigurationEnvVars()
         if host is None:
-            # str(AnyHttpUrl) may keep a trailing slash, see
-            # https://github.com/pydantic/pydantic/issues/7186
+            # a trailing slash is not part of the host
             host = (
-                f"{env_vars.OSPARC_API_HOST}".rstrip("/")
+                env_vars.OSPARC_API_HOST.rstrip("/")
                 if env_vars.OSPARC_API_HOST
                 else DEFAULT_HOST
             )

@@ -86,6 +86,24 @@ def test_empty_env_vars_are_unset(
     assert cfg.password == osparc_service_envs["OSPARC_API_SECRET"]
 
 
+def test_empty_base_url_does_not_shadow_host_env(
+    monkeypatch: pytest.MonkeyPatch, osparc_service_envs: dict[str, str]
+):
+    monkeypatch.setenv("OSPARC_API_BASE_URL", "")
+    cfg = osparc.Configuration()
+    assert cfg.host == osparc_service_envs["OSPARC_API_HOST"]
+
+
+def test_invalid_env_host_does_not_block_explicit_host(
+    monkeypatch: pytest.MonkeyPatch, osparc_service_envs: dict[str, str], faker: Faker
+):
+    monkeypatch.setenv("OSPARC_API_HOST", "not-a-url")
+    host = f"https://api.{faker.safe_domain_name()}"
+    cfg = osparc.Configuration(host=host)
+    assert cfg.host == host
+    assert cfg.username == osparc_service_envs["OSPARC_API_KEY"]
+
+
 def test_explicit_arguments_win_over_envs(
     osparc_service_envs: dict[str, str], faker: Faker
 ):
