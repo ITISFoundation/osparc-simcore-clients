@@ -1,5 +1,5 @@
 from collections.abc import Collection
-from typing import Final, Set
+from typing import Final
 
 from osparc_client import Configuration as _Configuration
 from urllib3 import Retry
@@ -32,8 +32,8 @@ class Configuration(_Configuration):
         password=None,
         *,
         retry_max_count: int = 4,
-        retry_methods: Set[str] | None = None,
-        retry_status_codes: Set[int] | None = None,
+        retry_methods: set[str] | None = None,
+        retry_status_codes: set[int] | None = None,
         retry_backoff_factor=4.0,
     ):
         methods: Collection[str] = (

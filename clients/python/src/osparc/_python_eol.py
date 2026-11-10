@@ -4,14 +4,14 @@ import os
 import sys
 import warnings
 from datetime import date
-from typing import Dict, Final, FrozenSet
+from typing import Final
 
 from ._exceptions import VisibleDeprecationWarning
 
 # One ISO end-of-life date per interpreter cycle, copied from
 # https://endoflife.date/api/python.json. scripts/check-python-eol-dates.bash
 # re-fetches that API and fails CI when this table no longer matches it.
-_PYTHON_EOL_DATES: Final[Dict[str, str]] = {
+_PYTHON_EOL_DATES: Final[dict[str, str]] = {
     "3.11": "2027-10-31",
     "3.12": "2028-10-31",
     "3.13": "2029-10-31",
@@ -25,7 +25,7 @@ _WARNING_WINDOW_MONTHS: Final[int] = 3
 # Read from the environment directly, not through the pydantic-settings models in
 # `_settings.py`: this runs while `import osparc` is still executing.
 _DISABLE_WARNING_ENV_VAR: Final[str] = "OSPARC_DISABLE_PYTHON_EOL_WARNING"
-_DISABLED_VALUES: Final[FrozenSet[str]] = frozenset({"1", "true", "yes"})
+_DISABLED_VALUES: Final[frozenset[str]] = frozenset({"1", "true", "yes"})
 
 
 def _add_months(when: date, months: int) -> date:

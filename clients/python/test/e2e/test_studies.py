@@ -5,10 +5,10 @@
 # pylint: disable=unused-variable
 
 import shutil
+from collections.abc import Iterator
 from contextlib import contextmanager
 from datetime import timedelta
 from pathlib import Path
-from typing import Iterator
 from uuid import UUID
 
 import osparc

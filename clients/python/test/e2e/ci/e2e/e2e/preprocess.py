@@ -1,6 +1,5 @@
 import json
 from pathlib import Path
-from typing import List
 from urllib.parse import urlparse
 
 import pandas as pd
@@ -48,7 +47,7 @@ def generate_ini(
     artifacts.artifact_dir.mkdir(parents=True, exist_ok=True)
     artifacts.log_dir.mkdir(parents=True, exist_ok=True)
 
-    envs: List[str] = []
+    envs: list[str] = []
     envs.append(f"OSPARC_API_HOST={urlparse(server_cfg.host).geturl()}")
     envs.append(f"OSPARC_API_KEY={server_cfg.key.get_secret_value()}")
     envs.append(f"OSPARC_API_SECRET={server_cfg.secret.get_secret_value()}")

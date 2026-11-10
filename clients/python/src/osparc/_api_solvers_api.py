@@ -4,7 +4,6 @@ import logging
 import warnings
 from pathlib import Path
 from tempfile import NamedTemporaryFile
-from typing import List
 
 import httpx
 from osparc_client import JobInputs as _JobInputs
@@ -56,11 +55,11 @@ class SolversApi(_SolversApi):
 
     def list_solver_ports(
         self, solver_key: str, version: str, **kwargs
-    ) -> List[SolverPort]:
+    ) -> list[SolverPort]:
         page: OnePageSolverPort = super().list_solver_ports(
             solver_key=solver_key, version=version, **kwargs
         )
-        ports: List[SolverPort] = page.items if page.items else []
+        ports: list[SolverPort] = page.items if page.items else []
         return ports
 
     def iter_jobs(self, solver_key: str, version: str, **kwargs) -> PaginationIterable:

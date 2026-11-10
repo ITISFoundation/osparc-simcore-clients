@@ -7,7 +7,7 @@
 import shutil
 import sys
 from pathlib import Path
-from typing import Any, Dict, Final, List
+from typing import Any, Final
 
 import nbformat
 import osparc
@@ -35,9 +35,9 @@ osparc_client.Configuration.__init__ = _init_with_debug
 _NOTEBOOK_EXECUTION_TIMEOUT_SECONDS: Final[int] = 60 * 20  # 20min
 _docs_dir: Path = Path(__file__).parent.parent.parent / "docs"
 
-all_notebooks: List[Path] = list(_docs_dir.rglob("*.ipynb"))
+all_notebooks: list[Path] = list(_docs_dir.rglob("*.ipynb"))
 
-MIN_VERSION_REQS: Dict[str, Version] = {
+MIN_VERSION_REQS: dict[str, Version] = {
     "BasicTutorial_v0.5.0.ipynb": Version("0.5.0"),
     "BasicTutorial_v0.6.0.ipynb": Version("0.6.0"),
     "BasicTutorial_v0.8.0.ipynb": Version("0.8.0"),

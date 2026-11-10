@@ -1,4 +1,5 @@
-from typing import Callable, Generator, TypeVar
+from collections.abc import Callable, Generator
+from typing import TypeVar
 
 import pytest
 from faker import Faker

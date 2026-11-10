@@ -1,8 +1,8 @@
 import asyncio
 import hashlib
-from collections.abc import Iterable, Sized
+from collections.abc import AsyncGenerator, Callable, Generator, Iterable, Sized
 from pathlib import Path
-from typing import AsyncGenerator, Callable, Generator, NamedTuple, TypeAlias, TypeVar
+from typing import NamedTuple, TypeAlias, TypeVar
 
 import aiofiles
 import httpx

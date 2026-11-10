@@ -1,21 +1,14 @@
+from collections.abc import AsyncGenerator, Awaitable, Callable
 from contextlib import suppress
 from datetime import datetime
 from email.utils import parsedate_to_datetime
-from typing import (
-    Any,
-    AsyncGenerator,
-    Awaitable,
-    Callable,
-    Dict,
-    Literal,
-    Set,
-)
+from typing import Any, Literal
 
 import httpx
 import tenacity
 from osparc_client import Configuration
 
-_RETRY_AFTER_STATUS_CODES: Set[int] = {429, 503}
+_RETRY_AFTER_STATUS_CODES: set[int] = {429, 503}
 
 
 class AsyncHttpClient:
@@ -27,7 +20,7 @@ class AsyncHttpClient:
         configuration: Configuration,
         method: str | None = None,
         url: str | None = None,
-        body: Dict | None = None,
+        body: dict | None = None,
         **httpx_async_client_kwargs,
     ):
         self.configuration = configuration

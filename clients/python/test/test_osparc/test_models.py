@@ -1,4 +1,4 @@
-from typing import List, get_args
+from typing import get_args
 from uuid import UUID, uuid4
 
 from osparc.models import File, JobInputs, JobOutputs, ValuesValue
@@ -7,7 +7,7 @@ from osparc.models import File, JobInputs, JobOutputs, ValuesValue
 def test_values_value_covers_every_type_the_api_documents():
     assert set(get_args(ValuesValue)) == {
         File,
-        List[object],
+        list[object],
         bool,
         float,
         int,
