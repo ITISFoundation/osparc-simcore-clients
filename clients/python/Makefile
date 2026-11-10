@@ -33,6 +33,12 @@ python-client-generator-help: ## help on client-api generator
 .PHONY: _postprocess_osparc_client_artifacts
 _postprocess_osparc_client_artifacts:
 	ruff format $(ARTIFACTS_DIR)/client/*.py
+	# The generator writes its own interpreter floor, so the generated package gets the
+	# floor this repo declares instead. See the pin in scripts/common.Makefile.
+	@floor=$$(sed -nE 's/.*"python_requires": ">=3\.([0-9]+)".*/\1/p' $(CLIENTS_PYTHON_DIR)/setup.py | head -1); \
+	test -n "$$floor" || { echo "cannot read python_requires from $(CLIENTS_PYTHON_DIR)/setup.py" >&2; exit 1; }; \
+	sed -i -E "s|^requires-python = .*|requires-python = \">=3.$$floor\"|" $(ARTIFACTS_DIR)/client/pyproject.toml; \
+	grep -q "^requires-python = \">=3.$$floor\"" $(ARTIFACTS_DIR)/client/pyproject.toml
 	@-rm -f $(ARTIFACTS_DIR)/client/README.md
 	@echo "Please visit our [website](https://itisfoundation.github.io/osparc-simcore-clients/#/) for documentation" > $(ARTIFACTS_DIR)/client/README.md
 	@-rm -rf $(CLIENTS_PYTHON_DIR)/src/osparc/data/

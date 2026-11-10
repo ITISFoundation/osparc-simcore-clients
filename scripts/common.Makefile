@@ -14,15 +14,19 @@ APP_NAME      := $(notdir $(CURDIR))
 
 # Specify which openapi generator should be used to generate the clients in this repo
 #
-# NOTE: pinned to the last release generating a python client with
-# 'requires-python >= 3.9' (v7.24.0+ require >= 3.10, see
-# https://github.com/OpenAPITools/openapi-generator/pull/22926). The floor is 3.11 now,
-# so that constraint no longer holds the tag; raising it means regenerating the client.
-# The floor this pin protects: clients/python/README.md#supported-python-versions
+# NOTE: the interpreter floor the client ships comes from python_requires in
+# clients/python/setup.py: the generation step overwrites whatever the generator emitted
+# (>=3.9 through v7.24.0, >=3.10 from v7.25.0, >=3.11 from v7.27.0, see
+# https://github.com/OpenAPITools/openapi-generator/pull/22926). Documented floor:
+# clients/python/README.md#supported-python-versions
+# Bumping this tag regenerates the client, so read the diff before merging it. v7.27.0
+# already sends headers case-insensitively, reads proxies out of the environment in
+# Configuration, requires urllib3 >= 2.7 and inlines anyOf unions as Any, which dropped
+# osparc_client.models.values_value.
 # Bumping this tag MUST stay in sync with the python-version matrix in
 # .github/workflows/build-python-client.yml
 OPENAPI_GENERATOR_NAME  := openapitools/openapi-generator-cli
-OPENAPI_GENERATOR_TAG   := v7.23.0
+OPENAPI_GENERATOR_TAG   := v7.27.0
 OPENAPI_GENERATOR_IMAGE := $(OPENAPI_GENERATOR_NAME):$(OPENAPI_GENERATOR_TAG)
 
 # openapi specification

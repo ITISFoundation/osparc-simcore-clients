@@ -1,13 +1,12 @@
-from typing import Annotated, Dict, List
+from typing import Annotated, Dict, List, TypeAlias
 from uuid import UUID
 
 from osparc_client import JobInputs as _JobInputs
 from osparc_client import JobMetadata as _JobMetadata
 from osparc_client import JobMetadataUpdate as _JobMetadataUpdate
 from osparc_client import JobOutputs as _JobOutputs
+from osparc_client.models.file import File
 from pydantic import BaseModel, BeforeValidator, Field, StrictStr
-
-from .models import File
 
 
 def _ensure_str(v: UUID | str) -> str:
@@ -16,12 +15,15 @@ def _ensure_str(v: UUID | str) -> str:
     return v
 
 
-class JobInputs(BaseModel):
-    values: Dict[str, File | List[object] | bool | float | int | str | None]
+# One entry of `JobInputs.values`/`JobOutputs.results`. openapi-generator emitted a
+# `ValuesValue` model for this union until v7.27.0, which inlines it as `Any`.
+ValuesValue: TypeAlias = File | List[object] | bool | float | int | str | None
 
-    def __init__(
-        self, values: Dict[str, File | List[object] | bool | float | int | str | None]
-    ):
+
+class JobInputs(BaseModel):
+    values: Dict[str, ValuesValue]
+
+    def __init__(self, values: Dict[str, ValuesValue]):
         super().__init__(values=values)
 
 
@@ -34,7 +36,7 @@ class JobOutputs(BaseModel):
         Field(description="Job that produced this output"),
         BeforeValidator(_ensure_str),
     ]
-    results: Dict[str, File | List[object] | bool | float | int | str | None]
+    results: Dict[str, ValuesValue]
 
 
 assert set(_JobOutputs.model_fields.keys()) == set(JobOutputs.model_fields.keys())  # nosec
