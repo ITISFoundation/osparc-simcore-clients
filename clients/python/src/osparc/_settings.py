@@ -1,4 +1,3 @@
-from typing import Optional
 from uuid import UUID
 
 from pydantic import AliasChoices, AnyHttpUrl, Field, field_validator
@@ -10,16 +9,14 @@ class ParentProjectInfo(BaseSettings):
     'spawned' through the api-server)
     """
 
-    x_simcore_parent_project_uuid: Optional[str] = Field(
+    x_simcore_parent_project_uuid: str | None = Field(
         alias="OSPARC_STUDY_ID", default=None
     )
-    x_simcore_parent_node_id: Optional[str] = Field(
-        alias="OSPARC_NODE_ID", default=None
-    )
+    x_simcore_parent_node_id: str | None = Field(alias="OSPARC_NODE_ID", default=None)
 
     @field_validator("x_simcore_parent_project_uuid", "x_simcore_parent_node_id")
     @classmethod
-    def _validate_uuids(cls, v: Optional[str]) -> Optional[str]:
+    def _validate_uuids(cls, v: str | None) -> str | None:
         if v is not None:
             _ = UUID(v)
         return v

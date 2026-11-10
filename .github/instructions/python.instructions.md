@@ -11,7 +11,7 @@ the hand-written wrapper in
 [`clients/python/test`](../../clients/python/test). The supported interpreter
 range is the matrix in
 [`build-python-client.yml`](../workflows/build-python-client.yml), with a floor
-of Python 3.9.
+of Python 3.11.
 
 ## Generated code
 

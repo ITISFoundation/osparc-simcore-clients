@@ -1,6 +1,5 @@
 import subprocess
 from pathlib import Path
-from typing import Optional
 
 import osparc
 import pytest
@@ -21,9 +20,9 @@ def repo_version() -> Version:
 
 def skip_if_osparc_version(
     *,
-    at_least: Optional[Version] = None,
-    at_most: Optional[Version] = None,
-    exactly: Optional[Version] = None,
+    at_least: Version | None = None,
+    at_most: Version | None = None,
+    exactly: Version | None = None,
 ):
     def _wrapper(test):
         osparc_version = Version(osparc.__version__)

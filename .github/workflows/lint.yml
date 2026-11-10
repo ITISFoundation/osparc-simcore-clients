@@ -45,3 +45,12 @@ jobs:
         # scripts/mypy/requirements.txt
       - name: Type check the client
         run: make -C clients/python mypy
+  # The interpreter end-of-life dates in the client are a copy of a third-party API. This
+  # check needs network access, so it runs here and not as a pre-commit hook, which must
+  # work offline.
+  python-eol-dates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Check the interpreter end-of-life dates
+        run: scripts/check-python-eol-dates.bash

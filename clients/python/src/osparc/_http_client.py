@@ -8,7 +8,6 @@ from typing import (
     Callable,
     Dict,
     Literal,
-    Optional,
     Set,
 )
 
@@ -26,9 +25,9 @@ class AsyncHttpClient:
         self,
         *,
         configuration: Configuration,
-        method: Optional[str] = None,
-        url: Optional[str] = None,
-        body: Optional[Dict] = None,
+        method: str | None = None,
+        url: str | None = None,
+        body: Dict | None = None,
         **httpx_async_client_kwargs,
     ):
         self.configuration = configuration

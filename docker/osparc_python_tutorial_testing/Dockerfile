@@ -1,8 +1,6 @@
-# Python 3.9 is the client's declared floor (`python_requires` in clients/python/setup.py),
-# so the e2e suite keeps exercising it. The previous base, itisfoundation/e2e-python:3.9.12-1,
-# is Debian buster: its suites left deb.debian.org, `apt-get update` 404s, and the image
-# cannot be built. Bookworm is supported to 2028.
-FROM python:3.9-slim-bookworm
+# Python 3.11 is the client's declared floor (`python_requires` in clients/python/setup.py),
+# so the e2e suite keeps exercising it. Debian bookworm is supported to 2028.
+FROM python:3.11-slim-bookworm
 
 # uv, so the e2e setup does not bootstrap itself with pip. Bump it together with
 # IMAGE_VERSION in build-n-publish.bash.

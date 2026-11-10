@@ -45,26 +45,26 @@ repos:
       - id: ruff-format
   - repo: local
     hooks:
-      # Guards the interpreter floor that clients/python/setup.py declares: a
-      # newer-only construct only fails at runtime on the oldest interpreter, and mypy
-      # cannot target 3.9 here (SEE clients/python/pyproject.toml).
+      # Guards the interpreter floor that clients/python/setup.py declares: a construct
+      # newer than the floor only fails at runtime on the oldest supported interpreter.
       - id: vermin-python-floor
-        name: vermin (clients/python must run on Python 3.9)
+        name: vermin (clients/python must run on Python 3.11)
         language: python
         additional_dependencies: ["vermin==1.9.2"]
         entry: vermin
         args:
-          - --target=3.9-
+          - --target=3.11-
           - --no-tips
           - clients/python/src/osparc
         files: ^clients/python/src/osparc/.*\.py$
         pass_filenames: false
 
-      # The floor is also written down in ruff.toml, in the hook above, in the CI matrix
-      # and in the classifiers, and nothing keeps those in sync but this script.
+      # The floor is also written down in ruff.toml, in the hook above, in mypy's
+      # `python_version`, in the CI matrix and in the classifiers, and nothing keeps
+      # those in sync but this script.
       - id: python-floor-agrees
         name: the declared Python floor agrees everywhere it is written down
         language: system
         entry: scripts/check-python-floor.bash
-        files: ^(clients/python/setup\.py|ruff\.toml|\.pre-commit-config\.yaml|\.github/workflows/build-python-client\.yml)$
+        files: ^(clients/python/setup\.py|clients/python/pyproject\.toml|ruff\.toml|\.pre-commit-config\.yaml|\.github/workflows/build-python-client\.yml)$
         pass_filenames: false

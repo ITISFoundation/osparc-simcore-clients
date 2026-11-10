@@ -7,7 +7,7 @@ import math
 import shutil
 from pathlib import Path
 from tempfile import NamedTemporaryFile
-from typing import Any, Final, Iterator, List, Optional, Set, Tuple, Union
+from typing import Any, Final, Iterator, List, Set, Tuple
 from urllib.parse import urljoin
 
 import aiofiles
@@ -55,9 +55,9 @@ class FilesApi(_FilesApi):
             api_client (ApiClient, optinal): osparc.ApiClient object
         """
         super().__init__(api_client)
-        user: Optional[str] = self.api_client.configuration.username
-        passwd: Optional[str] = self.api_client.configuration.password
-        self._auth: Optional[httpx.BasicAuth] = (
+        user: str | None = self.api_client.configuration.username
+        passwd: str | None = self.api_client.configuration.password
+        self._auth: httpx.BasicAuth | None = (
             httpx.BasicAuth(username=user, password=passwd)
             if (user is not None and passwd is not None)
             else None
@@ -67,7 +67,7 @@ class FilesApi(_FilesApi):
         self,
         file_id: str,
         *,
-        destination_folder: Optional[Path] = None,
+        destination_folder: Path | None = None,
         timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
         **kwargs,
     ) -> str:
@@ -84,7 +84,7 @@ class FilesApi(_FilesApi):
         self,
         file_id: str,
         *,
-        destination_folder: Optional[Path] = None,
+        destination_folder: Path | None = None,
         timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
         **kwargs,
     ) -> str:
@@ -125,7 +125,7 @@ class FilesApi(_FilesApi):
 
     def upload_file(
         self,
-        file: Union[str, Path],
+        file: str | Path,
         timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
         max_concurrent_uploads: int = _MAX_CONCURRENT_UPLOADS,
         **kwargs,
@@ -141,7 +141,7 @@ class FilesApi(_FilesApi):
 
     async def upload_file_async(
         self,
-        file: Union[str, Path],
+        file: str | Path,
         timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
         max_concurrent_uploads: int = _MAX_CONCURRENT_UPLOADS,
         **kwargs,
@@ -273,8 +273,8 @@ class FilesApi(_FilesApi):
 
     def _search_files(
         self,
-        file_id: Optional[str] = None,
-        sha256_checksum: Optional[str] = None,
+        file_id: str | None = None,
+        sha256_checksum: str | None = None,
         timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
     ) -> PaginationIterable:
         kwargs = {

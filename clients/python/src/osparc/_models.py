@@ -1,4 +1,4 @@
-from typing import Annotated, Dict, List, Optional, Union
+from typing import Annotated, Dict, List
 from uuid import UUID
 
 from osparc_client import JobInputs as _JobInputs
@@ -10,17 +10,17 @@ from pydantic import BaseModel, BeforeValidator, Field, StrictStr
 from .models import File
 
 
-def _ensure_str(v: Union[UUID, str]) -> str:
+def _ensure_str(v: UUID | str) -> str:
     if isinstance(v, UUID):
         v = f"{v}"
     return v
 
 
 class JobInputs(BaseModel):
-    values: Dict[str, Union[File, List[object], bool, float, int, str, None]]
+    values: Dict[str, File | List[object] | bool | float | int | str | None]
 
     def __init__(
-        self, values: Dict[str, Union[File, List[object], bool, float, int, str, None]]
+        self, values: Dict[str, File | List[object] | bool | float | int | str | None]
     ):
         super().__init__(values=values)
 
@@ -34,7 +34,7 @@ class JobOutputs(BaseModel):
         Field(description="Job that produced this output"),
         BeforeValidator(_ensure_str),
     ]
-    results: Dict[str, Union[File, List[object], bool, float, int, str, None]]
+    results: Dict[str, File | List[object] | bool | float | int | str | None]
 
 
 assert set(_JobOutputs.model_fields.keys()) == set(JobOutputs.model_fields.keys())  # nosec
@@ -42,15 +42,15 @@ assert set(_JobOutputs.model_fields.keys()) == set(JobOutputs.model_fields.keys(
 
 class JobMetadata(BaseModel):
     job_id: Annotated[StrictStr, BeforeValidator(_ensure_str)]
-    metadata: Dict[str, Union[bool, float, int, str, None]]
-    url: Optional[str]
+    metadata: Dict[str, bool | float | int | str | None]
+    url: str | None
 
 
 assert set(_JobMetadata.model_fields.keys()) == set(JobMetadata.model_fields.keys())  # nosec
 
 
 class JobMetadataUpdate(BaseModel):
-    metadata: Dict[str, Union[bool, float, int, str, None]]
+    metadata: Dict[str, bool | float | int | str | None]
 
 
 assert set(_JobMetadataUpdate.model_fields.keys()) == set(

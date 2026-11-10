@@ -5,7 +5,6 @@ import logging
 import warnings
 from pathlib import Path
 from tempfile import mkdtemp
-from typing import Optional
 
 import httpx
 from osparc_client import JobInputs as _JobInputs
@@ -59,9 +58,9 @@ class StudiesApi(_StudiesApi):
             api_client (ApiClient, optinal): osparc.ApiClient object
         """
         super().__init__(api_client)
-        user: Optional[str] = self.api_client.configuration.username
-        passwd: Optional[str] = self.api_client.configuration.password
-        self._auth: Optional[httpx.BasicAuth] = (
+        user: str | None = self.api_client.configuration.username
+        passwd: str | None = self.api_client.configuration.password
+        self._auth: httpx.BasicAuth | None = (
             httpx.BasicAuth(username=user, password=passwd)
             if (user is not None and passwd is not None)
             else None
@@ -117,7 +116,7 @@ class StudiesApi(_StudiesApi):
         )
 
     async def get_study_job_output_logfiles_async(
-        self, study_id: str, job_id: str, download_dir: Optional[Path] = None
+        self, study_id: str, job_id: str, download_dir: Path | None = None
     ) -> Path:
         """Download study logs. The log from each node will
         appear as a file with the node's name in the directory"""
