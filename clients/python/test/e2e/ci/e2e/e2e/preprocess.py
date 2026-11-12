@@ -2,7 +2,6 @@ import json
 from pathlib import Path
 from urllib.parse import urlparse
 
-import pandas as pd
 import pytest
 import typer
 
@@ -13,7 +12,7 @@ from ._models import (
     PytestIniFile,
     ServerSettings,
 )
-from ._utils import _COMPATIBILITY_CSV, E2eExitCodes, handle_validation_error
+from ._utils import handle_validation_error
 
 cli = typer.Typer()
 
@@ -82,39 +81,3 @@ def generate_ini(
     )
     config.write_to_file(pth=test_dir / "pytest.ini")
     raise typer.Exit(code=pytest.ExitCode.OK)
-
-
-@cli.command()
-@handle_validation_error
-def check_compatibility() -> None:
-    """Checks if the client x server configuration in the pyproject.toml
-    is compatible
-
-    Raises:
-        typer.Exit: When exit code is returned
-    """
-    pytest_ini: PytestIniFile = PytestIniFile.create_from_file()
-    client_cfg: ClientSettings = pytest_ini.client
-    server_cfg: ServerSettings = pytest_ini.server
-    if not _COMPATIBILITY_CSV.is_file():
-        typer.echo("Invalid compatibility csv")
-        raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE, err=True)
-    df: pd.DataFrame = pd.read_csv(_COMPATIBILITY_CSV)
-    try:
-        df = df[
-            (df["server"] == urlparse(server_cfg.host).netloc)
-            & (df["client"] == client_cfg.compatibility_ref)
-        ]
-        if df.shape[0] != 1:
-            raise RuntimeError(
-                "Could not correctly determine compatibility between client and server."
-            )
-        is_compatible: bool = df["is_compatible"].loc[df.index[0]]
-    except Exception as exc:
-        typer.echo(f"{exc}", err=True)
-        raise typer.Exit(code=E2eExitCodes.CI_SCRIPT_FAILURE) from exc
-
-    if not is_compatible:
-        raise typer.Exit(code=E2eExitCodes.SKIPPING_TESTS)
-    else:
-        raise typer.Exit(code=pytest.ExitCode.OK)

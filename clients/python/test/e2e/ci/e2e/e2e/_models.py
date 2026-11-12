@@ -63,13 +63,8 @@ class ClientSettings(BaseSettings):
 
     @property
     def ref(self) -> str:
-        """Returns the reference for this client in the compatibility table"""
+        """Returns the client version reference"""
         return f"{osparc.__version__}"
-
-    @property
-    def compatibility_ref(self) -> str:
-        """Returns the reference for this client in the compatibility table"""
-        return "master" if self.version == "latest_master" else "production"
 
 
 class PytestConfig(BaseModel):

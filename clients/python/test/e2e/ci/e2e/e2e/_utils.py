@@ -1,19 +1,9 @@
 from enum import IntEnum
 from functools import wraps
-from pathlib import Path
 
 import pytest
 import typer
 from pydantic import ValidationError
-
-# Paths -------------------------------------------------------
-
-_E2E_DIR: Path = Path(__file__).parent.resolve()
-_COMPATIBILITY_CSV: Path = (
-    _E2E_DIR / "data" / "server_client_compatibility.csv"
-).resolve()
-
-assert _COMPATIBILITY_CSV.is_file()
 
 
 def print_line():

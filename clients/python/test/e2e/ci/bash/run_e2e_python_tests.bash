@@ -46,14 +46,6 @@ do
       exit 1
     fi
     uv pip freeze > "$(e2e postprocess log-dir)/pip_freeze.txt"
-    e2e preprocess check-compatibility
-    EC=$?
-    if [[ "${EC}" -ne 0 ]]; then
-      if ! e2e postprocess single-testrun "${EC}"; then
-        exit 1
-      fi
-      continue
-    fi
     (
       # run in subshell to ensure env doesnt survive
       python -m pytest -c pytest.ini > /dev/null 2>&1
