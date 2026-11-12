@@ -25,6 +25,3 @@ e2e = "e2e.cli:cli"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.package]
-include = ["data/*.csv"]
