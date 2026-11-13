@@ -66,6 +66,7 @@ variables below select the deployment and its credentials.
 | `OSPARC_API_SECRET` | that key's secret |
 | `OSPARC_CLIENT_VERSION` | optional label. When set, and neither `latest_release` nor `latest_master`, the run aborts if it differs from the installed `osparc.__version__` |
 | `OSPARC_E2E_RESOURCE_LOG` | optional file the notebook tests record what they create on the deployment in, for `test/e2e/cleanup_resources.py` |
+| `OSPARC_E2E_HTTP_DEBUG` | optional, set to any value to dump every request/response header of the client; the dump contains the `Authorization` header, so keep it out of CI logs |
 
 ```console
 source .venv/bin/activate

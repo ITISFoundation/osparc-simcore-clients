@@ -25,8 +25,10 @@ from pydantic import ByteSize
 with contextlib.suppress(ImportError):
     from osparc._settings import ConfigurationEnvVars
 
-# ensure osparc logs are visible in test output
-logging.getLogger("osparc").setLevel(logging.DEBUG)
+# DEBUG on osparc logs every request/response header, Authorization included, so it is
+# opt-in through OSPARC_E2E_HTTP_DEBUG instead of on by default.
+if os.environ.get("OSPARC_E2E_HTTP_DEBUG"):
+    logging.getLogger("osparc").setLevel(logging.DEBUG)
 
 _KB: ByteSize = ByteSize(1024)  # in bytes
 _MB: ByteSize = ByteSize(_KB * 1024)  # in bytes

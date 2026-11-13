@@ -101,12 +101,15 @@ def _notebook_spy_cell() -> str:
 
 
 def _inject_setup_cells(notebook_path: Path) -> None:
-    # Prepended to the copy the runner executes so both run before any notebook cell: the logging
-    # one so a failed request can be traced by its trace id, the spy one so a resource gets
-    # recorded at the moment the notebook creates it.
+    # Prepended to the copy the runner executes so they run before any notebook cell: the spy
+    # one so a resource gets recorded at the moment the notebook creates it, the logging one
+    # so a failed request can be traced by its trace id. The logging cell turns on
+    # http.client debugging, which prints every header sent and received; that includes the
+    # Authorization header, so it runs only when OSPARC_E2E_HTTP_DEBUG asks for it.
     nb = nbformat.read(notebook_path, as_version=4)
     nb.cells.insert(0, nbformat.v4.new_code_cell(source=_notebook_spy_cell()))
-    nb.cells.insert(0, nbformat.v4.new_code_cell(source=_HTTP_LOGGING_SETUP_CODE))
+    if os.environ.get("OSPARC_E2E_HTTP_DEBUG"):
+        nb.cells.insert(0, nbformat.v4.new_code_cell(source=_HTTP_LOGGING_SETUP_CODE))
     nbformat.write(nb, notebook_path)
 
 
@@ -179,3 +182,25 @@ def test_run_notebooks(
         notebook=notebook,
         parameters={},  # NOTE: for the moment these notebooks have no parameters
     )
+
+
+def test_http_logging_cell_is_opt_in(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    nb_path: Path = tmp_path / "nb.ipynb"
+    nb = nbformat.v4.new_notebook()
+    nb.cells.append(nbformat.v4.new_code_cell("print(1)"))
+    nbformat.write(nb, nb_path)
+
+    def injected_sources() -> list[str]:
+        return [cell.source for cell in nbformat.read(nb_path, as_version=4).cells]
+
+    monkeypatch.delenv("OSPARC_E2E_HTTP_DEBUG", raising=False)
+    _inject_setup_cells(nb_path)
+    assert not any("debug=True" in source for source in injected_sources()), (
+        "the header dump must stay off unless OSPARC_E2E_HTTP_DEBUG is set"
+    )
+
+    monkeypatch.setenv("OSPARC_E2E_HTTP_DEBUG", "1")
+    _inject_setup_cells(nb_path)
+    assert "debug=True" in injected_sources()[0]
