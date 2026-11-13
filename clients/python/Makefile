@@ -135,8 +135,12 @@ install-e2e-test: _check_venv_active guard-OSPARC_VERSION ## install packages fo
 	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/e2e-test.txt osparc-client==$(version) osparc==$(version)
 
 .PHONY: install-e2e-test-local
-install-e2e-test-local: _check_venv_active python-client ## install packages for e2e testing with local (repo) client [e2e]
-	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/e2e-test.txt --editable artifacts/client --editable .
+install-e2e-test-local: _check_venv_active ## install packages for e2e testing with local (repo) client [e2e]
+	# python-client formats the generated code with ruff, so the requirements
+	# (which carry it) are installed before the client is built
+	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/e2e-test.txt
+	$(MAKE) python-client
+	uv pip install --editable artifacts/client --editable .
 
 .PHONY: install-doc
 install-doc: _check_venv_active .install-dev-reqs ## install packages for generating documentation
