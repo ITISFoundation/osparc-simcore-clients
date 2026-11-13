@@ -1,0 +1,133 @@
+"""Records the resources the notebook tests create on the deployment.
+
+The notebook tests prepend a cell calling install() to every notebook they execute, which makes
+this the way the notebooks report what they created: they upload a file and submit a job from it
+with no teardown of their own, and no fixture can reach an id created inside a cell. Recording
+when the resource is created means a notebook that fails mid-cell still leaves its ids behind,
+for the test's own teardown or for cleanup_resources.py.
+
+The kernel is a separate process, but it runs the same interpreter with this directory added to
+sys.path, so the contract constants come from _utils rather than being copied here.
+"""
+
+import os
+import shutil
+from pathlib import Path
+from typing import Any, Final
+from uuid import uuid4
+
+import osparc
+from _utils import (
+    RESOURCE_LOG_ENV_VAR,
+    SOLVER_JOB,
+    STUDY_JOB,
+    UPLOADED_FILE,
+    RecordedResource,
+    append_recorded_resource,
+)
+
+__all__: Final[list[str]] = ["install"]
+
+
+def _record(kind: str, key: str, version: str, resource: Any) -> None:
+    logged = os.environ.get(RESOURCE_LOG_ENV_VAR)
+    if not logged:
+        return
+    append_recorded_resource(
+        Path(logged),
+        RecordedResource(
+            kind=kind,
+            key=str(key or ""),
+            version=str(version or ""),
+            resource_id=str(resource.id),
+        ),
+    )
+
+
+def _dedup_proof_copy(source: Any) -> tuple[Any, Path | None]:
+    """Copies a local upload source to a name no other run uses.
+
+    Up to client 0.8.5, upload_file returns the already uploaded file when its sha256 and
+    filename match, so two runs of the same notebook share one file id and the first teardown
+    to delete it breaks the run still using it. The dedup key includes the filename, so
+    uploading under a unique name always creates a file this upload owns. Returns the source to
+    upload and the copy to remove afterwards.
+    """
+    path = Path(source) if isinstance(source, (str, Path)) else None
+    if path is None or not path.is_file():
+        return source, None
+    fresh = path.with_name(f"{uuid4().hex}-{path.name}")
+    try:
+        shutil.copyfile(path, fresh)
+    except OSError:
+        return source, None
+    return fresh, fresh
+
+
+def install() -> tuple[str, ...]:
+    """Patches the client so created resources get recorded, and returns what it patched.
+
+    The guards are needed because the same spy runs against every client version in the matrix,
+    and the oldest ones do not have all of these. The arguments are passed through untouched and
+    the ones the log needs are read out of args/kwargs, so a client that names its parameters
+    differently than here cannot make the notebook it runs in fail. The first two arguments of
+    create_job are the solver key and the version in every version in the matrix.
+    """
+    patched: list[str] = []
+
+    if getattr(osparc, "SolversApi", None) is not None and hasattr(
+        osparc.SolversApi, "create_job"
+    ):
+        create_job = osparc.SolversApi.create_job
+
+        def recorded_create_solver_job(self: Any, *args: Any, **kwargs: Any) -> Any:
+            job = create_job(self, *args, **kwargs)
+            _record(
+                SOLVER_JOB,
+                args[0] if args else kwargs.get("solver_key"),
+                args[1] if len(args) > 1 else kwargs.get("version"),
+                job,
+            )
+            return job
+
+        osparc.SolversApi.create_job = recorded_create_solver_job  # type: ignore[method-assign]
+        patched.append(SOLVER_JOB)
+
+    if getattr(osparc, "StudiesApi", None) is not None and hasattr(
+        osparc.StudiesApi, "create_study_job"
+    ):
+        create_study_job = osparc.StudiesApi.create_study_job
+
+        def recorded_create_study_job(self: Any, *args: Any, **kwargs: Any) -> Any:
+            job = create_study_job(self, *args, **kwargs)
+            _record(STUDY_JOB, args[0] if args else kwargs.get("study_id"), "", job)
+            return job
+
+        osparc.StudiesApi.create_study_job = recorded_create_study_job  # type: ignore[method-assign]
+        patched.append(STUDY_JOB)
+
+    if getattr(osparc, "FilesApi", None) is not None and hasattr(
+        osparc.FilesApi, "upload_file"
+    ):
+        upload_file = osparc.FilesApi.upload_file
+
+        def recorded_upload_file(self: Any, *args: Any, **kwargs: Any) -> Any:
+            fresh: Path | None = None
+            try:
+                if args:
+                    source, fresh = _dedup_proof_copy(args[0])
+                    args = (source, *args[1:])
+                elif "file" in kwargs:
+                    source, fresh = _dedup_proof_copy(kwargs["file"])
+                    kwargs = {**kwargs, "file": source}
+                uploaded = upload_file(self, *args, **kwargs)
+            finally:
+                if fresh is not None:
+                    fresh.unlink(missing_ok=True)
+            _record(UPLOADED_FILE, "", "", uploaded)
+            return uploaded
+
+        osparc.FilesApi.upload_file = recorded_upload_file  # type: ignore[method-assign]
+        patched.append(UPLOADED_FILE)
+
+    return tuple(patched)

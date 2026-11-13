@@ -32,3 +32,6 @@ select = [
 # A notebook cell is executed on its own, so imports may well follow the cell
 # holding the parameters.
 "**/*.ipynb" = ["E402"]
+# typer reads its options from the argument defaults, so calling typer.Option
+# there is the documented shape of its API.
+"clients/python/test/e2e/cleanup_resources.py" = ["B008"]

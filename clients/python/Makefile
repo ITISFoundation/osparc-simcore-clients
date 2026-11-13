@@ -130,13 +130,17 @@ install-unit-test: _check_venv_active ## install packages for unit testing clien
 	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/unit-test.txt
 
 .PHONY: install-e2e-test
-install-e2e-test: _check_venv_active guard-OSPARC_VERSION ## install packages for e2e testing client [e2e]
-	$(eval version := $(shell bash $(CLIENTS_PYTHON_DIR)/test/e2e/ci/bash/osparc_version.bash $(OSPARC_VERSION)))
+install-e2e-test: _check_venv_active guard-OSPARC_VERSION ## install the e2e requirements and the osparc release named by OSPARC_VERSION (a version, latest_release or latest_master) [e2e]
+	$(eval version := $(shell bash $(SCRIPTS_DIR)/osparc_version.bash $(OSPARC_VERSION)))
 	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/e2e-test.txt osparc-client==$(version) osparc==$(version)
 
 .PHONY: install-e2e-test-local
-install-e2e-test-local: _check_venv_active python-client ## install packages for e2e testing with local (repo) client [e2e]
-	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/e2e-test.txt --editable artifacts/client --editable .
+install-e2e-test-local: _check_venv_active ## install packages for e2e testing with local (repo) client [e2e]
+	# python-client formats the generated code with ruff, so the requirements
+	# (which carry it) are installed before the client is built
+	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/e2e-test.txt
+	$(MAKE) python-client
+	uv pip install --editable artifacts/client --editable .
 
 .PHONY: install-doc
 install-doc: _check_venv_active .install-dev-reqs ## install packages for generating documentation
@@ -189,6 +193,11 @@ dist: artifacts_dir ## builds distribution wheel for `osparc_client` and `osparc
 
 ## e2e TEST ---------------------------------------------------------------------------------
 
+.PHONY: e2e-test
+e2e-test: _check_venv_active guard-OSPARC_API_HOST ## runs the e2e tests against the deployment in OSPARC_API_HOST (also needs OSPARC_API_KEY and OSPARC_API_SECRET), after make install-e2e-test[-local]
+	@mkdir -p $(ARTIFACTS_DIR)
+	python -m pytest $(CLIENTS_PYTHON_DIR)/test/e2e --junitxml=$(ARTIFACTS_DIR)/junit_e2e.xml
+
 GH_TOKEN_FILE := $(wildcard $(HOME)/.gh-token)
 ifneq ($(GH_TOKEN_FILE),)
 	include $(GH_TOKEN_FILE)
@@ -210,5 +219,5 @@ e2e-shell: guard-GH_TOKEN ## shell for running e2e tests
 		itisfoundation/osparc_python_tutorial_testing:v4 \
 		-c "uv venv --python 3.11 /tmp/venv && source /tmp/venv/bin/activate && cd clients/python \
 		&& uv pip install -r requirements/e2e-test.txt \
-		&& echo 'To test the client from this repo: on the host, run make install-e2e-test-local from clients/python' \
-		&& cd test/e2e && exec /bin/bash"
+		&& echo 'Export OSPARC_API_HOST, OSPARC_API_KEY and OSPARC_API_SECRET, install a client (make install-e2e-test OSPARC_VERSION=..., or make install-e2e-test-local for this repo), then run pytest test/e2e' \
+		&& exec /bin/bash"

@@ -4,8 +4,10 @@
 # pylint: disable=unused-argument
 # pylint: disable=unused-variable
 
+import os
 import shutil
 import sys
+from collections.abc import Iterator
 from pathlib import Path
 from typing import Any, Final
 
@@ -13,6 +15,11 @@ import nbformat
 import osparc
 import papermill as pm
 import pytest
+from _utils import (
+    RESOURCE_LOG_ENV_VAR,
+    delete_recorded_resources,
+    read_recorded_resources,
+)
 from nbconvert.exporters import MarkdownExporter
 from packaging.version import Version
 from rich.console import Console
@@ -45,6 +52,29 @@ MIN_VERSION_REQS: dict[str, Version] = {
 }
 
 
+# The notebooks are executed as written and upload a file and submit a job from it with no
+# teardown of their own, so the spy that _papermill_execute_notebook prepends reports the ids and
+# this fixture deletes them once the notebook is done.
+@pytest.fixture
+def delete_resources_created_in_notebooks(
+    api_client: osparc.ApiClient,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> Iterator[None]:
+    # The kernel inherits this from the pytest process. CI points the variable at a path it
+    # keeps, so a run that gets killed before this teardown still leaves the ids behind for
+    # cleanup_resources.py to find.
+    resource_log = Path(
+        os.environ.get(RESOURCE_LOG_ENV_VAR) or tmp_path / "resources.jsonl"
+    )
+    monkeypatch.setenv(RESOURCE_LOG_ENV_VAR, str(resource_log))
+
+    yield
+
+    if recorded := read_recorded_resources(resource_log):
+        delete_recorded_resources(api_client, recorded)
+
+
 def _pretty_print_cell_outputs(notebook_path: Path) -> None:
     """Pretty print the outputs of each cell in the executed notebook."""
     exporter = MarkdownExporter()
@@ -57,14 +87,29 @@ def _pretty_print_cell_outputs(notebook_path: Path) -> None:
     )
 
 
-def _inject_http_logging_setup_cell(notebook_path: Path) -> None:
-    # Inject HTTP logging setup cell at the beginning of the notebook to ensure
-    # osparc http request data is logged (mainly to log trace ids for easier
-    # debugging of test failures). Uses a spy on osparc_client.rest to print
-    # response headers for every HTTP request.
+def _notebook_spy_cell() -> str:
+    # The kernel runs the same interpreter, so this points it at the suite directory and the spy
+    # is imported as the module it is, which keeps it linted and typed, rather than pasted in as
+    # a string of code.
+    return (
+        "import sys\n"
+        f"sys.path.insert(0, {str(Path(__file__).parent)!r})\n"
+        "import _notebook_spy\n"
+        "\n"
+        "_notebook_spy.install()\n"
+    )
+
+
+def _inject_setup_cells(notebook_path: Path) -> None:
+    # Prepended to the copy the runner executes so they run before any notebook cell: the spy
+    # one so a resource gets recorded at the moment the notebook creates it, the logging one
+    # so a failed request can be traced by its trace id. The logging cell turns on
+    # http.client debugging, which prints every header sent and received; that includes the
+    # Authorization header, so it runs only when OSPARC_E2E_HTTP_DEBUG asks for it.
     nb = nbformat.read(notebook_path, as_version=4)
-    setup_cell = nbformat.v4.new_code_cell(source=_HTTP_LOGGING_SETUP_CODE)
-    nb.cells.insert(0, setup_cell)
+    nb.cells.insert(0, nbformat.v4.new_code_cell(source=_notebook_spy_cell()))
+    if os.environ.get("OSPARC_E2E_HTTP_DEBUG"):
+        nb.cells.insert(0, nbformat.v4.new_code_cell(source=_HTTP_LOGGING_SETUP_CODE))
     nbformat.write(nb, notebook_path)
 
 
@@ -86,7 +131,7 @@ def _papermill_execute_notebook(
     shutil.copy(notebook, tmp_nb)
     assert tmp_nb.is_file(), "Did not succeed in copying notebook"
 
-    _inject_http_logging_setup_cell(tmp_nb)
+    _inject_setup_cells(tmp_nb)
 
     output: Path = tmp_path / (tmp_nb.stem + "_output.ipynb")
 
@@ -127,7 +172,9 @@ def test_notebook_config(tmp_path: Path):
 
 
 @pytest.mark.parametrize("notebook", all_notebooks, ids=lambda nb: nb.name)
-def test_run_notebooks(tmp_path: Path, notebook: Path):
+def test_run_notebooks(
+    tmp_path: Path, notebook: Path, delete_resources_created_in_notebooks: None
+):
     """Run all notebooks in the documentation"""
 
     _papermill_execute_notebook(
@@ -135,3 +182,25 @@ def test_run_notebooks(tmp_path: Path, notebook: Path):
         notebook=notebook,
         parameters={},  # NOTE: for the moment these notebooks have no parameters
     )
+
+
+def test_http_logging_cell_is_opt_in(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    nb_path: Path = tmp_path / "nb.ipynb"
+    nb = nbformat.v4.new_notebook()
+    nb.cells.append(nbformat.v4.new_code_cell("print(1)"))
+    nbformat.write(nb, nb_path)
+
+    def injected_sources() -> list[str]:
+        return [cell.source for cell in nbformat.read(nb_path, as_version=4).cells]
+
+    monkeypatch.delenv("OSPARC_E2E_HTTP_DEBUG", raising=False)
+    _inject_setup_cells(nb_path)
+    assert not any("debug=True" in source for source in injected_sources()), (
+        "the header dump must stay off unless OSPARC_E2E_HTTP_DEBUG is set"
+    )
+
+    monkeypatch.setenv("OSPARC_E2E_HTTP_DEBUG", "1")
+    _inject_setup_cells(nb_path)
+    assert "debug=True" in injected_sources()[0]
