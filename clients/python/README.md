@@ -85,9 +85,10 @@ you want to run inside it.
 
 Tests delete the jobs and files they create once they finish. The notebooks cannot: they upload a
 file and submit a job from it inside a kernel no fixture can reach, so the runner prepends a cell
-that appends each id to the file named by `OSPARC_E2E_RESOURCE_LOG` (a per-test temporary file
-when that is unset), and the notebook test requests a fixture that deletes them once it is done.
-Jobs go before files, since a job input refers to the file it was uploaded from.
+that installs a spy (`test/e2e/_notebook_spy.py`), which appends each id to the file named by
+`OSPARC_E2E_RESOURCE_LOG` (a per-test temporary file when that is unset), and the notebook test
+requests a fixture that deletes them once it is done. Jobs go before files, since a job input
+refers to the file it was uploaded from.
 
 Point the variable at a path you keep when the run may get killed before that teardown, and follow
 the suite with this from a step that runs on failure too:

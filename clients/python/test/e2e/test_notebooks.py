@@ -16,7 +16,6 @@ import osparc
 import papermill as pm
 import pytest
 from _utils import (
-    NOTEBOOK_SPY_CODE,
     RESOURCE_LOG_ENV_VAR,
     delete_recorded_resources,
     read_recorded_resources,
@@ -88,12 +87,25 @@ def _pretty_print_cell_outputs(notebook_path: Path) -> None:
     )
 
 
+def _notebook_spy_cell() -> str:
+    # The kernel runs the same interpreter, so this points it at the suite directory and the spy
+    # is imported as the module it is, which keeps it linted and typed, rather than pasted in as
+    # a string of code.
+    return (
+        "import sys\n"
+        f"sys.path.insert(0, {str(Path(__file__).parent)!r})\n"
+        "import _notebook_spy\n"
+        "\n"
+        "_notebook_spy.install()\n"
+    )
+
+
 def _inject_setup_cells(notebook_path: Path) -> None:
     # Prepended to the copy the runner executes so both run before any notebook cell: the logging
-    # one so a failed request can be traced by its trace id, the spy one so a job gets recorded
-    # at the moment the notebook creates it.
+    # one so a failed request can be traced by its trace id, the spy one so a resource gets
+    # recorded at the moment the notebook creates it.
     nb = nbformat.read(notebook_path, as_version=4)
-    nb.cells.insert(0, nbformat.v4.new_code_cell(source=NOTEBOOK_SPY_CODE))
+    nb.cells.insert(0, nbformat.v4.new_code_cell(source=_notebook_spy_cell()))
     nb.cells.insert(0, nbformat.v4.new_code_cell(source=_HTTP_LOGGING_SETUP_CODE))
     nbformat.write(nb, notebook_path)
 

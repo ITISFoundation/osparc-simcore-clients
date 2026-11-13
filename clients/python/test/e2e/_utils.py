@@ -2,8 +2,9 @@ import json
 import logging
 import subprocess
 from collections.abc import Sequence
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Final, NamedTuple
+from typing import Final
 
 import osparc
 import pytest
@@ -13,18 +14,20 @@ from urllib3.exceptions import HTTPError as Urllib3HttpError
 
 _logger = logging.getLogger(__name__)
 
-# The notebook tests point this variable at a file and hand it to the code they execute, so that
-# code can report what it created on the deployment. See NOTEBOOK_SPY_CODE.
 RESOURCE_LOG_ENV_VAR: Final[str] = "OSPARC_E2E_RESOURCE_LOG"
+"""Name of the file the notebook tests point at and hand to the code they execute, so that code
+can report what it created on the deployment. Written by _notebook_spy, read here and by
+cleanup_resources.py."""
 
-# The kinds NOTEBOOK_SPY_CODE writes to that file. Deleting them needs different arguments, so
-# they are distinguished rather than lumped together.
+# The kinds _notebook_spy writes to that file. Deleting them needs different arguments, so they
+# are distinguished rather than lumped together.
 SOLVER_JOB: Final[str] = "solver"
 STUDY_JOB: Final[str] = "study"
 UPLOADED_FILE: Final[str] = "file"
 
 
-class RecordedResource(NamedTuple):
+@dataclass(frozen=True)
+class RecordedResource:
     """What a run created on the deployment and needs deleting again.
 
     `key` is the solver key, or the study id of a study job. Both are empty for an uploaded
@@ -35,90 +38,6 @@ class RecordedResource(NamedTuple):
     key: str
     version: str
     resource_id: str
-
-
-# Prepended to every notebook the tests execute, next to the HTTP logging cell. The notebooks
-# upload a file and submit a job from it and have no teardown for either, and no fixture can
-# reach an id created inside a cell, so the notebook reports them itself. Writing at creation
-# time also means a notebook that fails mid-cell still leaves its ids behind for whoever cleans
-# up after it.
-#
-# The notebook kernel is a separate process that cannot import this module, so the log variable
-# is spelled out literally below and has to keep matching RESOURCE_LOG_ENV_VAR.
-NOTEBOOK_SPY_CODE: Final[str] = """
-import json as _json
-import os as _os
-
-import osparc as _osparc
-
-
-def _e2e_record(kind, key, version, resource):
-    _log = _os.environ.get("OSPARC_E2E_RESOURCE_LOG")
-    if _log:
-        # The caller picks the path, so it may not exist yet when the first resource shows up.
-        _dir = _os.path.dirname(_log)
-        if _dir:
-            _os.makedirs(_dir, exist_ok=True)
-        with open(_log, "a") as _f:
-            _f.write(
-                _json.dumps(
-                    {
-                        "kind": kind,
-                        "key": key,
-                        "version": version,
-                        "resource_id": str(resource.id),
-                    }
-                )
-                + "\\n"
-            )
-
-
-# Guarded because the same spy runs against every client version in the matrix, and the oldest
-# ones do not have all of these. The arguments are passed through untouched, and the ones the
-# log needs are read out of args/kwargs, so a client whose parameters are named differently
-# than here cannot make the notebook it runs in fail. The first two arguments of create_job are
-# the solver key and the version in every version in the matrix.
-if getattr(_osparc, "SolversApi", None) is not None and hasattr(
-    _osparc.SolversApi, "create_job"
-):
-    _create_solver_job = _osparc.SolversApi.create_job
-
-    def _recorded_create_solver_job(self, *args, **kwargs):
-        _job = _create_solver_job(self, *args, **kwargs)
-        _e2e_record(
-            "solver",
-            args[0] if args else kwargs.get("solver_key"),
-            args[1] if len(args) > 1 else kwargs.get("version"),
-            _job,
-        )
-        return _job
-
-    _osparc.SolversApi.create_job = _recorded_create_solver_job
-
-if getattr(_osparc, "StudiesApi", None) is not None and hasattr(
-    _osparc.StudiesApi, "create_study_job"
-):
-    _create_study_job = _osparc.StudiesApi.create_study_job
-
-    def _recorded_create_study_job(self, *args, **kwargs):
-        _job = _create_study_job(self, *args, **kwargs)
-        _e2e_record("study", args[0] if args else kwargs.get("study_id"), "", _job)
-        return _job
-
-    _osparc.StudiesApi.create_study_job = _recorded_create_study_job
-
-if getattr(_osparc, "FilesApi", None) is not None and hasattr(
-    _osparc.FilesApi, "upload_file"
-):
-    _upload_file = _osparc.FilesApi.upload_file
-
-    def _recorded_upload_file(self, *args, **kwargs):
-        _file = _upload_file(self, *args, **kwargs)
-        _e2e_record("file", "", "", _file)
-        return _file
-
-    _osparc.FilesApi.upload_file = _recorded_upload_file
-"""
 
 
 def read_recorded_resources(path: Path) -> list[RecordedResource]:

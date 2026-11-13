@@ -4,17 +4,18 @@
 """The spy the notebook tests prepend to every notebook they execute, and what it records.
 
 The spy runs in a kernel the pytest process cannot reach, so nothing would notice if one of the
-client methods it patches stopped existing or moved its arguments; what the notebooks create
-would simply leak again. Neither test here needs a deployment.
+client methods it patched stopped existing or moved its arguments; what the notebooks create
+would simply leak again. None of these tests needs a deployment.
 """
 
 from pathlib import Path
 from types import SimpleNamespace
+from typing import Final
 
+import _notebook_spy
 import osparc
 import pytest
 from _utils import (
-    NOTEBOOK_SPY_CODE,
     RESOURCE_LOG_ENV_VAR,
     SOLVER_JOB,
     STUDY_JOB,
@@ -24,12 +25,12 @@ from _utils import (
     read_recorded_resources,
 )
 
-_SOLVER_KEY = "simcore/services/dynamic/jupyter-smash"
-_SOLVER_VERSION = "3.0.8"
-_SOLVER_JOB_ID = "09e3bc39-6dd5-4c1e-b46e-e4cbe5a39d21"
-_STUDY_ID = "bd5f1b8a-31f8-4b9d-a48d-3d3fe6a3f1c1"
-_STUDY_JOB_ID = "5f8591e1-2bb9-4d0a-9c73-0d0ee81f9d2a"
-_FILE_ID = "cc0b0b8a-7a1e-4b0b-9b9d-2c4d5e6f7a8b"
+_SOLVER_KEY: Final[str] = "simcore/services/dynamic/jupyter-smash"
+_SOLVER_VERSION: Final[str] = "3.0.8"
+_SOLVER_JOB_ID: Final[str] = "09e3bc39-6dd5-4c1e-b46e-e4cbe5a39d21"
+_STUDY_ID: Final[str] = "bd5f1b8a-31f8-4b9d-a48d-3d3fe6a3f1c1"
+_STUDY_JOB_ID: Final[str] = "5f8591e1-2bb9-4d0a-9c73-0d0ee81f9d2a"
+_FILE_ID: Final[str] = "cc0b0b8a-7a1e-4b0b-9b9d-2c4d5e6f7a8b"
 
 
 def _recorded(
@@ -50,18 +51,20 @@ def test_spy_records_every_resource_a_notebook_creates(
     monkeypatch.setattr(
         osparc.SolversApi,
         "create_job",
-        lambda *a, **k: SimpleNamespace(id=_SOLVER_JOB_ID),
+        lambda *args, **kwargs: SimpleNamespace(id=_SOLVER_JOB_ID),
     )
     monkeypatch.setattr(
         osparc.StudiesApi,
         "create_study_job",
-        lambda *a, **k: SimpleNamespace(id=_STUDY_JOB_ID),
+        lambda *args, **kwargs: SimpleNamespace(id=_STUDY_JOB_ID),
     )
     monkeypatch.setattr(
-        osparc.FilesApi, "upload_file", lambda *a, **k: SimpleNamespace(id=_FILE_ID)
+        osparc.FilesApi,
+        "upload_file",
+        lambda *args, **kwargs: SimpleNamespace(id=_FILE_ID),
     )
 
-    exec(NOTEBOOK_SPY_CODE, {})
+    assert _notebook_spy.install() == (SOLVER_JOB, STUDY_JOB, UPLOADED_FILE)
 
     # Positional for the solver job, the way the notebooks in docs call it, and keyword for the
     # study job, which covers the other branch of the spy's lookup.
@@ -73,24 +76,28 @@ def test_spy_records_every_resource_a_notebook_creates(
     assert read_recorded_resources(resource_log) == [
         _recorded(SOLVER_JOB, _SOLVER_KEY, _SOLVER_VERSION, _SOLVER_JOB_ID),
         _recorded(STUDY_JOB, _STUDY_ID, "", _STUDY_JOB_ID),
-        _recorded(UPLOADED_FILE, "", "", _FILE_ID),
+        _recorded(UPLOADED_FILE, resource_id=_FILE_ID),
     ]
 
 
-def test_spy_records_nothing_without_a_log(monkeypatch: pytest.MonkeyPatch) -> None:
-    # A notebook of a client version without these methods must still run, so the guards have to
-    # keep the spy from failing when there is nowhere to record.
+def test_spy_records_nothing_without_a_log(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # A notebook of a client version with fewer of these methods must still run, so the guards
+    # have to keep the spy from failing when there is nowhere to record.
     monkeypatch.delenv(RESOURCE_LOG_ENV_VAR, raising=False)
     monkeypatch.setattr(
         osparc.SolversApi,
         "create_job",
-        lambda *a, **k: SimpleNamespace(id=_SOLVER_JOB_ID),
+        lambda *args, **kwargs: SimpleNamespace(id=_SOLVER_JOB_ID),
     )
     monkeypatch.setattr(
-        osparc.FilesApi, "upload_file", lambda *a, **k: SimpleNamespace(id=_FILE_ID)
+        osparc.FilesApi,
+        "upload_file",
+        lambda *args, **kwargs: SimpleNamespace(id=_FILE_ID),
     )
 
-    exec(NOTEBOOK_SPY_CODE, {})
+    _notebook_spy.install()
 
     assert osparc.SolversApi.create_job(None, _SOLVER_KEY, _SOLVER_VERSION, None)
     assert osparc.FilesApi.upload_file(None, "file_with_number.txt")
@@ -103,11 +110,11 @@ def test_recorded_files_are_deleted_after_the_jobs(
     # first. The log lists the file last here, the order that would break.
     deleted: list[str] = []
     monkeypatch.setattr(
-        osparc.SolversApi, "stop_job", lambda *_: deleted.append(SOLVER_JOB)
+        osparc.SolversApi, "stop_job", lambda *args: deleted.append(SOLVER_JOB)
     )
-    monkeypatch.setattr(osparc.SolversApi, "delete_job", lambda *_: None)
+    monkeypatch.setattr(osparc.SolversApi, "delete_job", lambda *args: None)
     monkeypatch.setattr(
-        osparc.FilesApi, "delete_file", lambda *_: deleted.append(UPLOADED_FILE)
+        osparc.FilesApi, "delete_file", lambda *args: deleted.append(UPLOADED_FILE)
     )
 
     configuration = osparc.Configuration(

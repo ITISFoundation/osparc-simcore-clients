@@ -13,7 +13,6 @@ OSPARC_API_HOST, OSPARC_API_KEY and OSPARC_API_SECRET select the deployment, the
 the tests read. One deployment per invocation.
 """
 
-import argparse
 import logging
 import os
 from datetime import timedelta
@@ -21,6 +20,7 @@ from pathlib import Path
 
 import osparc
 import tenacity
+import typer
 from _utils import (
     RESOURCE_LOG_ENV_VAR,
     delete_recorded_resources,
@@ -32,55 +32,27 @@ from urllib3.exceptions import HTTPError as Urllib3HttpError
 _logger = logging.getLogger(__name__)
 
 
-def _parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Delete what a run left behind on one deployment.",
-        epilog=f"{RESOURCE_LOG_ENV_VAR} names the log to read when --resource-log is absent.",
-    )
-    parser.add_argument(
+def main(
+    resource_log: Path | None = typer.Option(
+        None,
         "--resource-log",
-        type=Path,
-        default=None,
-        help="the file the run recorded what it created in",
-    )
-    parser.add_argument(
+        help=f"the file the run recorded what it created in. Defaults to "
+        f"{RESOURCE_LOG_ENV_VAR}.",
+    ),
+    all_jobs: bool = typer.Option(
+        False,
         "--all-jobs",
-        action="store_true",
         help="delete every job of this user rather than only the recorded resources",
-    )
-    parser.add_argument(
+    ),
+    retry_minutes: int | None = typer.Option(
+        None,
         "--retry-minutes",
-        type=int,
-        default=None,
         help="retry for this many minutes when the server answers with an API error. "
         "Without it, a single attempt is made.",
-    )
-    return parser.parse_args()
-
-
-def _delete(args: argparse.Namespace, api_client: osparc.ApiClient) -> int:
-    if args.all_jobs:
-        return sweep_all_jobs(api_client)
-
-    resource_log = args.resource_log or (
-        Path(logged) if (logged := os.environ.get(RESOURCE_LOG_ENV_VAR)) else None
-    )
-    if resource_log is None:
-        _logger.warning(
-            "nothing to delete: no resource log, since %s is unset. Pass --resource-log, set "
-            "the variable, or use --all-jobs",
-            RESOURCE_LOG_ENV_VAR,
-        )
-        return 0
-
-    recorded = read_recorded_resources(resource_log)
-    _logger.info("Deleting %d resources recorded in %s", len(recorded), resource_log)
-    return delete_recorded_resources(api_client, recorded)
-
-
-def main() -> int:
+    ),
+) -> None:
+    """Delete what a run left behind on the deployment named by the environment."""
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
-    args = _parse_args()
 
     host = os.environ.get("OSPARC_API_HOST")
     username = os.environ.get("OSPARC_API_KEY")
@@ -89,11 +61,30 @@ def main() -> int:
         _logger.error(
             "OSPARC_API_HOST, OSPARC_API_KEY and OSPARC_API_SECRET must be set"
         )
-        return 1
+        raise typer.Exit(code=1)
+
+    def delete(api_client: osparc.ApiClient) -> int:
+        if all_jobs:
+            return sweep_all_jobs(api_client)
+
+        log = resource_log or (
+            Path(logged) if (logged := os.environ.get(RESOURCE_LOG_ENV_VAR)) else None
+        )
+        if log is None:
+            _logger.warning(
+                "nothing to delete: no resource log, since %s is unset. Pass "
+                "--resource-log, set the variable, or use --all-jobs",
+                RESOURCE_LOG_ENV_VAR,
+            )
+            return 0
+
+        recorded = read_recorded_resources(log)
+        _logger.info("Deleting %d resources recorded in %s", len(recorded), log)
+        return delete_recorded_resources(api_client, recorded)
 
     stop = (
-        tenacity.stop_after_delay(timedelta(minutes=args.retry_minutes))
-        if args.retry_minutes
+        tenacity.stop_after_delay(timedelta(minutes=retry_minutes))
+        if retry_minutes
         else tenacity.stop_after_attempt(1)
     )
     configuration = osparc.Configuration(
@@ -110,14 +101,13 @@ def main() -> int:
                 reraise=True,
             ):
                 with attempt:
-                    deleted = _delete(args, api_client)
+                    deleted = delete(api_client)
     except Exception as exc:
         _logger.error("Failed to clean up %s: %s", host, exc)
-        return 1
+        raise typer.Exit(code=1) from exc
 
     _logger.info("Deleted %d resources on %s", deleted, host)
-    return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    typer.run(main)

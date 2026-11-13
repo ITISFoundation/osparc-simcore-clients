@@ -13,7 +13,7 @@ import osparc
 import pytest
 import tenacity
 from _utils import skip_if_osparc_version
-from httpx import AsyncClient
+from httpx2 import AsyncClient
 from packaging.version import Version
 from tenacity import Retrying
 

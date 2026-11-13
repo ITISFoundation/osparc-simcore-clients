@@ -13,10 +13,10 @@ from pathlib import Path
 from typing import Final, NamedTuple
 from uuid import UUID
 
-import httpx
+import httpx2
 import osparc
 import pytest
-from httpx import AsyncClient, BasicAuth
+from httpx2 import AsyncClient, BasicAuth
 from memory_profiler import memory_usage
 from numpy import random
 from packaging.version import InvalidVersion, Version
@@ -82,12 +82,12 @@ def _server_api_version(host: str) -> str:
     if not host:
         return "unknown, no host set"
     try:
-        response = httpx.get(
+        response = httpx2.get(
             f"{host.rstrip('/')}/v0/meta", timeout=_META_TIMEOUT_SECONDS
         )
         response.raise_for_status()
         return str(response.json().get("version", "unknown"))
-    except (httpx.HTTPError, ValueError) as exc:
+    except (httpx2.HTTPError, ValueError) as exc:
         return f"unreachable ({exc.__class__.__name__})"
 
 
