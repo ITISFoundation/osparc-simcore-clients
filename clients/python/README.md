@@ -65,7 +65,7 @@ the deployment and credentials come from the environment.
 | `OSPARC_API_KEY` | api key of the test user |
 | `OSPARC_API_SECRET` | that key's secret |
 | `OSPARC_CLIENT_VERSION` | optional label. When set, and neither `latest_release` nor `latest_master`, the run aborts if it differs from the installed `osparc.__version__` |
-| `OSPARC_E2E_JOB_LOG` | optional file the notebook tests record the ids of the jobs they create in, for `test/e2e/cleanup_jobs.py` |
+| `OSPARC_E2E_RESOURCE_LOG` | optional file the notebook tests record what they create on the deployment in, for `test/e2e/cleanup_resources.py` |
 
 ```console
 source .venv/bin/activate
@@ -83,15 +83,22 @@ deployment's api-server version before the first test runs.
 ([`docker/osparc_python_tutorial_testing`](../../docker/osparc_python_tutorial_testing)) when
 you want to run inside it.
 
-Tests delete the jobs they create once they finish. The notebooks cannot: they submit jobs from
-inside a kernel no fixture can reach, so the runner prepends a cell that appends every job id it
-creates to the file named by `OSPARC_E2E_JOB_LOG` (a per-test temporary file when that is unset),
-and a fixture deletes those ids once the notebook is done. Point the variable at a path you keep
-when the run may get killed before that teardown, and follow the suite with
-`python test/e2e/cleanup_jobs.py --job-log "$OSPARC_E2E_JOB_LOG" --retry-minutes=10` from a step
-that runs on failure too. Without a log it deletes nothing and says so; `--all-jobs` deletes
-every job of this user on the deployment instead, which also removes jobs a concurrent run is
-waiting on.
+Tests delete the jobs and files they create once they finish. The notebooks cannot: they upload a
+file and submit a job from it inside a kernel no fixture can reach, so the runner prepends a cell
+that appends each id to the file named by `OSPARC_E2E_RESOURCE_LOG` (a per-test temporary file
+when that is unset), and the notebook test requests a fixture that deletes them once it is done.
+Jobs go before files, since a job input refers to the file it was uploaded from.
+
+Point the variable at a path you keep when the run may get killed before that teardown, and follow
+the suite with this from a step that runs on failure too:
+
+```console
+python test/e2e/cleanup_resources.py --resource-log "$OSPARC_E2E_RESOURCE_LOG" --retry-minutes=10
+```
+
+Without a log it deletes nothing and says so. `--all-jobs` deletes every job of this user on the
+deployment instead, which also removes what a concurrent run is waiting on; it covers jobs only,
+so an uploaded file without a log stays behind.
 
 ### Running it in CI
 
@@ -110,7 +117,7 @@ python_client_latest_release:
     OSPARC_API_KEY: $E2E_API_KEY      # a masked variable, not a literal
     OSPARC_API_SECRET: $E2E_API_SECRET
     OSPARC_CLIENT_VERSION: latest_release
-    OSPARC_E2E_JOB_LOG: ${CI_PROJECT_DIR}/notebook_jobs.jsonl
+    OSPARC_E2E_RESOURCE_LOG: ${CI_PROJECT_DIR}/created_resources.jsonl
   script:
     - cd clients/python
     - python3 -m venv .venv && . .venv/bin/activate
@@ -121,7 +128,8 @@ python_client_latest_release:
     # anything script exported, so export the variables there if you build them with jq.
     - cd clients/python
     - . .venv/bin/activate
-    - python test/e2e/cleanup_jobs.py --job-log ${OSPARC_E2E_JOB_LOG} --retry-minutes=10
+    - python test/e2e/cleanup_resources.py --resource-log ${OSPARC_E2E_RESOURCE_LOG} \
+        --retry-minutes=10
   artifacts:
     when: always
     reports:
@@ -138,7 +146,7 @@ client:
         OSPARC_API_KEY: ${{ secrets.OSPARC_API_KEY }}
         OSPARC_API_SECRET: ${{ secrets.OSPARC_API_SECRET }}
         OSPARC_CLIENT_VERSION: latest_master
-        OSPARC_E2E_JOB_LOG: ${{ runner.temp }}/notebook_jobs.jsonl
+        OSPARC_E2E_RESOURCE_LOG: ${{ runner.temp }}/created_resources.jsonl
       run: |
         cd clients/python
         uv venv .venv && source .venv/bin/activate
@@ -152,8 +160,8 @@ client:
       run: |
         cd clients/python
         source .venv/bin/activate
-        python test/e2e/cleanup_jobs.py --job-log ${{ runner.temp }}/notebook_jobs.jsonl \
-          --retry-minutes=10
+        python test/e2e/cleanup_resources.py \
+          --resource-log ${{ runner.temp }}/created_resources.jsonl --retry-minutes=10
 ```
 
 ### Debugging a failure

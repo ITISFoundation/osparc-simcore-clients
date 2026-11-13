@@ -16,10 +16,10 @@ import osparc
 import papermill as pm
 import pytest
 from _utils import (
-    NOTEBOOK_JOB_LOG_ENV_VAR,
-    NOTEBOOK_JOB_SPY_CODE,
-    delete_recorded_jobs,
-    read_recorded_jobs,
+    NOTEBOOK_SPY_CODE,
+    RESOURCE_LOG_ENV_VAR,
+    delete_recorded_resources,
+    read_recorded_resources,
 )
 from nbconvert.exporters import MarkdownExporter
 from packaging.version import Version
@@ -53,25 +53,27 @@ MIN_VERSION_REQS: dict[str, Version] = {
 }
 
 
-# autouse: the notebooks are executed as written and submit jobs they never delete, so the
-# spy in _utils.py records the ids and this fixture deletes them once the notebook is done.
-# Explicit injection would mean every notebook test passing this in for no reason of its own.
-@pytest.fixture(autouse=True)
-def delete_jobs_created_by_notebooks(
+# The notebooks are executed as written and upload a file and submit a job from it with no
+# teardown of their own, so the spy that _papermill_execute_notebook prepends reports the ids and
+# this fixture deletes them once the notebook is done.
+@pytest.fixture
+def delete_resources_created_in_notebooks(
     api_client: osparc.ApiClient,
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> Iterator[None]:
     # The kernel inherits this from the pytest process. CI points the variable at a path it
-    # keeps, so a run that gets killed before this teardown still leaves its ids behind for
-    # cleanup_jobs.py to find.
-    job_log = Path(os.environ.get(NOTEBOOK_JOB_LOG_ENV_VAR) or tmp_path / "jobs.jsonl")
-    monkeypatch.setenv(NOTEBOOK_JOB_LOG_ENV_VAR, str(job_log))
+    # keeps, so a run that gets killed before this teardown still leaves the ids behind for
+    # cleanup_resources.py to find.
+    resource_log = Path(
+        os.environ.get(RESOURCE_LOG_ENV_VAR) or tmp_path / "resources.jsonl"
+    )
+    monkeypatch.setenv(RESOURCE_LOG_ENV_VAR, str(resource_log))
 
     yield
 
-    if recorded := read_recorded_jobs(job_log):
-        delete_recorded_jobs(api_client, recorded)
+    if recorded := read_recorded_resources(resource_log):
+        delete_recorded_resources(api_client, recorded)
 
 
 def _pretty_print_cell_outputs(notebook_path: Path) -> None:
@@ -91,7 +93,7 @@ def _inject_setup_cells(notebook_path: Path) -> None:
     # one so a failed request can be traced by its trace id, the spy one so a job gets recorded
     # at the moment the notebook creates it.
     nb = nbformat.read(notebook_path, as_version=4)
-    nb.cells.insert(0, nbformat.v4.new_code_cell(source=NOTEBOOK_JOB_SPY_CODE))
+    nb.cells.insert(0, nbformat.v4.new_code_cell(source=NOTEBOOK_SPY_CODE))
     nb.cells.insert(0, nbformat.v4.new_code_cell(source=_HTTP_LOGGING_SETUP_CODE))
     nbformat.write(nb, notebook_path)
 
@@ -155,7 +157,9 @@ def test_notebook_config(tmp_path: Path):
 
 
 @pytest.mark.parametrize("notebook", all_notebooks, ids=lambda nb: nb.name)
-def test_run_notebooks(tmp_path: Path, notebook: Path):
+def test_run_notebooks(
+    tmp_path: Path, notebook: Path, delete_resources_created_in_notebooks: None
+):
     """Run all notebooks in the documentation"""
 
     _papermill_execute_notebook(
