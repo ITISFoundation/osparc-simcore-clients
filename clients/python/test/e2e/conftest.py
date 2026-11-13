@@ -171,9 +171,13 @@ def pytest_configure(config):
 
 @pytest.fixture(scope="session")
 def api_client() -> Iterable[osparc.ApiClient]:
+    # debug=True prints every request and response header, Authorization included, so it is
+    # opt-in through OSPARC_E2E_HTTP_DEBUG. The old harness hid it behind pytest > /dev/null.
+    http_debug = bool(os.environ.get("OSPARC_E2E_HTTP_DEBUG"))
     if Version(osparc.__version__) >= Version("0.8.0"):
         with osparc.ApiClient() as api_client:
-            api_client.configuration.debug = True
+            if http_debug:
+                api_client.configuration.debug = True
             yield api_client
     else:
         host = os.environ.get("OSPARC_API_HOST")
@@ -183,7 +187,8 @@ def api_client() -> Iterable[osparc.ApiClient]:
         configuration = osparc.Configuration(
             host=host, username=username, password=password
         )
-        configuration.debug = True
+        if http_debug:
+            configuration.debug = True
         with osparc.ApiClient(configuration=configuration) as api_client:
             yield api_client
 
