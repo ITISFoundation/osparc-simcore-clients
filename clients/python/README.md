@@ -65,6 +65,7 @@ the deployment and credentials come from the environment.
 | `OSPARC_API_KEY` | api key of the test user |
 | `OSPARC_API_SECRET` | that key's secret |
 | `OSPARC_CLIENT_VERSION` | optional label. When set, and neither `latest_release` nor `latest_master`, the run aborts if it differs from the installed `osparc.__version__` |
+| `OSPARC_E2E_JOB_LOG` | optional file the notebook tests record the ids of the jobs they create in, for `test/e2e/cleanup_jobs.py` |
 
 ```console
 source .venv/bin/activate
@@ -82,8 +83,15 @@ deployment's api-server version before the first test runs.
 ([`docker/osparc_python_tutorial_testing`](../../docker/osparc_python_tutorial_testing)) when
 you want to run inside it.
 
-After a run that ended early, `python test/e2e/cleanup_jobs.py --retry-minutes=10` deletes the
-jobs left behind on the deployment named by the same three variables.
+Tests delete the jobs they create once they finish. The notebooks cannot: they submit jobs from
+inside a kernel no fixture can reach, so the runner prepends a cell that appends every job id it
+creates to the file named by `OSPARC_E2E_JOB_LOG` (a per-test temporary file when that is unset),
+and a fixture deletes those ids once the notebook is done. Point the variable at a path you keep
+when the run may get killed before that teardown, and follow the suite with
+`python test/e2e/cleanup_jobs.py --job-log "$OSPARC_E2E_JOB_LOG" --retry-minutes=10` from a step
+that runs on failure too. Without a log it deletes nothing and says so; `--all-jobs` deletes
+every job of this user on the deployment instead, which also removes jobs a concurrent run is
+waiting on.
 
 ### Running it in CI
 
@@ -102,14 +110,18 @@ python_client_latest_release:
     OSPARC_API_KEY: $E2E_API_KEY      # a masked variable, not a literal
     OSPARC_API_SECRET: $E2E_API_SECRET
     OSPARC_CLIENT_VERSION: latest_release
+    OSPARC_E2E_JOB_LOG: ${CI_PROJECT_DIR}/notebook_jobs.jsonl
   script:
     - cd clients/python
+    - python3 -m venv .venv && . .venv/bin/activate
     - make install-e2e-test OSPARC_VERSION=${OSPARC_CLIENT_VERSION}
     - pytest test/e2e --junitxml=${CI_PROJECT_DIR}/junit_e2e_${OSPARC_CLIENT_VERSION}.xml
   after_script:
-    # runs also when the tests failed. It sees the job's variables, but not anything
-    # exported by script, so export the variables there if you build them with jq.
-    - cd clients/python && python test/e2e/cleanup_jobs.py --retry-minutes=10
+    # runs also when the tests failed, in a fresh shell: it sees the job's variables, but not
+    # anything script exported, so export the variables there if you build them with jq.
+    - cd clients/python
+    - . .venv/bin/activate
+    - python test/e2e/cleanup_jobs.py --job-log ${OSPARC_E2E_JOB_LOG} --retry-minutes=10
   artifacts:
     when: always
     reports:
@@ -121,14 +133,27 @@ annotate the run). This is also the shape to use if the suite should gate publis
 client:
 
 ```yaml
+    - env:
+        OSPARC_API_HOST: ${{ vars.OSPARC_API_HOST }}
+        OSPARC_API_KEY: ${{ secrets.OSPARC_API_KEY }}
+        OSPARC_API_SECRET: ${{ secrets.OSPARC_API_SECRET }}
+        OSPARC_CLIENT_VERSION: latest_master
+        OSPARC_E2E_JOB_LOG: ${{ runner.temp }}/notebook_jobs.jsonl
+      run: |
+        cd clients/python
+        uv venv .venv && source .venv/bin/activate
+        make install-e2e-test OSPARC_VERSION=latest_master
+        pytest test/e2e --junitxml=${{ runner.temp }}/junit_e2e.xml
+    - if: always()
       env:
         OSPARC_API_HOST: ${{ vars.OSPARC_API_HOST }}
         OSPARC_API_KEY: ${{ secrets.OSPARC_API_KEY }}
         OSPARC_API_SECRET: ${{ secrets.OSPARC_API_SECRET }}
       run: |
         cd clients/python
-        make install-e2e-test OSPARC_VERSION=latest_master
-        pytest test/e2e --junitxml=${{ runner.temp }}/junit_e2e.xml
+        source .venv/bin/activate
+        python test/e2e/cleanup_jobs.py --job-log ${{ runner.temp }}/notebook_jobs.jsonl \
+          --retry-minutes=10
 ```
 
 ### Debugging a failure

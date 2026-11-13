@@ -4,8 +4,10 @@
 # pylint: disable=unused-argument
 # pylint: disable=unused-variable
 
+import os
 import shutil
 import sys
+from collections.abc import Iterator
 from pathlib import Path
 from typing import Any, Final
 
@@ -13,6 +15,12 @@ import nbformat
 import osparc
 import papermill as pm
 import pytest
+from _utils import (
+    NOTEBOOK_JOB_LOG_ENV_VAR,
+    NOTEBOOK_JOB_SPY_CODE,
+    delete_recorded_jobs,
+    read_recorded_jobs,
+)
 from nbconvert.exporters import MarkdownExporter
 from packaging.version import Version
 from rich.console import Console
@@ -45,6 +53,27 @@ MIN_VERSION_REQS: dict[str, Version] = {
 }
 
 
+# autouse: the notebooks are executed as written and submit jobs they never delete, so the
+# spy in _utils.py records the ids and this fixture deletes them once the notebook is done.
+# Explicit injection would mean every notebook test passing this in for no reason of its own.
+@pytest.fixture(autouse=True)
+def delete_jobs_created_by_notebooks(
+    api_client: osparc.ApiClient,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> Iterator[None]:
+    # The kernel inherits this from the pytest process. CI points the variable at a path it
+    # keeps, so a run that gets killed before this teardown still leaves its ids behind for
+    # cleanup_jobs.py to find.
+    job_log = Path(os.environ.get(NOTEBOOK_JOB_LOG_ENV_VAR) or tmp_path / "jobs.jsonl")
+    monkeypatch.setenv(NOTEBOOK_JOB_LOG_ENV_VAR, str(job_log))
+
+    yield
+
+    if recorded := read_recorded_jobs(job_log):
+        delete_recorded_jobs(api_client, recorded)
+
+
 def _pretty_print_cell_outputs(notebook_path: Path) -> None:
     """Pretty print the outputs of each cell in the executed notebook."""
     exporter = MarkdownExporter()
@@ -57,14 +86,13 @@ def _pretty_print_cell_outputs(notebook_path: Path) -> None:
     )
 
 
-def _inject_http_logging_setup_cell(notebook_path: Path) -> None:
-    # Inject HTTP logging setup cell at the beginning of the notebook to ensure
-    # osparc http request data is logged (mainly to log trace ids for easier
-    # debugging of test failures). Uses a spy on osparc_client.rest to print
-    # response headers for every HTTP request.
+def _inject_setup_cells(notebook_path: Path) -> None:
+    # Prepended to the copy the runner executes so both run before any notebook cell: the logging
+    # one so a failed request can be traced by its trace id, the spy one so a job gets recorded
+    # at the moment the notebook creates it.
     nb = nbformat.read(notebook_path, as_version=4)
-    setup_cell = nbformat.v4.new_code_cell(source=_HTTP_LOGGING_SETUP_CODE)
-    nb.cells.insert(0, setup_cell)
+    nb.cells.insert(0, nbformat.v4.new_code_cell(source=NOTEBOOK_JOB_SPY_CODE))
+    nb.cells.insert(0, nbformat.v4.new_code_cell(source=_HTTP_LOGGING_SETUP_CODE))
     nbformat.write(nb, notebook_path)
 
 
@@ -86,7 +114,7 @@ def _papermill_execute_notebook(
     shutil.copy(notebook, tmp_nb)
     assert tmp_nb.is_file(), "Did not succeed in copying notebook"
 
-    _inject_http_logging_setup_cell(tmp_nb)
+    _inject_setup_cells(tmp_nb)
 
     output: Path = tmp_path / (tmp_nb.stem + "_output.ipynb")
 
