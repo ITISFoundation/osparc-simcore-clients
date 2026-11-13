@@ -11,5 +11,7 @@ pydantic
 pytest
 pytest-asyncio
 rich
+# make install-e2e-test-local builds the client, whose postprocess runs ruff format
+ruff
 tenacity
 typer
