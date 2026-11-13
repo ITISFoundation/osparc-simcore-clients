@@ -77,8 +77,9 @@ pytest test/e2e --junitxml=artifacts/junit_e2e.xml   # or: make e2e-test
 
 `make help` lists the targets of `clients/python` with their arguments.
 
-`test/e2e/pytest.ini` holds what is constant: asyncio mode, required plugins, and verbose
-output streamed while tests wait on server-side jobs. `--junitxml` is the caller's choice, so
+`test/e2e/pytest.ini` holds what is constant: asyncio mode, required plugins, verbose output
+streamed while tests wait on server-side jobs, and live logging at INFO. `--junitxml` is the
+caller's choice, so
 it stays on the command line. Before the first test runs, the report header prints the client
 version, the deployment, and the deployment's api-server version.
 
