@@ -82,7 +82,6 @@ tmp*
 /clients/python/src/build/*
 /clients/python/src/osparc/data/openapi.json
 /clients/python/VERSION
-/clients/python/test/e2e/pytest.ini
 
 
 # key-words in filename to ignore them

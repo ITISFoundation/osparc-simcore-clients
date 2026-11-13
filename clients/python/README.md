@@ -53,6 +53,85 @@ Hence, it is important to be able quickly modify the [templates](https://github.
 
 
 ## Client e2e testing
+
+### Running the suite
+
+The suite in `test/e2e` runs against a real deployment. It is plain `pytest`: no wrapper, and
+the deployment and credentials come from the environment.
+
+| Variable | Purpose |
+| --- | --- |
+| `OSPARC_API_HOST` | the deployment's api-server url |
+| `OSPARC_API_KEY` | api key of the test user |
+| `OSPARC_API_SECRET` | that key's secret |
+| `OSPARC_CLIENT_VERSION` | optional label. When set, and neither `latest_release` nor `latest_master`, the run aborts if it differs from the installed `osparc.__version__` |
+
+```console
+source .venv/bin/activate
+cd clients/python
+make install-e2e-test OSPARC_VERSION=latest_release  # or install-e2e-test-local for this repo
+pytest test/e2e --junitxml=artifacts/junit_e2e.xml   # or: make e2e-test
+```
+
+`test/e2e/pytest.ini` holds what is constant (asyncio mode, required plugins, verbose output
+streamed while tests wait on server-side jobs). `--junitxml` is a caller's choice, so it stays
+on the command line. The report header names the client version, the deployment and the
+deployment's api-server version before the first test runs.
+
+`make e2e-shell` opens the container the CI uses
+([`docker/osparc_python_tutorial_testing`](../../docker/osparc_python_tutorial_testing)) when
+you want to run inside it.
+
+After a run that ended early, `python test/e2e/cleanup_jobs.py --retry-minutes=10` deletes the
+jobs left behind on the deployment named by the same three variables.
+
+### Running it in CI
+
+One job runs one client version against one deployment, and the job's status is pytest's own
+exit code; decide whether a failure blocks the pipeline with the platform's own
+`allow_failure`/`continue-on-error`. Credentials belong in CI secrets, not in this repository.
+
+GitLab:
+
+```yaml
+python_client_latest_release:
+  stage: tutorials
+  image: itisfoundation/osparc_python_tutorial_testing:v4
+  variables:
+    OSPARC_API_HOST: https://osparc-master.speag.com
+    OSPARC_API_KEY: $E2E_API_KEY      # a masked variable, not a literal
+    OSPARC_API_SECRET: $E2E_API_SECRET
+    OSPARC_CLIENT_VERSION: latest_release
+  script:
+    - cd clients/python
+    - make install-e2e-test OSPARC_VERSION=${OSPARC_CLIENT_VERSION}
+    - pytest test/e2e --junitxml=${CI_PROJECT_DIR}/junit_e2e_${OSPARC_CLIENT_VERSION}.xml
+  after_script:
+    # runs also when the tests failed. It sees the job's variables, but not anything
+    # exported by script, so export the variables there if you build them with jq.
+    - cd clients/python && python test/e2e/cleanup_jobs.py --retry-minutes=10
+  artifacts:
+    when: always
+    reports:
+      junit: junit_e2e_*.xml
+```
+
+GitHub Actions renders no junit, so upload it as an artifact (or let a test-report action
+annotate the run). This is also the shape to use if the suite should gate publishing the
+client:
+
+```yaml
+      env:
+        OSPARC_API_HOST: ${{ vars.OSPARC_API_HOST }}
+        OSPARC_API_KEY: ${{ secrets.OSPARC_API_KEY }}
+        OSPARC_API_SECRET: ${{ secrets.OSPARC_API_SECRET }}
+      run: |
+        cd clients/python
+        make install-e2e-test OSPARC_VERSION=latest_master
+        pytest test/e2e --junitxml=${{ runner.temp }}/junit_e2e.xml
+```
+
+### Debugging a failure
 The client e2e tests log all trace data when running. It can be useful to debug these using the copilot to anylize issues. This can be done by using the Grafana MCP server. Note you will need to create the mpc.json file for this and give the copilot access to Grafana. In a separate process you will need to run
 
 ```console

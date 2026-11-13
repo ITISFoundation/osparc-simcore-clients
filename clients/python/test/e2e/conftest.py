@@ -13,12 +13,13 @@ from pathlib import Path
 from typing import Final, NamedTuple
 from uuid import UUID
 
+import httpx
 import osparc
 import pytest
 from httpx import AsyncClient, BasicAuth
 from memory_profiler import memory_usage
 from numpy import random
-from packaging.version import Version
+from packaging.version import InvalidVersion, Version
 from pydantic import ByteSize
 
 with contextlib.suppress(ImportError):
@@ -36,6 +37,13 @@ _logger = logging.getLogger(__name__)
 # Dictionary to store start times of tests
 _test_start_times = {}
 
+# A CI run labels itself with the client version it installed. That label is optional, and
+# when present it must match what is importable, else the reported result belongs to another
+# client than the one that ran.
+_CLIENT_VERSION_LABEL_ENV_VAR: Final[str] = "OSPARC_CLIENT_VERSION"
+_LATEST_CLIENT_VERSION_LABELS: Final[set[str]] = {"latest_release", "latest_master"}
+_META_TIMEOUT_SECONDS: Final[float] = 10.0
+
 
 def _utc_now():
     return datetime.datetime.now(tz=datetime.UTC)
@@ -51,6 +59,46 @@ def _construct_graylog_url(api_host, start_time, end_time):
     end_time_str = end_time.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
     query = f"from={start_time_str}&to={end_time_str}"
     return f"{url}?{query}"
+
+
+def _check_client_version_label() -> None:
+    label = os.environ.get(_CLIENT_VERSION_LABEL_ENV_VAR)
+    if not label or label in _LATEST_CLIENT_VERSION_LABELS:
+        return
+    try:
+        expected = Version(label)
+    except InvalidVersion as exc:
+        raise pytest.UsageError(
+            f"{_CLIENT_VERSION_LABEL_ENV_VAR}={label} is not a valid version"
+        ) from exc
+    if expected != Version(osparc.__version__):
+        raise pytest.UsageError(
+            f"{_CLIENT_VERSION_LABEL_ENV_VAR}={label} does not match the installed "
+            f"osparc {osparc.__version__}"
+        )
+
+
+def _server_api_version(host: str) -> str:
+    if not host:
+        return "unknown, no host set"
+    try:
+        response = httpx.get(
+            f"{host.rstrip('/')}/v0/meta", timeout=_META_TIMEOUT_SECONDS
+        )
+        response.raise_for_status()
+        return str(response.json().get("version", "unknown"))
+    except (httpx.HTTPError, ValueError) as exc:
+        return f"unreachable ({exc.__class__.__name__})"
+
+
+def pytest_report_header(config: pytest.Config) -> list[str]:
+    """Log what is being tested against what, before the first test runs."""
+    host = os.environ.get("OSPARC_API_HOST", "")
+    return [
+        f"osparc client: {osparc.__version__}",
+        f"deployment: {host or 'OSPARC_API_HOST not set'}"
+        f" (api-server {_server_api_version(host)})",
+    ]
 
 
 def pytest_runtest_setup(item):
@@ -93,6 +141,7 @@ def pytest_runtest_makereport(item, call):
 
 @pytest.hookimpl(tryfirst=True)
 def pytest_configure(config):
+    _check_client_version_label()
     config.pluginmanager.register(pytest_runtest_setup, "osparc_test_times_plugin")
     config.pluginmanager.register(pytest_runtest_makereport, "osparc_makereport_plugin")
 
