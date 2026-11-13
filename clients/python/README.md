@@ -56,8 +56,8 @@ Hence, it is important to be able quickly modify the [templates](https://github.
 
 ### Running the suite
 
-The suite in `test/e2e` runs against a real deployment. It is plain `pytest`: no wrapper, and
-the deployment and credentials come from the environment.
+The suite in `test/e2e` runs against a real deployment. It is plain `pytest`, no wrapper. The
+variables below select the deployment and its credentials.
 
 | Variable | Purpose |
 | --- | --- |
@@ -74,38 +74,38 @@ make install-e2e-test OSPARC_VERSION=latest_release  # or install-e2e-test-local
 pytest test/e2e --junitxml=artifacts/junit_e2e.xml   # or: make e2e-test
 ```
 
-`test/e2e/pytest.ini` holds what is constant (asyncio mode, required plugins, verbose output
-streamed while tests wait on server-side jobs). `--junitxml` is a caller's choice, so it stays
-on the command line. The report header names the client version, the deployment and the
-deployment's api-server version before the first test runs.
+`test/e2e/pytest.ini` holds what is constant: asyncio mode, required plugins, and verbose
+output streamed while tests wait on server-side jobs. `--junitxml` is the caller's choice, so
+it stays on the command line. Before the first test runs, the report header prints the client
+version, the deployment, and the deployment's api-server version.
 
 `make e2e-shell` opens the container the CI uses
 ([`docker/osparc_python_tutorial_testing`](../../docker/osparc_python_tutorial_testing)) when
 you want to run inside it.
 
-Tests delete the jobs and files they create once they finish. The notebooks cannot: they upload a
-file and submit a job from it inside a kernel no fixture can reach, so the runner prepends a cell
-that installs a spy (`test/e2e/_notebook_spy.py`), which appends each id to the file named by
-`OSPARC_E2E_RESOURCE_LOG` (a per-test temporary file when that is unset), and the notebook test
-requests a fixture that deletes them once it is done. Jobs go before files, since a job input
-refers to the file it was uploaded from.
+Tests delete the jobs and files they create. The notebooks cannot. They upload a file and
+submit a job from it inside a kernel no fixture can reach. The runner therefore prepends a cell
+that installs a spy (`test/e2e/_notebook_spy.py`). The spy appends each id to the file named by
+`OSPARC_E2E_RESOURCE_LOG`. Without the variable it writes to a per-test temporary file. A
+fixture reads the log and deletes the recorded resources when the notebook ends. Jobs go first: a
+job input refers to the file it was uploaded from.
 
-Point the variable at a path you keep when the run may get killed before that teardown, and follow
-the suite with this from a step that runs on failure too:
+A run can get killed before that fixture runs. Point the variable at a path you keep, then
+run this from a step that also runs on failure:
 
 ```console
 python test/e2e/cleanup_resources.py --resource-log "$OSPARC_E2E_RESOURCE_LOG" --retry-minutes=10
 ```
 
-Without a log it deletes nothing and says so. `--all-jobs` deletes every job of this user on the
-deployment instead, which also removes what a concurrent run is waiting on; it covers jobs only,
-so an uploaded file without a log stays behind.
+Without a log it deletes nothing and says so. `--all-jobs` instead deletes every job of this
+user on the deployment. That also removes jobs a concurrent run is waiting on. It covers jobs
+only. A file without a log stays behind.
 
 ### Running it in CI
 
-One job runs one client version against one deployment, and the job's status is pytest's own
-exit code; decide whether a failure blocks the pipeline with the platform's own
-`allow_failure`/`continue-on-error`. Credentials belong in CI secrets, not in this repository.
+One job runs one client version against one deployment. The job's status is pytest's exit
+code. Use the platform's `allow_failure`/`continue-on-error` to decide whether a failure blocks
+the pipeline. Keep credentials in CI secrets, not in this repository.
 
 GitLab:
 
