@@ -93,8 +93,9 @@ that installs a spy (`test/e2e/_notebook_spy.py`). The spy appends each id to th
 fixture reads the log and deletes the recorded resources when the notebook ends. Jobs go first: a
 job input refers to the file it was uploaded from.
 
-A run can get killed before that fixture runs. Point the variable at a path you keep, then
-run this from a step that also runs on failure:
+A run can get killed before that fixture runs. The file fixtures record their uploads in the
+same log, so those are covered too. Point the variable at a path you keep, then run this from a
+step that also runs on failure:
 
 ```console
 python test/e2e/cleanup_resources.py --resource-log "$OSPARC_E2E_RESOURCE_LOG" --retry-minutes=10

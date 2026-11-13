@@ -10,9 +10,10 @@ would simply leak again. None of these tests needs a deployment.
 
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Final
+from typing import Any, Final
 
 import _notebook_spy
+import cleanup_resources
 import osparc
 import pytest
 from _utils import (
@@ -21,6 +22,7 @@ from _utils import (
     STUDY_JOB,
     UPLOADED_FILE,
     RecordedResource,
+    append_recorded_resource,
     delete_recorded_resources,
     read_recorded_resources,
 )
@@ -58,11 +60,13 @@ def test_spy_records_every_resource_a_notebook_creates(
         "create_study_job",
         lambda *args, **kwargs: SimpleNamespace(id=_STUDY_JOB_ID),
     )
-    monkeypatch.setattr(
-        osparc.FilesApi,
-        "upload_file",
-        lambda *args, **kwargs: SimpleNamespace(id=_FILE_ID),
-    )
+    upload_sources: list[str] = []
+
+    def fake_upload(self: Any, *args: Any, **kwargs: Any) -> SimpleNamespace:  # pylint: disable=unused-argument
+        upload_sources.append(str(args[0] if args else kwargs.get("file")))
+        return SimpleNamespace(id=_FILE_ID)
+
+    monkeypatch.setattr(osparc.FilesApi, "upload_file", fake_upload)
 
     assert _notebook_spy.install() == (SOLVER_JOB, STUDY_JOB, UPLOADED_FILE)
 
@@ -70,9 +74,18 @@ def test_spy_records_every_resource_a_notebook_creates(
     # study job, which covers the other branch of the spy's lookup.
     osparc.SolversApi.create_job(None, _SOLVER_KEY, _SOLVER_VERSION, None)
     osparc.StudiesApi.create_study_job(None, study_id=_STUDY_ID, job_inputs=None)
-    uploaded = osparc.FilesApi.upload_file(None, "file_with_number.txt")
+    source = tmp_path / "file_with_number.txt"
+    source.write_text("3")
+    uploaded = osparc.FilesApi.upload_file(None, source)
 
     assert uploaded.id == _FILE_ID, "the spy hands the caller back what it wrapped"
+    # Clients up to 0.8.5 return an existing file for a matching sha256 and filename, so the spy
+    # must upload under a name no other run uses; otherwise teardown deletes a shared file.
+    uploaded_name = Path(upload_sources[0]).name
+    assert uploaded_name.endswith(f"-{source.name}")
+    assert uploaded_name != source.name
+    assert not Path(upload_sources[0]).exists(), "the copy is removed after the upload"
+    assert source.is_file(), "the notebook's own file is untouched"
     assert read_recorded_resources(resource_log) == [
         _recorded(SOLVER_JOB, _SOLVER_KEY, _SOLVER_VERSION, _SOLVER_JOB_ID),
         _recorded(STUDY_JOB, _STUDY_ID, "", _STUDY_JOB_ID),
@@ -90,6 +103,13 @@ def test_spy_records_nothing_without_a_log(
         osparc.SolversApi,
         "create_job",
         lambda *args, **kwargs: SimpleNamespace(id=_SOLVER_JOB_ID),
+    )
+    # install() patches all three class methods; monkeypatch only restores what it registered,
+    # so every patched method must be registered here or the spy survives into later tests.
+    monkeypatch.setattr(
+        osparc.StudiesApi,
+        "create_study_job",
+        lambda *args, **kwargs: SimpleNamespace(id=_STUDY_JOB_ID),
     )
     monkeypatch.setattr(
         osparc.FilesApi,
@@ -131,3 +151,64 @@ def test_recorded_files_are_deleted_after_the_jobs(
 
     assert deleted == [SOLVER_JOB, UPLOADED_FILE]
     assert gone == 2
+
+
+def test_a_partial_log_line_does_not_lose_the_records_before_it(
+    tmp_path: Path,
+) -> None:
+    # A run killed mid-append leaves the last line half written. The records written before it
+    # are still deletable, so read_recorded_resources must return them.
+    resource_log = tmp_path / "resources.jsonl"
+    append_recorded_resource(
+        resource_log,
+        _recorded(SOLVER_JOB, _SOLVER_KEY, _SOLVER_VERSION, _SOLVER_JOB_ID),
+    )
+    with resource_log.open("a") as writer:
+        writer.write('{"kind": "file", "resource_i')
+    assert read_recorded_resources(resource_log) == [
+        _recorded(SOLVER_JOB, _SOLVER_KEY, _SOLVER_VERSION, _SOLVER_JOB_ID)
+    ]
+
+
+def test_a_404_on_stop_still_lets_the_delete_run(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # The api documents a stop 404 as Job/wallet/pricing details not found, so it says nothing
+    # about whether the job exists. Only the delete's own 404 means gone.
+    deleted: list[str] = []
+
+    def stop_raises_404(*args: Any) -> None:
+        raise osparc.ApiException(status=404)
+
+    monkeypatch.setattr(osparc.SolversApi, "stop_job", stop_raises_404)
+    monkeypatch.setattr(
+        osparc.SolversApi, "delete_job", lambda *args: deleted.append(SOLVER_JOB)
+    )
+
+    configuration = osparc.Configuration(
+        host="https://osparc.invalid", username="key", password="secret"
+    )
+    with osparc.ApiClient(configuration=configuration) as api_client:
+        gone = delete_recorded_resources(
+            api_client,
+            [_recorded(SOLVER_JOB, _SOLVER_KEY, _SOLVER_VERSION, _SOLVER_JOB_ID)],
+        )
+
+    assert deleted == [SOLVER_JOB], "the delete must run after a stop answered 404"
+    assert gone == 1
+
+
+def test_the_janitor_fails_while_recorded_resources_remain(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # delete_recorded_resources logs and skips a resource it cannot remove. The janitor must
+    # still report the pass as failed, so its retries keep going and CI sees exit 1.
+    resource_log = tmp_path / "resources.jsonl"
+    append_recorded_resource(
+        resource_log, _recorded(UPLOADED_FILE, resource_id=_FILE_ID)
+    )
+    monkeypatch.setattr(
+        cleanup_resources, "delete_recorded_resources", lambda *_args: 0
+    )
+    with pytest.raises(cleanup_resources.ResourcesRemainError):
+        cleanup_resources.delete_recorded_or_raise(None, resource_log)

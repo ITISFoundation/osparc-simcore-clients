@@ -16,6 +16,12 @@ from uuid import UUID
 import httpx2
 import osparc
 import pytest
+from _utils import (
+    RESOURCE_LOG_ENV_VAR,
+    UPLOADED_FILE,
+    RecordedResource,
+    append_recorded_resource,
+)
 from httpx2 import AsyncClient, BasicAuth
 from memory_profiler import memory_usage
 from numpy import random
@@ -35,6 +41,21 @@ _MB: ByteSize = ByteSize(_KB * 1024)  # in bytes
 _GB: ByteSize = ByteSize(_MB * 1024)  # in bytes
 
 _logger = logging.getLogger(__name__)
+
+
+def _record_uploaded_file(file_id: str) -> None:
+    """Adds an upload to the resource log, so cleanup_resources.py can find it if the run is
+    killed before the fixture's own teardown deletes it. Without the variable there is nowhere
+    to record and nothing to do."""
+    logged = os.environ.get(RESOURCE_LOG_ENV_VAR)
+    if logged:
+        append_recorded_resource(
+            Path(logged),
+            RecordedResource(
+                kind=UPLOADED_FILE, key="", version="", resource_id=file_id
+            ),
+        )
+
 
 # Dictionary to store start times of tests
 _test_start_times = {}
@@ -220,6 +241,7 @@ def large_server_file(
     ram_statistics, uploaded_file = memory_usage(
         (files_api.upload_file, (tmp_file,)), retval=True
     )
+    _record_uploaded_file(uploaded_file.id)
 
     yield ServerFile(
         local_file=tmp_file,
@@ -276,6 +298,7 @@ def file_with_number(
     file = tmp_path / "file_with_number.txt"
     file.write_text("1")
     server_file = files_api.upload_file(file)
+    _record_uploaded_file(server_file.id)
     yield server_file
 
     try:

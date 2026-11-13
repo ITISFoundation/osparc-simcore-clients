@@ -5,12 +5,14 @@ jobs and files, and so does the notebook test once its notebook finishes; this c
 got killed before those teardowns ran, which is why it lives outside the pytest process.
 
 What to delete comes from the log the run wrote as it created each resource, at the path in
-OSPARC_E2E_RESOURCE_LOG. Deleting exactly what this run created cannot touch what a concurrent
-run is waiting on. --all-jobs deletes every job of this user instead, for a leak with no log; it
-covers jobs only, so a file with no log stays behind.
+OSPARC_E2E_RESOURCE_LOG. The notebook spy and the file fixtures both append to it. Deleting
+exactly what this run created cannot touch what a concurrent run is waiting on. --all-jobs
+deletes every job of this user instead, for a leak with no log; it covers jobs only, so a file
+with no log stays behind.
 
 OSPARC_API_HOST, OSPARC_API_KEY and OSPARC_API_SECRET select the deployment, the same variables
-the tests read. One deployment per invocation.
+the tests read. One deployment per invocation. The command exits nonzero when resources are
+still on the server after the retries.
 """
 
 import logging
@@ -30,6 +32,27 @@ from _utils import (
 from urllib3.exceptions import HTTPError as Urllib3HttpError
 
 _logger = logging.getLogger(__name__)
+
+
+class ResourcesRemainError(RuntimeError):
+    """Some recorded resources are still on the server after this attempt."""
+
+
+def delete_recorded_or_raise(api_client: osparc.ApiClient, log: Path) -> int:
+    """Deletes the resources recorded in log and returns how many are gone.
+
+    Raises ResourcesRemainError when some are still there, so the caller's retry sees an
+    incomplete pass rather than a success.
+    """
+    recorded = read_recorded_resources(log)
+    _logger.info("Deleting %d resources recorded in %s", len(recorded), log)
+    absent = delete_recorded_resources(api_client, recorded)
+    if absent < len(recorded):
+        raise ResourcesRemainError(
+            f"{len(recorded) - absent} of {len(recorded)} recorded resources are "
+            f"still on the server"
+        )
+    return absent
 
 
 def main(
@@ -78,9 +101,7 @@ def main(
             )
             return 0
 
-        recorded = read_recorded_resources(log)
-        _logger.info("Deleting %d resources recorded in %s", len(recorded), log)
-        return delete_recorded_resources(api_client, recorded)
+        return delete_recorded_or_raise(api_client, log)
 
     stop = (
         tenacity.stop_after_delay(timedelta(minutes=retry_minutes))
@@ -94,7 +115,7 @@ def main(
         with osparc.ApiClient(configuration=configuration) as api_client:
             for attempt in tenacity.Retrying(
                 retry=tenacity.retry_if_exception_type(
-                    (osparc.ApiException, Urllib3HttpError)
+                    (osparc.ApiException, Urllib3HttpError, ResourcesRemainError)
                 ),
                 stop=stop,
                 wait=tenacity.wait_fixed(10),

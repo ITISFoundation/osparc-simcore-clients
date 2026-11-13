@@ -220,4 +220,4 @@ e2e-shell: guard-GH_TOKEN ## shell for running e2e tests
 		-c "uv venv --python 3.11 /tmp/venv && source /tmp/venv/bin/activate && cd clients/python \
 		&& uv pip install -r requirements/e2e-test.txt \
 		&& echo 'Export OSPARC_API_HOST, OSPARC_API_KEY and OSPARC_API_SECRET, install a client (make install-e2e-test OSPARC_VERSION=..., or make install-e2e-test-local for this repo), then run pytest' \
-		&& cd test/e2e && exec /bin/bash"
+		&& exec /bin/bash"

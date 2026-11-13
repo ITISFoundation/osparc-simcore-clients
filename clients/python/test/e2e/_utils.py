@@ -4,7 +4,7 @@ import subprocess
 from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Final
+from typing import Any, Final
 
 import osparc
 import pytest
@@ -16,8 +16,8 @@ _logger = logging.getLogger(__name__)
 
 RESOURCE_LOG_ENV_VAR: Final[str] = "OSPARC_E2E_RESOURCE_LOG"
 """Name of the file the notebook tests point at and hand to the code they execute, so that code
-can report what it created on the deployment. Written by _notebook_spy, read here and by
-cleanup_resources.py."""
+can report what it created on the deployment. Written by _notebook_spy and the file fixtures in
+conftest, read here and by cleanup_resources.py."""
 
 # The kinds _notebook_spy writes to that file. Deleting them needs different arguments, so they
 # are distinguished rather than lumped together.
@@ -40,24 +40,59 @@ class RecordedResource:
     resource_id: str
 
 
+def append_recorded_resource(path: Path, resource: RecordedResource) -> None:
+    """Appends one record. The caller picks the path, whose directory may not exist yet."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a") as writer:
+        writer.write(
+            json.dumps(
+                {
+                    "kind": resource.kind,
+                    "key": resource.key,
+                    "version": resource.version,
+                    "resource_id": resource.resource_id,
+                }
+            )
+            + "\n"
+        )
+
+
 def read_recorded_resources(path: Path) -> list[RecordedResource]:
-    """What a run recorded, oldest first. A missing file means nothing was recorded."""
+    """What a run recorded, oldest first. A missing file means nothing was recorded.
+
+    A line that cannot be read is skipped with a warning: a run killed mid-append can leave a
+    partial last line, and that must not cost the caller the records written before it.
+    """
     if not path.is_file():
         return []
     resources: list[RecordedResource] = []
     for line in path.read_text().splitlines():
         if not line.strip():
             continue
-        entry = json.loads(line)
-        resources.append(
-            RecordedResource(
-                kind=entry["kind"],
-                key=entry["key"],
-                version=entry.get("version", ""),
-                resource_id=entry["resource_id"],
+        try:
+            entry = json.loads(line)
+            resources.append(
+                RecordedResource(
+                    kind=entry["kind"],
+                    key=entry["key"],
+                    version=entry.get("version", ""),
+                    resource_id=entry["resource_id"],
+                )
             )
-        )
+        except (json.JSONDecodeError, KeyError) as exc:
+            _logger.warning("Skipping unreadable resource log line %r: %s", line, exc)
     return resources
+
+
+def _stop(solver_api_stop: Any, *args: Any) -> None:
+    """A 404 here is not proof the job is gone: the api documents it as
+    Job/wallet/pricing details not found, so an existing job can 404 on stop alone. It only
+    means stopping achieved nothing, which the delete below then judges on its own."""
+    try:
+        solver_api_stop(*args)
+    except osparc.ApiException as exc:
+        if exc.status != 404:
+            raise
 
 
 def _delete(
@@ -66,13 +101,19 @@ def _delete(
     studies_api: osparc.StudiesApi,
     files_api: osparc.FilesApi,
 ) -> None:
-    """Raises for any answer but 404, where the server already has nothing left to delete."""
+    """Raises for any answer but a 404 from the delete, where the server has nothing left to
+    delete. A 404 from the stop is tolerated so the delete still gets its chance."""
     try:
         if resource.kind == STUDY_JOB:
-            studies_api.stop_study_job(resource.key, resource.resource_id)
+            _stop(studies_api.stop_study_job, resource.key, resource.resource_id)
             studies_api.delete_study_job(resource.key, resource.resource_id)
         elif resource.kind == SOLVER_JOB:
-            solvers_api.stop_job(resource.key, resource.version, resource.resource_id)
+            _stop(
+                solvers_api.stop_job,
+                resource.key,
+                resource.version,
+                resource.resource_id,
+            )
             solvers_api.delete_job(resource.key, resource.version, resource.resource_id)
         else:
             files_api.delete_file(resource.resource_id)

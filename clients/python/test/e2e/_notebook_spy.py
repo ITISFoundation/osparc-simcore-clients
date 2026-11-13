@@ -10,13 +10,21 @@ The kernel is a separate process, but it runs the same interpreter with this dir
 sys.path, so the contract constants come from _utils rather than being copied here.
 """
 
-import json
 import os
+import shutil
 from pathlib import Path
 from typing import Any, Final
+from uuid import uuid4
 
 import osparc
-from _utils import RESOURCE_LOG_ENV_VAR, SOLVER_JOB, STUDY_JOB, UPLOADED_FILE
+from _utils import (
+    RESOURCE_LOG_ENV_VAR,
+    SOLVER_JOB,
+    STUDY_JOB,
+    UPLOADED_FILE,
+    RecordedResource,
+    append_recorded_resource,
+)
 
 __all__: Final[list[str]] = ["install"]
 
@@ -25,22 +33,35 @@ def _record(kind: str, key: str, version: str, resource: Any) -> None:
     logged = os.environ.get(RESOURCE_LOG_ENV_VAR)
     if not logged:
         return
-    # The caller picks the path, so the directory may not exist yet when the first resource
-    # shows up.
-    log_file = Path(logged)
-    log_file.parent.mkdir(parents=True, exist_ok=True)
-    with log_file.open("a") as writer:
-        writer.write(
-            json.dumps(
-                {
-                    "kind": kind,
-                    "key": key,
-                    "version": version,
-                    "resource_id": str(resource.id),
-                }
-            )
-            + "\n"
-        )
+    append_recorded_resource(
+        Path(logged),
+        RecordedResource(
+            kind=kind,
+            key=str(key or ""),
+            version=str(version or ""),
+            resource_id=str(resource.id),
+        ),
+    )
+
+
+def _dedup_proof_copy(source: Any) -> tuple[Any, Path | None]:
+    """Copies a local upload source to a name no other run uses.
+
+    Up to client 0.8.5, upload_file returns the already uploaded file when its sha256 and
+    filename match, so two runs of the same notebook share one file id and the first teardown
+    to delete it breaks the run still using it. The dedup key includes the filename, so
+    uploading under a unique name always creates a file this upload owns. Returns the source to
+    upload and the copy to remove afterwards.
+    """
+    path = Path(source) if isinstance(source, (str, Path)) else None
+    if path is None or not path.is_file():
+        return source, None
+    fresh = path.with_name(f"{uuid4().hex}-{path.name}")
+    try:
+        shutil.copyfile(path, fresh)
+    except OSError:
+        return source, None
+    return fresh, fresh
 
 
 def install() -> tuple[str, ...]:
@@ -91,7 +112,18 @@ def install() -> tuple[str, ...]:
         upload_file = osparc.FilesApi.upload_file
 
         def recorded_upload_file(self: Any, *args: Any, **kwargs: Any) -> Any:
-            uploaded = upload_file(self, *args, **kwargs)
+            fresh: Path | None = None
+            try:
+                if args:
+                    source, fresh = _dedup_proof_copy(args[0])
+                    args = (source, *args[1:])
+                elif "file" in kwargs:
+                    source, fresh = _dedup_proof_copy(kwargs["file"])
+                    kwargs = {**kwargs, "file": source}
+                uploaded = upload_file(self, *args, **kwargs)
+            finally:
+                if fresh is not None:
+                    fresh.unlink(missing_ok=True)
             _record(UPLOADED_FILE, "", "", uploaded)
             return uploaded
 
