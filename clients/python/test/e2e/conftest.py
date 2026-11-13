@@ -11,7 +11,7 @@ import os
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Final, NamedTuple
-from uuid import UUID
+from uuid import UUID, uuid4
 
 import httpx2
 import osparc
@@ -230,15 +230,21 @@ def large_server_file(
     files_api: osparc.FilesApi, tmp_path_factory
 ) -> Iterable[ServerFile]:
     _file_size: Final[ByteSize] = ByteSize(1 * _GB)
+    # The basename is unique per run: up to client 0.8.5 upload_file deduplicates on
+    # sha256 + filename, so two runs sharing both would be handed one file id and the first
+    # teardown to delete it would break the run still using it. The path stays fixed for the
+    # whole session, so the re-uploads in test_files_api still exercise within-run dedup.
     tmp_file = (
         tmp_path_factory.mktemp(basename=large_server_file.__name__)
-        / "large_test_file.txt"
+        / f"{large_server_file.__name__}-{uuid4().hex}.txt"
     )
     ss: random.SeedSequence = random.SeedSequence()
     logging.info("Entropy used to generate random file: %s", f"{ss.entropy}")
     rng: random.Generator = random.default_rng(ss)
     tmp_file.write_bytes(rng.bytes(1000))
-    with open(tmp_file, "wb") as f:
+    # "r+b" opens without truncating, so truncate extends the random prefix with zeros to the
+    # full size rather than discarding it the way "wb" did.
+    with open(tmp_file, "r+b") as f:
         f.truncate(_file_size)
     assert tmp_file.stat().st_size == _file_size, (
         f"Could not create file of size: {_file_size}"
@@ -300,7 +306,9 @@ def file_with_number(
     tmp_path: Path, api_client: osparc.ApiClient
 ) -> Iterable[osparc.File]:
     files_api = osparc.FilesApi(api_client=api_client)
-    file = tmp_path / "file_with_number.txt"
+    # Unique basename so that, on clients up to 0.8.5 where upload_file deduplicates on
+    # sha256 + filename, this run's file is never one another run already uploaded.
+    file = tmp_path / f"{file_with_number.__name__}-{uuid4().hex}.txt"
     file.write_text("1")
     server_file = files_api.upload_file(file)
     _record_uploaded_file(server_file.id)
