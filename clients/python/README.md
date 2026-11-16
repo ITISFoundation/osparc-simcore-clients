@@ -126,7 +126,7 @@ python_client_latest_release:
     OSPARC_E2E_RESOURCE_LOG: ${CI_PROJECT_DIR}/created_resources.jsonl
   script:
     - cd clients/python
-    - python3 -m venv .venv && . .venv/bin/activate
+    - uv venv .venv --python 3.11 && . .venv/bin/activate
     - make install-e2e-test OSPARC_VERSION=${OSPARC_CLIENT_VERSION}
     - pytest test/e2e --junitxml=${CI_PROJECT_DIR}/junit_e2e_${OSPARC_CLIENT_VERSION}.xml
   after_script:
