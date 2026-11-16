@@ -194,6 +194,9 @@ dist: artifacts_dir ## builds distribution wheel for `osparc_client` and `osparc
 ## e2e TEST ---------------------------------------------------------------------------------
 
 .PHONY: e2e-test
+# [CI Contract] consumed outside this repository: the e2e-portal-testing GitLab pipeline runs
+# this suite against every deployment, and the client publication workflow is planned to gate
+# on it. Changing the invocation or the junit path needs those callers updated first.
 e2e-test: _check_venv_active guard-OSPARC_API_HOST ## runs the e2e tests against the deployment in OSPARC_API_HOST (also needs OSPARC_API_KEY and OSPARC_API_SECRET), after make install-e2e-test[-local]
 	@mkdir -p $(ARTIFACTS_DIR)
 	python -m pytest $(CLIENTS_PYTHON_DIR)/test/e2e --junitxml=$(ARTIFACTS_DIR)/junit_e2e.xml
