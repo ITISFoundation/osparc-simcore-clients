@@ -45,7 +45,7 @@ comma := ,
 
 
 help: ## help on rule's targets
-	@awk --posix 'BEGIN {FS = ":.*?## "} /^[[:alpha:][:space:]_-]+:.*?## / {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+	@awk --posix 'BEGIN {FS = ":.*?## "} /^[[:alnum:][:space:]_-]+:.*?## / {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 
 validate-api-specification: ## validates openapi-specification

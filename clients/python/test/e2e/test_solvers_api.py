@@ -12,8 +12,8 @@ from uuid import UUID
 import osparc
 import pytest
 import tenacity
-from _utils import skip_if_osparc_version
-from httpx import AsyncClient
+from _utils import SOLVER_JOB, RecordedResource, record_resource, skip_if_osparc_version
+from httpx2 import AsyncClient
 from packaging.version import Version
 from tenacity import Retrying
 
@@ -34,9 +34,17 @@ def create_sleeper_jobs(
                 job = solvers_api.create_job(
                     sleeper.id, sleeper.version, osparc.JobInputs({"input1": 1.0})
                 )
+                job_ids.add(job.id)
+                record_resource(
+                    RecordedResource(
+                        kind=SOLVER_JOB,
+                        key=sleeper.id,
+                        version=sleeper.version,
+                        resource_id=str(job.id),
+                    )
+                )
                 assert isinstance(job, osparc.Job)
                 print(job.to_str())
-                job_ids.add(job.id)
             yield job_ids
         finally:
             for job_id in job_ids:

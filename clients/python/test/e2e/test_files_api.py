@@ -12,7 +12,12 @@ from typing import Final
 
 import osparc
 import pytest
-from _utils import skip_if_osparc_version
+from _utils import (
+    UPLOADED_FILE,
+    RecordedResource,
+    record_resource,
+    skip_if_osparc_version,
+)
 from conftest import _KB, ServerFile
 from faker import Faker
 from memory_profiler import memory_usage
@@ -75,6 +80,15 @@ def test_upload_file(
     """Test that we can upload a file via the multipart upload and download it again."""
     uploaded_file: osparc.File = files_api.upload_file(large_server_file.local_file)
     try:
+        if uploaded_file.id != large_server_file.server_file.id:
+            record_resource(
+                RecordedResource(
+                    kind=UPLOADED_FILE,
+                    key="",
+                    version="",
+                    resource_id=str(uploaded_file.id),
+                )
+            )
         _assert_upload_identity_semantics(large_server_file, uploaded_file)
         downloaded_file = files_api.download_file(
             uploaded_file.id, destination_folder=tmp_path
@@ -102,6 +116,15 @@ def test_upload_download_file_ram_usage(
 
     uploaded_file = files_api.upload_file(large_server_file.local_file)
     try:
+        if uploaded_file.id != large_server_file.server_file.id:
+            record_resource(
+                RecordedResource(
+                    kind=UPLOADED_FILE,
+                    key="",
+                    version="",
+                    resource_id=str(uploaded_file.id),
+                )
+            )
         _assert_upload_identity_semantics(large_server_file, uploaded_file)
         download_ram_usage_in_mb, downloaded_file = memory_usage(
             (

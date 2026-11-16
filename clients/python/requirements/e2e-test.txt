@@ -1,20 +1,15 @@
--r ../../../requirements.txt
-
 faker
+httpx2
 ipykernel
-ipython
-jinja2
-matplotlib
 memory_profiler
 packaging
-pandas
 nbconvert
+nbformat
+numpy
 papermill
-rich
 pydantic
 pytest
 pytest-asyncio
-pytest-env
-pytest-html
-packaging
--e test/e2e/ci/e2e
+rich
+tenacity
+typer>=0.12

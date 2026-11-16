@@ -26,3 +26,15 @@ RUN apt-get update -y \
     && rm -rf /var/lib/apt/lists/*
 
 CMD [ "/bin/bash" ]
+
+# OCI provenance labels, filled by build-n-publish.bash from this repository's git state and
+# the published tag. Last, so rotating values do not invalidate the cached layers above.
+ARG BUILD_GIT_REVISION=local
+ARG BUILD_VERSION=dev
+ARG BUILD_CREATED=
+LABEL org.opencontainers.image.title="osparc_python_tutorial_testing" \
+      org.opencontainers.image.description="Test image for the osparc python client e2e suite" \
+      org.opencontainers.image.source="https://github.com/ITISFoundation/osparc-simcore-clients" \
+      org.opencontainers.image.revision="${BUILD_GIT_REVISION}" \
+      org.opencontainers.image.version="${BUILD_VERSION}" \
+      org.opencontainers.image.created="${BUILD_CREATED}"
