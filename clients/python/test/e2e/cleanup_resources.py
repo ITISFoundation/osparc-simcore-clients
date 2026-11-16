@@ -1,3 +1,5 @@
+# ruff: noqa: B008  # typer reads its options from the argument defaults, so calling
+# typer.Option there is the documented shape of its API.
 """Deletes what a run left on the deployment named by the environment.
 
 Run it after the suite, from a step that also runs when the tests fail. Tests delete their own
