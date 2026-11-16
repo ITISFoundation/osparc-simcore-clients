@@ -12,6 +12,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from typing import Any, Final
 from unittest.mock import create_autospec
+from uuid import UUID, uuid4
 
 import _notebook_spy
 import osparc
@@ -43,7 +44,7 @@ def _recorded(
     kind: str,
     key: str = "",
     version: str = "",
-    resource_id: str = "",
+    resource_id: str | UUID = "",
     owner_id: str = "",
 ) -> RecordedResource:
     return RecordedResource(
@@ -284,6 +285,20 @@ def test_a_partial_log_line_does_not_lose_the_records_before_it(
         writer.write('{"kind": "file", "resource_i')
     assert read_recorded_resources(resource_log) == [
         _recorded(SOLVER_JOB, _SOLVER_KEY, _SOLVER_VERSION, _SOLVER_JOB_ID)
+    ]
+
+
+def test_a_uuid_resource_id_is_recorded_as_text(tmp_path: Path) -> None:
+    # Client models from 0.9.0 on type ids as uuid.UUID, which json.dumps refuses. A record lost
+    # to that TypeError is a resource no janitor run ever sees.
+    job_id = uuid4()
+    resource_log = tmp_path / "resources.jsonl"
+    append_recorded_resource(
+        resource_log,
+        _recorded(SOLVER_JOB, _SOLVER_KEY, _SOLVER_VERSION, job_id),
+    )
+    assert read_recorded_resources(resource_log) == [
+        _recorded(SOLVER_JOB, _SOLVER_KEY, _SOLVER_VERSION, str(job_id))
     ]
 
 

@@ -42,7 +42,7 @@ _GB: ByteSize = ByteSize(_MB * 1024)  # in bytes
 _logger = logging.getLogger(__name__)
 
 
-def _record_uploaded_file(file_id: str) -> None:
+def _record_uploaded_file(file_id: str | UUID) -> None:
     """Adds an upload to the resource log, so cleanup_resources.py can find it if the run is
     killed before the fixture's own teardown deletes it. Without the variable there is nowhere
     to record and nothing to do."""

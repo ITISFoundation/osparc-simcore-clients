@@ -6,6 +6,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Final
+from uuid import UUID
 
 import osparc
 import pytest
@@ -39,22 +40,26 @@ class RecordedResource:
     kind: str
     key: str
     version: str
-    resource_id: str
+    resource_id: str | UUID
     owner_id: str = ""
 
 
 def append_recorded_resource(path: Path, resource: RecordedResource) -> None:
-    """Appends one record. The caller picks the path, whose directory may not exist yet."""
+    """Appends one record. The caller picks the path, whose directory may not exist yet.
+
+    Every field is written as text: the client models hand back ids as `uuid.UUID`, which
+    `json.dumps` refuses, and a record lost to that is a resource the janitor never deletes.
+    """
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a") as writer:
         writer.write(
             json.dumps(
                 {
-                    "kind": resource.kind,
-                    "key": resource.key,
-                    "version": resource.version,
-                    "resource_id": resource.resource_id,
-                    "owner_id": resource.owner_id,
+                    "kind": str(resource.kind),
+                    "key": str(resource.key),
+                    "version": str(resource.version),
+                    "resource_id": str(resource.resource_id),
+                    "owner_id": str(resource.owner_id),
                 }
             )
             + "\n"
