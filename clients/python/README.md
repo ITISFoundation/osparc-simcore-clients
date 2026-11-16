@@ -117,7 +117,7 @@ GitLab:
 ```yaml
 python_client_latest_release:
   stage: tutorials
-  image: itisfoundation/osparc_python_tutorial_testing:v4
+  image: itisfoundation/osparc_python_tutorial_testing:v5
   variables:
     OSPARC_API_HOST: https://osparc-master.speag.com
     OSPARC_API_KEY: $E2E_API_KEY      # a masked variable, not a literal
