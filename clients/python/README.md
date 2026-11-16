@@ -65,7 +65,7 @@ variables below select the deployment and its credentials.
 | `OSPARC_API_KEY` | api key of the test user |
 | `OSPARC_API_SECRET` | that key's secret |
 | `OSPARC_CLIENT_VERSION` | optional label. When set, and neither `latest_release` nor `latest_master`, the run aborts if it differs from the installed `osparc.__version__` |
-| `OSPARC_E2E_RESOURCE_LOG` | optional file the notebook tests record what they create on the deployment in, for `test/e2e/cleanup_resources.py` |
+| `OSPARC_E2E_RESOURCE_LOG` | optional file the suite records resources created on the deployment in, for `test/e2e/cleanup_resources.py` |
 | `OSPARC_E2E_HTTP_DEBUG` | optional, set to any value to dump every request/response header of the client; the dump contains the `Authorization` header, so keep it out of CI logs |
 
 ```console
@@ -89,14 +89,14 @@ you want to run inside it.
 
 Tests delete the jobs and files they create. The notebooks cannot. They upload a file and
 submit a job from it inside a kernel no fixture can reach. The runner therefore prepends a cell
-that installs a spy (`test/e2e/_notebook_spy.py`). The spy appends each id to the file named by
-`OSPARC_E2E_RESOURCE_LOG`. Without the variable it writes to a per-test temporary file. A
-fixture reads the log and deletes the recorded resources when the notebook ends. Jobs go first: a
-job input refers to the file it was uploaded from.
+that installs a spy (`test/e2e/_notebook_spy.py`). The spy records each notebook resource in the
+file named by `OSPARC_E2E_RESOURCE_LOG`. A fixture deletes only that notebook's resources when it
+ends, leaving resources owned by other fixtures for their own teardown or the final janitor.
+Jobs go first: a job input refers to the file it was uploaded from.
 
-A run can get killed before that fixture runs. The file fixtures record their uploads in the
-same log, so those are covered too. Point the variable at a path you keep, then run this from a
-step that also runs on failure:
+A run can get killed before teardown. Resource-producing fixtures and API tests record their
+resources in the same log, so the janitor can find them too. Point the variable at a path you
+keep, then run this from a step that also runs on failure:
 
 ```console
 python test/e2e/cleanup_resources.py --resource-log "$OSPARC_E2E_RESOURCE_LOG" --retry-minutes=10

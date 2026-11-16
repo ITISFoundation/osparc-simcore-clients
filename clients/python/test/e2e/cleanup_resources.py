@@ -5,10 +5,10 @@ jobs and files, and so does the notebook test once its notebook finishes; this c
 got killed before those teardowns ran, which is why it lives outside the pytest process.
 
 What to delete comes from the log the run wrote as it created each resource, at the path in
-OSPARC_E2E_RESOURCE_LOG. The notebook spy and the file fixtures both append to it. Deleting
-exactly what this run created cannot touch what a concurrent run is waiting on. --all-jobs
-deletes every job of this user instead, for a leak with no log; it covers jobs only, so a file
-with no log stays behind.
+OSPARC_E2E_RESOURCE_LOG. The notebook spy, resource-producing fixtures, and API tests append to
+it. Deleting exactly what this run created cannot touch what a concurrent run is waiting on.
+--all-jobs deletes every job of this user instead, for a leak with no log; it covers jobs only,
+so a file with no log stays behind.
 
 OSPARC_API_HOST, OSPARC_API_KEY and OSPARC_API_SECRET select the deployment, the same variables
 the tests read. One deployment per invocation. The command exits nonzero when resources are

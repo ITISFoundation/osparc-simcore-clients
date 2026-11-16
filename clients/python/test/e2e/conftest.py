@@ -17,10 +17,9 @@ import httpx2
 import osparc
 import pytest
 from _utils import (
-    RESOURCE_LOG_ENV_VAR,
     UPLOADED_FILE,
     RecordedResource,
-    append_recorded_resource,
+    record_resource,
 )
 from httpx2 import AsyncClient, BasicAuth
 from memory_profiler import memory_usage
@@ -47,14 +46,9 @@ def _record_uploaded_file(file_id: str) -> None:
     """Adds an upload to the resource log, so cleanup_resources.py can find it if the run is
     killed before the fixture's own teardown deletes it. Without the variable there is nowhere
     to record and nothing to do."""
-    logged = os.environ.get(RESOURCE_LOG_ENV_VAR)
-    if logged:
-        append_recorded_resource(
-            Path(logged),
-            RecordedResource(
-                kind=UPLOADED_FILE, key="", version="", resource_id=file_id
-            ),
-        )
+    record_resource(
+        RecordedResource(kind=UPLOADED_FILE, key="", version="", resource_id=file_id)
+    )
 
 
 # Dictionary to store start times of tests

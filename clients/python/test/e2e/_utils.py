@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 import subprocess
 from collections.abc import Sequence
 from dataclasses import dataclass
@@ -15,9 +16,9 @@ from urllib3.exceptions import HTTPError as Urllib3HttpError
 _logger = logging.getLogger(__name__)
 
 RESOURCE_LOG_ENV_VAR: Final[str] = "OSPARC_E2E_RESOURCE_LOG"
-"""Name of the file the notebook tests point at and hand to the code they execute, so that code
-can report what it created on the deployment. Written by _notebook_spy and the file fixtures in
-conftest, read here and by cleanup_resources.py."""
+"""Name of the file the suite uses to report created deployment resources to cleanup_resources.py."""
+RESOURCE_LOG_OWNER_ENV_VAR: Final[str] = "OSPARC_E2E_RESOURCE_OWNER"
+"""Owner identifier used to select the resources created by one notebook."""
 
 # The kinds _notebook_spy writes to that file. Deleting them needs different arguments, so they
 # are distinguished rather than lumped together.
@@ -31,13 +32,15 @@ class RecordedResource:
     """What a run created on the deployment and needs deleting again.
 
     `key` is the solver key, or the study id of a study job. Both are empty for an uploaded
-    file, which only needs its id.
+    file, which only needs its id. `owner_id` scopes notebook teardown without excluding the
+    resource from run-level crash recovery.
     """
 
     kind: str
     key: str
     version: str
     resource_id: str
+    owner_id: str = ""
 
 
 def append_recorded_resource(path: Path, resource: RecordedResource) -> None:
@@ -51,17 +54,28 @@ def append_recorded_resource(path: Path, resource: RecordedResource) -> None:
                     "key": resource.key,
                     "version": resource.version,
                     "resource_id": resource.resource_id,
+                    "owner_id": resource.owner_id,
                 }
             )
             + "\n"
         )
 
 
-def read_recorded_resources(path: Path) -> list[RecordedResource]:
+def record_resource(resource: RecordedResource) -> None:
+    """Records a resource when this run has configured a resource log."""
+    logged = os.environ.get(RESOURCE_LOG_ENV_VAR)
+    if logged:
+        append_recorded_resource(Path(logged), resource)
+
+
+def read_recorded_resources(
+    path: Path, *, owner_id: str | None = None
+) -> list[RecordedResource]:
     """What a run recorded, oldest first. A missing file means nothing was recorded.
 
     A line that cannot be read is skipped with a warning: a run killed mid-append can leave a
-    partial last line, and that must not cost the caller the records written before it.
+    partial last line, and that must not cost the caller the records written before it. When
+    `owner_id` is set, only resources owned by that notebook are returned.
     """
     if not path.is_file():
         return []
@@ -71,14 +85,15 @@ def read_recorded_resources(path: Path) -> list[RecordedResource]:
             continue
         try:
             entry = json.loads(line)
-            resources.append(
-                RecordedResource(
-                    kind=entry["kind"],
-                    key=entry["key"],
-                    version=entry.get("version", ""),
-                    resource_id=entry["resource_id"],
-                )
+            resource = RecordedResource(
+                kind=entry["kind"],
+                key=entry["key"],
+                version=entry.get("version", ""),
+                resource_id=entry["resource_id"],
+                owner_id=entry.get("owner_id", ""),
             )
+            if owner_id is None or resource.owner_id == owner_id:
+                resources.append(resource)
         except (json.JSONDecodeError, KeyError) as exc:
             _logger.warning("Skipping unreadable resource log line %r: %s", line, exc)
     return resources
@@ -174,7 +189,8 @@ def sweep_all_jobs(api_client: osparc.ApiClient) -> int:
     releases = solvers_api.list_solvers_releases()
     _logger.info("Scanning %d solver releases", len(releases))
     for solver in releases:
-        for job in solvers_api.iter_jobs(solver.id, solver.version):
+        jobs = list(solvers_api.iter_jobs(solver.id, solver.version))
+        for job in jobs:
             solvers_api.delete_job(solver.id, solver.version, job.id)
             deleted += 1
     return deleted

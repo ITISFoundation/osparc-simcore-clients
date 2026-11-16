@@ -11,6 +11,7 @@ would simply leak again. None of these tests needs a deployment.
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any, Final
+from unittest.mock import create_autospec
 
 import _notebook_spy
 import cleanup_resources
@@ -18,6 +19,7 @@ import osparc
 import pytest
 from _utils import (
     RESOURCE_LOG_ENV_VAR,
+    RESOURCE_LOG_OWNER_ENV_VAR,
     SOLVER_JOB,
     STUDY_JOB,
     UPLOADED_FILE,
@@ -25,6 +27,7 @@ from _utils import (
     append_recorded_resource,
     delete_recorded_resources,
     read_recorded_resources,
+    sweep_all_jobs,
 )
 
 _SOLVER_KEY: Final[str] = "simcore/services/dynamic/jupyter-smash"
@@ -36,10 +39,18 @@ _FILE_ID: Final[str] = "cc0b0b8a-7a1e-4b0b-9b9d-2c4d5e6f7a8b"
 
 
 def _recorded(
-    kind: str, key: str = "", version: str = "", resource_id: str = ""
+    kind: str,
+    key: str = "",
+    version: str = "",
+    resource_id: str = "",
+    owner_id: str = "",
 ) -> RecordedResource:
     return RecordedResource(
-        kind=kind, key=key, version=version, resource_id=resource_id
+        kind=kind,
+        key=key,
+        version=version,
+        resource_id=resource_id,
+        owner_id=owner_id,
     )
 
 
@@ -50,6 +61,7 @@ def test_spy_records_every_resource_a_notebook_creates(
     # guarantees the directory is there when the first resource shows up.
     resource_log = tmp_path / "artifacts" / "resources.jsonl"
     monkeypatch.setenv(RESOURCE_LOG_ENV_VAR, str(resource_log))
+    monkeypatch.setenv(RESOURCE_LOG_OWNER_ENV_VAR, "notebook-1")
     monkeypatch.setattr(
         osparc.SolversApi,
         "create_job",
@@ -87,10 +99,114 @@ def test_spy_records_every_resource_a_notebook_creates(
     assert not Path(upload_sources[0]).exists(), "the copy is removed after the upload"
     assert source.is_file(), "the notebook's own file is untouched"
     assert read_recorded_resources(resource_log) == [
-        _recorded(SOLVER_JOB, _SOLVER_KEY, _SOLVER_VERSION, _SOLVER_JOB_ID),
-        _recorded(STUDY_JOB, _STUDY_ID, "", _STUDY_JOB_ID),
-        _recorded(UPLOADED_FILE, resource_id=_FILE_ID),
+        _recorded(
+            SOLVER_JOB,
+            _SOLVER_KEY,
+            _SOLVER_VERSION,
+            _SOLVER_JOB_ID,
+            owner_id="notebook-1",
+        ),
+        _recorded(STUDY_JOB, _STUDY_ID, "", _STUDY_JOB_ID, owner_id="notebook-1"),
+        _recorded(UPLOADED_FILE, resource_id=_FILE_ID, owner_id="notebook-1"),
     ]
+
+
+def test_spy_does_not_upload_original_when_unique_copy_fails(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    resource_log = tmp_path / "resources.jsonl"
+    monkeypatch.setenv(RESOURCE_LOG_ENV_VAR, str(resource_log))
+    source = tmp_path / "file.txt"
+    source.write_text("content")
+    uploaded_sources: list[str] = []
+
+    def fake_upload(self: Any, file: str | Path) -> SimpleNamespace:
+        uploaded_sources.append(str(file))
+        return SimpleNamespace(id=_FILE_ID)
+
+    def fail_copy(source: Path, destination: Path) -> None:
+        raise PermissionError("copy failed")
+
+    monkeypatch.setattr(
+        osparc.SolversApi,
+        "create_job",
+        lambda *args, **kwargs: SimpleNamespace(id=_SOLVER_JOB_ID),
+    )
+    monkeypatch.setattr(
+        osparc.StudiesApi,
+        "create_study_job",
+        lambda *args, **kwargs: SimpleNamespace(id=_STUDY_JOB_ID),
+    )
+    monkeypatch.setattr(osparc.FilesApi, "upload_file", fake_upload)
+    monkeypatch.setattr(_notebook_spy.shutil, "copyfile", fail_copy)
+    _notebook_spy.install()
+
+    with pytest.raises(PermissionError, match="copy failed"):
+        osparc.FilesApi.upload_file(None, source)
+
+    assert uploaded_sources == []
+    assert not resource_log.exists()
+
+
+def test_notebook_teardown_can_select_only_its_resources(tmp_path: Path) -> None:
+    resource_log = tmp_path / "resources.jsonl"
+    notebook_resource = _recorded(
+        SOLVER_JOB,
+        _SOLVER_KEY,
+        _SOLVER_VERSION,
+        _SOLVER_JOB_ID,
+        owner_id="notebook-1",
+    )
+    fixture_resource = _recorded(UPLOADED_FILE, resource_id=_FILE_ID, owner_id="")
+    append_recorded_resource(resource_log, notebook_resource)
+    append_recorded_resource(resource_log, fixture_resource)
+
+    assert read_recorded_resources(resource_log, owner_id="notebook-1") == [
+        notebook_resource
+    ]
+    assert read_recorded_resources(resource_log) == [
+        notebook_resource,
+        fixture_resource,
+    ]
+
+
+def test_read_recorded_resources_accepts_logs_without_owner_ids(
+    tmp_path: Path,
+) -> None:
+    resource_log = tmp_path / "resources.jsonl"
+    resource_log.write_text(
+        '{"kind":"solver","key":"solver","version":"1","resource_id":"job"}\n'
+    )
+
+    assert read_recorded_resources(resource_log) == [
+        _recorded(SOLVER_JOB, "solver", "1", "job")
+    ]
+
+
+def test_sweep_all_jobs_materializes_jobs_before_deleting(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    solver_api = create_autospec(osparc.SolversApi, instance=True)
+    solver_api.list_solvers_releases.return_value = [
+        SimpleNamespace(id=_SOLVER_KEY, version=_SOLVER_VERSION)
+    ]
+    jobs_enumerated = False
+
+    def iter_jobs(*args: Any) -> Any:
+        nonlocal jobs_enumerated
+        yield SimpleNamespace(id="job-1")
+        yield SimpleNamespace(id="job-2")
+        jobs_enumerated = True
+
+    def delete_job(*args: Any) -> None:
+        assert jobs_enumerated
+
+    solver_api.iter_jobs.side_effect = iter_jobs
+    solver_api.delete_job.side_effect = delete_job
+    monkeypatch.setattr(osparc, "SolversApi", lambda **kwargs: solver_api)
+
+    assert sweep_all_jobs(None) == 2
+    assert solver_api.delete_job.call_count == 2
 
 
 def test_spy_records_nothing_without_a_log(

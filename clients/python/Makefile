@@ -136,9 +136,9 @@ install-e2e-test: _check_venv_active guard-OSPARC_VERSION ## install the e2e req
 
 .PHONY: install-e2e-test-local
 install-e2e-test-local: _check_venv_active ## install packages for e2e testing with local (repo) client [e2e]
-	# python-client formats the generated code with ruff, so the requirements
-	# (which carry it) are installed before the client is built
 	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/e2e-test.txt
+	# ruff is needed by python-client's generated-code postprocessing, not by the e2e suite.
+	uv pip install -r $(CLIENTS_PYTHON_DIR)/requirements/client-build.txt
 	$(MAKE) python-client
 	uv pip install --editable artifacts/client --editable .
 

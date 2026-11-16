@@ -19,32 +19,30 @@ from uuid import uuid4
 import osparc
 from _utils import (
     RESOURCE_LOG_ENV_VAR,
+    RESOURCE_LOG_OWNER_ENV_VAR,
     SOLVER_JOB,
     STUDY_JOB,
     UPLOADED_FILE,
     RecordedResource,
-    append_recorded_resource,
+    record_resource,
 )
 
 __all__: Final[list[str]] = ["install"]
 
 
 def _record(kind: str, key: str, version: str, resource: Any) -> None:
-    logged = os.environ.get(RESOURCE_LOG_ENV_VAR)
-    if not logged:
-        return
-    append_recorded_resource(
-        Path(logged),
+    record_resource(
         RecordedResource(
             kind=kind,
             key=str(key or ""),
             version=str(version or ""),
             resource_id=str(resource.id),
-        ),
+            owner_id=os.environ.get(RESOURCE_LOG_OWNER_ENV_VAR, ""),
+        )
     )
 
 
-def _dedup_proof_copy(source: Any) -> tuple[Any, Path | None]:
+def _dedup_proof_copy(source: Any) -> tuple[Path, Path]:
     """Copies a local upload source to a name no other run uses.
 
     Up to client 0.8.5, upload_file returns the already uploaded file when its sha256 and
@@ -53,14 +51,15 @@ def _dedup_proof_copy(source: Any) -> tuple[Any, Path | None]:
     uploading under a unique name always creates a file this upload owns. Returns the source to
     upload and the copy to remove afterwards.
     """
-    path = Path(source) if isinstance(source, (str, Path)) else None
-    if path is None or not path.is_file():
-        return source, None
+    if not isinstance(source, (str, os.PathLike)):
+        raise TypeError("resource tracking requires a path for file uploads")
+    path = Path(source)
     fresh = path.with_name(f"{uuid4().hex}-{path.name}")
     try:
         shutil.copyfile(path, fresh)
     except OSError:
-        return source, None
+        fresh.unlink(missing_ok=True)
+        raise
     return fresh, fresh
 
 
@@ -114,12 +113,17 @@ def install() -> tuple[str, ...]:
         def recorded_upload_file(self: Any, *args: Any, **kwargs: Any) -> Any:
             fresh: Path | None = None
             try:
-                if args:
-                    source, fresh = _dedup_proof_copy(args[0])
-                    args = (source, *args[1:])
-                elif "file" in kwargs:
-                    source, fresh = _dedup_proof_copy(kwargs["file"])
-                    kwargs = {**kwargs, "file": source}
+                if os.environ.get(RESOURCE_LOG_ENV_VAR):
+                    if args:
+                        source, fresh = _dedup_proof_copy(args[0])
+                        args = (source, *args[1:])
+                    elif "file" in kwargs:
+                        source, fresh = _dedup_proof_copy(kwargs["file"])
+                        kwargs = {**kwargs, "file": source}
+                    else:
+                        raise TypeError(
+                            "resource tracking requires a file path for upload_file"
+                        )
                 uploaded = upload_file(self, *args, **kwargs)
             finally:
                 if fresh is not None:

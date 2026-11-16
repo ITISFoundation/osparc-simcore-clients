@@ -14,7 +14,7 @@ from uuid import UUID
 import osparc
 import pytest
 import tenacity
-from _utils import skip_if_osparc_version
+from _utils import STUDY_JOB, RecordedResource, record_resource, skip_if_osparc_version
 from packaging.version import Version
 
 _WAIT_TIMEOUT = timedelta(minutes=15)
@@ -36,9 +36,17 @@ def create_study_job(
         job = studies_api.create_study_job(
             study_id=f"{sleeper_study_id}", job_inputs=job_inputs
         )
-        assert isinstance(job, osparc.Job)
-        print(job)
         try:
+            record_resource(
+                RecordedResource(
+                    kind=STUDY_JOB,
+                    key=str(sleeper_study_id),
+                    version="",
+                    resource_id=str(job.id),
+                )
+            )
+            assert isinstance(job, osparc.Job)
+            print(job)
             yield job
         finally:
             for attempt in tenacity.Retrying(

@@ -10,6 +10,7 @@ import sys
 from collections.abc import Iterator
 from pathlib import Path
 from typing import Any, Final
+from uuid import uuid4
 
 import nbformat
 import osparc
@@ -17,6 +18,7 @@ import papermill as pm
 import pytest
 from _utils import (
     RESOURCE_LOG_ENV_VAR,
+    RESOURCE_LOG_OWNER_ENV_VAR,
     delete_recorded_resources,
     read_recorded_resources,
 )
@@ -67,11 +69,13 @@ def delete_resources_created_in_notebooks(
     resource_log = Path(
         os.environ.get(RESOURCE_LOG_ENV_VAR) or tmp_path / "resources.jsonl"
     )
+    owner_id = uuid4().hex
     monkeypatch.setenv(RESOURCE_LOG_ENV_VAR, str(resource_log))
+    monkeypatch.setenv(RESOURCE_LOG_OWNER_ENV_VAR, owner_id)
 
     yield
 
-    if recorded := read_recorded_resources(resource_log):
+    if recorded := read_recorded_resources(resource_log, owner_id=owner_id):
         delete_recorded_resources(api_client, recorded)
 
 
