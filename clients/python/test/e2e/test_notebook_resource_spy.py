@@ -14,7 +14,6 @@ from typing import Any, Final
 from unittest.mock import create_autospec
 
 import _notebook_spy
-import cleanup_resources
 import osparc
 import pytest
 from _utils import (
@@ -29,6 +28,8 @@ from _utils import (
     read_recorded_resources,
     sweep_all_jobs,
 )
+
+from scripts import cleanup_resources
 
 _SOLVER_KEY: Final[str] = "simcore/services/dynamic/jupyter-smash"
 _SOLVER_VERSION: Final[str] = "3.0.8"

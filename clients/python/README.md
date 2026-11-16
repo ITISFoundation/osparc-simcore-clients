@@ -65,7 +65,7 @@ variables below select the deployment and its credentials.
 | `OSPARC_API_KEY` | api key of the test user |
 | `OSPARC_API_SECRET` | that key's secret |
 | `OSPARC_CLIENT_VERSION` | optional label. When set, and neither `latest_release` nor `latest_master`, the run aborts if it differs from the installed `osparc.__version__` |
-| `OSPARC_E2E_RESOURCE_LOG` | optional file the suite records resources created on the deployment in, for `test/e2e/cleanup_resources.py` |
+| `OSPARC_E2E_RESOURCE_LOG` | optional file the suite records resources created on the deployment in, for `test/e2e/scripts/cleanup_resources.py` |
 | `OSPARC_E2E_HTTP_DEBUG` | optional, set to any value to dump every request/response header of the client; the dump contains the `Authorization` header, so keep it out of CI logs |
 
 ```console
@@ -99,7 +99,7 @@ resources in the same log, so the janitor can find them too. Point the variable 
 keep, then run this from a step that also runs on failure:
 
 ```console
-python test/e2e/cleanup_resources.py --resource-log "$OSPARC_E2E_RESOURCE_LOG" --retry-minutes=10
+python test/e2e/scripts/cleanup_resources.py --resource-log "$OSPARC_E2E_RESOURCE_LOG" --retry-minutes=10
 ```
 
 Without a log it deletes nothing and says so. `--all-jobs` instead deletes every job of this
@@ -134,7 +134,7 @@ python_client_latest_release:
     # anything script exported, so export the variables there if you build them with jq.
     - cd clients/python
     - . .venv/bin/activate
-    - python test/e2e/cleanup_resources.py --resource-log ${OSPARC_E2E_RESOURCE_LOG} \
+    - python test/e2e/scripts/cleanup_resources.py --resource-log ${OSPARC_E2E_RESOURCE_LOG} \
         --retry-minutes=10
   artifacts:
     when: always
@@ -166,7 +166,7 @@ client:
       run: |
         cd clients/python
         source .venv/bin/activate
-        python test/e2e/cleanup_resources.py \
+        python test/e2e/scripts/cleanup_resources.py \
           --resource-log ${{ runner.temp }}/created_resources.jsonl --retry-minutes=10
 ```
 

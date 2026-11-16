@@ -19,8 +19,12 @@ still on the server after the retries.
 
 import logging
 import os
+import sys
 from datetime import timedelta
 from pathlib import Path
+
+# Run as a script, this directory lands on sys.path, not the suite directory holding _utils.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import osparc
 import tenacity
