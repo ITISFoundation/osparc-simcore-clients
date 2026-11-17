@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any, Final, NamedTuple
 from uuid import UUID, uuid4
 
+import _e2e_report
 import httpx2
 import osparc
 import pytest
@@ -225,6 +226,7 @@ def pytest_configure(config):
     config.pluginmanager.register(pytest_runtest_setup, "osparc_test_times_plugin")
     config.pluginmanager.register(pytest_runtest_makereport, "osparc_makereport_plugin")
     config.pluginmanager.register(_PaymentRequiredReports(), "osparc_402_plugin")
+    config.pluginmanager.register(_e2e_report, "osparc_run_report_plugin")
 
 
 @pytest.fixture(scope="session")
@@ -254,53 +256,6 @@ def api_client() -> Iterable[osparc.ApiClient]:
 @pytest.fixture(scope="session")
 def files_api(api_client: osparc.ApiClient) -> osparc.FilesApi:
     return osparc.FilesApi(api_client=api_client)
-
-
-@pytest.fixture(scope="session", autouse=True)
-def record_run_in_junit(request: pytest.FixtureRequest) -> None:
-    """Writes deployment and client version into the junit report.
-
-    Each cell of the matrix is a separate job with its own report, and the file name is not enough
-    to say which one it was. summarize_junit.py reads these two properties back.
-    """
-    if not getattr(request.config.option, "xmlpath", None):
-        return
-    record = request.getfixturevalue("record_testsuite_property")
-    record("osparc_deployment", os.environ.get("OSPARC_API_HOST", "unset"))
-    record("osparc_client_version", osparc.__version__)
-
-
-@pytest.fixture(scope="session", autouse=True)
-def log_wallet_budget(api_client: osparc.ApiClient) -> None:
-    """Logs the default wallet's credits before the first job.
-
-    A billable deployment refuses a job start it cannot pay for with 402, and on a non-billable one
-    the wallet endpoints answer 404. Neither is a fault here, so both are only reported.
-    """
-    host = os.environ.get("OSPARC_API_HOST", "")
-    wallets_api = getattr(osparc, "WalletsApi", None)
-    if wallets_api is None:
-        _logger.info(
-            "deployment %s: osparc %s has no wallets API, billing cannot be reported",
-            host,
-            osparc.__version__,
-        )
-        return
-    try:
-        wallet = wallets_api(api_client=api_client).get_default_wallet()
-    except Exception as exc:  # noqa: BLE001
-        _logger.info(
-            "deployment %s: no default wallet (%s), so billing is off or unsupported here",
-            host,
-            exc.__class__.__name__,
-        )
-        return
-    _logger.info(
-        "deployment %s: default wallet %r has %s credits available",
-        host,
-        wallet.name,
-        getattr(wallet, "available_credits", "unknown"),
-    )
 
 
 @pytest.fixture
@@ -379,7 +334,8 @@ def sleeper(api_client: osparc.ApiClient) -> osparc.Solver:
     """Newest sleeper release offered by the deployment.
 
     A deployment chooses which releases to carry, so pinning a version here fails the suite
-    wherever that release is missing.
+    wherever that release is missing. Solver.version is SemVer-validated by the generated model,
+    so every tag that arrives here orders cleanly.
     """
     releases = osparc.SolversApi(api_client=api_client).list_solver_releases(
         _SLEEPER_KEY
