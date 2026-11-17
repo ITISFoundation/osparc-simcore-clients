@@ -78,11 +78,12 @@ pytest test/e2e --junitxml=artifacts/junit_e2e.xml   # or: make e2e-test
 `make help` lists the targets of `clients/python` with their arguments.
 
 One thing is not created by the suite: a study titled `sleeper_test_study` must exist for the
-test user on the deployment, with a sleeper node whose file input is labelled `input_file` and
-whose file output is labelled `output_file`. The public API can clone and run studies but cannot
-create one, so a deployment without that study fails the run early with the ports it found. The
-suite needs no `sleeper` setup: it takes the newest release the deployment offers and reads the
-input names from that release's port metadata.
+test user on the deployment. The public API can clone and run studies but cannot create one, so a
+deployment without that study fails the run early. Label its sleeper node's file input
+`input_file` and its file output `output_file`: `test_studies_logs` submits its file under the
+first. The run warns about a label the study does not carry, and its job then runs without that
+study port. The suite needs no `sleeper` setup: it takes the newest release the deployment offers
+and reads the input names from that release's port metadata.
 
 On a billable deployment, every job is charged to the test user's wallet. The run logs the
 credits in the default wallet before the first job; a deployment with billing switched off reports
@@ -94,8 +95,9 @@ streamed while tests wait on server-side jobs, and live logging at INFO. `--juni
 caller's choice, so
 it stays on the command line. Before the first test runs, the report header prints the client
 version, the deployment, and the deployment's api-server version. The end of the run prints the
-same with the result counts. With `--junitxml`, the report carries them as the
-`osparc_client_version` and `osparc_deployment` testsuite properties.
+same with the sleeper releases the deployment offers and the result counts. With `--junitxml`, the
+report carries them as the `osparc_client_version`, `osparc_deployment` and
+`osparc_sleeper_releases` testsuite properties.
 
 `make e2e-shell` opens the container the CI uses
 ([`docker/osparc_python_tutorial_testing`](../../docker/osparc_python_tutorial_testing)) when

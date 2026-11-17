@@ -214,6 +214,21 @@ def repo_version() -> Version:
     return Version(version_file.read_text())
 
 
+def is_file_port(content_schema: dict[str, Any]) -> bool:
+    """Whether a port's content schema describes a file.
+
+    The jsonschema marker for a file port, `format: "data:<media-type>"`, is absent from every
+    port schema the public API returns, so a file port is told apart by its labels: sleeper's
+    `input_1` is "File with int number", its 2.2.0 string output is "Dream output".
+    """
+    if content_schema.get("type") != "string":
+        return False
+    labels = (
+        f"{content_schema.get('title', '')} {content_schema.get('description', '')}"
+    )
+    return "file" in labels.lower()
+
+
 def skip_if_osparc_version(
     *,
     at_least: Version | None = None,
