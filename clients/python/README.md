@@ -77,11 +77,27 @@ pytest test/e2e --junitxml=artifacts/junit_e2e.xml   # or: make e2e-test
 
 `make help` lists the targets of `clients/python` with their arguments.
 
+The suite creates and deletes everything it uses but one thing: a study titled
+`sleeper_test_study` must already exist for the test user on the deployment, with a sleeper node
+whose file input is labelled `input_file` and whose file output is labelled `output_file`. The
+public API can clone and run studies but cannot create one, so a deployment without that study
+fails the run early, naming the deployment and the ports it found. Which `sleeper` release the
+suite runs is not setup: it takes the newest release the deployment offers, and reads the input
+names from that release's port metadata.
+
+On a billable deployment every job is charged to the test user's wallet. The run logs the credits
+available in the default wallet before the first job; a deployment that reports no default wallet
+is one where billing is switched off. When the credits run out, the server answers 402 and the
+failing test says the account has no credits left instead of dumping a client exception.
+
 `test/e2e/pytest.ini` holds what is constant: asyncio mode, required plugins, verbose output
 streamed while tests wait on server-side jobs, and live logging at INFO. `--junitxml` is the
 caller's choice, so
 it stays on the command line. Before the first test runs, the report header prints the client
-version, the deployment, and the deployment's api-server version.
+version, the deployment, and the deployment's api-server version. The end of the run prints the
+same with the result counts, so a log names its cell of the client-by-deployment matrix at both
+ends. With `--junitxml`, the report carries them as the `osparc_client_version` and
+`osparc_deployment` testsuite properties.
 
 `make e2e-shell` opens the container the CI uses
 ([`docker/osparc_python_tutorial_testing`](../../docker/osparc_python_tutorial_testing)) when
@@ -169,6 +185,22 @@ client:
         python test/e2e/scripts/cleanup_resources.py \
           --resource-log ${{ runner.temp }}/created_resources.jsonl --retry-minutes=10
 ```
+
+### Turning the reports into one table
+
+One job runs one client version against one deployment, so the matrix is only readable once the
+reports are together. `test/e2e/scripts/summarize_junit.py` reads every junit report below a
+directory and prints a markdown table of the deployments against the client versions, taking both
+from the properties each run records.
+
+```console
+python test/e2e/scripts/summarize_junit.py artifacts
+```
+
+Run it from a job that downloads the artifacts of the test jobs. It exits nonzero when any run
+failed, which lets that job gate the pipeline, and says so when it finds no report at all. A
+report written without the properties falls back to the identities in its path, so name such a
+file with both the deployment and the client version.
 
 ### Debugging a failure
 The client e2e tests log all trace data when running. It can be useful to debug these using the copilot to anylize issues. This can be done by using the Grafana MCP server. Note you will need to create the mpc.json file for this and give the copilot access to Grafana. In a separate process you will need to run

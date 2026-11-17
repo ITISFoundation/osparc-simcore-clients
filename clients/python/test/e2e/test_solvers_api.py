@@ -24,6 +24,7 @@ DEFAULT_TIMEOUT_SECONDS = 15 * 60  # 15 min
 def create_sleeper_jobs(
     api_client: osparc.ApiClient,
     sleeper: osparc.Solver,
+    sleeper_job_inputs: osparc.JobInputs,
 ) -> Callable[[int], Iterator[set[UUID | str]]]:
     @contextmanager
     def sleeper_jobs(n_jobs: int = 1) -> Iterator[set[UUID | str]]:
@@ -32,7 +33,7 @@ def create_sleeper_jobs(
         try:
             for _ in range(n_jobs):
                 job = solvers_api.create_job(
-                    sleeper.id, sleeper.version, osparc.JobInputs({"input1": 1.0})
+                    sleeper.id, sleeper.version, sleeper_job_inputs
                 )
                 job_ids.add(job.id)
                 record_resource(
