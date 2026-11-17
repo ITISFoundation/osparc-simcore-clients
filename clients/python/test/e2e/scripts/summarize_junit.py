@@ -1,17 +1,15 @@
 # ruff: noqa: B008  # typer reads its arguments from the argument defaults, so calling
 # typer.Argument there is the documented shape of its API.
-"""Gathers the e2e junit reports into one client-against-deployment table.
+"""Prints the e2e junit reports as one table of deployments against client versions.
 
-Every cell of the matrix, one client config against one deployment, runs as its own job because it
-needs that deployment's credentials, and each writes its own junit report. This reads them back
-together and prints one markdown table: rows are deployments, columns are client versions.
-
-The two identities come from the junit properties the suite records in conftest.py
-(record_run_in_junit). A report without those properties falls back to its path.
+Each matrix cell runs as its own job, since it needs that deployment's credentials, and writes its
+own junit report. Rows are deployments, columns are client versions, and each cell adds up the
+reports of that pair.
 
     python test/e2e/scripts/summarize_junit.py <dir-with-junit-xml>
 
-Exits nonzero when a report carries a failure or an error, or when no report is found.
+The pair comes from the testsuite properties a run records; a report without them falls back to its
+path. Exits nonzero when a report carries a failure or an error, or when none is found.
 """
 
 import xml.etree.ElementTree as ElementTree
@@ -45,7 +43,7 @@ class _Run:
         if self.failed:
             counts.append(f"{self.failed} failed")
         if self.errored:
-            counts.append(f"{self.errored} error")
+            counts.append(f"{self.errored} errors")
         if self.skipped:
             counts.append(f"{self.skipped} skipped")
         return ", ".join(counts)
@@ -65,8 +63,7 @@ def _read_run(path: Path, suite: ElementTree.Element) -> _Run:
     errored = _attribute(suite, "errors")
     skipped = _attribute(suite, "skipped")
     return _Run(
-        # Without the recorded properties the report says nothing about where it ran, so the
-        # directory and file names are the only identity left.
+        # Without the properties, the path is the only identity the report has.
         deployment=properties.get(_DEPLOYMENT_PROPERTY) or path.parent.name,
         client=properties.get(_CLIENT_PROPERTY) or path.name,
         passed=max(tests - failed - errored - skipped, 0),

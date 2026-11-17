@@ -1,11 +1,13 @@
-"""Reports on the run itself: what it ran against, and what it may spend.
+"""Session fixtures that report on the run: the cell of the matrix it tested, and the credits it
+may spend on the deployment.
 
-Registered by conftest.py's pytest_configure rather than left in that file, which holds no autouse
-fixtures on purpose. Both fixtures here apply to every test in the session.
+conftest.py registers this module from pytest_configure, since the test conventions keep autouse
+fixtures out of conftest.py.
 """
 
 import logging
 import os
+from collections.abc import Callable
 
 import osparc
 import pytest
@@ -15,24 +17,25 @@ _logger = logging.getLogger(__name__)
 
 @pytest.fixture(scope="session", autouse=True)
 def record_run_in_junit(request: pytest.FixtureRequest) -> None:
-    """Writes deployment and client version into the junit report.
+    """Writes deployment and client version into the junit report as testsuite properties.
 
-    Each cell of the matrix is a separate job with its own report, and the file name is not enough
-    to say which one it was. summarize_junit.py reads these two properties back.
+    summarize_junit.py builds the client-by-deployment table from them.
     """
     if not getattr(request.config.option, "xmlpath", None):
         return
-    record = request.getfixturevalue("record_testsuite_property")
+    record: Callable[[str, str], None] = request.getfixturevalue(
+        "record_testsuite_property"
+    )
     record("osparc_deployment", os.environ.get("OSPARC_API_HOST", "unset"))
     record("osparc_client_version", osparc.__version__)
 
 
 @pytest.fixture(scope="session", autouse=True)
 def log_wallet_budget(api_client: osparc.ApiClient) -> None:
-    """Logs the default wallet's credits before the first job.
+    """Logs the default wallet's available credits before the first job.
 
-    A billable deployment refuses a job start it cannot pay for with 402, and on a non-billable one
-    the wallet endpoints answer 404. Neither is a fault here, so both are only reported.
+    A billable deployment answers 402 to a job start it cannot pay for; a non-billable one answers
+    404 to the wallet endpoints. Neither is a fault of the client, so neither fails here.
     """
     host = os.environ.get("OSPARC_API_HOST", "")
     wallets_api = getattr(osparc, "WalletsApi", None)

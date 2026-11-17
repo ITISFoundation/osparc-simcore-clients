@@ -8,12 +8,12 @@ import contextlib
 import datetime
 import logging
 import os
-from collections.abc import Iterable
+from collections.abc import Iterable, Iterator
 from pathlib import Path
 from typing import Any, Final, NamedTuple
 from uuid import UUID, uuid4
 
-import _e2e_report
+import _run_report
 import httpx2
 import osparc
 import pytest
@@ -64,8 +64,7 @@ _META_TIMEOUT_SECONDS: Final[float] = 10.0
 
 _SLEEPER_KEY: Final[str] = "simcore/services/comp/itis/sleeper"
 
-# Fallback for an input port that declares no default, keyed by the jsonschema type. The suite
-# only needs the job to run, so any value the port accepts is enough.
+# Value per jsonschema type for an input port that declares no default.
 _INPUT_VALUE_BY_TYPE: Final[dict[str, Any]] = {
     "number": 1.0,
     "integer": 1,
@@ -172,14 +171,16 @@ _PAYMENT_REQUIRED: Final[int] = 402
 
 
 class _PaymentRequiredReports:
-    """Rewrites the report of a test the deployment refused for lack of credits.
+    """Replaces the report of a test whose job the deployment refused for lack of credits.
 
     The client maps 400, 401, 403, 404, 409, 422 and 5xx to named exceptions but not 402, so the
-    refusal arrives as a bare ApiException holding the server's body.
+    refusal arrives as a bare ApiException.
     """
 
     @pytest.hookimpl(hookwrapper=True)
-    def pytest_runtest_makereport(self, item, call):
+    def pytest_runtest_makereport(
+        self, item: pytest.Item, call: pytest.CallInfo[BaseException]
+    ) -> Iterator[None]:
         outcome = yield
         report = outcome.get_result()
         excinfo = call.excinfo
@@ -190,16 +191,18 @@ class _PaymentRequiredReports:
             return
         host = os.environ.get("OSPARC_API_HOST", "")
         report.longrepr = (
-            f"no credits left on {host or 'this deployment'}: it bills this account's wallet, "
-            "which cannot pay for the job. Top the wallet up, or run the suite against a "
-            "deployment without billing. Balance of the default wallet: "
+            f"no credits left on {host or 'this deployment'}, so the job was not started. Top "
+            "the account's default wallet up, or run the suite where billing is off. Its balance: "
             "osparc.WalletsApi(api_client).get_default_wallet().available_credits. "
             f"The server answered: {excinfo.value}"
         )
 
 
-def pytest_terminal_summary(terminalreporter) -> None:
-    """Prints deployment, api-server version, client version and result counts after the run."""
+def pytest_terminal_summary(terminalreporter: pytest.TerminalReporter) -> None:
+    """Prints the client version, the deployment and its api-server version, and the counts.
+
+    Each matrix cell is a separate job, so a log has to say which cell it came from.
+    """
     host = os.environ.get("OSPARC_API_HOST", "")
     counts = {
         category: len(terminalreporter.stats.get(category, []))
@@ -226,7 +229,7 @@ def pytest_configure(config):
     config.pluginmanager.register(pytest_runtest_setup, "osparc_test_times_plugin")
     config.pluginmanager.register(pytest_runtest_makereport, "osparc_makereport_plugin")
     config.pluginmanager.register(_PaymentRequiredReports(), "osparc_402_plugin")
-    config.pluginmanager.register(_e2e_report, "osparc_run_report_plugin")
+    config.pluginmanager.register(_run_report, "osparc_run_report_plugin")
 
 
 @pytest.fixture(scope="session")
@@ -334,8 +337,7 @@ def sleeper(api_client: osparc.ApiClient) -> osparc.Solver:
     """Newest sleeper release offered by the deployment.
 
     A deployment chooses which releases to carry, so pinning a version here fails the suite
-    wherever that release is missing. Solver.version is SemVer-validated by the generated model,
-    so every tag that arrives here orders cleanly.
+    wherever that release is missing. Solver.version validates as SemVer, which Version orders.
     """
     releases = osparc.SolversApi(api_client=api_client).list_solver_releases(
         _SLEEPER_KEY
@@ -355,9 +357,8 @@ def sleeper_job_inputs(
 ) -> osparc.JobInputs:
     """One value for every input port of the release the sleeper fixture picked.
 
-    Input port keys are not stable across sleeper versions (``input1`` in the 2.0.x line,
-    ``input_1`` to ``input_4`` in the 2.1.x line, where one of them takes a file), so the values
-    follow the release's port metadata rather than a literal from a single version.
+    Input port keys and types differ between sleeper releases, so both come from the release's
+    port metadata.
     """
     ports = osparc.SolversApi(api_client=api_client).list_solver_ports(
         sleeper.id, sleeper.version
@@ -383,8 +384,7 @@ def sleeper_job_inputs(
 
 _TEST_STUDY_TITLE: Final[str] = "sleeper_test_study"
 
-# test_studies.py submits the uploaded file under the first name and expects the job's file back
-# under the second.
+# The port labels test_studies.py submits its file input under and reads its output back from.
 _TEST_STUDY_INPUT: Final[str] = "input_file"
 _TEST_STUDY_OUTPUT: Final[str] = "output_file"
 
@@ -401,7 +401,7 @@ def _study_port_is_named(port: osparc.StudyPort, name: str) -> bool:
 
 
 def _describe_study_ports(ports: list[osparc.StudyPort]) -> str:
-    described = []
+    described: list[str] = []
     for port in ports:
         schema: dict[str, Any] = port.content_schema or {}
         described.append(
@@ -429,15 +429,14 @@ def sleeper_study_id(api_client: osparc.ApiClient) -> UUID:
     ]
     if not matches:
         pytest.fail(
-            f"no study titled {_TEST_STUDY_TITLE!r} for this account on {host}. The suite "
-            f"cannot create it, the public API has no study creation: create it on the "
-            f"deployment with a sleeper node exposing its file input as "
-            f"{_TEST_STUDY_INPUT!r} and its file output as {_TEST_STUDY_OUTPUT!r}."
+            f"no study titled {_TEST_STUDY_TITLE!r} for this account on {host}. The public API "
+            f"cannot create one: create it there with a sleeper node whose file input is "
+            f"{_TEST_STUDY_INPUT!r} and whose file output is {_TEST_STUDY_OUTPUT!r}."
         )
     if len(matches) > 1:
         pytest.fail(
             f"{len(matches)} studies titled {_TEST_STUDY_TITLE!r} on {host}: "
-            f"{[str(study.uid) for study in matches]}. Keep exactly one for this account."
+            f"{[str(study.uid) for study in matches]}. Exactly one is used."
         )
 
     study_id = _ensure_uid(matches[0])
