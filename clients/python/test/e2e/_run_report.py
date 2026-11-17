@@ -12,7 +12,7 @@ from typing import Final
 import osparc
 import pytest
 
-_logger: Final = logging.getLogger(__name__)
+_logger: Final[logging.Logger] = logging.getLogger(__name__)
 
 
 def _deployment(api_client: osparc.ApiClient) -> str:
