@@ -171,11 +171,10 @@ _PAYMENT_REQUIRED: Final[int] = 402
 
 
 class _PaymentRequiredReports:
-    """Names the account's credits when the deployment answers 402.
+    """Rewrites the report of a test the deployment refused for lack of credits.
 
-    The client maps 400, 401, 403, 404, 409, 422 and 5xx to named exceptions but not 402, so a job
-    a billable deployment will not run for lack of credits arrives as a bare ApiException holding
-    the server's body.
+    The client maps 400, 401, 403, 404, 409, 422 and 5xx to named exceptions but not 402, so the
+    refusal arrives as a bare ApiException holding the server's body.
     """
 
     @pytest.hookimpl(hookwrapper=True)
@@ -199,11 +198,7 @@ class _PaymentRequiredReports:
 
 
 def pytest_terminal_summary(terminalreporter) -> None:
-    """Restates at the end what ran against what.
-
-    Each deployment and client config is a separate job, so this is the line that says which cell
-    of the matrix it belongs to.
-    """
+    """Prints deployment, api-server version, client version and result counts after the run."""
     host = os.environ.get("OSPARC_API_HOST", "")
     counts = {
         category: len(terminalreporter.stats.get(category, []))
@@ -277,7 +272,7 @@ def record_run_in_junit(request: pytest.FixtureRequest) -> None:
 
 @pytest.fixture(scope="session", autouse=True)
 def log_wallet_budget(api_client: osparc.ApiClient) -> None:
-    """Logs what the run may spend before it starts any job.
+    """Logs the default wallet's credits before the first job.
 
     A billable deployment refuses a job start it cannot pay for with 402, and on a non-billable one
     the wallet endpoints answer 404. Neither is a fault here, so both are only reported.
@@ -383,8 +378,8 @@ def large_server_file(
 def sleeper(api_client: osparc.ApiClient) -> osparc.Solver:
     """Newest sleeper release offered by the deployment.
 
-    Which releases a deployment carries is its own business, so pinning a version here makes the
-    suite fail wherever that release happens to be missing.
+    A deployment chooses which releases to carry, so pinning a version here fails the suite
+    wherever that release is missing.
     """
     releases = osparc.SolversApi(api_client=api_client).list_solver_releases(
         _SLEEPER_KEY
@@ -439,10 +434,9 @@ _TEST_STUDY_OUTPUT: Final[str] = "output_file"
 
 
 def _study_port_is_named(port: osparc.StudyPort, name: str) -> bool:
-    """Whether a study port answers to name.
+    """Whether a study port carries name as its key or as its content schema title.
 
-    A port's key is the node identifier on newer servers and the label on older ones, and the
-    label is also in the port's content schema, so both are checked.
+    The key is the node identifier on newer servers and the label on older ones.
     """
     if port.key == name:
         return True
@@ -465,9 +459,8 @@ def _describe_study_ports(ports: list[osparc.StudyPort]) -> str:
 def sleeper_study_id(api_client: osparc.ApiClient) -> UUID:
     """The deployment's sleeper study, checked before any job uses it.
 
-    The public API can read, clone and run studies but cannot create one, so this study is a
-    precondition of the deployment. Checking it here reports what is missing instead of failing
-    later inside create_study_job.
+    The public API can read, clone and run studies but cannot create one, so the study is
+    deployment setup. A missing study or port fails with the host and the ports it found.
     """
     study_api = osparc.StudiesApi(api_client=api_client)
     host = os.environ.get("OSPARC_API_HOST", "this deployment")

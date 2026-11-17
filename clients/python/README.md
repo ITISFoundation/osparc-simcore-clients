@@ -81,9 +81,9 @@ The suite creates and deletes everything it uses but one thing: a study titled
 `sleeper_test_study` must already exist for the test user on the deployment, with a sleeper node
 whose file input is labelled `input_file` and whose file output is labelled `output_file`. The
 public API can clone and run studies but cannot create one, so a deployment without that study
-fails the run early, naming the deployment and the ports it found. Which `sleeper` release the
-suite runs is not setup: it takes the newest release the deployment offers, and reads the input
-names from that release's port metadata.
+fails the run early, naming the deployment and the ports it found. The suite needs no sleeper
+setup either: it takes the newest release the deployment offers and reads the input names from that
+release's port metadata.
 
 On a billable deployment every job is charged to the test user's wallet. The run logs the credits
 available in the default wallet before the first job; a deployment that reports no default wallet
@@ -95,9 +95,9 @@ streamed while tests wait on server-side jobs, and live logging at INFO. `--juni
 caller's choice, so
 it stays on the command line. Before the first test runs, the report header prints the client
 version, the deployment, and the deployment's api-server version. The end of the run prints the
-same with the result counts, so a log names its cell of the client-by-deployment matrix at both
-ends. With `--junitxml`, the report carries them as the `osparc_client_version` and
-`osparc_deployment` testsuite properties.
+same with the result counts, so a log identifies its cell of the matrix at both ends. With
+`--junitxml`, the report carries them as the `osparc_client_version` and `osparc_deployment`
+testsuite properties.
 
 `make e2e-shell` opens the container the CI uses
 ([`docker/osparc_python_tutorial_testing`](../../docker/osparc_python_tutorial_testing)) when

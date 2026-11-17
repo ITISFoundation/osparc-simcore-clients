@@ -7,8 +7,7 @@ needs that deployment's credentials, and each writes its own junit report. This 
 together and prints one markdown table: rows are deployments, columns are client versions.
 
 The two identities come from the junit properties the suite records in conftest.py
-(record_run_in_junit). A report from a suite that predates those properties falls back to the path,
-which says less but still separates the cells.
+(record_run_in_junit). A report without those properties falls back to its path.
 
     python test/e2e/scripts/summarize_junit.py <dir-with-junit-xml>
 
