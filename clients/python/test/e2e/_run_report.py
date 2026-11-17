@@ -6,17 +6,24 @@ fixtures out of conftest.py.
 """
 
 import logging
-import os
 from collections.abc import Callable
+from typing import Final
 
 import osparc
 import pytest
 
-_logger = logging.getLogger(__name__)
+_logger: Final = logging.getLogger(__name__)
+
+
+def _deployment(api_client: osparc.ApiClient) -> str:
+    """Host the client talks to, as its configuration resolved it."""
+    return api_client.configuration.host.rstrip("/") or "unset"
 
 
 @pytest.fixture(scope="session", autouse=True)
-def record_run_in_junit(request: pytest.FixtureRequest) -> None:
+def _record_run_in_junit(
+    request: pytest.FixtureRequest, api_client: osparc.ApiClient
+) -> None:
     """Writes deployment and client version into the junit report as testsuite properties.
 
     summarize_junit.py builds the client-by-deployment table from them.
@@ -26,18 +33,18 @@ def record_run_in_junit(request: pytest.FixtureRequest) -> None:
     record: Callable[[str, str], None] = request.getfixturevalue(
         "record_testsuite_property"
     )
-    record("osparc_deployment", os.environ.get("OSPARC_API_HOST", "unset"))
+    record("osparc_deployment", _deployment(api_client))
     record("osparc_client_version", osparc.__version__)
 
 
 @pytest.fixture(scope="session", autouse=True)
-def log_wallet_budget(api_client: osparc.ApiClient) -> None:
+def _log_wallet_budget(api_client: osparc.ApiClient) -> None:
     """Logs the default wallet's available credits before the first job.
 
     A billable deployment answers 402 to a job start it cannot pay for; a non-billable one answers
     404 to the wallet endpoints. Neither is a fault of the client, so neither fails here.
     """
-    host = os.environ.get("OSPARC_API_HOST", "")
+    host = _deployment(api_client)
     wallets_api = getattr(osparc, "WalletsApi", None)
     if wallets_api is None:
         _logger.info(
