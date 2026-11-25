@@ -19,7 +19,7 @@ jobs:
           # the interpreter `make devenv` creates, from `.python-version`
           python-version-file: .python-version
       - name: Set up uv
-        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
       - name: Cache pre-commit environments
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
@@ -40,7 +40,7 @@ jobs:
           # the interpreter `make devenv` creates, from `.python-version`
           python-version-file: .python-version
       - name: Set up uv
-        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
         # caching is on by default here, keyed on **/*requirements*.txt, which covers
         # scripts/mypy/requirements.txt
       - name: Type check the client
